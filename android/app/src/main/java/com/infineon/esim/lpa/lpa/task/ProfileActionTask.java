@@ -83,27 +83,17 @@ public class ProfileActionTask implements Callable<Void> {
 
         performEuiccReset();
 
-        switch (profileActionType) {
-            case PROFILE_ACTION_DELETE:
-                // Send notification
-                try {
-                    HandleNotificationsResult handleNotificationsResult = lpa.handleNotifications();
-                    if(!handleNotificationsResult.getSuccess()) {
-                        Log.error(TAG, "HandleNotifications failed: " + handleNotificationsResult.getErrorDetails());
-                        throw new Exception("HandleNotifications failed: " + handleNotificationsResult.getErrorDetails());
-                    }
-                } catch (ConnectException e) {
-                    // Ignore exceptions (E.g. no internet connection) and retry later
-                    // TODO: Show toast on fail?
-                }
-                break;
-            case PROFILE_ACTION_ENABLE:
-            case PROFILE_ACTION_DISABLE:
-                Log.info(TAG,"Skipping Notifications. Will it work?");
-            default:
-                break;
+        // Send notification
+        try {
+            HandleNotificationsResult handleNotificationsResult = lpa.handleNotifications();
+            if(!handleNotificationsResult.getSuccess()) {
+                Log.error(TAG, "HandleNotifications failed: " + handleNotificationsResult.getErrorDetails());
+                // throw new Exception("HandleNotifications failed: " + handleNotificationsResult.getErrorDetails());
+            }
+        } catch (ConnectException e) {
+            // Ignore exceptions (E.g. no internet connection) and retry later
+            // TODO: Show toast on fail?
         }
-
         return null;
     }
 
