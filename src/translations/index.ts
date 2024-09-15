@@ -2,7 +2,7 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 import * as en from './en';
-import * as fr from './fr';
+import * as zh from './zh';
 
 type TupleUnion<U extends string, R extends unknown[] = []> = {
 	[S in U]: Exclude<U, S> extends never
@@ -19,7 +19,7 @@ void i18n.use(initReactI18next).init({
 	defaultNS,
 	resources: {
 		en,
-		fr,
+		zh,
 	},
 	lng: 'en',
 	fallbackLng: 'en',

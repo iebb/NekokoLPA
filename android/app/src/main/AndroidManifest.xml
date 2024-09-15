@@ -1,6 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+  <uses-feature
+      android:name="android.hardware.camera"
+      android:required="false" />
+
+  <!-- Add this permission in your manifiest -->
+  <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
   <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.CAMERA" />
 
   <application
       android:name=".MainApplication"
@@ -9,7 +16,7 @@
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
       android:theme="@style/AppTheme"
-  >
+      >
     <activity
         android:name=".MainActivity"
         android:label="@string/app_name"
@@ -21,7 +28,34 @@
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
+        <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+        <action android:name="android.hardware.usb.action.USB_DEVICE_DETACHED" />
       </intent-filter>
+      <meta-data android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" android:resource="@xml/device_filter" />
+      <meta-data android:name="android.hardware.usb.action.USB_DEVICE_DETACHED" android:resource="@xml/device_filter" />
     </activity>
-  </application>
+    <!-- put this somewhere into your application section: -->
+    <receiver android:name="com.infineon.esim.lpa.data.SIMChangeReceiver"
+        android:enabled="true"
+        android:exported="true">
+      <intent-filter>
+        <action android:name="android.intent.action.SIM_STATE_CHANGED"/>
+      </intent-filter>
+    </receiver>
+  
+    <!-- Required: set your sentry.io project identifier (DSN) -->
+    <meta-data android:name="io.sentry.dsn" android:value="https://89ec52147527f8d9a8f7ac6c67d8a51c@o4507931387035648.ingest.de.sentry.io/4507931389657168" />
+
+    <!-- enable automatic breadcrumbs for user interactions (clicks, swipes, scrolls) -->
+    <meta-data android:name="io.sentry.traces.user-interaction.enable" android:value="true" />
+    <!-- enable screenshot for crashes (could contain sensitive/PII data) -->
+    <meta-data android:name="io.sentry.attach-screenshot" android:value="true" />
+    <!-- enable view hierarchy for crashes -->
+    <meta-data android:name="io.sentry.attach-view-hierarchy" android:value="true" />
+
+    <!-- enable the performance API by setting a sample-rate, adjust in production env -->
+    <meta-data android:name="io.sentry.traces.sample-rate" android:value="1.0" />
+    <!-- enable profiling when starting transactions, adjust in production env -->
+    <meta-data android:name="io.sentry.traces.profiling.sample-rate" android:value="1.0" />
+</application>
 </manifest>

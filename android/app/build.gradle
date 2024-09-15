@@ -1,6 +1,24 @@
+// On top of your file import a JSON parser
+import groovy.json.JsonSlurper
+
+// Create an easy to use function
+def getVersionFromNpm() {
+    //  Read and parse package.json file from project root
+    def inputFile = new File("$rootDir/../package.json")
+    def packageJson = new JsonSlurper().parseText(inputFile.text)
+
+    // Return the version, you can get any value this way
+    return packageJson["version"]
+}
+
+plugins {
+    id 'io.sentry.android.gradle' version '4.11.0'
+}
+
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
+apply plugin: "io.sentry.android.gradle"
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -69,35 +87,62 @@ def enableProguardInReleaseBuilds = false
  */
 def jscFlavor = 'org.webkit:android-jsc:+'
 
+
 android {
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.nekokolpa"
+    namespace "ee.nekoko.nlpa"
     defaultConfig {
-        applicationId "com.nekokolpa"
+        applicationId "ee.nekoko.nlpa"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "1.0"
+        versionName getVersionFromNpm()
     }
     signingConfigs {
         debug {
             storeFile file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
+            storePassword 'CommunityKey'
+            keyAlias 'CommunityKey'
+            keyPassword 'CommunityKey'
+        }
+        release {
+            storeFile file('debug.keystore')
+            storePassword 'CommunityKey'
+            keyAlias 'CommunityKey'
+            keyPassword 'CommunityKey'
+        }
+        community {
+            storeFile file('debug.keystore')
+            storePassword 'CommunityKey'
+            keyAlias 'CommunityKey'
+            keyPassword 'CommunityKey'
+        }
+        esim9 {
+            storeFile file('9eSIMCommunityKey.jks')
+            storePassword '147258369'
+            keyAlias 'key0'
+            keyPassword '147258369'
+        }
+    }
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+            universalApk true
         }
     }
     buildTypes {
         debug {
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.esim9
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.esim9
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
@@ -113,6 +158,96 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+
+    // ---------------------------------------------------------------------------------------------
+    // Module dependencies
+    // ---------------------------------------------------------------------------------------------
+    implementation project(path: ':messages')
+    implementation project(path: ':util')
+    implementation project(path: ':core')
+
+    // ---------------------------------------------------------------------------------------------
+    // Identiv reader library
+    // ---------------------------------------------------------------------------------------------
+    implementation files('lib/acssmc-1.1.5.jar')
+    implementation files('lib/androidSCardV1.2.jar')
+
+    // ConstraintLayout for profile list
+    implementation "androidx.constraintlayout:constraintlayout:2.1.4"
+    // SwiperefreshLayout for profile list
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+    // Preference
+    implementation "androidx.preference:preference:1.2.1"
+    // WorkManager
+    implementation "androidx.work:work-runtime:2.9.1"
+
+
+    // ASN1/BER codec
+    implementation 'com.beanit:jasn1:1.11.3'
+
+    // ---------------------------------------------------------------------------------------------
+    // Lifecycle management
+    // ---------------------------------------------------------------------------------------------
+    // ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel:2.8.5"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.5"
+    // LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata:2.8.5"
+    // Lifecycle runtime only (without ViewModel or LiveData)
+    implementation "androidx.lifecycle:lifecycle-runtime:2.8.5"
+    // Saved state module for ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.5"
+    // Annotation processor
+    // annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
+    // alternately - if using Java8, use the following instead of lifecycle-compiler
+    implementation "androidx.lifecycle:lifecycle-common-java8:2.8.5"
+    // optional - helpers for implementing LifecycleOwner in a Service
+    implementation "androidx.lifecycle:lifecycle-service:2.8.5"
+    // optional - ProcessLifecycleOwner provides a lifecycle for the whole application process
+    implementation "androidx.lifecycle:lifecycle-process:2.8.5"
+    // optional - ReactiveStreams support for LiveData
+    implementation "androidx.lifecycle:lifecycle-reactivestreams:2.8.5"
+    implementation 'com.google.code.gson:gson:2.11.0'
+    implementation 'com.google.android.datatransport:transport-api:2.2.1'
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Testing
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    testImplementation "androidx.arch.core:core-testing:2.2.0"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:5.9.2"
+
+    androidTestImplementation "androidx.test:rules:1.6.1"
+    androidTestImplementation "androidx.test.ext:junit:1.2.1"
+
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:3.6.1"
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.6.1"
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Compatibility
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Fixing Duplicate class kotlin.... issue
+    // See: https://stackoverflow.com/questions/75263047/duplicate-class-in-kotlin-android
+    constraints {
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {
+            because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")
+        }
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0") {
+            because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
+        }
+    }
+
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+
+
+sentry {
+    org = "kosmoneko-ou-ud"
+    projectName = "android"
+
+    // this will upload your source code to Sentry to show it as part of the stack traces
+    // disable if you don't want to expose your sources
+    includeSourceContext = true
+}

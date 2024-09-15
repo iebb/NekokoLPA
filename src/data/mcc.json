@@ -1,0 +1,1882 @@
+{
+  "901": {
+    "MCC": "901",
+    "Region": "Worldwide",
+    "Country": "Worldwide",
+    "ISO1": "UN",
+    "ISO": "UN",
+    "Emoji": "\ud83c\uddfa\ud83c\uddf3"
+  },
+  "242": {
+    "MCC": "242",
+    "Region": "Europe",
+    "Country": "Norway",
+    "ISO1": "NO",
+    "ISO": "NO",
+    "Emoji": "\ud83c\uddf3\ud83c\uddf4"
+  },
+  "363": {
+    "MCC": "363",
+    "Region": "North America and the Caribbean",
+    "Country": "Aruba",
+    "ISO1": "AW",
+    "ISO": "AW",
+    "Emoji": "\ud83c\udde6\ud83c\uddfc"
+  },
+  "412": {
+    "MCC": "412",
+    "Region": "Asia and the Middle East",
+    "Country": "Afghanistan",
+    "ISO1": "AF",
+    "ISO": "AF",
+    "Emoji": "\ud83c\udde6\ud83c\uddeb"
+  },
+  "631": {
+    "MCC": "631",
+    "Region": "Africa",
+    "Country": "Angola",
+    "ISO1": "AO",
+    "ISO": "AO",
+    "Emoji": "\ud83c\udde6\ud83c\uddf4"
+  },
+  "365": {
+    "MCC": "365",
+    "Region": "North America and the Caribbean",
+    "Country": "Anguilla (UK)",
+    "ISO1": "AI",
+    "ISO": "AI",
+    "Emoji": "\ud83c\udde6\ud83c\uddee"
+  },
+  "276": {
+    "MCC": "276",
+    "Region": "Europe",
+    "Country": "Albania",
+    "ISO1": "AL",
+    "ISO": "AL",
+    "Emoji": "\ud83c\udde6\ud83c\uddf1"
+  },
+  "213": {
+    "MCC": "213",
+    "Region": "Europe",
+    "Country": "Andorra",
+    "ISO1": "AD",
+    "ISO": "AD",
+    "Emoji": "\ud83c\udde6\ud83c\udde9"
+  },
+  "362": {
+    "MCC": "362",
+    "Region": "North America and the Caribbean",
+    "Country": "Former Netherlands Antilles",
+    "ISO1": "BQ",
+    "ISO": "BQ/CW/SX",
+    "Emoji": "\ud83c\udde7\ud83c\uddf6"
+  },
+  "424": {
+    "MCC": "424",
+    "Region": "Asia and the Middle East",
+    "Country": "United Arab Emirates",
+    "ISO1": "AE",
+    "ISO": "AE",
+    "Emoji": "\ud83c\udde6\ud83c\uddea"
+  },
+  "722": {
+    "MCC": "722",
+    "Region": "South and Central America",
+    "Country": "Argentina",
+    "ISO1": "AR",
+    "ISO": "AR",
+    "Emoji": "\ud83c\udde6\ud83c\uddf7"
+  },
+  "283": {
+    "MCC": "283",
+    "Region": "Europe",
+    "Country": "Armenia",
+    "ISO1": "AM",
+    "ISO": "AM",
+    "Emoji": "\ud83c\udde6\ud83c\uddf2"
+  },
+  "344": {
+    "MCC": "344",
+    "Region": "North America and the Caribbean",
+    "Country": "Antigua and Barbuda",
+    "ISO1": "AG",
+    "ISO": "AG",
+    "Emoji": "\ud83c\udde6\ud83c\uddec"
+  },
+  "505": {
+    "MCC": "505",
+    "Region": "Oceania",
+    "Country": "Australia",
+    "ISO1": "AU",
+    "ISO": "AU",
+    "Emoji": "\ud83c\udde6\ud83c\uddfa"
+  },
+  "232": {
+    "MCC": "232",
+    "Region": "Europe",
+    "Country": "Austria",
+    "ISO1": "AT",
+    "ISO": "AT",
+    "Emoji": "\ud83c\udde6\ud83c\uddf9"
+  },
+  "400": {
+    "MCC": "400",
+    "Region": "Asia and the Middle East",
+    "Country": "Azerbaijan",
+    "ISO1": "AZ",
+    "ISO": "AZ",
+    "Emoji": "\ud83c\udde6\ud83c\uddff"
+  },
+  "642": {
+    "MCC": "642",
+    "Region": "Africa",
+    "Country": "Burundi",
+    "ISO1": "BI",
+    "ISO": "BI",
+    "Emoji": "\ud83c\udde7\ud83c\uddee"
+  },
+  "206": {
+    "MCC": "206",
+    "Region": "Europe",
+    "Country": "Belgium",
+    "ISO1": "BE",
+    "ISO": "BE",
+    "Emoji": "\ud83c\udde7\ud83c\uddea"
+  },
+  "616": {
+    "MCC": "616",
+    "Region": "Africa",
+    "Country": "Benin",
+    "ISO1": "BJ",
+    "ISO": "BJ",
+    "Emoji": "\ud83c\udde7\ud83c\uddef"
+  },
+  "613": {
+    "MCC": "613",
+    "Region": "Africa",
+    "Country": "Burkina Faso",
+    "ISO1": "BF",
+    "ISO": "BF",
+    "Emoji": "\ud83c\udde7\ud83c\uddeb"
+  },
+  "470": {
+    "MCC": "470",
+    "Region": "Asia and the Middle East",
+    "Country": "Bangladesh",
+    "ISO1": "BD",
+    "ISO": "BD",
+    "Emoji": "\ud83c\udde7\ud83c\udde9"
+  },
+  "284": {
+    "MCC": "284",
+    "Region": "Europe",
+    "Country": "Bulgaria",
+    "ISO1": "BG",
+    "ISO": "BG",
+    "Emoji": "\ud83c\udde7\ud83c\uddec"
+  },
+  "426": {
+    "MCC": "426",
+    "Region": "Asia and the Middle East",
+    "Country": "Bahrain",
+    "ISO1": "BH",
+    "ISO": "BH",
+    "Emoji": "\ud83c\udde7\ud83c\udded"
+  },
+  "364": {
+    "MCC": "364",
+    "Region": "North America and the Caribbean",
+    "Country": "Bahamas",
+    "ISO1": "BS",
+    "ISO": "BS",
+    "Emoji": "\ud83c\udde7\ud83c\uddf8"
+  },
+  "218": {
+    "MCC": "218",
+    "Region": "Europe",
+    "Country": "Bosnia and Herzegovina",
+    "ISO1": "BA",
+    "ISO": "BA",
+    "Emoji": "\ud83c\udde7\ud83c\udde6"
+  },
+  "257": {
+    "MCC": "257",
+    "Region": "Europe",
+    "Country": "Belarus",
+    "ISO1": "BY",
+    "ISO": "BY",
+    "Emoji": "\ud83c\udde7\ud83c\uddfe"
+  },
+  "702": {
+    "MCC": "702",
+    "Region": "South and Central America",
+    "Country": "Belize",
+    "ISO1": "BZ",
+    "ISO": "BZ",
+    "Emoji": "\ud83c\udde7\ud83c\uddff"
+  },
+  "736": {
+    "MCC": "736",
+    "Region": "South and Central America",
+    "Country": "Bolivia",
+    "ISO1": "BO",
+    "ISO": "BO",
+    "Emoji": "\ud83c\udde7\ud83c\uddf4"
+  },
+  "724": {
+    "MCC": "724",
+    "Region": "South and Central America",
+    "Country": "Brazil",
+    "ISO1": "BR",
+    "ISO": "BR",
+    "Emoji": "\ud83c\udde7\ud83c\uddf7"
+  },
+  "342": {
+    "MCC": "342",
+    "Region": "North America and the Caribbean",
+    "Country": "Barbados",
+    "ISO1": "BB",
+    "ISO": "BB",
+    "Emoji": "\ud83c\udde7\ud83c\udde7"
+  },
+  "528": {
+    "MCC": "528",
+    "Region": "Oceania",
+    "Country": "Brunei",
+    "ISO1": "BN",
+    "ISO": "BN",
+    "Emoji": "\ud83c\udde7\ud83c\uddf3"
+  },
+  "652": {
+    "MCC": "652",
+    "Region": "Africa",
+    "Country": "Botswana",
+    "ISO1": "BW",
+    "ISO": "BW",
+    "Emoji": "\ud83c\udde7\ud83c\uddfc"
+  },
+  "623": {
+    "MCC": "623",
+    "Region": "Africa",
+    "Country": "Central African Republic",
+    "ISO1": "CF",
+    "ISO": "CF",
+    "Emoji": "\ud83c\udde8\ud83c\uddeb"
+  },
+  "302": {
+    "MCC": "302",
+    "Region": "North America and the Caribbean",
+    "Country": "Canada",
+    "ISO1": "CA",
+    "ISO": "CA",
+    "Emoji": "\ud83c\udde8\ud83c\udde6"
+  },
+  "228": {
+    "MCC": "228",
+    "Region": "Europe",
+    "Country": "Switzerland",
+    "ISO1": "CH",
+    "ISO": "CH",
+    "Emoji": "\ud83c\udde8\ud83c\udded"
+  },
+  "730": {
+    "MCC": "730",
+    "Region": "South and Central America",
+    "Country": "Chile",
+    "ISO1": "CL",
+    "ISO": "CL",
+    "Emoji": "\ud83c\udde8\ud83c\uddf1"
+  },
+  "460": {
+    "MCC": "460",
+    "Region": "Asia and the Middle East",
+    "Country": "China",
+    "ISO1": "CN",
+    "ISO": "CN",
+    "Emoji": "\ud83c\udde8\ud83c\uddf3"
+  },
+  "612": {
+    "MCC": "612",
+    "Region": "Africa",
+    "Country": "Ivory Coast",
+    "ISO1": "CI",
+    "ISO": "CI",
+    "Emoji": "\ud83c\udde8\ud83c\uddee"
+  },
+  "624": {
+    "MCC": "624",
+    "Region": "Africa",
+    "Country": "Cameroon",
+    "ISO1": "CM",
+    "ISO": "CM",
+    "Emoji": "\ud83c\udde8\ud83c\uddf2"
+  },
+  "630": {
+    "MCC": "630",
+    "Region": "Africa",
+    "Country": "Democratic Republic of the Congo",
+    "ISO1": "CD",
+    "ISO": "CD",
+    "Emoji": "\ud83c\udde8\ud83c\udde9"
+  },
+  "629": {
+    "MCC": "629",
+    "Region": "Africa",
+    "Country": "Congo",
+    "ISO1": "CG",
+    "ISO": "CG",
+    "Emoji": "\ud83c\udde8\ud83c\uddec"
+  },
+  "732": {
+    "MCC": "732",
+    "Region": "South and Central America",
+    "Country": "Colombia",
+    "ISO1": "CO",
+    "ISO": "CO",
+    "Emoji": "\ud83c\udde8\ud83c\uddf4"
+  },
+  "654": {
+    "MCC": "654",
+    "Region": "Africa",
+    "Country": "Comoros",
+    "ISO1": "KM",
+    "ISO": "KM",
+    "Emoji": "\ud83c\uddf0\ud83c\uddf2"
+  },
+  "625": {
+    "MCC": "625",
+    "Region": "Africa",
+    "Country": "Cape Verde",
+    "ISO1": "CV",
+    "ISO": "CV",
+    "Emoji": "\ud83c\udde8\ud83c\uddfb"
+  },
+  "712": {
+    "MCC": "712",
+    "Region": "South and Central America",
+    "Country": "Costa Rica",
+    "ISO1": "CR",
+    "ISO": "CR",
+    "Emoji": "\ud83c\udde8\ud83c\uddf7"
+  },
+  "368": {
+    "MCC": "368",
+    "Region": "North America and the Caribbean",
+    "Country": "Cuba",
+    "ISO1": "CU",
+    "ISO": "CU",
+    "Emoji": "\ud83c\udde8\ud83c\uddfa"
+  },
+  "346": {
+    "MCC": "346",
+    "Region": "North America and the Caribbean",
+    "Country": "Cayman Islands (UK)",
+    "ISO1": "KY",
+    "ISO": "KY",
+    "Emoji": "\ud83c\uddf0\ud83c\uddfe"
+  },
+  "280": {
+    "MCC": "280",
+    "Region": "Europe",
+    "Country": "Cyprus",
+    "ISO1": "CY",
+    "ISO": "CY",
+    "Emoji": "\ud83c\udde8\ud83c\uddfe"
+  },
+  "230": {
+    "MCC": "230",
+    "Region": "Europe",
+    "Country": "Czech Republic",
+    "ISO1": "CZ",
+    "ISO": "CZ",
+    "Emoji": "\ud83c\udde8\ud83c\uddff"
+  },
+  "262": {
+    "MCC": "262",
+    "Region": "Europe",
+    "Country": "Germany",
+    "ISO1": "DE",
+    "ISO": "DE",
+    "Emoji": "\ud83c\udde9\ud83c\uddea"
+  },
+  "638": {
+    "MCC": "638",
+    "Region": "Africa",
+    "Country": "Djibouti",
+    "ISO1": "DJ",
+    "ISO": "DJ",
+    "Emoji": "\ud83c\udde9\ud83c\uddef"
+  },
+  "366": {
+    "MCC": "366",
+    "Region": "North America and the Caribbean",
+    "Country": "Dominica",
+    "ISO1": "DM",
+    "ISO": "DM",
+    "Emoji": "\ud83c\udde9\ud83c\uddf2"
+  },
+  "238": {
+    "MCC": "238",
+    "Region": "Europe",
+    "Country": "Denmark",
+    "ISO1": "DK",
+    "ISO": "DK",
+    "Emoji": "\ud83c\udde9\ud83c\uddf0"
+  },
+  "370": {
+    "MCC": "370",
+    "Region": "North America and the Caribbean",
+    "Country": "Dominican Republic",
+    "ISO1": "DO",
+    "ISO": "DO",
+    "Emoji": "\ud83c\udde9\ud83c\uddf4"
+  },
+  "603": {
+    "MCC": "603",
+    "Region": "Africa",
+    "Country": "Algeria",
+    "ISO1": "DZ",
+    "ISO": "DZ",
+    "Emoji": "\ud83c\udde9\ud83c\uddff"
+  },
+  "740": {
+    "MCC": "740",
+    "Region": "South and Central America",
+    "Country": "Ecuador",
+    "ISO1": "EC",
+    "ISO": "EC",
+    "Emoji": "\ud83c\uddea\ud83c\udde8"
+  },
+  "602": {
+    "MCC": "602",
+    "Region": "Africa",
+    "Country": "Egypt",
+    "ISO1": "EG",
+    "ISO": "EG",
+    "Emoji": "\ud83c\uddea\ud83c\uddec"
+  },
+  "214": {
+    "MCC": "214",
+    "Region": "Europe",
+    "Country": "Spain",
+    "ISO1": "ES",
+    "ISO": "ES",
+    "Emoji": "\ud83c\uddea\ud83c\uddf8"
+  },
+  "248": {
+    "MCC": "248",
+    "Region": "Europe",
+    "Country": "Estonia",
+    "ISO1": "EE",
+    "ISO": "EE",
+    "Emoji": "\ud83c\uddea\ud83c\uddea"
+  },
+  "636": {
+    "MCC": "636",
+    "Region": "Africa",
+    "Country": "Ethiopia",
+    "ISO1": "ET",
+    "ISO": "ET",
+    "Emoji": "\ud83c\uddea\ud83c\uddf9"
+  },
+  "244": {
+    "MCC": "244",
+    "Region": "Europe",
+    "Country": "Finland",
+    "ISO1": "FI",
+    "ISO": "FI",
+    "Emoji": "\ud83c\uddeb\ud83c\uddee"
+  },
+  "542": {
+    "MCC": "542",
+    "Region": "Oceania",
+    "Country": "Fiji",
+    "ISO1": "FJ",
+    "ISO": "FJ",
+    "Emoji": "\ud83c\uddeb\ud83c\uddef"
+  },
+  "208": {
+    "MCC": "208",
+    "Region": "Europe",
+    "Country": "France",
+    "ISO1": "FR",
+    "ISO": "FR",
+    "Emoji": "\ud83c\uddeb\ud83c\uddf7"
+  },
+  "340": {
+    "MCC": "340",
+    "Region": "North America and the Caribbean",
+    "Country": "French Antilles (France)",
+    "ISO1": "BL",
+    "ISO": "BL/GF/GP/MF/MQ",
+    "Emoji": "\ud83c\udde7\ud83c\uddf1"
+  },
+  "547": {
+    "MCC": "547",
+    "Region": "Oceania",
+    "Country": "French Polynesia (France)",
+    "ISO1": "PF",
+    "ISO": "PF",
+    "Emoji": "\ud83c\uddf5\ud83c\uddeb"
+  },
+  "288": {
+    "MCC": "288",
+    "Region": "Europe",
+    "Country": "Faroe Islands",
+    "ISO1": "FO",
+    "ISO": "FO",
+    "Emoji": "\ud83c\uddeb\ud83c\uddf4"
+  },
+  "628": {
+    "MCC": "628",
+    "Region": "Africa",
+    "Country": "Gabon",
+    "ISO1": "GA",
+    "ISO": "GA",
+    "Emoji": "\ud83c\uddec\ud83c\udde6"
+  },
+  "234": {
+    "MCC": "234",
+    "Region": "Europe",
+    "Country": "United Kingdom",
+    "ISO1": "GB",
+    "ISO": "GB",
+    "Emoji": "\ud83c\uddec\ud83c\udde7"
+  },
+  "282": {
+    "MCC": "282",
+    "Region": "Europe",
+    "Country": "Georgia",
+    "ISO1": "GE",
+    "ISO": "GE",
+    "Emoji": "\ud83c\uddec\ud83c\uddea"
+  },
+  "620": {
+    "MCC": "620",
+    "Region": "Africa",
+    "Country": "Ghana",
+    "ISO1": "GH",
+    "ISO": "GH",
+    "Emoji": "\ud83c\uddec\ud83c\udded"
+  },
+  "266": {
+    "MCC": "266",
+    "Region": "Europe",
+    "Country": "Gibraltar (UK)",
+    "ISO1": "GI",
+    "ISO": "GI",
+    "Emoji": "\ud83c\uddec\ud83c\uddee"
+  },
+  "611": {
+    "MCC": "611",
+    "Region": "Africa",
+    "Country": "Guinea",
+    "ISO1": "GN",
+    "ISO": "GN",
+    "Emoji": "\ud83c\uddec\ud83c\uddf3"
+  },
+  "607": {
+    "MCC": "607",
+    "Region": "Africa",
+    "Country": "Gambia",
+    "ISO1": "GM",
+    "ISO": "GM",
+    "Emoji": "\ud83c\uddec\ud83c\uddf2"
+  },
+  "632": {
+    "MCC": "632",
+    "Region": "Africa",
+    "Country": "Guinea-Bissau",
+    "ISO1": "GW",
+    "ISO": "GW",
+    "Emoji": "\ud83c\uddec\ud83c\uddfc"
+  },
+  "627": {
+    "MCC": "627",
+    "Region": "Africa",
+    "Country": "Equatorial Guinea",
+    "ISO1": "GQ",
+    "ISO": "GQ",
+    "Emoji": "\ud83c\uddec\ud83c\uddf6"
+  },
+  "202": {
+    "MCC": "202",
+    "Region": "Europe",
+    "Country": "Greece",
+    "ISO1": "GR",
+    "ISO": "GR",
+    "Emoji": "\ud83c\uddec\ud83c\uddf7"
+  },
+  "352": {
+    "MCC": "352",
+    "Region": "North America and the Caribbean",
+    "Country": "Grenada",
+    "ISO1": "GD",
+    "ISO": "GD",
+    "Emoji": "\ud83c\uddec\ud83c\udde9"
+  },
+  "290": {
+    "MCC": "290",
+    "Region": "Europe",
+    "Country": "Greenland",
+    "ISO1": "GL",
+    "ISO": "GL",
+    "Emoji": "\ud83c\uddec\ud83c\uddf1"
+  },
+  "704": {
+    "MCC": "704",
+    "Region": "South and Central America",
+    "Country": "Guatemala",
+    "ISO1": "GT",
+    "ISO": "GT",
+    "Emoji": "\ud83c\uddec\ud83c\uddf9"
+  },
+  "310": {
+    "MCC": "310",
+    "Region": "North America and the Caribbean",
+    "Country": "United States of America",
+    "ISO1": "US",
+    "ISO": "US",
+    "Emoji": "\ud83c\uddfa\ud83c\uddf8"
+  },
+  "738": {
+    "MCC": "738",
+    "Region": "South and Central America",
+    "Country": "Guyana",
+    "ISO1": "GY",
+    "ISO": "GY",
+    "Emoji": "\ud83c\uddec\ud83c\uddfe"
+  },
+  "454": {
+    "MCC": "454",
+    "Region": "Asia and the Middle East",
+    "Country": "Hong Kong",
+    "ISO1": "HK",
+    "ISO": "HK",
+    "Emoji": "\ud83c\udded\ud83c\uddf0"
+  },
+  "708": {
+    "MCC": "708",
+    "Region": "South and Central America",
+    "Country": "Honduras",
+    "ISO1": "HN",
+    "ISO": "HN",
+    "Emoji": "\ud83c\udded\ud83c\uddf3"
+  },
+  "219": {
+    "MCC": "219",
+    "Region": "Europe",
+    "Country": "Croatia",
+    "ISO1": "HR",
+    "ISO": "HR",
+    "Emoji": "\ud83c\udded\ud83c\uddf7"
+  },
+  "372": {
+    "MCC": "372",
+    "Region": "North America and the Caribbean",
+    "Country": "Haiti",
+    "ISO1": "HT",
+    "ISO": "HT",
+    "Emoji": "\ud83c\udded\ud83c\uddf9"
+  },
+  "216": {
+    "MCC": "216",
+    "Region": "Europe",
+    "Country": "Hungary",
+    "ISO1": "HU",
+    "ISO": "HU",
+    "Emoji": "\ud83c\udded\ud83c\uddfa"
+  },
+  "510": {
+    "MCC": "510",
+    "Region": "Oceania",
+    "Country": "Indonesia",
+    "ISO1": "ID",
+    "ISO": "ID",
+    "Emoji": "\ud83c\uddee\ud83c\udde9"
+  },
+  "404": {
+    "MCC": "404",
+    "Region": "Asia and the Middle East",
+    "Country": "India",
+    "ISO1": "IN",
+    "ISO": "IN",
+    "Emoji": "\ud83c\uddee\ud83c\uddf3"
+  },
+  "405": {
+    "MCC": "405",
+    "Region": "Asia and the Middle East",
+    "Country": "India",
+    "ISO1": "IN",
+    "ISO": "IN",
+    "Emoji": "\ud83c\uddee\ud83c\uddf3"
+  },
+  "272": {
+    "MCC": "272",
+    "Region": "Europe",
+    "Country": "Ireland",
+    "ISO1": "IE",
+    "ISO": "IE",
+    "Emoji": "\ud83c\uddee\ud83c\uddea"
+  },
+  "432": {
+    "MCC": "432",
+    "Region": "Asia and the Middle East",
+    "Country": "Iran",
+    "ISO1": "IR",
+    "ISO": "IR",
+    "Emoji": "\ud83c\uddee\ud83c\uddf7"
+  },
+  "418": {
+    "MCC": "418",
+    "Region": "Asia and the Middle East",
+    "Country": "Iraq",
+    "ISO1": "IQ",
+    "ISO": "IQ",
+    "Emoji": "\ud83c\uddee\ud83c\uddf6"
+  },
+  "274": {
+    "MCC": "274",
+    "Region": "Europe",
+    "Country": "Iceland",
+    "ISO1": "IS",
+    "ISO": "IS",
+    "Emoji": "\ud83c\uddee\ud83c\uddf8"
+  },
+  "425": {
+    "MCC": "425",
+    "Region": "Asia and the Middle East",
+    "Country": "Palestine",
+    "ISO1": "PS",
+    "ISO": "PS",
+    "Emoji": "\ud83c\uddf5\ud83c\uddf8"
+  },
+  "222": {
+    "MCC": "222",
+    "Region": "Europe",
+    "Country": "Italy",
+    "ISO1": "IT",
+    "ISO": "IT",
+    "Emoji": "\ud83c\uddee\ud83c\uddf9"
+  },
+  "338": {
+    "MCC": "338",
+    "Region": "North America and the Caribbean",
+    "Country": "Jamaica",
+    "ISO1": "JM",
+    "ISO": "JM",
+    "Emoji": "\ud83c\uddef\ud83c\uddf2"
+  },
+  "416": {
+    "MCC": "416",
+    "Region": "Asia and the Middle East",
+    "Country": "Jordan",
+    "ISO1": "JO",
+    "ISO": "JO",
+    "Emoji": "\ud83c\uddef\ud83c\uddf4"
+  },
+  "440": {
+    "MCC": "440",
+    "Region": "Asia and the Middle East",
+    "Country": "Japan",
+    "ISO1": "JP",
+    "ISO": "JP",
+    "Emoji": "\ud83c\uddef\ud83c\uddf5"
+  },
+  "221": {
+    "MCC": "221",
+    "Region": "Europe",
+    "Country": "Kosovo",
+    "ISO1": "XK",
+    "ISO": "XK",
+    "Emoji": "\ud83c\uddfd\ud83c\uddf0"
+  },
+  "401": {
+    "MCC": "401",
+    "Region": "Asia and the Middle East",
+    "Country": "Kazakhstan",
+    "ISO1": "KZ",
+    "ISO": "KZ",
+    "Emoji": "\ud83c\uddf0\ud83c\uddff"
+  },
+  "639": {
+    "MCC": "639",
+    "Region": "Africa",
+    "Country": "Kenya",
+    "ISO1": "KE",
+    "ISO": "KE",
+    "Emoji": "\ud83c\uddf0\ud83c\uddea"
+  },
+  "437": {
+    "MCC": "437",
+    "Region": "Asia and the Middle East",
+    "Country": "Kyrgyzstan",
+    "ISO1": "KG",
+    "ISO": "KG",
+    "Emoji": "\ud83c\uddf0\ud83c\uddec"
+  },
+  "456": {
+    "MCC": "456",
+    "Region": "Asia and the Middle East",
+    "Country": "Cambodia",
+    "ISO1": "KH",
+    "ISO": "KH",
+    "Emoji": "\ud83c\uddf0\ud83c\udded"
+  },
+  "545": {
+    "MCC": "545",
+    "Region": "Oceania",
+    "Country": "Kiribati",
+    "ISO1": "KI",
+    "ISO": "KI",
+    "Emoji": "\ud83c\uddf0\ud83c\uddee"
+  },
+  "356": {
+    "MCC": "356",
+    "Region": "North America and the Caribbean",
+    "Country": "Saint Kitts and Nevis",
+    "ISO1": "KN",
+    "ISO": "KN",
+    "Emoji": "\ud83c\uddf0\ud83c\uddf3"
+  },
+  "450": {
+    "MCC": "450",
+    "Region": "Asia and the Middle East",
+    "Country": "South Korea",
+    "ISO1": "KR",
+    "ISO": "KR",
+    "Emoji": "\ud83c\uddf0\ud83c\uddf7"
+  },
+  "419": {
+    "MCC": "419",
+    "Region": "Asia and the Middle East",
+    "Country": "Kuwait",
+    "ISO1": "KW",
+    "ISO": "KW",
+    "Emoji": "\ud83c\uddf0\ud83c\uddfc"
+  },
+  "457": {
+    "MCC": "457",
+    "Region": "Asia and the Middle East",
+    "Country": "Laos",
+    "ISO1": "LA",
+    "ISO": "LA",
+    "Emoji": "\ud83c\uddf1\ud83c\udde6"
+  },
+  "415": {
+    "MCC": "415",
+    "Region": "Asia and the Middle East",
+    "Country": "Lebanon",
+    "ISO1": "LB",
+    "ISO": "LB",
+    "Emoji": "\ud83c\uddf1\ud83c\udde7"
+  },
+  "606": {
+    "MCC": "606",
+    "Region": "Africa",
+    "Country": "Libya",
+    "ISO1": "LY",
+    "ISO": "LY",
+    "Emoji": "\ud83c\uddf1\ud83c\uddfe"
+  },
+  "358": {
+    "MCC": "358",
+    "Region": "North America and the Caribbean",
+    "Country": "Saint Lucia",
+    "ISO1": "LC",
+    "ISO": "LC",
+    "Emoji": "\ud83c\uddf1\ud83c\udde8"
+  },
+  "295": {
+    "MCC": "295",
+    "Region": "Europe",
+    "Country": "Liechtenstein",
+    "ISO1": "LI",
+    "ISO": "LI",
+    "Emoji": "\ud83c\uddf1\ud83c\uddee"
+  },
+  "413": {
+    "MCC": "413",
+    "Region": "Asia and the Middle East",
+    "Country": "Sri Lanka",
+    "ISO1": "LK",
+    "ISO": "LK",
+    "Emoji": "\ud83c\uddf1\ud83c\uddf0"
+  },
+  "651": {
+    "MCC": "651",
+    "Region": "Africa",
+    "Country": "Lesotho",
+    "ISO1": "LS",
+    "ISO": "LS",
+    "Emoji": "\ud83c\uddf1\ud83c\uddf8"
+  },
+  "246": {
+    "MCC": "246",
+    "Region": "Europe",
+    "Country": "Lithuania",
+    "ISO1": "LT",
+    "ISO": "LT",
+    "Emoji": "\ud83c\uddf1\ud83c\uddf9"
+  },
+  "270": {
+    "MCC": "270",
+    "Region": "Europe",
+    "Country": "Luxembourg",
+    "ISO1": "LU",
+    "ISO": "LU",
+    "Emoji": "\ud83c\uddf1\ud83c\uddfa"
+  },
+  "247": {
+    "MCC": "247",
+    "Region": "Europe",
+    "Country": "Latvia",
+    "ISO1": "LV",
+    "ISO": "LV",
+    "Emoji": "\ud83c\uddf1\ud83c\uddfb"
+  },
+  "455": {
+    "MCC": "455",
+    "Region": "Asia and the Middle East",
+    "Country": "Macau (China)",
+    "ISO1": "MO",
+    "ISO": "MO",
+    "Emoji": "\ud83c\uddf2\ud83c\uddf4"
+  },
+  "604": {
+    "MCC": "604",
+    "Region": "Africa",
+    "Country": "Morocco",
+    "ISO1": "MA",
+    "ISO": "MA",
+    "Emoji": "\ud83c\uddf2\ud83c\udde6"
+  },
+  "212": {
+    "MCC": "212",
+    "Region": "Europe",
+    "Country": "Monaco",
+    "ISO1": "MC",
+    "ISO": "MC",
+    "Emoji": "\ud83c\uddf2\ud83c\udde8"
+  },
+  "259": {
+    "MCC": "259",
+    "Region": "Europe",
+    "Country": "Moldova",
+    "ISO1": "MD",
+    "ISO": "MD",
+    "Emoji": "\ud83c\uddf2\ud83c\udde9"
+  },
+  "646": {
+    "MCC": "646",
+    "Region": "Africa",
+    "Country": "Madagascar",
+    "ISO1": "MG",
+    "ISO": "MG",
+    "Emoji": "\ud83c\uddf2\ud83c\uddec"
+  },
+  "472": {
+    "MCC": "472",
+    "Region": "Asia and the Middle East",
+    "Country": "Maldives",
+    "ISO1": "MV",
+    "ISO": "MV",
+    "Emoji": "\ud83c\uddf2\ud83c\uddfb"
+  },
+  "334": {
+    "MCC": "334",
+    "Region": "North America and the Caribbean",
+    "Country": "Mexico",
+    "ISO1": "MX",
+    "ISO": "MX",
+    "Emoji": "\ud83c\uddf2\ud83c\uddfd"
+  },
+  "294": {
+    "MCC": "294",
+    "Region": "Europe",
+    "Country": "North Macedonia",
+    "ISO1": "MK",
+    "ISO": "MK",
+    "Emoji": "\ud83c\uddf2\ud83c\uddf0"
+  },
+  "610": {
+    "MCC": "610",
+    "Region": "Africa",
+    "Country": "Mali",
+    "ISO1": "ML",
+    "ISO": "ML",
+    "Emoji": "\ud83c\uddf2\ud83c\uddf1"
+  },
+  "278": {
+    "MCC": "278",
+    "Region": "Europe",
+    "Country": "Malta",
+    "ISO1": "MT",
+    "ISO": "MT",
+    "Emoji": "\ud83c\uddf2\ud83c\uddf9"
+  },
+  "414": {
+    "MCC": "414",
+    "Region": "Asia and the Middle East",
+    "Country": "Myanmar",
+    "ISO1": "MM",
+    "ISO": "MM",
+    "Emoji": "\ud83c\uddf2\ud83c\uddf2"
+  },
+  "297": {
+    "MCC": "297",
+    "Region": "Europe",
+    "Country": "Montenegro",
+    "ISO1": "ME",
+    "ISO": "ME",
+    "Emoji": "\ud83c\uddf2\ud83c\uddea"
+  },
+  "428": {
+    "MCC": "428",
+    "Region": "Asia and the Middle East",
+    "Country": "Mongolia",
+    "ISO1": "MN",
+    "ISO": "MN",
+    "Emoji": "\ud83c\uddf2\ud83c\uddf3"
+  },
+  "643": {
+    "MCC": "643",
+    "Region": "Africa",
+    "Country": "Mozambique",
+    "ISO1": "MZ",
+    "ISO": "MZ",
+    "Emoji": "\ud83c\uddf2\ud83c\uddff"
+  },
+  "609": {
+    "MCC": "609",
+    "Region": "Africa",
+    "Country": "Mauritania",
+    "ISO1": "MR",
+    "ISO": "MR",
+    "Emoji": "\ud83c\uddf2\ud83c\uddf7"
+  },
+  "354": {
+    "MCC": "354",
+    "Region": "North America and the Caribbean",
+    "Country": "Montserrat (UK)",
+    "ISO1": "MS",
+    "ISO": "MS",
+    "Emoji": "\ud83c\uddf2\ud83c\uddf8"
+  },
+  "617": {
+    "MCC": "617",
+    "Region": "Africa",
+    "Country": "Mauritius",
+    "ISO1": "MU",
+    "ISO": "MU",
+    "Emoji": "\ud83c\uddf2\ud83c\uddfa"
+  },
+  "650": {
+    "MCC": "650",
+    "Region": "Africa",
+    "Country": "Malawi",
+    "ISO1": "MW",
+    "ISO": "MW",
+    "Emoji": "\ud83c\uddf2\ud83c\uddfc"
+  },
+  "502": {
+    "MCC": "502",
+    "Region": "Oceania",
+    "Country": "Malaysia",
+    "ISO1": "MY",
+    "ISO": "MY",
+    "Emoji": "\ud83c\uddf2\ud83c\uddfe"
+  },
+  "649": {
+    "MCC": "649",
+    "Region": "Africa",
+    "Country": "Namibia",
+    "ISO1": "NA",
+    "ISO": "NA",
+    "Emoji": "\ud83c\uddf3\ud83c\udde6"
+  },
+  "546": {
+    "MCC": "546",
+    "Region": "Oceania",
+    "Country": "New Caledonia (France)",
+    "ISO1": "NC",
+    "ISO": "NC",
+    "Emoji": "\ud83c\uddf3\ud83c\udde8"
+  },
+  "614": {
+    "MCC": "614",
+    "Region": "Africa",
+    "Country": "Niger",
+    "ISO1": "NE",
+    "ISO": "NE",
+    "Emoji": "\ud83c\uddf3\ud83c\uddea"
+  },
+  "621": {
+    "MCC": "621",
+    "Region": "Africa",
+    "Country": "Nigeria",
+    "ISO1": "NG",
+    "ISO": "NG",
+    "Emoji": "\ud83c\uddf3\ud83c\uddec"
+  },
+  "710": {
+    "MCC": "710",
+    "Region": "South and Central America",
+    "Country": "Nicaragua",
+    "ISO1": "NI",
+    "ISO": "NI",
+    "Emoji": "\ud83c\uddf3\ud83c\uddee"
+  },
+  "204": {
+    "MCC": "204",
+    "Region": "Europe",
+    "Country": "Netherlands",
+    "ISO1": "NL",
+    "ISO": "NL",
+    "Emoji": "\ud83c\uddf3\ud83c\uddf1"
+  },
+  "429": {
+    "MCC": "429",
+    "Region": "Asia and the Middle East",
+    "Country": "Nepal",
+    "ISO1": "NP",
+    "ISO": "NP",
+    "Emoji": "\ud83c\uddf3\ud83c\uddf5"
+  },
+  "530": {
+    "MCC": "530",
+    "Region": "Oceania",
+    "Country": "New Zealand",
+    "ISO1": "NZ",
+    "ISO": "NZ",
+    "Emoji": "\ud83c\uddf3\ud83c\uddff"
+  },
+  "422": {
+    "MCC": "422",
+    "Region": "Asia and the Middle East",
+    "Country": "Oman",
+    "ISO1": "OM",
+    "ISO": "OM",
+    "Emoji": "\ud83c\uddf4\ud83c\uddf2"
+  },
+  "410": {
+    "MCC": "410",
+    "Region": "Asia and the Middle East",
+    "Country": "Pakistan",
+    "ISO1": "PK",
+    "ISO": "PK",
+    "Emoji": "\ud83c\uddf5\ud83c\uddf0"
+  },
+  "714": {
+    "MCC": "714",
+    "Region": "South and Central America",
+    "Country": "Panama",
+    "ISO1": "PA",
+    "ISO": "PA",
+    "Emoji": "\ud83c\uddf5\ud83c\udde6"
+  },
+  "716": {
+    "MCC": "716",
+    "Region": "South and Central America",
+    "Country": "Peru",
+    "ISO1": "PE",
+    "ISO": "PE",
+    "Emoji": "\ud83c\uddf5\ud83c\uddea"
+  },
+  "515": {
+    "MCC": "515",
+    "Region": "Oceania",
+    "Country": "Philippines",
+    "ISO1": "PH",
+    "ISO": "PH",
+    "Emoji": "\ud83c\uddf5\ud83c\udded"
+  },
+  "537": {
+    "MCC": "537",
+    "Region": "Oceania",
+    "Country": "Papua New Guinea",
+    "ISO1": "PG",
+    "ISO": "PG",
+    "Emoji": "\ud83c\uddf5\ud83c\uddec"
+  },
+  "260": {
+    "MCC": "260",
+    "Region": "Europe",
+    "Country": "Poland",
+    "ISO1": "PL",
+    "ISO": "PL",
+    "Emoji": "\ud83c\uddf5\ud83c\uddf1"
+  },
+  "330": {
+    "MCC": "330",
+    "Region": "North America and the Caribbean",
+    "Country": "Puerto Rico",
+    "ISO1": "PR",
+    "ISO": "PR",
+    "Emoji": "\ud83c\uddf5\ud83c\uddf7"
+  },
+  "268": {
+    "MCC": "268",
+    "Region": "Europe",
+    "Country": "Portugal",
+    "ISO1": "PT",
+    "ISO": "PT",
+    "Emoji": "\ud83c\uddf5\ud83c\uddf9"
+  },
+  "744": {
+    "MCC": "744",
+    "Region": "South and Central America",
+    "Country": "Paraguay",
+    "ISO1": "PY",
+    "ISO": "PY",
+    "Emoji": "\ud83c\uddf5\ud83c\uddfe"
+  },
+  "427": {
+    "MCC": "427",
+    "Region": "Asia and the Middle East",
+    "Country": "Qatar",
+    "ISO1": "QA",
+    "ISO": "QA",
+    "Emoji": "\ud83c\uddf6\ud83c\udde6"
+  },
+  "226": {
+    "MCC": "226",
+    "Region": "Europe",
+    "Country": "Romania",
+    "ISO1": "RO",
+    "ISO": "RO",
+    "Emoji": "\ud83c\uddf7\ud83c\uddf4"
+  },
+  "250": {
+    "MCC": "250",
+    "Region": "Europe",
+    "Country": "Russian Federation",
+    "ISO1": "RU",
+    "ISO": "RU",
+    "Emoji": "\ud83c\uddf7\ud83c\uddfa"
+  },
+  "635": {
+    "MCC": "635",
+    "Region": "Africa",
+    "Country": "Rwanda",
+    "ISO1": "RW",
+    "ISO": "RW",
+    "Emoji": "\ud83c\uddf7\ud83c\uddfc"
+  },
+  "420": {
+    "MCC": "420",
+    "Region": "Asia and the Middle East",
+    "Country": "Saudi Arabia",
+    "ISO1": "SA",
+    "ISO": "SA",
+    "Emoji": "\ud83c\uddf8\ud83c\udde6"
+  },
+  "634": {
+    "MCC": "634",
+    "Region": "Africa",
+    "Country": "Sudan",
+    "ISO1": "SD",
+    "ISO": "SD",
+    "Emoji": "\ud83c\uddf8\ud83c\udde9"
+  },
+  "608": {
+    "MCC": "608",
+    "Region": "Africa",
+    "Country": "Senegal",
+    "ISO1": "SN",
+    "ISO": "SN",
+    "Emoji": "\ud83c\uddf8\ud83c\uddf3"
+  },
+  "525": {
+    "MCC": "525",
+    "Region": "Oceania",
+    "Country": "Singapore",
+    "ISO1": "SG",
+    "ISO": "SG",
+    "Emoji": "\ud83c\uddf8\ud83c\uddec"
+  },
+  "619": {
+    "MCC": "619",
+    "Region": "Africa",
+    "Country": "Sierra Leone",
+    "ISO1": "SL",
+    "ISO": "SL",
+    "Emoji": "\ud83c\uddf8\ud83c\uddf1"
+  },
+  "706": {
+    "MCC": "706",
+    "Region": "South and Central America",
+    "Country": "El Salvador",
+    "ISO1": "SV",
+    "ISO": "SV",
+    "Emoji": "\ud83c\uddf8\ud83c\uddfb"
+  },
+  "637": {
+    "MCC": "637",
+    "Region": "Africa",
+    "Country": "Somalia",
+    "ISO1": "SO",
+    "ISO": "SO",
+    "Emoji": "\ud83c\uddf8\ud83c\uddf4"
+  },
+  "220": {
+    "MCC": "220",
+    "Region": "Europe",
+    "Country": "Serbia",
+    "ISO1": "RS",
+    "ISO": "RS",
+    "Emoji": "\ud83c\uddf7\ud83c\uddf8"
+  },
+  "659": {
+    "MCC": "659",
+    "Region": "Africa",
+    "Country": "South Sudan",
+    "ISO1": "SS",
+    "ISO": "SS",
+    "Emoji": "\ud83c\uddf8\ud83c\uddf8"
+  },
+  "626": {
+    "MCC": "626",
+    "Region": "Africa",
+    "Country": "Sao Tome and Principe",
+    "ISO1": "ST",
+    "ISO": "ST",
+    "Emoji": "\ud83c\uddf8\ud83c\uddf9"
+  },
+  "746": {
+    "MCC": "746",
+    "Region": "South and Central America",
+    "Country": "Suriname",
+    "ISO1": "SR",
+    "ISO": "SR",
+    "Emoji": "\ud83c\uddf8\ud83c\uddf7"
+  },
+  "231": {
+    "MCC": "231",
+    "Region": "Europe",
+    "Country": "Slovakia",
+    "ISO1": "SK",
+    "ISO": "SK",
+    "Emoji": "\ud83c\uddf8\ud83c\uddf0"
+  },
+  "293": {
+    "MCC": "293",
+    "Region": "Europe",
+    "Country": "Slovenia",
+    "ISO1": "SI",
+    "ISO": "SI",
+    "Emoji": "\ud83c\uddf8\ud83c\uddee"
+  },
+  "240": {
+    "MCC": "240",
+    "Region": "Europe",
+    "Country": "Sweden",
+    "ISO1": "SE",
+    "ISO": "SE",
+    "Emoji": "\ud83c\uddf8\ud83c\uddea"
+  },
+  "653": {
+    "MCC": "653",
+    "Region": "Africa",
+    "Country": "Swaziland",
+    "ISO1": "SZ",
+    "ISO": "SZ",
+    "Emoji": "\ud83c\uddf8\ud83c\uddff"
+  },
+  "633": {
+    "MCC": "633",
+    "Region": "Africa",
+    "Country": "Seychelles",
+    "ISO1": "SC",
+    "ISO": "SC",
+    "Emoji": "\ud83c\uddf8\ud83c\udde8"
+  },
+  "417": {
+    "MCC": "417",
+    "Region": "Asia and the Middle East",
+    "Country": "Syria",
+    "ISO1": "SY",
+    "ISO": "SY",
+    "Emoji": "\ud83c\uddf8\ud83c\uddfe"
+  },
+  "376": {
+    "MCC": "376",
+    "Region": "North America and the Caribbean",
+    "Country": "Turks and Caicos Islands",
+    "ISO1": "TC",
+    "ISO": "TC",
+    "Emoji": "\ud83c\uddf9\ud83c\udde8"
+  },
+  "622": {
+    "MCC": "622",
+    "Region": "Africa",
+    "Country": "Chad",
+    "ISO1": "TD",
+    "ISO": "TD",
+    "Emoji": "\ud83c\uddf9\ud83c\udde9"
+  },
+  "615": {
+    "MCC": "615",
+    "Region": "Africa",
+    "Country": "Togo",
+    "ISO1": "TG",
+    "ISO": "TG",
+    "Emoji": "\ud83c\uddf9\ud83c\uddec"
+  },
+  "520": {
+    "MCC": "520",
+    "Region": "Oceania",
+    "Country": "Thailand",
+    "ISO1": "TH",
+    "ISO": "TH",
+    "Emoji": "\ud83c\uddf9\ud83c\udded"
+  },
+  "436": {
+    "MCC": "436",
+    "Region": "Asia and the Middle East",
+    "Country": "Tajikistan",
+    "ISO1": "TJ",
+    "ISO": "TJ",
+    "Emoji": "\ud83c\uddf9\ud83c\uddef"
+  },
+  "514": {
+    "MCC": "514",
+    "Region": "Oceania",
+    "Country": "East Timor",
+    "ISO1": "TL",
+    "ISO": "TL",
+    "Emoji": "\ud83c\uddf9\ud83c\uddf1"
+  },
+  "539": {
+    "MCC": "539",
+    "Region": "Oceania",
+    "Country": "Tonga",
+    "ISO1": "TO",
+    "ISO": "TO",
+    "Emoji": "\ud83c\uddf9\ud83c\uddf4"
+  },
+  "374": {
+    "MCC": "374",
+    "Region": "North America and the Caribbean",
+    "Country": "Trinidad and Tobago",
+    "ISO1": "TT",
+    "ISO": "TT",
+    "Emoji": "\ud83c\uddf9\ud83c\uddf9"
+  },
+  "605": {
+    "MCC": "605",
+    "Region": "Africa",
+    "Country": "Tunisia",
+    "ISO1": "TN",
+    "ISO": "TN",
+    "Emoji": "\ud83c\uddf9\ud83c\uddf3"
+  },
+  "286": {
+    "MCC": "286",
+    "Region": "Europe",
+    "Country": "Turkey",
+    "ISO1": "TR",
+    "ISO": "TR",
+    "Emoji": "\ud83c\uddf9\ud83c\uddf7"
+  },
+  "466": {
+    "MCC": "466",
+    "Region": "Asia and the Middle East",
+    "Country": "Taiwan",
+    "ISO1": "TW",
+    "ISO": "TW",
+    "Emoji": "\ud83c\uddf9\ud83c\uddfc"
+  },
+  "640": {
+    "MCC": "640",
+    "Region": "Africa",
+    "Country": "Tanzania",
+    "ISO1": "TZ",
+    "ISO": "TZ",
+    "Emoji": "\ud83c\uddf9\ud83c\uddff"
+  },
+  "641": {
+    "MCC": "641",
+    "Region": "Africa",
+    "Country": "Uganda",
+    "ISO1": "UG",
+    "ISO": "UG",
+    "Emoji": "\ud83c\uddfa\ud83c\uddec"
+  },
+  "255": {
+    "MCC": "255",
+    "Region": "Europe",
+    "Country": "Ukraine",
+    "ISO1": "UA",
+    "ISO": "UA",
+    "Emoji": "\ud83c\uddfa\ud83c\udde6"
+  },
+  "748": {
+    "MCC": "748",
+    "Region": "South and Central America",
+    "Country": "Uruguay",
+    "ISO1": "UY",
+    "ISO": "UY",
+    "Emoji": "\ud83c\uddfa\ud83c\uddfe"
+  },
+  "311": {
+    "MCC": "311",
+    "Region": "North America and the Caribbean",
+    "Country": "United States of America",
+    "ISO1": "US",
+    "ISO": "US",
+    "Emoji": "\ud83c\uddfa\ud83c\uddf8"
+  },
+  "434": {
+    "MCC": "434",
+    "Region": "Asia and the Middle East",
+    "Country": "Uzbekistan",
+    "ISO1": "UZ",
+    "ISO": "UZ",
+    "Emoji": "\ud83c\uddfa\ud83c\uddff"
+  },
+  "360": {
+    "MCC": "360",
+    "Region": "North America and the Caribbean",
+    "Country": "Saint Vincent and the Grenadines",
+    "ISO1": "VC",
+    "ISO": "VC",
+    "Emoji": "\ud83c\uddfb\ud83c\udde8"
+  },
+  "734": {
+    "MCC": "734",
+    "Region": "South and Central America",
+    "Country": "Venezuela",
+    "ISO1": "VE",
+    "ISO": "VE",
+    "Emoji": "\ud83c\uddfb\ud83c\uddea"
+  },
+  "348": {
+    "MCC": "348",
+    "Region": "North America and the Caribbean",
+    "Country": "British Virgin Islands (UK)",
+    "ISO1": "VG",
+    "ISO": "VG",
+    "Emoji": "\ud83c\uddfb\ud83c\uddec"
+  },
+  "452": {
+    "MCC": "452",
+    "Region": "Asia and the Middle East",
+    "Country": "Vietnam",
+    "ISO1": "VN",
+    "ISO": "VN",
+    "Emoji": "\ud83c\uddfb\ud83c\uddf3"
+  },
+  "541": {
+    "MCC": "541",
+    "Region": "Oceania",
+    "Country": "Vanuatu",
+    "ISO1": "VU",
+    "ISO": "VU",
+    "Emoji": "\ud83c\uddfb\ud83c\uddfa"
+  },
+  "549": {
+    "MCC": "549",
+    "Region": "Oceania",
+    "Country": "Samoa",
+    "ISO1": "WS",
+    "ISO": "WS",
+    "Emoji": "\ud83c\uddfc\ud83c\uddf8"
+  },
+  "421": {
+    "MCC": "421",
+    "Region": "Asia and the Middle East",
+    "Country": "Yemen",
+    "ISO1": "YE",
+    "ISO": "YE",
+    "Emoji": "\ud83c\uddfe\ud83c\uddea"
+  },
+  "655": {
+    "MCC": "655",
+    "Region": "Africa",
+    "Country": "South Africa",
+    "ISO1": "ZA",
+    "ISO": "ZA",
+    "Emoji": "\ud83c\uddff\ud83c\udde6"
+  },
+  "645": {
+    "MCC": "645",
+    "Region": "Africa",
+    "Country": "Zambia",
+    "ISO1": "ZM",
+    "ISO": "ZM",
+    "Emoji": "\ud83c\uddff\ud83c\uddf2"
+  },
+  "648": {
+    "MCC": "648",
+    "Region": "Africa",
+    "Country": "Zimbabwe",
+    "ISO1": "ZW",
+    "ISO": "ZW",
+    "Emoji": "\ud83c\uddff\ud83c\uddfc"
+  },
+  "312": {
+    "MCC": "312",
+    "Region": "North America and the Caribbean",
+    "Country": "United States of America",
+    "ISO1": "US",
+    "ISO": "US",
+    "Emoji": "\ud83c\uddfa\ud83c\uddf8"
+  },
+  "313": {
+    "MCC": "313",
+    "Region": "North America and the Caribbean",
+    "Country": "United States of America",
+    "ISO1": "US",
+    "ISO": "US",
+    "Emoji": "\ud83c\uddfa\ud83c\uddf8"
+  },
+  "289": {
+    "MCC": "289",
+    "Region": "Europe",
+    "Country": "Abkhazia",
+    "ISO1": "GE",
+    "ISO": "GE",
+    "Emoji": "\ud83c\uddec\ud83c\uddea"
+  },
+  "438": {
+    "MCC": "438",
+    "Region": "Asia and the Middle East",
+    "Country": "Turkmenistan",
+    "ISO1": "TM",
+    "ISO": "TM",
+    "Emoji": "\ud83c\uddf9\ud83c\uddf2"
+  },
+  "618": {
+    "MCC": "618",
+    "Region": "Africa",
+    "Country": "Liberia",
+    "ISO1": "LR",
+    "ISO": "LR",
+    "Emoji": "\ud83c\uddf1\ud83c\uddf7"
+  },
+  "402": {
+    "MCC": "402",
+    "Region": "Asia and the Middle East",
+    "Country": "Bhutan",
+    "ISO1": "BT",
+    "ISO": "BT",
+    "Emoji": "\ud83c\udde7\ud83c\uddf9"
+  },
+  "350": {
+    "MCC": "350",
+    "Region": "North America and the Caribbean",
+    "Country": "Bermuda",
+    "ISO1": "BM",
+    "ISO": "BM",
+    "Emoji": "\ud83c\udde7\ud83c\uddf2"
+  },
+  "647": {
+    "MCC": "647",
+    "Region": "Africa",
+    "Country": "French Indian Ocean Territories (France)",
+    "ISO1": "YT",
+    "ISO": "YT/RE",
+    "Emoji": "\ud83c\uddfe\ud83c\uddf9"
+  },
+  "544": {
+    "MCC": "544",
+    "Region": "Oceania",
+    "Country": "American Samoa (USA)",
+    "ISO1": "AS",
+    "ISO": "AS",
+    "Emoji": "\ud83c\udde6\ud83c\uddf8"
+  },
+  "540": {
+    "MCC": "540",
+    "Region": "Oceania",
+    "Country": "Solomon Islands",
+    "ISO1": "SB",
+    "ISO": "SB",
+    "Emoji": "\ud83c\uddf8\ud83c\udde7"
+  },
+  "235": {
+    "MCC": "235",
+    "Region": "Europe",
+    "Country": "United Kingdom",
+    "ISO1": "GB",
+    "ISO": "GB",
+    "Emoji": "\ud83c\uddec\ud83c\udde7"
+  },
+  "467": {
+    "MCC": "467",
+    "Region": "Asia and the Middle East",
+    "Country": "North Korea",
+    "ISO1": "KP",
+    "ISO": "KP",
+    "Emoji": "\ud83c\uddf0\ud83c\uddf5"
+  },
+  "315": {
+    "MCC": "315",
+    "Region": "North America and the Caribbean",
+    "Country": "United States of America",
+    "ISO1": "US",
+    "ISO": "US",
+    "Emoji": "\ud83c\uddfa\ud83c\uddf8"
+  },
+  "536": {
+    "MCC": "536",
+    "Region": "Oceania",
+    "Country": "Nauru",
+    "ISO1": "NR",
+    "ISO": "NR",
+    "Emoji": "\ud83c\uddf3\ud83c\uddf7"
+  },
+  "657": {
+    "MCC": "657",
+    "Region": "Africa",
+    "Country": "Eritrea",
+    "ISO1": "ER",
+    "ISO": "ER",
+    "Emoji": "\ud83c\uddea\ud83c\uddf7"
+  },
+  "550": {
+    "MCC": "550",
+    "Region": "Oceania",
+    "Country": "Federated States of Micronesia",
+    "ISO1": "FM",
+    "ISO": "FM",
+    "Emoji": "\ud83c\uddeb\ud83c\uddf2"
+  },
+  "308": {
+    "MCC": "308",
+    "Region": "North America and the Caribbean",
+    "Country": "Saint Pierre and Miquelon (France)",
+    "ISO1": "PM",
+    "ISO": "PM",
+    "Emoji": "\ud83c\uddf5\ud83c\uddf2"
+  },
+  "551": {
+    "MCC": "551",
+    "Region": "Oceania",
+    "Country": "Marshall Islands",
+    "ISO1": "MH",
+    "ISO": "MH",
+    "Emoji": "\ud83c\uddf2\ud83c\udded"
+  },
+  "902": {
+    "MCC": "902",
+    "Region": "Worldwide",
+    "Country": "Worldwide",
+    "ISO1": "UN",
+    "ISO": "UN",
+    "Emoji": "\ud83c\uddfa\ud83c\uddf3"
+  },
+  "316": {
+    "MCC": "316",
+    "Region": "North America and the Caribbean",
+    "Country": "United States of America",
+    "ISO1": "US",
+    "ISO": "US",
+    "Emoji": "\ud83c\uddfa\ud83c\uddf8"
+  },
+  "552": {
+    "MCC": "552",
+    "Region": "Oceania",
+    "Country": "Palau",
+    "ISO1": "PW",
+    "ISO": "PW",
+    "Emoji": "\ud83c\uddf5\ud83c\uddfc"
+  },
+  "314": {
+    "MCC": "314",
+    "Region": "",
+    "Country": "United States of America",
+    "ISO1": "US",
+    "ISO": "US",
+    "Emoji": "\ud83c\uddfa\ud83c\uddf8"
+  },
+  "292": {
+    "MCC": "292",
+    "Region": "Europe",
+    "Country": "San Marino",
+    "ISO1": "SM",
+    "ISO": "SM",
+    "Emoji": "\ud83c\uddf8\ud83c\uddf2"
+  },
+  "543": {
+    "MCC": "543",
+    "Region": "Oceania",
+    "Country": "Wallis and Futuna",
+    "ISO1": "WF",
+    "ISO": "WF",
+    "Emoji": "\ud83c\uddfc\ud83c\uddeb"
+  },
+  "441": {
+    "MCC": "441",
+    "Region": "Asia and the Middle East",
+    "Country": "Japan",
+    "ISO1": "JP",
+    "ISO": "JP",
+    "Emoji": "\ud83c\uddef\ud83c\uddf5"
+  },
+  "995": {
+    "MCC": "995",
+    "Region": "Worldwide",
+    "Country": "British Indian Ocean Territory (UK)",
+    "ISO1": "IO",
+    "ISO": "IO",
+    "Emoji": "\ud83c\uddee\ud83c\uddf4"
+  },
+  "750": {
+    "MCC": "750",
+    "Region": "South and Central America",
+    "Country": "Falkland Islands (UK)",
+    "ISO1": "FK",
+    "ISO": "FK",
+    "Emoji": "\ud83c\uddeb\ud83c\uddf0"
+  },
+  "658": {
+    "MCC": "658",
+    "Region": "Africa",
+    "Country": "Saint Helena, Ascension and Tristan da Cunha",
+    "ISO1": "SH",
+    "ISO": "SH",
+    "Emoji": "\ud83c\uddf8\ud83c\udded"
+  },
+  "548": {
+    "MCC": "548",
+    "Region": "Oceania",
+    "Country": "Cook Islands (Pacific Ocean)",
+    "ISO1": "CK",
+    "ISO": "CK",
+    "Emoji": "\ud83c\udde8\ud83c\uddf0"
+  },
+  "555": {
+    "MCC": "555",
+    "Region": "Oceania",
+    "Country": "Niue",
+    "ISO1": "NU",
+    "ISO": "NU",
+    "Emoji": "\ud83c\uddf3\ud83c\uddfa"
+  },
+  "554": {
+    "MCC": "554",
+    "Region": "Oceania",
+    "Country": "Tokelau",
+    "ISO1": "TK",
+    "ISO": "TK",
+    "Emoji": "\ud83c\uddf9\ud83c\uddf0"
+  },
+  "553": {
+    "MCC": "553",
+    "Region": "Oceania",
+    "Country": "Tuvalu",
+    "ISO1": "TV",
+    "ISO": "TV",
+    "Emoji": "\ud83c\uddf9\ud83c\uddfb"
+  },
+  "991": {
+    "MCC": "991",
+    "Region": "Worldwide",
+    "Country": "Worldwide",
+    "ISO1": "UN",
+    "ISO": "UN",
+    "Emoji": "\ud83c\uddfa\ud83c\uddf3"
+  }
+}

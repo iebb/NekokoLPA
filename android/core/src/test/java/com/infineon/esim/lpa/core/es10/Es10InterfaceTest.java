@@ -1,0 +1,561 @@
+/*
+ * THE SOURCE CODE AND ITS RELATED DOCUMENTATION IS PROVIDED "AS IS". INFINEON
+ * TECHNOLOGIES MAKES NO OTHER WARRANTY OF ANY KIND,WHETHER EXPRESS,IMPLIED OR,
+ * STATUTORY AND DISCLAIMS ANY AND ALL IMPLIED WARRANTIES OF MERCHANTABILITY,
+ * SATISFACTORY QUALITY, NON INFRINGEMENT AND FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * THE SOURCE CODE AND DOCUMENTATION MAY INCLUDE ERRORS. INFINEON TECHNOLOGIES
+ * RESERVES THE RIGHT TO INCORPORATE MODIFICATIONS TO THE SOURCE CODE IN LATER
+ * REVISIONS OF IT, AND TO MAKE IMPROVEMENTS OR CHANGES IN THE DOCUMENTATION OR
+ * THE PRODUCTS OR TECHNOLOGIES DESCRIBED THEREIN AT ANY TIME.
+ *
+ * INFINEON TECHNOLOGIES SHALL NOT BE LIABLE FOR ANY DIRECT, INDIRECT OR
+ * CONSEQUENTIAL DAMAGE OR LIABILITY ARISING FROM YOUR USE OF THE SOURCE CODE OR
+ * ANY DOCUMENTATION, INCLUDING BUT NOT LIMITED TO, LOST REVENUES, DATA OR
+ * PROFITS, DAMAGES OF ANY SPECIAL, INCIDENTAL OR CONSEQUENTIAL NATURE, PUNITIVE
+ * DAMAGES, LOSS OF PROPERTY OR LOSS OF PROFITS ARISING OUT OF OR IN CONNECTION
+ * WITH THIS AGREEMENT, OR BEING UNUSABLE, EVEN IF ADVISED OF THE POSSIBILITY OR
+ * PROBABILITY OF SUCH DAMAGES AND WHETHER A CLAIM FOR SUCH DAMAGE IS BASED UPON
+ * WARRANTY, CONTRACT, TORT, NEGLIGENCE OR OTHERWISE.
+ *
+ * (C)Copyright INFINEON TECHNOLOGIES All rights reserved
+ */
+
+package com.infineon.esim.lpa.core.es10;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import com.beanit.jasn1.ber.types.BerBitString;
+import com.beanit.jasn1.ber.types.BerBoolean;
+import com.beanit.jasn1.ber.types.BerInteger;
+import com.beanit.jasn1.ber.types.BerOctetString;
+import com.beanit.jasn1.ber.types.string.BerUTF8String;
+import com.gsma.sgp.messages.pedefinitions.UICCCapability;
+import com.gsma.sgp.messages.pkix1explicit88.Certificate;
+import com.gsma.sgp.messages.pkix1implicit88.SubjectKeyIdentifier;
+import com.gsma.sgp.messages.rspdefinitions.AuthenticateServerRequest;
+import com.gsma.sgp.messages.rspdefinitions.AuthenticateServerResponse;
+import com.gsma.sgp.messages.rspdefinitions.BoundProfilePackage;
+import com.gsma.sgp.messages.rspdefinitions.CancelSessionReason;
+import com.gsma.sgp.messages.rspdefinitions.CancelSessionRequest;
+import com.gsma.sgp.messages.rspdefinitions.CancelSessionResponse;
+import com.gsma.sgp.messages.rspdefinitions.CertificationDataObject;
+import com.gsma.sgp.messages.rspdefinitions.CtxParams1;
+import com.gsma.sgp.messages.rspdefinitions.CtxParamsForCommonAuthentication;
+import com.gsma.sgp.messages.rspdefinitions.DeleteProfileResponse;
+import com.gsma.sgp.messages.rspdefinitions.DeviceInfo;
+import com.gsma.sgp.messages.rspdefinitions.DisableProfileResponse;
+import com.gsma.sgp.messages.rspdefinitions.EUICCInfo1;
+import com.gsma.sgp.messages.rspdefinitions.EUICCInfo2;
+import com.gsma.sgp.messages.rspdefinitions.EnableProfileResponse;
+import com.gsma.sgp.messages.rspdefinitions.EuiccConfiguredDataResponse;
+import com.gsma.sgp.messages.rspdefinitions.EuiccMemoryResetResponse;
+import com.gsma.sgp.messages.rspdefinitions.EuiccRspCapability;
+import com.gsma.sgp.messages.rspdefinitions.GetEuiccChallengeResponse;
+import com.gsma.sgp.messages.rspdefinitions.GetEuiccDataResponse;
+import com.gsma.sgp.messages.rspdefinitions.GetRatResponse;
+import com.gsma.sgp.messages.rspdefinitions.Iccid;
+import com.gsma.sgp.messages.rspdefinitions.ListNotificationResponse;
+import com.gsma.sgp.messages.rspdefinitions.NotificationEvent;
+import com.gsma.sgp.messages.rspdefinitions.NotificationSentResponse;
+import com.gsma.sgp.messages.rspdefinitions.Octet16;
+import com.gsma.sgp.messages.rspdefinitions.PprIds;
+import com.gsma.sgp.messages.rspdefinitions.PrepareDownloadRequest;
+import com.gsma.sgp.messages.rspdefinitions.PrepareDownloadResponse;
+import com.gsma.sgp.messages.rspdefinitions.PrepareDownloadResponseOk;
+import com.gsma.sgp.messages.rspdefinitions.ProfileInfoListResponse;
+import com.gsma.sgp.messages.rspdefinitions.ProfileInstallationResult;
+import com.gsma.sgp.messages.rspdefinitions.ProfileInstallationResultData;
+import com.gsma.sgp.messages.rspdefinitions.RetrieveNotificationsListResponse;
+import com.gsma.sgp.messages.rspdefinitions.ServerSigned1;
+import com.gsma.sgp.messages.rspdefinitions.SetDefaultDpAddressResponse;
+import com.gsma.sgp.messages.rspdefinitions.SetNicknameResponse;
+import com.gsma.sgp.messages.rspdefinitions.SmdpSigned2;
+import com.gsma.sgp.messages.rspdefinitions.TransactionId;
+import com.gsma.sgp.messages.rspdefinitions.VersionType;
+import com.infineon.esim.lpa.core.dtos.DeviceInformation;
+import com.infineon.esim.lpa.core.dtos.enums.CancelSessionReasons;
+import com.infineon.esim.lpa.core.es10.base.SegmentedBoundProfilePackage;
+import com.infineon.esim.lpa.core.es10.definitions.ResetOptions;
+import com.infineon.esim.messages.Ber;
+import com.infineon.esim.messages.RspVersion;
+import com.infineon.esim.util.Bytes;
+import com.infineon.esim.util.Log;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import java.util.Arrays;
+import java.util.List;
+
+@SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class Es10InterfaceTest {
+    private static final String TAG = Es10InterfaceTest.class.getName();
+
+    private MockEuiccChannel mockReaderChannel;
+    private Es10Interface es10Interface;
+
+    @BeforeEach
+    public void setUp() {
+        this.mockReaderChannel = new MockEuiccChannel();
+        this.es10Interface = new Es10Interface(this.mockReaderChannel);
+    }
+
+    // ES10a
+
+    // TODO: Add check for response BER objects
+
+    @Test
+    public void es10a_getEuiccConfiguredAddresses() throws Exception {
+        this.mockReaderChannel.setResponseApdus(Arrays.asList("BF3C32801974657374736D6470706C75732E696E66696E656F6E2E636F6D811574657374726F6F74736D64732E67736D612E636F6D9000"));
+
+        EuiccConfiguredDataResponse actualResponse = es10Interface.es10a_getEuiccConfiguredAddresses();
+
+        // Check request commands
+        List<String> expectedCommands = Arrays.asList("81E2910003BF3C00");
+        List<String> actualCommands = this.mockReaderChannel.getRequestApdus();
+        assertEquals(expectedCommands, actualCommands);
+
+        // Check response BER object
+        BerUTF8String defaultDpAddress = new BerUTF8String("testsmdpplus.infineon.com");
+        BerUTF8String rootDsAddress = new BerUTF8String("testrootsmds.gsma.com");
+        EuiccConfiguredDataResponse expectedResponse = new EuiccConfiguredDataResponse();
+        expectedResponse.setDefaultDpAddress(defaultDpAddress);
+        expectedResponse.setRootDsAddress(rootDsAddress);
+        assertEquals(expectedResponse.toString(), actualResponse.toString());
+    }
+
+    @Test
+    public void es10a_setDefaultDpAddress() throws Exception {
+        this.mockReaderChannel.setResponseApdus(Arrays.asList("BF3F038001009000"));
+
+        BerUTF8String defaultDpAddressToBeSet = new BerUTF8String("testsmdpplus.infineon.com");
+        SetDefaultDpAddressResponse actualResponse = es10Interface.es10a_setDefaultDpAddress(defaultDpAddressToBeSet);
+
+        // Check request commands
+        List<String> expectedCommands = Arrays.asList("81E291001EBF3F1B801974657374736D6470706C75732E696E66696E656F6E2E636F6D");
+        List<String> actualCommands = this.mockReaderChannel.getRequestApdus();
+        assertEquals(expectedCommands, actualCommands);
+
+        // Check response BER object
+        SetDefaultDpAddressResponse expectedResponse = new SetDefaultDpAddressResponse();
+        expectedResponse.setSetDefaultDpAddressResult(new BerInteger(0));
+        assertEquals(expectedResponse.toString(), actualResponse.toString());
+    }
+
+    // ES10b
+
+    @Test
+    public void es10b_prepareDownloadRequest() throws Exception {
+        this.mockReaderChannel.setResponseApdus(Arrays.asList("BF21819EA0819B305680109273A06E0F0089CF231FFCA68093AEF25F49410479F6C7DDF189F5DF0C2BD57A048E9D8314F2414327E54CE8844F1ADFD7260831A4C04118E6FC84DD7611C126D188C1DC89DCFF5717DA790C1C57F2B544A715895F37402ACD743BF32062869D5AF1D6BB46ED3B83331F84944DF58432D6624DC884051C7879251D104DB71FDAEC881B75A3FBAFEE16C33B0316A260DF62FE1C78F0AEE29000"));
+
+        String smdpSigned2Base64 = "MBWAEJJzoG4PAInPIx/8poCTrvIBAQA=";
+        String smdpSignature2Base64 = "XzdALnvRb2LEaqVROB1uSFH35eyoqjL6WH66mSvLpdmZBgZrMlLzxtVJtEjrLPeHSRg374eHxRYfxjoPePYWdBA0AA==";
+        String smdpCertificateBase64 = "MIICOTCCAeCgAwIBAgICAMkwCgYIKoZIzj0EAwIwSTEVMBMGA1UEAwwMR1NNQSBUZXN0IENJMREwDwYDVQQLDAhURVNUQ0VSVDEQMA4GA1UECgwHUlNQVEVTVDELMAkGA1UEBhMCSVQwHhcNMTcwODIxMTQzMTA3WhcNMjAwODIwMTQzMTA3WjAmMQ0wCwYDVQQKDARBQ01FMRUwEwYDVQQDDAxURVNUIFNNLURQKzIwWjAUBgcqhkjOPQIBBgkrJAMDAggBAQcDQgAEc2GFXlkCZLJSxxpgYqAh4ntG92C4E4IGp/dEIO+LxVqLmI0WWPnXDTothICq32TmLE1xJ95aCiuRepQ/RHSq3aOB2TCB1jAfBgNVHSMEGDAWgBTAvHC6NpKdQ7Rn/1dXBTDlerj82DAdBgNVHQ4EFgQUMQOKVba+z2zqWd4v2hT0Mn+4tqkwDgYDVR0RBAcwBYgDiDcMMA4GA1UdDwEB/wQEAwIHgDAXBgNVHSABAf8EDTALMAkGB2eBEgECAQUwWwYDVR0fBFQwUjAnoCWgI4YhaHR0cDovL2NpLnRlc3QuZ3NtYS5jb20vQ1JMLUEuY3JsMCegJaAjhiFodHRwOi8vY2kudGVzdC5nc21hLmNvbS9DUkwtQi5jcmwwCgYIKoZIzj0EAwIDRwAwRAIgCy9RIQzhOfGAaVSidHsYvXs5CyUMShKujdIeQ0IOPHMCIHvhUQ3AUpOewXdOOs3YeI3pR0n9gZoobI3GgTpFZJu0";
+
+        SmdpSigned2 smdpSigned2 = Ber.createFromEncodedBase64String(SmdpSigned2.class, smdpSigned2Base64);
+        BerOctetString smdpSignature2 = Ber.createSignatureFromEncodedBase64String(smdpSignature2Base64);
+        Certificate smdpCertificate = Ber.createFromEncodedBase64String(Certificate.class, smdpCertificateBase64);
+
+        PrepareDownloadRequest prepareDownloadRequest = new PrepareDownloadRequest();
+        prepareDownloadRequest.setSmdpSigned2(smdpSigned2);
+        prepareDownloadRequest.setSmdpSignature2(smdpSignature2);
+        prepareDownloadRequest.setSmdpCertificate(smdpCertificate);
+
+        PrepareDownloadResponse prepareDownloadResponse = es10Interface.es10b_prepareDownloadRequest(prepareDownloadRequest);
+
+        // Check request commands
+        List<String> expectedCommands = Arrays.asList("81E2110078BF21820297301580109273A06E0F0089CF231FFCA68093AEF20101005F37402E7BD16F62C46AA551381D6E4851F7E5ECA8AA32FA587EBA992BCBA5D99906066B3252F3C6D549B448EB2CF787491837EF8787C5161FC63A0F78F6167410340030820239308201E0A003020102020200C9300A06082A8648CE",
+                "81E21101783D04030230493115301306035504030C0C47534D4120546573742043493111300F060355040B0C0854455354434552543110300E060355040A0C0752535054455354310B3009060355040613024954301E170D3137303832313134333130375A170D3230303832303134333130375A3026310D300B060355",
+                "81E2110278040A0C0441434D453115301306035504030C0C5445535420534D2D44502B32305A301406072A8648CE3D020106092B2403030208010107034200047361855E590264B252C71A6062A021E27B46F760B8138206A7F74420EF8BC55A8B988D1658F9D70D3A2D8480AADF64E62C4D7127DE5A0A2B917A943F44",
+                "81E211037874AADDA381D93081D6301F0603551D23041830168014C0BC70BA36929D43B467FF57570530E57AB8FCD8301D0603551D0E0416041431038A55B6BECF6CEA59DE2FDA14F4327FB8B6A9300E0603551D1104073005880388370C300E0603551D0F0101FF04040302078030170603551D200101FF040D300B30",
+                "81E211047809060767811201020105305B0603551D1F045430523027A025A0238621687474703A2F2F63692E746573742E67736D612E636F6D2F43524C2D412E63726C3027A025A0238621687474703A2F2F63692E746573742E67736D612E636F6D2F43524C2D422E63726C300A06082A8648CE3D0403020347003044",
+                "81E291054402200B2F51210CE139F1806954A2747B18BD7B390B250C4A12AE8DD21E43420E3C7302207BE1510DC052939EC1774E3ACDD8788DE94749FD819A286C8DC6813A45649BB4");
+        List<String> actualCommands = this.mockReaderChannel.getRequestApdus();
+        assertEquals(expectedCommands, actualCommands);
+
+        PrepareDownloadResponseOk prepareDownloadResponseOk = prepareDownloadResponse.getDownloadResponseOk();
+    }
+
+    @Test
+    public void es10b_loadBoundProfilePackage() throws Exception {
+        this.mockReaderChannel.setResponseApdus(Arrays.asList("BF3781ABBF276580109273A06E0F0089CF231FFCA68093AEF2BF2F2A800101810207800C157273702E696E66696E656F6E2E636F6D3A343434335A0A98000000000000000200060388370CA21FA01D4F10A0000005591010FFFFFFFF890000100004093007A00530038001005F37408BED6A066F0B55B9326BE7E7630739E1EB52E578C66C994519292BC79CE6B4AD099E9AF7EBB27669A9B9044BF2DA7E1ED9FF21C04782456E5AD9E542F7F05D8F9000"));
+
+        String boundProfilePackageBase64 = "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";
+        BoundProfilePackage boundProfilePackage = Ber.createFromEncodedBase64String(BoundProfilePackage.class, boundProfilePackageBase64);
+        SegmentedBoundProfilePackage segmentedBoundProfilePackage = new SegmentedBoundProfilePackage(boundProfilePackage);
+
+        ProfileInstallationResult profileInstallationResult = es10Interface.es10b_loadBoundProfilePackage(segmentedBoundProfilePackage);
+
+        List<String> expectedCommands = Arrays.asList(
+                "81E2110078BF36820ADBBF2381B682010180109273A06E0F0089CF231FFCA68093AEF2A61880018881011084107273702E696E66696E656F6E2E636F6D5F49410491C5BCA1B5E764604B9466B03C53814A7DD9F45CA6F0E5111FDA6F5B64D398B97DA171E201F2DA300FDD4ECD2B278B4A10AA2C3999EBD5AD23936722",
+                "81E29101471E9ECFC25F3740011F8998A9EBF882E978EC010B9100754747A8C5335A744D012E977B1195B74C4987DF9C4B0579949CBCFB701D36C891C963AD9F5EADAA0381C63B313B61B45D",
+                "81E291001CA01A8718D7D4BFA5993CC6C7CD1E90BB4704599E157C134F11F142D1",
+                "81E2910002A12B",
+                "81E291002B8829BF251E5A0A9800000000000000020091074C656F7061726492074C656F706172642826EA08B5B2B123",
+                "81E2910004A38209D4",
+                "81E2110078868203F8CCCD5E682BC282568B092B9AE5551D0E4DDDE206864DB7713221DFED652CE9586EEEFBDD9854A1F24377AE0AFC52AEF149FE95C5012AFC622353CC3F2D8CB2648965A99EAFC1A2C5636B0033392512957D14BD178725FBA831876EAA4DECC71E23181E13C353A4AB2A57DBBC7E4BF4D81ED6FC31",
+                "81E21101783F11005D98F93EFAA9E7A924F48405E5AD163B2B3202482EE9EB13A7D9E188BE54984B49E8359E67A843F153199B20CD0A9C63FE44AFE0EE27D5554E1FC2005F45D7EE6C7BF9235ABD87B955FA58D385573B2DD0A9A451B4FF837FE2803BF94FE32E456F39F584D1E9BA13B9EF89659FA1AE6D6B07DED972",
+                "81E2110278D35849B86C627E4BC8ACDE7E46A5F5811FFE3818BD157334A4B4E6EEA5AF653344192F08B4BDD2F2FBCDC8C8357B06A98B2B51D9DBD28BF6C3D3D4D492FF449B347B5E65D8435AE3FCA3037929C71BAA6C17013D0F1C693217C4D5B50028558D8B061BCCD4A2CA82315644D2AB1F4059B9A9E71D45A32654",
+                "81E2110378F8E2FC7E6BCF079835C3B4834BD71BD98D9222D718D834382A5EBA550B2B06D0BD960502C402FA6C13DA7325D148E523DEC86344A909A5314312B0B5934ACB67E062B9C6AE4D2E18F0E37DE90163E588465684C5606EF9971701C6F32BF899444F50226730277F9B77721A49951553515EA483CBD2D9AEA5",
+                "81E21104787051DF9203D1910F7923A1080785F238DA035905940F4D1D2A65FFC20D3E8EAEAA3095935F372598D634246936683435022A0702C0E39C426499B7F00700C3D0F8CB61F2219ACF257B2619AABD227B8DFA9A05749A395DB2FB36D29BBAA59DBBE27B0C520CDC2C9B8E81E9CE0330AB71C04EDE3F80B55E6C",
+                "81E211057836CA65EC310F1CA0E74E0034AA85CD38A144C1778B44C13BB2EE828AC1F8417C5E45051286742D3F51FE8592C552CBD0FF6B8124BA2991E0FD1CC07BAE369B50B3916DDF9E7EE831367612A42BBC79AE17697F3351828410F36553099197B5B7D9A560E49A50AE0E4F85F64ADCE1685C423A3AC09A23C934",
+                "81E2110678880647ED362FC524D995B41E53DD33B485074A0FCAB269542534B375F899A3A7935B48BF0BA65ABF35C394EF1B777F4AB76220A0488F05E8931635E491A83DF5D46807BDB333CD11A38C8D5C554FCFC3174B6D0BA16E97006723F56C02738C83ED7431304826EAE75EF04F0F5C442F609EB13C2B06796204",
+                "81E2110778BAC54B33049EFFDB583B89E95C287F09847E4EE865936F1C7FEE89990C2A345BC8DB321A048FF98EE3C4247CB285B0E151E235D141B6322F1797E159DD1F575DB87A8C4A1913DA6D0AFE9DC8910D085A426E4E0F0B50F4903B0AC5CE132048A5619B88FC0359759CA2D8F6AD9E6C545520FF68A35B10BEA0",
+                "81E291083C1D433D7A78D9728C07BAEE04FB1BE9F9CE7A6F25A3DEF9465ECD93AD88229324005F38F476416DE762324A306228B729480A0934A65404947C22E50D",
+                "81E2110078868203F8555FDE0841C265565E929B0DC9E4766AF3953FA7CF490B7FCB23EA70AABE2BD26A6DFAAF90DC0C9DA0EB2814386BB75C5ABE4E2B870D4C7AAC106518493BE862B04F42E6A822BBB77DBF9D8A8224B1191FD212F816A43F45C6E0719B4C22E97B3144F4A03582F891602AC31AA143D1798880FC14",
+                "81E2110178F3D413E5F489F00E9DC3F27884F1F71A1DD6146834167C77B2500A3E70BCA83B89E017F328326838B39DF69B1A1E653A351FAE2574EB4279B0C2118DDB40726D626DDA56BDA492695B8C5019A10311622B62E614A145443512AE8AA9D19B90571683E4ED71A7A92A6B2F5C0EFEC5F1C2BBD7F66A58CAAF3C",
+                "81E21102789E542A4AC6D9ADF23E86D7D15A6D458BFB4CF9BB75EE7617C8C90C0C135353C932BC2FDDEE4F3065CDE20854413AF4FCD0FC6D301EAFA76D33F8F515A40C73505DFD959A8FF627254206A3EC75FD6DF10C5E2360884421398F4EAA90D5636AB31287BD6284D9D58C48DB0CB8E541C9E5E3019DBAA39C750C",
+                "81E21103780870EA95494E315D75C51A3B4BAA5993200FE02BF6AC3DB9B6F66EE0A4A824EA9242EDF99421753F6FB2170EAA42EF5A6CF9579EB1B9E1022DB4AF2EFF471957EE03F7E0D21759589CE277A077E93FEC1165AA1ABC071770AAFE6EB5768D4DDF3967C1EDB7368D476B2B5B27910502A8C6637D5072DD5C6C",
+                "81E2110478D570924463A7260C03B1FDEF98094BA1CA378EF15B9A479EE91DE67DD20518593770DFB0B162B8E19D5A5D8A3F457169AACAEB9BEB2F3345B18E2DFF9A4A262BEF193787F55C8A89B80DCBCD0D3CD548CDAB12D2FD2E92265480DAB6AE546465E8703426F605D5806241603799D0F2B99B7031C814F94411",
+                "81E2110578896A5720B448FCCC6139A6DE6433AB5FBFE5676ED4A906526159E444BF3B14FCFE6E5DAC7D7FC88925352CAB35F4877BE2830787061E5D7A517DE2E52F46B3C6E391A796E04F2946F85452D36929E789E1F089D55298B61DDCFB1388D21E40AC2B05D5097AB9D8E5B03B449501A881D5BB9D5E8CDF2F221D",
+                "81E2110678CF662D382BB462F3543BF147A6E7F2D4926E1A166D0D2FE0DB27CF9EE82FA1B147B1C76F82C65AB5F04B57C020F7D172D16CAE64C83DA93628B1A37F8559BC50E0075AC034E631B804CFC80006006C45595F828C3A42C5F23DCE89699C9FF31E815610621858A3F517BCCF04DFFAB9C10DA89CB4D0A7FF7F",
+                "81E2110778EC0F639F31A1C0C2BF09887F05D344C962FE21D045C47A55135D42AE95236C4980F96084465E62A86A9736029A14FC1B56875C875848E43FCE31EF01A2AC976F752888A3EC3E38A3E0D398B9BBA145CAAD32B75C198131CAE1D6ACB0102D1D84D846B7CC5777A56638FD209D1B8C7EA3DEEC6139A5412A28",
+                "81E291083C92B09555F99BB4A175425F3C1996C1A1100F6F0117C6180E2A12F7F24D8E9A07BEB834582A9329872BAFB15BED7174BBED50DF16DB42E15008123BB0",
+                "81E2110078868201D88B329E53C6E95AAC3BD45A9D191853642BB9E2A48117CB3A80D5A0C607E537A5BF83CE1E2153591F10BA83876B846D7903F243F29F9FB2FA42BCF30EFAC7CC16543B422C6F9804A404E1D1F48F6E00C6641AC46AC3213CEF1FD50C4E3C3DA6363B495244084EE471A144B10031D98A867C58A142",
+                "81E2110178B480E7BE65398D8774C95F46C9206B8E031396BB99BC58BBB63B8DC24056DD9B3A93C8EB506D6288C6CEFEC3DC4BFEA87B04BA40DEAF6599ADD44C34F19976FB32FECFD6A59633C0F07360EEB5A005247D7E10A8D11B3E90954F426610F472D51A84B45EE7DA4B5023154C6ED60F772417ADF55394E5E897",
+                "81E2110278F3C01586DCAFC358CDC0980C916CF30E6FAA90A199745A09116E5BE2BE486B61739EB60D63B849AE0C85DF1C108E638A0B09ABC469F3D900E2733A657E25F41DD11245817E973C6316EA5E85E2AD91B4AF945726AE6A14F6B835EE4C3F397C22D60862904695D6FA3E0782F8B48DE5716CC3F73124F1BE97",
+                "81E2910374780E0C1C7AB38314246911D950BE7AD01F054B5643B2B65849FC0D3A5F95A853DB36B5F896CCCB0720F3E24DA5977E1D2A416E654F7424EC8C5DE217DB173E2E02D9F0F522E2E3DA442BAB11EB8CB11740E6E2361789DCD42B9EB0B559A047208CA5AC9614A99F3ED539AE4B709E4D8276602FBC");
+        List<String> actualCommands = this.mockReaderChannel.getRequestApdus();
+        assertEquals(expectedCommands, actualCommands);
+
+        ProfileInstallationResultData profileInstallationResultData = profileInstallationResult.getProfileInstallationResultData();
+    }
+
+    @Test
+    public void es10b_getEuiccChallenge() throws Exception {
+        this.mockReaderChannel.setResponseApdus(Arrays.asList("BF2E1280104655851B3A84C12812BEF47473DC3C739000"));
+
+        GetEuiccChallengeResponse actualResponse = es10Interface.es10b_getEuiccChallenge();
+
+        // Check request commands
+        List<String> expectedCommands = Arrays.asList("81E2910003BF2E00");
+        List<String> actualCommands = this.mockReaderChannel.getRequestApdus();
+        assertEquals(expectedCommands, actualCommands);
+
+        // Check response BER object
+        GetEuiccChallengeResponse expectedResponse = new GetEuiccChallengeResponse();
+        expectedResponse.setEuiccChallenge(new Octet16(Bytes.decodeHexString("4655851B3A84C12812BEF47473DC3C73")));
+        assertEquals(expectedResponse.toString(), actualResponse.toString());
+    }
+
+    @Test
+    public void es10b_getEuiccInfo1() throws Exception {
+        this.mockReaderChannel.setResponseApdus(Arrays.asList("BF20618203020200A92C0414C0BC70BA36929D43B467FF57570530E57AB8FCD80414F54172BDF98A95D65CBEB88A38A1C11D800A85C3AA2C0414C0BC70BA36929D43B467FF57570530E57AB8FCD80414F54172BDF98A95D65CBEB88A38A1C11D800A85C39000"));
+
+        EUICCInfo1 actualResponse = es10Interface.es10b_getEuiccInfo1();
+
+        // Check request commands
+        List<String> expectedCommands = Arrays.asList("81E2910003BF2000");
+        List<String> actualCommands = this.mockReaderChannel.getRequestApdus();
+        assertEquals(expectedCommands, actualCommands);
+
+        // Check response BER object
+        BerOctetString pkiId1 = new BerOctetString(Bytes.decodeHexString("C0BC70BA36929D43B467FF57570530E57AB8FCD8"));
+        BerOctetString pkiId2 = new BerOctetString(Bytes.decodeHexString("F54172BDF98A95D65CBEB88A38A1C11D800A85C3"));
+
+        byte[] euiccCiPKIdList = Ber.encodeSequence(Arrays.asList(Ber.getEncodedAsByteArray(pkiId1), Ber.getEncodedAsByteArray(pkiId2)));
+        EUICCInfo1.EuiccCiPKIdListForSigning euiccCiPKIdListForSigning = Ber.createFromEncodedByteArray(EUICCInfo1.EuiccCiPKIdListForSigning.class, euiccCiPKIdList);
+        EUICCInfo1.EuiccCiPKIdListForVerification euiccCiPKIdListForVerification = Ber.createFromEncodedByteArray(EUICCInfo1.EuiccCiPKIdListForVerification.class, euiccCiPKIdList);
+
+        EUICCInfo1 expectedResponse = new EUICCInfo1();
+        expectedResponse.setLowestSvn(new VersionType(Bytes.decodeHexString("020200")));
+        expectedResponse.setEuiccCiPKIdListForVerification(euiccCiPKIdListForVerification);
+        expectedResponse.setEuiccCiPKIdListForSigning(euiccCiPKIdListForSigning);
+        assertEquals(expectedResponse.toString(), actualResponse.toString());
+    }
+
+    @Test
+    public void es10b_getEuiccInfo2() throws Exception {
+        this.mockReaderChannel.setResponseApdus(Arrays.asList("BF2282014B810302030182030202028303202000840F8101008204000B967A8304000022AA8505077F36CB808603090200870302030088020192A9580414C0BC70BA36929D43B467FF57570530E57AB8FCD80414F54172BDF98A95D65CBEB88A38A1C11D800A85C304145BC99966F5D5D82FE7DC8E044B5C21B61243E05C0414B949C00607567BEF0293CC7105EC3C3E2847494FAA580414C0BC70BA36929D43B467FF57570530E57AB8FCD80414F54172BDF98A95D65CBEB88A38A1C11D800A85C304145BC99966F5D5D82FE7DC8E044B5C21B61243E05C0414B949C00607567BEF0293CC7105EC3C3E2847494F990206C004030000010C0D47492D42412D55502D30343231AC48801F312E322E3834302E313233343536372F6D79506C6174666F726D4C6162656C812568747470733A2F2F6D79636F6D70616E792E636F6D2F6D79444C4F415265676973747261729000"));
+
+        EUICCInfo2 actualResponse = es10Interface.es10b_getEuiccInfo2();
+
+        List<String> expectedCommands = Arrays.asList("81E2910003BF2200");
+        List<String> actualCommands = this.mockReaderChannel.getRequestApdus();
+        assertEquals(expectedCommands, actualCommands);
+
+        // Check response BER object
+        BerOctetString pkiId1 = new BerOctetString(Bytes.decodeHexString("C0BC70BA36929D43B467FF57570530E57AB8FCD8"));
+        BerOctetString pkiId2 = new BerOctetString(Bytes.decodeHexString("F54172BDF98A95D65CBEB88A38A1C11D800A85C3"));
+        BerOctetString pkiId3 = new BerOctetString(Bytes.decodeHexString("5BC99966F5D5D82FE7DC8E044B5C21B61243E05C"));
+        BerOctetString pkiId4 = new BerOctetString(Bytes.decodeHexString("B949C00607567BEF0293CC7105EC3C3E2847494F"));
+
+        byte[] euiccCiPKIdList = Ber.encodeSequence(Arrays.asList(
+                Ber.getEncodedAsByteArray(pkiId1),
+                Ber.getEncodedAsByteArray(pkiId2),
+                Ber.getEncodedAsByteArray(pkiId3),
+                Ber.getEncodedAsByteArray(pkiId4)));
+        EUICCInfo2.EuiccCiPKIdListForSigning euiccCiPKIdListForSigning = Ber.createFromEncodedByteArray(EUICCInfo2.EuiccCiPKIdListForSigning.class, euiccCiPKIdList);
+        EUICCInfo2.EuiccCiPKIdListForVerification euiccCiPKIdListForVerification = Ber.createFromEncodedByteArray(EUICCInfo2.EuiccCiPKIdListForVerification.class, euiccCiPKIdList);
+
+        CertificationDataObject certificationDataObject = new CertificationDataObject();
+        certificationDataObject.setPlatformLabel(new BerUTF8String("1.2.840.1234567/myPlatformLabel"));
+        certificationDataObject.setDiscoveryBaseURL(new BerUTF8String("https://mycompany.com/myDLOARegistrar"));
+
+        EUICCInfo2 expectedResponse = new EUICCInfo2();
+        expectedResponse.setBaseProfilePackageVersion(new VersionType(Bytes.decodeHexString("020301")));
+        expectedResponse.setLowestSvn(new VersionType(Bytes.decodeHexString("020202")));
+        expectedResponse.setEuiccFirmwareVersion(new VersionType(Bytes.decodeHexString("202000")));
+        expectedResponse.setExtCardResource(new BerOctetString(Bytes.decodeHexString("8101008204000B967A8304000022AA")));
+        expectedResponse.setUiccCapability(new UICCCapability(Bytes.decodeBinaryStringToBooleanArray("0111111100110110110010111")));
+        expectedResponse.setTs102241Version(new VersionType(Bytes.decodeHexString("090200")));
+        expectedResponse.setGlobalplatformVersion(new VersionType(Bytes.decodeHexString("020300")));
+        expectedResponse.setEuiccRspCapability(new EuiccRspCapability(Bytes.decodeBinaryStringToBooleanArray("1001001")));
+        expectedResponse.setEuiccCiPKIdListForSigning(euiccCiPKIdListForSigning);
+        expectedResponse.setEuiccCiPKIdListForVerification(euiccCiPKIdListForVerification);
+        expectedResponse.setForbiddenProfilePolicyRules(new PprIds(Bytes.decodeBinaryStringToBooleanArray("11")));
+        expectedResponse.setPpVersion(new VersionType(Bytes.decodeHexString("000001")));
+        expectedResponse.setSasAcreditationNumber(new BerUTF8String("GI-BA-UP-0421"));
+        expectedResponse.setCertificationDataObject(certificationDataObject);
+
+        assertEquals(expectedResponse.toString(), actualResponse.toString());
+    }
+
+    @Test
+    public void es10b_listNotification() throws Exception {
+        this.mockReaderChannel.setResponseApdus(Arrays.asList("BF2802A0009000"));
+
+        NotificationEvent notificationEvent = new NotificationEvent(new boolean[]{true, true, true, true});
+
+        ListNotificationResponse actualResponse = es10Interface.es10b_listNotification(notificationEvent);
+
+        List<String> expectedCommands = Arrays.asList("81E2910007BF2804810204F0");
+        List<String> actualCommands = this.mockReaderChannel.getRequestApdus();
+        assertEquals(expectedCommands, actualCommands);
+
+        ListNotificationResponse.NotificationMetadataList notificationMetadataList = new ListNotificationResponse.NotificationMetadataList();
+        ListNotificationResponse expectedResponse = new ListNotificationResponse();
+        expectedResponse.setNotificationMetadataList(notificationMetadataList);
+        assertEquals(expectedResponse.toString(), actualResponse.toString());
+    }
+
+    @Test
+    public void es10b_retrieveNotificationsList() throws Exception {
+        this.mockReaderChannel.setResponseApdus(Arrays.asList("BF2B02A0009000"));
+
+        NotificationEvent notificationEvent = new NotificationEvent(new boolean[]{true, true, true, true});
+
+        RetrieveNotificationsListResponse actualResponse = es10Interface.es10b_retrieveNotificationsListByNotificationEvent(notificationEvent);
+
+        List<String> expectedCommands = Arrays.asList("81E2910009BF2B06A004810204F0");
+        List<String> actualCommands = this.mockReaderChannel.getRequestApdus();
+        assertEquals(expectedCommands, actualCommands);
+
+        RetrieveNotificationsListResponse.NotificationList notificationList = new RetrieveNotificationsListResponse.NotificationList();
+        RetrieveNotificationsListResponse expectedResponse = new RetrieveNotificationsListResponse();
+        expectedResponse.setNotificationList(notificationList);
+        assertEquals(expectedResponse.toString(), actualResponse.toString());
+    }
+
+    @Test
+    public void es10b_removeNotificationFromList() throws Exception {
+        this.mockReaderChannel.setResponseApdus(Arrays.asList("BF30038001019000"));
+
+        NotificationSentResponse actualResponse = es10Interface.es10b_removeNotificationFromList(new BerInteger(0));
+
+        List<String> expectedCommands = Arrays.asList("81E2910006BF3003800100");
+        List<String> actualCommands = this.mockReaderChannel.getRequestApdus();
+        assertEquals(expectedCommands, actualCommands);
+
+        NotificationSentResponse expectedResponse = new NotificationSentResponse();
+        expectedResponse.setDeleteNotificationStatus(new BerInteger(1));
+        assertEquals(expectedResponse.toString(), actualResponse.toString());
+    }
+
+    @Test
+    public void es10b_authenticateServer() throws Exception {
+        this.mockReaderChannel.setResponseApdus(Arrays.asList("BF38820620A082061C3082015280109273A06E0F0089CF231FFCA68093AEF283157273702E696E66696E656F6E2E636F6D3A343434338410D8454EA755B03D133F95D274649974E1BF2281F2810302010082030202008303010000840F8101008204000C6D808304000041708504067F36C08603090200870302030088020490A92C0414C0BC70BA36929D43B467FF57570530E57AB8FCD80414F54172BDF98A95D65CBEB88A38A1C11D800A85C3AA2C0414C0BC70BA36929D43B467FF57570530E57AB8FCD80414F54172BDF98A95D65CBEB88A38A1C11D800A85C39902078004030000010C0D47492D42412D55502D30343231AC48801F312E322E3834302E313233343536372F6D79506C6174666F726D4C6162656C812568747470733A2F2F6D79636F6D70616E792E636F6D2F6D79444C4F41526567697374726172A01F8013303030302D303030302D303030302D30303031A108800435550607A1005F37401B56F512874C23341C1C20B4FBA8B3CBDEC043636E1EDE99B37131E33ECC9E694DACFEA53D3470DC607C911EB88F1C67F1DA20685F67C3FB7396727423134BE230820200308201A6A0030201020209020000000000000001300A06082A8648CE3D0403023037310B300906035504061302444531153013060355040A0C0C52535020546573742045554D3111300F06035504030C0845554D20546573743020170D3137303432303132303735305A180F37343933303231313132303735305A3064310B300906035504061302444531153013060355040A0C0C52535020546573742045554D312930270603550405132038393034393033323132333435313233343531323334353637383930313233353113301106035504030C0A54657374206555494343305A301406072A8648CE3D020106092B2403030208010107034200043E590C38A9C256315ECFF3291416DD335409A666FD41B3B51E5E5114F343ABF0A26774C6C26C48753AFE283643227BB6608CD261CC972D374A479124EBF27722A36B3069301F0603551D230418301680146FA1E5217363A822BDED988A1A0D0FF5D7620DB7301D0603551D0E04160414C8A64F343B85B7B0578DC57F8F13586DC804ED84300E0603551D0F0101FF04040302078030170603551D200101FF040D300B3009060767811201020101300A06082A8648CE3D0403020348003045022000B4F86F2EA14CCC04665199884CAD75CADDC33679772FFFD4DBCF1BD2A8E41B0221008B4D40A2D9BD3A53C680BDC8A308C3FBDDFEE7C66A18B4DCDD03770FFFAA49823082027B30820222A003020102020412345678300A06082A8648CE3D04030230493115301306035504030C0C47534D4120546573742043493111300F060355040B0C0854455354434552543110300E060355040A0C0752535054455354310B30090603550406130249543020170D3137303432303130323333315A180F32303531303432303130323333315A3037310B300906035504061302444531153013060355040A0C0C52535020546573742045554D3111300F06035504030C0845554D2054657374305A301406072A8648CE3D020106092B240303020801010703420004A2E52A32DFE8996571C53AF5328EF682093FC1D05F52652F6B711C243821F7F16B0CEC8D219B23D3F990F434D0B90D42716C02E09305264463F611E650C37FF7A382010530820101301F0603551D23041830168014C0BC70BA36929D43B467FF57570530E57AB8FCD8301D0603551D0E041604146FA1E5217363A822BDED988A1A0D0FF5D7620DB7300E0603551D0F0101FF04040302020430170603551D200101FF040D300B3009060767811201020102300E0603551D1104073005880388370530120603551D130101FF040830060101FF02010030320603551D1F042B30293027A025A0238621687474703A2F2F63692E746573742E67736D612E636F6D2F43524C2D422E63726C303E0603551D1E0101FF04343032A030302EA42C302A31153013060355040A0C0C52535020546573742045554D3111300F060355040513083839303439303332300A06082A8648CE3D040302034700304402202B465CC1AC878D46A87D4A7072CA2CF91C2710870219AE8029C696BC39F05CDC022040CC35B49C3B30EE39B05DDA8F6D0DA643AB8EBD6A052391CF46C9EE4C953B199000"));
+
+        String serverSigned1Base64 = "ME2AEJJzoG4PAInPIx/8poCTrvKBEEZVhRs6hMEoEr70dHPcPHODFXJzcC5pbmZpbmVvbi5jb206NDQ0M4QQ2EVOp1WwPRM/ldJ0ZJl04Q==";
+        String serverSignature1Base64 = "XzdAaxnlHKcReE45LglHl/VmBV8ReqQL1qayqjcokyXioJuc0GBaEMuWDWrgiLM2Ppgz6Y66WBLSPSTzfyduS1E7yA==";
+        String euiccCiPKIdToBeUsedBase64 = "BBTAvHC6NpKdQ7Rn/1dXBTDlerj82A==";
+        String serverCertificateBase64 = "MIICOTCCAeCgAwIBAgICAMgwCgYIKoZIzj0EAwIwSTEVMBMGA1UEAwwMR1NNQSBUZXN0IENJMREwDwYDVQQLDAhURVNUQ0VSVDEQMA4GA1UECgwHUlNQVEVTVDELMAkGA1UEBhMCSVQwHhcNMTcwODIxMTQyNzE2WhcNMjAwODIwMTQyNzE2WjAmMQ0wCwYDVQQKDARBQ01FMRUwEwYDVQQDDAxURVNUIFNNLURQKzIwWjAUBgcqhkjOPQIBBgkrJAMDAggBAQcDQgAELu4HyW0AW+UZX3mtHa3NHTeMowleRPcu6kEPCMdWEiyQY8llt/yFKcDKTptPZZacKDxlY2RXh3EY9tEXLWojZaOB2TCB1jAfBgNVHSMEGDAWgBTAvHC6NpKdQ7Rn/1dXBTDlerj82DAdBgNVHQ4EFgQU1w79BXusH3xV6l2MJr4WApKEW68wDgYDVR0RBAcwBYgDiDcMMA4GA1UdDwEB/wQEAwIHgDAXBgNVHSABAf8EDTALMAkGB2eBEgECAQQwWwYDVR0fBFQwUjAnoCWgI4YhaHR0cDovL2NpLnRlc3QuZ3NtYS5jb20vQ1JMLUEuY3JsMCegJaAjhiFodHRwOi8vY2kudGVzdC5nc21hLmNvbS9DUkwtQi5jcmwwCgYIKoZIzj0EAwIDRwAwRAIgSzKlye4F8p/USghv8EoQmojW5YSAOaUW7seMpKzwxbMCIFKeRvoQnRMFQLrWKkb8hcOVssTLnozxUHnUmp2lN9/g";
+        String matchingId = "0000-0000-0000-0001";
+
+        ServerSigned1 serverSigned1 = Ber.createFromEncodedBase64String(ServerSigned1.class, serverSigned1Base64);
+        SubjectKeyIdentifier euiccCiPKIdToBeUsed = Ber.createFromEncodedBase64String(SubjectKeyIdentifier.class, euiccCiPKIdToBeUsedBase64);
+        Certificate serverCertificate = Ber.createFromEncodedBase64String(Certificate.class, serverCertificateBase64);
+        BerOctetString serverSignature1 = Ber.createSignatureFromEncodedBase64String(serverSignature1Base64);
+
+        EUICCInfo1 euiccInfo1 = new EUICCInfo1();
+        euiccInfo1.setLowestSvn(RspVersion.V2_2_0);
+
+        DeviceInfo deviceInfo = DeviceInformation.getDeviceInfo(euiccInfo1);
+
+        CtxParamsForCommonAuthentication ctxParamsForCommonAuthentication = new CtxParamsForCommonAuthentication();
+        ctxParamsForCommonAuthentication.setMatchingId(new BerUTF8String(matchingId));
+        ctxParamsForCommonAuthentication.setDeviceInfo(deviceInfo);
+
+        CtxParams1 ctxParams1 = new CtxParams1();
+        ctxParams1.setCtxParamsForCommonAuthentication(ctxParamsForCommonAuthentication);
+
+        AuthenticateServerRequest authenticateServerRequest = new AuthenticateServerRequest();
+        authenticateServerRequest.setServerSigned1(serverSigned1);
+        authenticateServerRequest.setServerSignature1(serverSignature1);
+        authenticateServerRequest.setEuiccCiPKIdToBeUsed(euiccCiPKIdToBeUsed);
+        authenticateServerRequest.setServerCertificate(serverCertificate);
+        authenticateServerRequest.setCtxParams1(ctxParams1);
+
+        AuthenticateServerResponse actualResponse = es10Interface.es10b_authenticateServer(authenticateServerRequest);
+
+        List<String> expectedCommands = Arrays.asList(
+                "81E2110078BF38820306304D80109273A06E0F0089CF231FFCA68093AEF281104655851B3A84C12812BEF47473DC3C7383157273702E696E66696E656F6E2E636F6D3A343434338410D8454EA755B03D133F95D274649974E15F37406B19E51CA711784E392E094797F566055F117AA40BD6A6B2AA37289325E2A09B9C",
+                "81E2110178D0605A10CB960D6AE088B3363E9833E98EBA5812D23D24F37F276E4B513BC80414C0BC70BA36929D43B467FF57570530E57AB8FCD830820239308201E0A003020102020200C8300A06082A8648CE3D04030230493115301306035504030C0C47534D4120546573742043493111300F060355040B0C085445",
+                "81E21102785354434552543110300E060355040A0C0752535054455354310B3009060355040613024954301E170D3137303832313134323731365A170D3230303832303134323731365A3026310D300B060355040A0C0441434D453115301306035504030C0C5445535420534D2D44502B32305A301406072A8648CE3D",
+                "81E2110378020106092B2403030208010107034200042EEE07C96D005BE5195F79AD1DADCD1D378CA3095E44F72EEA410F08C756122C9063C965B7FC8529C0CA4E9B4F65969C283C65636457877118F6D1172D6A2365A381D93081D6301F0603551D23041830168014C0BC70BA36929D43B467FF57570530E57AB8FCD8",
+                "81E2110478301D0603551D0E04160414D70EFD057BAC1F7C55EA5D8C26BE160292845BAF300E0603551D1104073005880388370C300E0603551D0F0101FF04040302078030170603551D200101FF040D300B3009060767811201020104305B0603551D1F045430523027A025A0238621687474703A2F2F63692E746573",
+                "81E2110578742E67736D612E636F6D2F43524C2D412E63726C3027A025A0238621687474703A2F2F63692E746573742E67736D612E636F6D2F43524C2D422E63726C300A06082A8648CE3D040302034700304402204B32A5C9EE05F29FD44A086FF04A109A88D6E5848039A516EEC78CA4ACF0C5B30220529E46FA109D",
+                "81E291063B130540BAD62A46FC85C395B2C4CB9E8CF15079D49A9DA537DFE0A01F8013303030302D303030302D303030302D30303031A108800435550607A100");
+        List<String> actualCommands = this.mockReaderChannel.getRequestApdus();
+        assertEquals(expectedCommands, actualCommands);
+    }
+
+    @Test
+    public void es10b_cancelSession() throws Exception {
+        this.mockReaderChannel.setResponseApdus(Arrays.asList("BF4161A05F301A8010F84B1CFD6D975F05C7FAC47EE4D93B27810388370C8201005F3740A248AD2A38030420A35D836481DB39799A5B3E77EFFA486CA2879FF9FD82B7C260047E092ED89EA3F8BD2399DFC9516274E122F3374D393C67CF4797C03A901C9000"));
+
+        TransactionId transactionId = new TransactionId(Bytes.decodeHexString("F84B1CFD6D975F05C7FAC47EE4D93B27"));
+        CancelSessionReason cancelSessionReason = new CancelSessionReason(CancelSessionReasons.END_USER_REJECTION);
+
+        CancelSessionRequest cancelSessionRequest = new CancelSessionRequest();
+        cancelSessionRequest.setTransactionId(transactionId);
+        cancelSessionRequest.setReason(cancelSessionReason);
+
+        CancelSessionResponse actualResponse = es10Interface.es10b_cancelSession(cancelSessionRequest);
+
+        List<String> expectedCommands = Arrays.asList("81E2910018BF41158010F84B1CFD6D975F05C7FAC47EE4D93B27810100");
+        List<String> actualCommands = this.mockReaderChannel.getRequestApdus();
+        assertEquals(expectedCommands, actualCommands);
+    }
+
+    // ES10c
+    @Test
+    public void es10c_getProfilesInfoAll() throws Exception {
+        this.mockReaderChannel.setResponseApdus(Arrays.asList("BF2D81DDA081DAE3455A0A980000000000000030F74F10A0000005591010FFFFFFFF89000011009F7001019007416E72697473759107416E7269747375920C416E72697473752054657374950100E3455A0A980000000000000060F04F10A0000005591010FFFFFFFF89000013009F700100900752532020202020910752532020202020920C52686F64655363687761727A950100E34A5A0A980000000000000002004F10A0000005591010FFFFFFFF89000012009F70010091155465737420536572766963652050726F7669646572920C546573742050726F66696C659501029000"));
+
+        ProfileInfoListResponse actualResponse = es10Interface.es10c_getProfilesInfoAll();
+
+        List<String> expectedCommands = Arrays.asList("81E2910003BF2D00");
+        List<String> actualCommands = this.mockReaderChannel.getRequestApdus();
+        assertEquals(expectedCommands, actualCommands);
+    }
+
+    @Test
+    public void es10c_enableProfileByIccid() throws Exception {
+        this.mockReaderChannel.setResponseApdus(Arrays.asList("BF31038001019000"));
+
+        Iccid iccid = new Iccid(Bytes.decodeHexString("98000000000000001290"));
+
+        EnableProfileResponse actualResponse = es10Interface.es10c_enableProfileByIccid(iccid, new BerBoolean(true));
+
+        List<String> expectedCommands = Arrays.asList("81E2910014BF3111A00C5A0A980000000000000012908101FF");
+        List<String> actualCommands = this.mockReaderChannel.getRequestApdus();
+        assertEquals(expectedCommands, actualCommands);
+    }
+
+    @Test
+    public void es10c_disableProfileByIccid() throws Exception {
+        this.mockReaderChannel.setResponseApdus(Arrays.asList("BF32038001019000"));
+
+        Iccid iccid = new Iccid(Bytes.decodeHexString("98000000000000001290"));
+
+        DisableProfileResponse actualResponse = es10Interface.es10c_disableProfileByIccid(iccid, new BerBoolean(true));
+
+        List<String> expectedCommands = Arrays.asList("81E2910014BF3211A00C5A0A980000000000000012908101FF");
+        List<String> actualCommands = this.mockReaderChannel.getRequestApdus();
+        assertEquals(expectedCommands, actualCommands);
+    }
+
+    @Test
+    public void es10c_deleteProfileByIccid() throws Exception {
+        this.mockReaderChannel.setResponseApdus(Arrays.asList("BF34038001009000"));
+
+        BerBitString resetOptions = ResetOptions.getResetOptions(false, false, true);
+
+        EuiccMemoryResetResponse actualResponse = es10Interface.es10c_eUiccMemoryReset(resetOptions);
+
+        List<String> expectedCommands = Arrays.asList("81E2910007BF340482020520");
+        List<String> actualCommands = this.mockReaderChannel.getRequestApdus();
+        assertEquals(expectedCommands, actualCommands);
+    }
+
+    @Test
+    public void es10c_eUiccMemoryReset() throws Exception {
+        this.mockReaderChannel.setResponseApdus(Arrays.asList("BF33038001009000"));
+
+        Iccid iccid = new Iccid(Bytes.decodeHexString("98000000000000002280"));
+
+        DeleteProfileResponse actualResponse = es10Interface.es10c_deleteProfileByIccid(iccid);
+
+        List<String> expectedCommands = Arrays.asList("81E291000FBF330C5A0A98000000000000002280");
+        List<String> actualCommands = this.mockReaderChannel.getRequestApdus();
+        assertEquals(expectedCommands, actualCommands);
+    }
+
+    @Test
+    public void es10c_getEid() throws Exception {
+        this.mockReaderChannel.setResponseApdus(Arrays.asList("BF3E125A10890490321234512345123456789012359000"));
+
+        GetEuiccDataResponse actualResponse = es10Interface.es10c_getEid();
+
+        // Check request commands
+        List<String> expectedCommands = Arrays.asList("81E2910006BF3E035C015A");
+        List<String> actualCommands = this.mockReaderChannel.getRequestApdus();
+        assertEquals(expectedCommands, actualCommands);
+
+        // Check response BER object
+        Octet16 eidValue = new Octet16(Bytes.decodeHexString("89049032123451234512345678901235"));
+        GetEuiccDataResponse expectedResponse = new GetEuiccDataResponse();
+        expectedResponse.setEidValue(eidValue);
+        assertEquals(expectedResponse.toString(), actualResponse.toString());
+    }
+
+    @Test
+    public void es10c_setNickname() throws Exception {
+        this.mockReaderChannel.setResponseApdus(Arrays.asList("BF29038001009000"));
+
+        Iccid iccid = new Iccid(Bytes.decodeHexString("98000000000000002280"));
+
+        SetNicknameResponse actualResponse = es10Interface.es10c_setNickname(iccid, "Telefon");
+
+        List<String> expectedCommands = Arrays.asList("81E2910018BF29155A0A98000000000000002280900754656C65666F6E");
+        List<String> actualCommands = this.mockReaderChannel.getRequestApdus();
+        assertEquals(expectedCommands, actualCommands);
+    }
+
+    @Test
+    public void es10c_getRat() throws Exception {
+        this.mockReaderChannel.setResponseApdus(Arrays.asList("BF4319A017301580020560A10B30098003EEEEEE81008200820207809000"));
+
+        GetRatResponse actualResponse = es10Interface.es10c_getRat();
+
+        List<String> expectedCommands = Arrays.asList("81E2910003BF4300");
+        List<String> actualCommands = this.mockReaderChannel.getRequestApdus();
+        assertEquals(expectedCommands, actualCommands);
+    }
+
+    // INTERNAL
+
+    boolean assertEqualsList(List<String> stringListExpected, List<String> stringListActual) {
+        for(int i = 0; i < Math.min(stringListExpected.size(), stringListActual.size()); i++) {
+            String expected = stringListExpected.get(i);
+            String actual = stringListActual.get(i);
+            if(!expected.equals(actual)) {
+                Log.error(TAG,"Error: string mismatch at index " + i +":\n" + expected + "\n" + actual);
+                return false;
+            }
+        }
+
+        return stringListExpected.size() == stringListActual.size();
+    }
+
+    void printCommandList(List<String> commandList) {
+        for(int i = 0; i < commandList.size(); i++) {
+            Log.debug(TAG, "#" + i + " - " + commandList.get(i));
+        }
+    }
+}

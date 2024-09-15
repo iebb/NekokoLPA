@@ -1,0 +1,7 @@
+{
+  "available_space": "Available Space: {{bytes}} Bytes",
+  "no_device": "No compatible readers or SIMs found. Drop down to refresh.",
+  "unsupported_device": "{{name}} is unavailable.",
+  "insert_supported_sim": "Try insert a supported SIM card or relaunch the app."
+}
+
