@@ -8,7 +8,7 @@ import TabController from "@/components/ui/tabController";
 import {EUICCPage} from "@/components/MainUI/EUICCPage";
 import {useTranslation} from "react-i18next";
 import {RefreshControl, ScrollView} from "react-native";
-import {faSimCard} from "@fortawesome/free-solid-svg-icons";
+import {faCreditCard, faPencil, faSimCard} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 
 export default function SIMSelector() {
@@ -79,15 +79,17 @@ export default function SIMSelector() {
               euiccList.map((name, _idx) => ({
                 label: name,
                 icon: (
-                  <FontAwesomeIcon icon={faSimCard} style={{ color: colors.std200, marginRight: 6  }} />
+                  <FontAwesomeIcon icon={
+                    name.startsWith("SIM") ? faSimCard : faCreditCard
+                  } style={{ color: colors.std200, marginRight: 6  }} />
                 ),
                 labelStyle: {
                   padding: 0,
-                  fontSize: 16,
+                  fontSize: name.length > 4 ? 12 : 16,
                 },
                 selectedLabelStyle: {
                   padding: 0,
-                  fontSize: 16,
+                  fontSize: name.length > 4 ? 12 : 16,
                   fontWeight: '500',
                 },
                 labelColor: colors.std400,

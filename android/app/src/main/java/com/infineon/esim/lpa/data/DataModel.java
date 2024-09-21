@@ -213,8 +213,9 @@ public class DataModel extends ReactContextBaseJavaModule implements StatusAndEv
             if (exc != null) {
                 Log.debug(TAG, "SentryId2: " + Sentry.captureException(exc));
             }
+            String errHeader = e.getHeader();
 
-            Log.debug(TAG, "Observed error: " + e.getHeader());
+            Log.debug(TAG, "Observed error: " + errHeader);
             Log.debug(TAG, "Body: " + e.getBody());
             if (this._suppressErrorsUntil <= new Date().getTime() || this._suppressErrorsCount <= 0) {
                 emitData("error", e, true);
@@ -225,15 +226,22 @@ public class DataModel extends ReactContextBaseJavaModule implements StatusAndEv
                     TimeUnit.SECONDS.sleep(5);
                 } catch (InterruptedException ignored) {
                 }
-                refreshProfileList();
+                if (errHeader != null && errHeader.contains("Exception during initializing eUICC")) {
+                    refreshProfileList();
+                }
             }
             var action = this.actionStatusLiveData.getValue();
             var euicc = this.euiccManager.getCurrentEuiccLiveData().getValue();
-            if (euicc != null && !euicc.equals("NONE") && !e.getBody().contains("no APDU access")) {
-                if (action != null && action.getActionStatus() == ActionStatus.GET_PROFILE_LIST_STARTED) {
 
-                } else {
-                    refreshProfileList();
+
+            if (euicc != null && !euicc.equals("NONE")) {
+                var body = e.getBody();
+                if (body != null && body.contains("no APDU access")) {
+                    if (action != null && action.getActionStatus() == ActionStatus.GET_PROFILE_LIST_STARTED) {
+
+                    } else {
+                        refreshProfileList();
+                    }
                 }
             }
         }

@@ -72,18 +72,25 @@ public class DownloadTask implements Callable<DownloadResult> {
                 return new DownloadResult(handleNotificationsResult.getRemoteError());
             }
         } catch (DownloadException fe) {
-            fe.printStackTrace();
-            Log.error(TAG," " + "Downloading profile failed with exception: " + fe.getMessage());
-
+            String code = fe.getResultData().getFinalResult().getErrorResult().getErrorReason().toString();
+            Log.error(TAG,"Downloading profile failed with exception: " + fe.getMessage());
+            String eid;
+            try {
+                eid = lpa.getEID();
+            } catch (Exception e) {
+                eid = "UNKNOWN";
+            }
+            String eum = eid.substring(0, 8);
             // telemetry. todo: remove it?
             SentryEvent event = new SentryEvent();
             Message message = new Message();
             message.setMessage("Profile Download Failed");
             event.setMessage(message);
-            event.setLevel(SentryLevel.WARNING);
+            event.setTag("smdp", fe.getResultData().getNotificationMetadata().getNotificationAddress().toString());
+            event.setTag("eum", eum);
+            event.setLevel(code.equals("10") ? SentryLevel.INFO : SentryLevel.WARNING);
             event.setLogger(DownloadTask.class.getName());
             event.setExtra("result_data", fe.getResultData());
-            event.setExtra("session", fe.getSession());
             event.setThrowable(fe);
 
             Sentry.captureEvent(event);

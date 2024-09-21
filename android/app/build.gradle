@@ -102,18 +102,6 @@ android {
         versionName getVersionFromNpm()
     }
     signingConfigs {
-        debug {
-            storeFile file('debug.keystore')
-            storePassword 'CommunityKey'
-            keyAlias 'CommunityKey'
-            keyPassword 'CommunityKey'
-        }
-        release {
-            storeFile file('debug.keystore')
-            storePassword 'CommunityKey'
-            keyAlias 'CommunityKey'
-            keyPassword 'CommunityKey'
-        }
         community {
             storeFile file('debug.keystore')
             storePassword 'CommunityKey'
@@ -137,7 +125,7 @@ android {
     }
     buildTypes {
         debug {
-            signingConfig signingConfigs.esim9
+            signingConfig signingConfigs.community
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
@@ -170,8 +158,6 @@ dependencies {
     // ---------------------------------------------------------------------------------------------
     // Identiv reader library
     // ---------------------------------------------------------------------------------------------
-    implementation files('lib/acssmc-1.1.5.jar')
-    implementation files('lib/androidSCardV1.2.jar')
 
     // ConstraintLayout for profile list
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"

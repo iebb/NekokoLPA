@@ -293,21 +293,6 @@ function Scanner({ navigation }: RootScreenProps<'Scanner'>) {
 															</Button>
 															<Button
 																style={{ flex: 1, ...gutters.marginVertical_12 }}
-																backgroundColor={colors.gray500}
-																onPress={() => {
-																	setScanState(0);
-																}}
-															>
-																<FontAwesomeIcon
-																	icon={faArrowLeftLong}
-																	style={{ color: colors.constWhite }}
-																/>
-																<Text
-																	style={{ color: colors.constWhite, marginLeft: 10 }}
-																>Re-download</Text>
-															</Button>
-															<Button
-																style={{ flex: 1, ...gutters.marginVertical_12 }}
 																backgroundColor={Colors.green500}
 																onPress={() => {
 																	InfiLPA.enableProfileByIccId(authenticateResult.profileMetadata.profileMetadataMap.ICCID);

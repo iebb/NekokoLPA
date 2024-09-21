@@ -28,13 +28,12 @@ import android.content.Context;
 import com.infineon.esim.lpa.euicc.base.EuiccConnection;
 import com.infineon.esim.lpa.euicc.base.EuiccInterface;
 import com.infineon.esim.lpa.euicc.base.EuiccInterfaceStatusChangeHandler;
-import com.infineon.esim.lpa.euicc.usbreader.acs.ACSUSBReaderInterface;
-import com.infineon.esim.lpa.euicc.usbreader.identive.IdentiveUSBReaderInterface;
 import com.infineon.esim.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import ee.nekoko.lpa.ccid.CCIDInterface;
 import ee.nekoko.nlpa.MainApplication;
 
 final public class USBReaderEuiccInterface implements EuiccInterface {
@@ -51,8 +50,7 @@ final public class USBReaderEuiccInterface implements EuiccInterface {
 
         this.euiccInterfaceStatusChangeHandler = euiccInterfaceStatusChangeHandler;
 
-        // usbReaderInterfaces.add(new IdentiveUSBReaderInterface(context));
-        // usbReaderInterfaces.add(new ACSUSBReaderInterface(context));
+        usbReaderInterfaces.add(new CCIDInterface(context));
 
         // Create BroadcastReceiver for USB attached/detached events
         USBReaderConnectionBroadcastReceiver USBReaderConnectionBroadcastReceiver = new USBReaderConnectionBroadcastReceiver(MainApplication.getAppContext(), onDisconnectCallback, this);

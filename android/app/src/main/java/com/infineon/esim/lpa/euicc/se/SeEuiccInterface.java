@@ -67,10 +67,12 @@ final public class SeEuiccInterface implements EuiccInterface {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
             // Starting with Android R the existence of OMAPI can be checked
             isAvailable = packageManager.hasSystemFeature(PackageManager.FEATURE_SE_OMAPI_UICC);
-        } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        }
+        // We are only targeting Android 9 or higher
+        /* else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             // Starting with Android P the OMAPI is part of Android but cannot be checked (yet).
             isAvailable = true;
-        }
+        }  */
 
         Log.debug(TAG, "Checking if SE eUICC interface is available: " + isAvailable);
 
@@ -136,7 +138,6 @@ final public class SeEuiccInterface implements EuiccInterface {
             if(euiccConnection != null) {
                 euiccConnection.close();
             }
-
             // Open new eUICC connection
             euiccConnection = seService.openEuiccConnection(euiccName);
         }

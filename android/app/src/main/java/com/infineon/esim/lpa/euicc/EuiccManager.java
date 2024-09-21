@@ -280,13 +280,15 @@ public class EuiccManager implements EuiccInterfaceStatusChangeHandler {
 
     @Override
     public void onEuiccInterfaceDisconnected(String interfaceTag) {
-        Log.debug(TAG, "Handling disconnect of interface: " + interfaceTag);
-        statusAndEventHandler.onStatusChange(new AsyncActionStatus(ActionStatus.DISCONNECTING_INTERFACE_FINISHED).addExtras(interfaceTag));
+        if (interfaceTag != null) {
+            Log.debug(TAG, "Handling disconnect of interface: " + interfaceTag);
+            statusAndEventHandler.onStatusChange(new AsyncActionStatus(ActionStatus.DISCONNECTING_INTERFACE_FINISHED).addExtras(interfaceTag));
 
-        // Enable initialisation of fallback eUICC after eUICC list refresh
-        enableFallbackEuicc = true;
+            // Enable initialisation of fallback eUICC after eUICC list refresh
+            enableFallbackEuicc = true;
 
-        startRefreshingEuiccList();
+            startRefreshingEuiccList();
+        }
     }
 
     @Override

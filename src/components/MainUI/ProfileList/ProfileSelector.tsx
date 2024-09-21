@@ -25,7 +25,7 @@ const loadingStates = [
   ActionStatus.DISABLE_PROFILE_STARTED,
   ActionStatus.DELETE_PROFILE_STARTED,
   ActionStatus.SET_NICKNAME_STARTED,
-  // ActionStatus.GET_PROFILE_LIST_STARTED,
+  ActionStatus.GET_PROFILE_LIST_STARTED,
 ];
 
 export default function ProfileSelector({ eUICC = "SIM1" }) {
