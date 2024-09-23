@@ -34,9 +34,9 @@ import com.infineon.esim.lpa.core.dtos.result.remote.AuthenticateResult;
 import com.infineon.esim.lpa.core.dtos.result.remote.CancelSessionResult;
 import com.infineon.esim.lpa.core.dtos.result.remote.DownloadResult;
 import com.infineon.esim.lpa.data.StatusAndEventHandler;
-import com.infineon.esim.lpa.euicc.EuiccManager;
-import com.infineon.esim.lpa.euicc.base.EuiccConnection;
-import com.infineon.esim.lpa.euicc.base.EuiccConnectionConsumer;
+import ee.nekoko.lpa.euicc.EuiccManager;
+import ee.nekoko.lpa.euicc.base.EuiccConnection;
+import ee.nekoko.lpa.euicc.base.EuiccConnectionConsumer;
 import com.infineon.esim.lpa.lpa.task.AuthenticateTask;
 import com.infineon.esim.lpa.lpa.task.CancelSessionTask;
 import com.infineon.esim.lpa.lpa.task.DownloadTask;
@@ -191,13 +191,25 @@ public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl i
     }
 
     public void deleteProfile(ProfileMetadata profile) {
+        // sync mode
         statusAndEventHandler.onStatusChange(ActionStatus.DELETE_PROFILE_STARTED);
+        try {
+            if (!profile.isEnabled()) {
+                Log.debug(TAG, "Profile already disabled!");
+            } else {
+                new ProfileActionTask(this, ProfileActionType.PROFILE_ACTION_DELETE, profile).call();
+                ProfileList result = new GetProfileListTask(this).call();
+                profileList.postValue(result);
+            }
+        } catch (Exception e) {
+            if (e.getMessage().contains("Opening eUICC connection failed.")) {
 
-        new TaskRunner().executeAsync(new ProfileActionTask(this,
-                        ProfileActionType.PROFILE_ACTION_DELETE,
-                        profile),
-                result -> statusAndEventHandler.onStatusChange(ActionStatus.DELETE_PROFILE_FINISHED),
-                e -> statusAndEventHandler.onError(new Error("Error during deleting of profile.", e.getMessage(), e)));
+            } else {
+                statusAndEventHandler.onError(new Error("Error during deleting of profile.", e.getMessage(), e));
+            }
+        } finally {
+            statusAndEventHandler.onStatusChange(ActionStatus.DELETE_PROFILE_FINISHED);
+        }
     }
 
 

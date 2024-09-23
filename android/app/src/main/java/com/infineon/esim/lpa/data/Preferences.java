@@ -24,7 +24,7 @@ package com.infineon.esim.lpa.data;
 
 import android.content.SharedPreferences;
 
-import com.infineon.esim.lpa.euicc.EuiccConnectionSettings;
+import ee.nekoko.lpa.euicc.EuiccConnectionSettings;
 import com.infineon.esim.util.Log;
 
 import ee.nekoko.nlpa.MainApplication;
@@ -114,9 +114,13 @@ final public class Preferences implements SharedPreferences.OnSharedPreferenceCh
     }
 
     private static Boolean getShallSendTerminalCapabilityCommand() {
+        return false;
+        /*
         String key = MainApplication.getStringResource(R.string.pref_key_sim_slot_needs_term_cap_cmd);
         boolean defaultValue = Boolean.parseBoolean(MainApplication.getStringResource(R.string.pref_def_value_simslots_need_term_cap_cmd));
         return MainApplication.getSharedPreferences().getBoolean(key, defaultValue);
+
+         */
     }
 
 

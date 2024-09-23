@@ -48,7 +48,7 @@ import com.infineon.esim.lpa.data.ActionStatus;
 import com.infineon.esim.lpa.data.AsyncActionStatus;
 import com.infineon.esim.lpa.data.Error;
 import com.infineon.esim.lpa.data.StatusAndEventHandler;
-import com.infineon.esim.lpa.euicc.EuiccManager;
+import ee.nekoko.lpa.euicc.EuiccManager;
 import com.infineon.esim.lpa.lpa.LocalProfileAssistant;
 import com.infineon.esim.lpa.util.android.OneTimeEvent;
 import com.infineon.esim.util.Log;
@@ -419,7 +419,6 @@ public class LPABridge extends ReactContextBaseJavaModule implements StatusAndEv
     }
 
     public void deleteProfile(ProfileMetadata profile) {
-        this._suppressErrorsUntil = new Date().getTime() + 12 * 1000;
         lpa.deleteProfile(profile);
     }
 

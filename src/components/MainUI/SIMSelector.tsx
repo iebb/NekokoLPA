@@ -15,7 +15,6 @@ export default function SIMSelector() {
   const { colors } = useTheme();
   const dispatch = useDispatch();
   const [width, setWidth] = useState<number>(0);
-  const [check, setCheck] = useState<number>(0);
   const { euiccList: _euiccList, currentEuicc} = useSelector((state: RootState) => state.LPA);
   const { t } = useTranslation(['main']);
   const [refreshing, setRefreshing] = useState(false);
@@ -29,19 +28,7 @@ export default function SIMSelector() {
   }, []);
 
   const euiccList = Array.from(new Set(_euiccList)).filter(e => e.length);
-
-  useEffect(() => {
-    if (euiccList.includes(currentEuicc)) {
-      if (euiccList.length && check < 3) {
-        InfiLPA.selectEUICC(euiccList[0]);
-        dispatch(setGlobalState({currentEuicc: euiccList[0]}));
-        setCheck(check + 1);
-      }
-    } else {
-      setCheck(0);
-    }
-  }, [euiccList, currentEuicc]);
-
+  console.log("index", euiccList.indexOf(currentEuicc));
 
 
   if (!euiccList?.length) {
