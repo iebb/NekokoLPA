@@ -75,10 +75,11 @@ export default function SIMSelector() {
                       name.startsWith("SIM") ? faSimCard : faDownload
                     }
                     style={{
-                      color: colors.std200,
-                      marginRight: 6,
+                      color: colors.std400,
+                      marginRight: 4,
+                      marginTop: -2,
                     }}
-                    size={14}
+                    size={12}
                   />
                 ),
                 labelStyle: {
@@ -92,10 +93,10 @@ export default function SIMSelector() {
                   lineHeight: name.length > 4 ? 12 : 14,
                   fontWeight: '500',
                 },
-                iconColor: colors.std600,
-                labelColor: colors.std600,
-                selectedLabelColor: colors.std200,
-                selectedIconColor: colors.std200,
+                iconColor: colors.std400,
+                labelColor: colors.std400,
+                selectedLabelColor: colors.purple300,
+                selectedIconColor: colors.purple300,
                 width: width / euiccList.length,
                 onPress: () => {
                   if (euiccList.includes(name)) {

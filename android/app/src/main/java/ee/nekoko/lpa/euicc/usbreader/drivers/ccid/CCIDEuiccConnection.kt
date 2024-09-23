@@ -7,7 +7,7 @@ import ee.nekoko.lpa.euicc.base.generic.ISO7816Channel.ApduTransmitter
 import com.infineon.esim.util.Log
 
 
-class CCIDEuiccConnection(private val CCIDCard: CCIDCard, private val euiccName: String) : EuiccConnection, ApduTransmitter {
+class CCIDEuiccConnection(private val reader: CCIDReader) : EuiccConnection, ApduTransmitter {
     private val iso7816Channel = ISO7816Channel(this)
 
     private var euiccConnectionSettings: EuiccConnectionSettings? = null
@@ -17,14 +17,14 @@ class CCIDEuiccConnection(private val CCIDCard: CCIDCard, private val euiccName:
     }
 
     override fun getEuiccName(): String {
-        return euiccName
+        return reader.name
     }
 
 
     @Throws(Exception::class)
     override fun open(): Boolean {
         // Open connection to card
-        CCIDCard.connectCard(euiccName)
+        reader.connectCard()
 
         // Open (logical) channel to ISD-R
         iso7816Channel.openChannel(euiccConnectionSettings)
@@ -44,12 +44,12 @@ class CCIDEuiccConnection(private val CCIDCard: CCIDCard, private val euiccName:
             iso7816Channel.closeChannel(euiccConnectionSettings)
 
             // Disconnect card
-            CCIDCard.disconnectCard()
+            reader.disconnectCard()
         }
     }
 
     override fun isOpen(): Boolean {
-        return CCIDCard.isConnected
+        return reader.isConnected
     }
 
     @Throws(Exception::class)
@@ -60,7 +60,7 @@ class CCIDEuiccConnection(private val CCIDCard: CCIDCard, private val euiccName:
         iso7816Channel.closeChannel(euiccConnectionSettings)
 
         // Reset card
-        CCIDCard.resetCard()
+        reader.resetCard()
 
         // Open (logical) channel
         iso7816Channel.openChannel(euiccConnectionSettings)
@@ -80,7 +80,7 @@ class CCIDEuiccConnection(private val CCIDCard: CCIDCard, private val euiccName:
 
     @Throws(Exception::class)
     override fun transmit(command: ByteArray): ByteArray {
-        return CCIDCard.transmitToCard(command)
+        return reader.transmitToCard(command)
     }
 
     @Throws(Throwable::class)

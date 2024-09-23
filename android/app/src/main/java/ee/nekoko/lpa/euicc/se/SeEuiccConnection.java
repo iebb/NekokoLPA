@@ -86,13 +86,8 @@ public class SeEuiccConnection implements EuiccConnection {
             if (session == null || session.isClosed()) {
                 Log.debug(TAG, "Opening a new session...");
                 session = reader.openSession();
-                if(session != null) {
-                    Log.debug(TAG, "Successfully opened a new session.");
-                } else {
-                    Log.error(TAG, "Failed to open a new session.");
-                    return false;
-                }
             }
+            session.getATR(); // weird
 
             if (channel == null || !channel.isOpen()) {
                 Log.debug(TAG, "Opening a new logical channel...");

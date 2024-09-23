@@ -201,21 +201,15 @@ public class EuiccManager implements EuiccInterfaceStatusChangeHandler {
     }
 
     public void startRefreshingEuiccList() {
+        statusAndEventHandler.onStatusChange(ActionStatus.REFRESHING_EUICC_LIST_STARTED);
         Log.debug(TAG,"Refreshing eUICC list.");
-
-        TaskRunner.ExceptionHandler exceptionHandler = e -> statusAndEventHandler.onError(new Error("Exception during refreshing eUICC list.", e.getMessage(), e));
-
         try {
-            statusAndEventHandler.onStatusChange(ActionStatus.REFRESHING_EUICC_LIST_STARTED);
-
-            new TaskRunner().executeAsync(new RefreshEuiccNamesTask(euiccInterfaces),
-                    result -> {
-                        statusAndEventHandler.onStatusChange(ActionStatus.REFRESHING_EUICC_LIST_FINISHED);
-                        onEuiccListRefreshed(result);
-                    },
-                    exceptionHandler);
+            var result = new RefreshEuiccNamesTask(euiccInterfaces).call();
+            onEuiccListRefreshed(result);
         } catch (Exception e) {
-            exceptionHandler.onException(e);
+            statusAndEventHandler.onError(new Error("Exception during refreshing eUICC list.", e.getMessage(), e));
+        } finally {
+            statusAndEventHandler.onStatusChange(ActionStatus.REFRESHING_EUICC_LIST_FINISHED);
         }
     }
 
@@ -230,13 +224,15 @@ public class EuiccManager implements EuiccInterfaceStatusChangeHandler {
         try {
             EuiccConnection oldEuiccConnection = currentEuiccConnection;
             EuiccConnection newEuiccConnection = getEuiccConnectionFromName(euiccName);
-            var success = new SwitchEuiccTask(oldEuiccConnection, newEuiccConnection, Preferences.getReaderSettings()).call();
-            if (success) {
-                currentEuiccConnection = newEuiccConnection;
-                onEuiccConnected(euiccName, newEuiccConnection);
-                return euiccName;
-            } else {
-                selectEuicc(Preferences.getNoEuiccName());
+            if (newEuiccConnection != null) {
+                var success = new SwitchEuiccTask(oldEuiccConnection, newEuiccConnection, Preferences.getReaderSettings()).call();
+                if (success) {
+                    currentEuiccConnection = newEuiccConnection;
+                    onEuiccConnected(euiccName, newEuiccConnection);
+                    return euiccName;
+                } else {
+                    selectEuicc(Preferences.getNoEuiccName());
+                }
             }
             statusAndEventHandler.onStatusChange(new AsyncActionStatus(ActionStatus.OPENING_EUICC_CONNECTION_FINISHED).addExtras(euiccName));
         } catch (java.security.AccessControlException e) {

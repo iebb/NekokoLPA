@@ -74,7 +74,6 @@ public class SeService implements EuiccService {
                 euiccNames.add(readerName);
             }
         }
-
         return euiccNames;
     }
 
@@ -172,10 +171,6 @@ public class SeService implements EuiccService {
         if (readers.length == 0) {
             Log.error(TAG, "Cannot open session: no reader found from SE service.");
             throw new Exception("Cannot open session: no reader found from SE service.");
-        } else {
-            for (Reader reader : readers) {
-                Log.debug(TAG, " - " + reader.getName());
-            }
         }
 
         for (Reader reader : readers) {

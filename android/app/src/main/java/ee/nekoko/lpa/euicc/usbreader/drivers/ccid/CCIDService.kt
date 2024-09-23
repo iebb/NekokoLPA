@@ -47,7 +47,7 @@ class CCIDService(context: Context) : EuiccService {
             return ccidEuiccConnection as CCIDEuiccConnection
         }
 
-        ccidEuiccConnection = CCIDEuiccConnection(CCIDCard, euiccName)
+        ccidEuiccConnection = CCIDEuiccConnection(CCIDCard.readers.get(euiccName)!!)
 
         return ccidEuiccConnection!!
     }

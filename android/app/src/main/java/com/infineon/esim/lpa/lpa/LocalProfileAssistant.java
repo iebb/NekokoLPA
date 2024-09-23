@@ -210,15 +210,21 @@ public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl i
 
 
     public void setNickname(ProfileMetadata profile) {
+        // sync mode
         statusAndEventHandler.onStatusChange(ActionStatus.SET_NICKNAME_STARTED);
+        try {
+            new ProfileActionTask(this, ProfileActionType.PROFILE_ACTION_SET_NICKNAME, profile).call();
+            ProfileList result = new GetProfileListTask(this).call();
+            profileList.postValue(result);
+        } catch (Exception e) {
+            if (e.getMessage().contains("Opening eUICC connection failed.")) {
 
-        ProfileActionTask profileActionTask = new ProfileActionTask(this,
-                ProfileActionType.PROFILE_ACTION_SET_NICKNAME,
-                profile);
-
-        new TaskRunner().executeAsync(profileActionTask,
-                result -> statusAndEventHandler.onStatusChange(ActionStatus.SET_NICKNAME_FINISHED),
-                e -> statusAndEventHandler.onError(new Error("Error during setting nickname of profile.", e.getMessage(), e)));
+            } else {
+                statusAndEventHandler.onError(new Error("Error during deleting of profile.", e.getMessage(), e));
+            }
+        } finally {
+            statusAndEventHandler.onStatusChange(ActionStatus.SET_NICKNAME_FINISHED);
+        }
     }
 
     public void handleAndClearAllNotifications() {

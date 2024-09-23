@@ -290,7 +290,17 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 											}}
 											round
 											onPress={() => {
-												InfiLPA.setNicknameByIccId(ICCID, nickname + tagChars);
+												setLoading(true);
+												setTimeout(() => {
+													try {
+														InfiLPA.setNicknameByIccId(ICCID, nickname + tagChars);
+													} finally {
+														setTimeout(() => {
+															setLoading(false);
+															navigation.goBack();
+														}, 100);
+													}
+												}, 10);
 											}}
 										>
 											<FontAwesomeIcon icon={faSave} style={{ color: colors.std900 }} />
@@ -336,11 +346,8 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 																			InfiLPA.deleteProfileByIccId(ICCID);
 																		} finally {
 																			setTimeout(() => {
-																				InfiLPA.refreshProfileList(eUICC);
-																				setTimeout(() => {
-																					setLoading(false);
-																					navigation.goBack();
-																				}, 300);
+																				setLoading(false);
+																				navigation.goBack();
 																			}, 100);
 																		}
 																	}, 10);
