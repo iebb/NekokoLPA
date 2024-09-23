@@ -140,6 +140,7 @@ public class ISO7816Channel {
     }
 
     private String transmitAPDU(String apdu, byte channel) throws Exception {
+        Log.info("T-APDU", apdu);
         byte[] command = Bytes.decodeHexString(apdu);
 
         // Set logical channel in CLA byte
@@ -177,6 +178,7 @@ public class ISO7816Channel {
             Log.error(TAG, "Error during transmitAPDU: Response is null.");
             throw new Exception("Error during transmitAPDU: Response is null.");
         } else {
+            Log.info("R-APDU", Bytes.encodeHexString(response));
             return Bytes.encodeHexString(response);
         }
     }

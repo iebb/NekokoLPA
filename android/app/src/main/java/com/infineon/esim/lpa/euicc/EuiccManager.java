@@ -126,18 +126,19 @@ public class EuiccManager implements EuiccInterfaceStatusChangeHandler {
         }
     }
 
-    public void selectEuicc(String euiccName) {
+    public String selectEuicc(String euiccName) {
         Log.debug(TAG, "Switch eUICC to: " + euiccName);
 
         if(euiccName.equals(currentEuicc.getValue())) {
             Log.debug(TAG, "eUICC already active! No switch needed!");
-            return;
+            return euiccName;
         }
 
         if(euiccName.equals(Preferences.getNoEuiccName())) {
             onEuiccConnected(euiccName, null);
+            return null;
         } else {
-            startEuiccInitialization(euiccName);
+            return startEuiccInitialization(euiccName);
         }
     }
 
@@ -221,49 +222,42 @@ public class EuiccManager implements EuiccInterfaceStatusChangeHandler {
         }
     }
 
-    private void startEuiccInitialization(String euiccName) {
-        startEuiccInitialization(euiccName, 3);
+    private String startEuiccInitialization(String euiccName) {
+        return startEuiccInitialization(euiccName, 3);
     }
 
-    private void startEuiccInitialization(String euiccName, int counter) {
+    private String startEuiccInitialization(String euiccName, int counter) {
         Log.debug(TAG,"Initializing eUICC \"" + euiccName + "\" as task.");
-
-        TaskRunner.ExceptionHandler exceptionHandler = e -> {
-            statusAndEventHandler.onError(new Error("Exception during initializing eUICC", e.getMessage(), e));
-            statusAndEventHandler.onStatusChange(new AsyncActionStatus(ActionStatus.OPENING_EUICC_CONNECTION_FINISHED));
-            onEuiccInterfaceDisconnected(null);
-        };
+        statusAndEventHandler.onStatusChange(new AsyncActionStatus(ActionStatus.OPENING_EUICC_CONNECTION_STARTED).addExtras(euiccName));
 
         try {
-            statusAndEventHandler.onStatusChange(new AsyncActionStatus(ActionStatus.OPENING_EUICC_CONNECTION_STARTED).addExtras(euiccName));
             EuiccConnection oldEuiccConnection = currentEuiccConnection;
             EuiccConnection newEuiccConnection = getEuiccConnectionFromName(euiccName);
-
-            new TaskRunner().executeAsync(new SwitchEuiccTask(oldEuiccConnection, newEuiccConnection, Preferences.getReaderSettings()),
-                    success -> {
-                        statusAndEventHandler.onStatusChange(new AsyncActionStatus(ActionStatus.OPENING_EUICC_CONNECTION_FINISHED).addExtras(euiccName));
-
-                        if (success) {
-                            currentEuiccConnection = newEuiccConnection;
-                            onEuiccConnected(euiccName, newEuiccConnection);
-                        } else {
-                            selectEuicc(Preferences.getNoEuiccName());
-                        }
-                    },
-                    exceptionHandler);
+            var success = new SwitchEuiccTask(oldEuiccConnection, newEuiccConnection, Preferences.getReaderSettings()).call();
+            if (success) {
+                currentEuiccConnection = newEuiccConnection;
+                onEuiccConnected(euiccName, newEuiccConnection);
+                return euiccName;
+            } else {
+                selectEuicc(Preferences.getNoEuiccName());
+            }
+            statusAndEventHandler.onStatusChange(new AsyncActionStatus(ActionStatus.OPENING_EUICC_CONNECTION_FINISHED).addExtras(euiccName));
         } catch (java.security.AccessControlException e) {
             @SuppressLint("DefaultLocale")
             String msg = String.format("Error found. Retrying %d", counter);
             Log.debug(TAG, msg);
             Log.debug(TAG, e.getMessage());
             if (counter > 0) { // retry
-                startEuiccInitialization(euiccName, counter - 1);
+                return startEuiccInitialization(euiccName, counter - 1);
             } else {
-                exceptionHandler.onException(e);
+                throw e;
             }
         } catch (Exception e) {
-            exceptionHandler.onException(e);
+            statusAndEventHandler.onError(new Error("Exception during initializing eUICC", e.getMessage(), e));
+            statusAndEventHandler.onStatusChange(new AsyncActionStatus(ActionStatus.OPENING_EUICC_CONNECTION_FINISHED));
+            onEuiccInterfaceDisconnected(null);
         }
+        return null;
     }
 
     // endregion
@@ -402,4 +396,18 @@ public class EuiccManager implements EuiccInterfaceStatusChangeHandler {
         Log.error("Error: Interface with tag \"" + interfaceTag + "\" not found.");
         throw new Exception("Error: Interface with tag \"" + interfaceTag + "\" not found.");
     }
+
+
+    /* sync calls */
+
+    public void refreshEuiccList() {
+        Log.debug(TAG,"Refreshing eUICC list.");
+        try {
+            var result = new RefreshEuiccNamesTask(euiccInterfaces).call();
+            onEuiccListRefreshed(result);
+        } catch (Exception e) {
+            statusAndEventHandler.onError(new Error("Exception during refreshing eUICC list.", e.getMessage(), e));
+        }
+    }
+
 }

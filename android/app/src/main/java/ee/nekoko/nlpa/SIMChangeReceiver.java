@@ -1,4 +1,4 @@
-package com.infineon.esim.lpa.data;
+package ee.nekoko.nlpa;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,7 +12,7 @@ public class SIMChangeReceiver extends BroadcastReceiver {
 
         Log.d("SimChangedReceiver", "--> SIM state changed <--");
         Log.d("SimChangedReceiver", "--> Refreshing eUICCs <--");
-        var model = DataModel.getInstance();
-        model.refreshEuiccs();
+//        var model = LPABridge.getInstance();
+//        model.refreshEuiccs();
     }
 }

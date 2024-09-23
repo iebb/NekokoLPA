@@ -1,4 +1,5 @@
 {
+  "profile_detail": "配置详情",
   "name": "名称",
   "plmn": "PLMN",
   "country": "国家",
@@ -35,6 +36,7 @@
   "loading_download_profile": "正在下载运营商配置",
   "download_success": "下载成功",
   "download_failure": "下载失败",
+  "setting_nickname_in_progress": "正在设置昵称",
   "ui_enable": "启用",
   "ui_back": "返回",
   "ui_cancel": "取消",

@@ -23,8 +23,6 @@ class CCIDEuiccConnection(private val CCIDCard: CCIDCard, private val euiccName:
 
     @Throws(Exception::class)
     override fun open(): Boolean {
-        Log.debug(TAG, "Opening Identive interface...")
-
         // Open connection to card
         CCIDCard.connectCard(euiccName)
 

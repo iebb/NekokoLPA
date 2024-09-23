@@ -29,6 +29,7 @@ class CCIDCard(private val context: Context) {
         val ccid: Ccid?,
     )
 
+
     private val usbReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == ACTION_USB_PERMISSION) {
@@ -73,17 +74,21 @@ class CCIDCard(private val context: Context) {
             Log.e(TAG, "Failed to claim interface")
             return null
         }
-        for(i in 0 until 4) {
-            try {
-                Log.d(TAG, "Trying Voltage #$i")
-                val atr = ccid.iccPowerOn(i.toByte())
-                Log.d(TAG, "ATR: ${atr.toHexString()}")
-                return ccid
-            } catch (ex: Exception) {
-                Log.d(TAG, "Voltage #$i Failed")
+        for(i in 0 until 5) {
+            // AUTO, 5V, 3V, 1.8V
+            if ((descriptor.voltage and (1 shl i)) > 0) {
+                try {
+                    Log.d(TAG, "Trying Supported Voltage #$i")
+                    val atr = ccid.iccPowerOn(i.toByte())
+                    Log.d(TAG, "ATR: ${atr.toHexString()}")
+                    return ccid
+                } catch (ex: Exception) {
+                    Log.d(TAG, "Voltage #$i Failed")
+                }
             }
         }
-        throw Exception("Power On failed")
+        return ccid
+        // throw Exception("Power On failed")
     }
 
     private fun getEndpoints(usbInterface: UsbInterface): Pair<UsbEndpoint, UsbEndpoint> {
@@ -168,7 +173,6 @@ class CCIDCard(private val context: Context) {
     fun releaseContext() {
     }
 
-    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     @Throws(Exception::class)
     fun connectCard(name: String) {
         val reader = readers[name]
@@ -187,7 +191,11 @@ class CCIDCard(private val context: Context) {
         }
 
         if (!usbManager.hasPermission(device)) {
-            context.registerReceiver(usbReceiver, IntentFilter(ACTION_USB_PERMISSION))
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                context.registerReceiver(usbReceiver, IntentFilter(ACTION_USB_PERMISSION), Context.RECEIVER_NOT_EXPORTED)
+            } else @SuppressLint("UnspecifiedRegisterReceiverFlag") {
+                context.registerReceiver(usbReceiver, IntentFilter(ACTION_USB_PERMISSION))
+            }
 
             // Request permission
             readers[name] = reader.copy()

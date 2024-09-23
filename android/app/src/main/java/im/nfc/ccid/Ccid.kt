@@ -2,6 +2,7 @@ package im.nfc.ccid
 
 import android.hardware.usb.UsbDeviceConnection
 import android.hardware.usb.UsbEndpoint
+import kotlin.math.max
 
 class Ccid(
     private val usbDeviceConnection: UsbDeviceConnection,
@@ -65,6 +66,7 @@ class Ccid(
     }
 
 
+    @OptIn(ExperimentalStdlibApi::class)
     fun getDescriptor(interfaceIdx: Int): CcidDescriptor? {
         val rawDescriptors = usbDeviceConnection.rawDescriptors
         var byteIndex = 0
@@ -92,13 +94,21 @@ class Ccid(
                         ((rawDescriptors[byteIndex + 29].toInt() and 0xff) shl 8) or
                         ((rawDescriptors[byteIndex + 30].toInt() and 0xff) shl 16) or
                         ((rawDescriptors[byteIndex + 31].toInt() and 0xff) shl 24)
+                val maxSlot = (rawDescriptors[byteIndex + 4].toInt() and 0xff)
+                var voltage = (rawDescriptors[byteIndex + 5].toInt() and 0xff) shl 1
                 val levelOfExchange = when ((dwFeatures shr 16) and 0xFF) {
                     0x01 -> LevelOfExchange.TPDU
                     0x02 -> LevelOfExchange.ShortAPDU
                     0x04 -> LevelOfExchange.ExtendedAPDU
                     else -> throw CcidException("Unknown level of exchange")
                 }
-                return CcidDescriptor(dwProtocols.toByte(), levelOfExchange, dwMaxIFSD)
+
+
+                if (dwFeatures and 0x8 == 0x8) {
+                    voltage = voltage or 1
+                }
+
+                return CcidDescriptor(dwProtocols.toByte(), levelOfExchange, dwMaxIFSD, maxSlot, voltage, rawDescriptors.toHexString())
             }
 
             byteIndex += descriptorLength

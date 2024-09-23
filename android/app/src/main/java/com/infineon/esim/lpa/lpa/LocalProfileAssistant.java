@@ -104,7 +104,22 @@ public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl i
         }
     }
 
+
     public void refreshProfileList() {
+        Log.debug(TAG,"Refreshing profile list.");
+        statusAndEventHandler.onStatusChange(ActionStatus.GET_PROFILE_LIST_STARTED);
+        try {
+            ProfileList result = new GetProfileListTask(this).call();
+            profileList.postValue(result);
+        } catch (Exception e) {
+            statusAndEventHandler.onError(new Error("Exception during getting of profile list.", e.getMessage(), e));
+        } finally {
+            statusAndEventHandler.onStatusChange(ActionStatus.GET_PROFILE_LIST_FINISHED);
+        }
+    }
+
+
+    public void refreshProfileListAsync() {
         Log.debug(TAG,"Refreshing profile list.");
         statusAndEventHandler.onStatusChange(ActionStatus.GET_PROFILE_LIST_STARTED);
 
@@ -131,35 +146,48 @@ public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl i
     }
 
     public void enableProfile(ProfileMetadata profile) {
+        // sync mode
         statusAndEventHandler.onStatusChange(ActionStatus.ENABLE_PROFILE_STARTED);
 
-        if(profile.isEnabled()) {
-            Log.debug(TAG, "Profile already enabled!");
-            statusAndEventHandler.onStatusChange(ActionStatus.ENABLE_PROFILE_FINISHED);
-            return;
-        }
+        try {
+            if (profile.isEnabled()) {
+                Log.debug(TAG, "Profile already enabled!");
+            } else {
+                new ProfileActionTask(this, ProfileActionType.PROFILE_ACTION_ENABLE, profile).call();
+                ProfileList result = new GetProfileListTask(this).call();
+                profileList.postValue(result);
+            }
+        } catch (Exception e) {
+            if (e.getMessage().contains("Opening eUICC connection failed.")) {
 
-        new TaskRunner().executeAsync(new ProfileActionTask(this,
-                        ProfileActionType.PROFILE_ACTION_ENABLE,
-                        profile),
-                result -> statusAndEventHandler.onStatusChange(ActionStatus.ENABLE_PROFILE_FINISHED),
-                e -> statusAndEventHandler.onError(new Error("Error during enabling profile.", e.getMessage(), e)));
+            } else {
+                statusAndEventHandler.onError(new Error("Error during enabling profile.", e.getMessage(), e));
+            }
+        } finally {
+            statusAndEventHandler.onStatusChange(ActionStatus.ENABLE_PROFILE_FINISHED);
+        }
     }
 
     public void disableProfile(ProfileMetadata profile) {
+        // sync mode
         statusAndEventHandler.onStatusChange(ActionStatus.DISABLE_PROFILE_STARTED);
+        try {
+            if (!profile.isEnabled()) {
+                Log.debug(TAG, "Profile already disabled!");
+            } else {
+                new ProfileActionTask(this, ProfileActionType.PROFILE_ACTION_DISABLE, profile).call();
+                ProfileList result = new GetProfileListTask(this).call();
+                profileList.postValue(result);
+            }
+        } catch (Exception e) {
+            if (e.getMessage().contains("Opening eUICC connection failed.")) {
 
-        if(!profile.isEnabled()) {
-            Log.debug(TAG, "Profile already disabled!");
+            } else {
+                statusAndEventHandler.onError(new Error("Error during enabling profile.", e.getMessage(), e));
+            }
+        } finally {
             statusAndEventHandler.onStatusChange(ActionStatus.DISABLE_PROFILE_FINISHED);
-            return;
         }
-
-        new TaskRunner().executeAsync(new ProfileActionTask(this,
-                        ProfileActionType.PROFILE_ACTION_DISABLE,
-                        profile),
-                result -> statusAndEventHandler.onStatusChange(ActionStatus.DISABLE_PROFILE_FINISHED),
-                e -> statusAndEventHandler.onError(new Error("Error during disabling of profile.", e.getMessage(), e)));
     }
 
     public void deleteProfile(ProfileMetadata profile) {
@@ -290,7 +318,7 @@ public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl i
         super.setEuiccChannel(euiccConnection);
 
         if(euiccConnection != null) {
-            refreshProfileList();
+            refreshProfileListAsync();
         }
     }
 

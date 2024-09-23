@@ -35,13 +35,13 @@
       <meta-data android:name="android.hardware.usb.action.USB_DEVICE_DETACHED" android:resource="@xml/device_filter" />
     </activity>
     <!-- put this somewhere into your application section: -->
-    <receiver android:name="com.infineon.esim.lpa.data.SIMChangeReceiver"
-        android:enabled="true"
-        android:exported="true">
-      <intent-filter>
-        <action android:name="android.intent.action.SIM_STATE_CHANGED"/>
-      </intent-filter>
-    </receiver>
+<!--    <receiver android:name="ee.nekoko.nlpa.SIMChangeReceiver"-->
+<!--        android:enabled="true"-->
+<!--        android:exported="true">-->
+<!--      <intent-filter>-->
+<!--        <action android:name="android.intent.action.SIM_STATE_CHANGED"/>-->
+<!--      </intent-filter>-->
+<!--    </receiver>-->
   
     <!-- Required: set your sentry.io project identifier (DSN) -->
     <meta-data android:name="io.sentry.dsn" android:value="https://89ec52147527f8d9a8f7ac6c67d8a51c@o4507931387035648.ingest.de.sentry.io/4507931389657168" />

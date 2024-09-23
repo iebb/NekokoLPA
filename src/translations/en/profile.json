@@ -1,4 +1,5 @@
 {
+  "profile_detail": "Profile Detail",
   "name": "Name",
   "plmn": "PLMN",
   "country": "Country",
@@ -35,6 +36,7 @@
   "loading_download_profile": "Downloading Profile",
   "download_success": "Download Success",
   "download_failure": "Download Failed",
+  "setting_nickname_in_progress": "Set Nickname in progress",
   "ui_enable": "Enable",
   "ui_back": "Back",
   "ui_cancel": "Cancel",

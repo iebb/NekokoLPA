@@ -3,7 +3,7 @@ import {shallowEqual, useDispatch, useSelector} from "react-redux";
 import {selectAppConfig, selectEuicc, setState} from "@/redux/reduxDataStore";
 import {Profile} from "@/native/types";
 import InfiLPA from "@/native/InfiLPA";
-import {RefreshControl, ScrollView} from "react-native";
+import {RefreshControl, ScrollView, TouchableOpacity} from "react-native";
 import {ActionStatus} from "@/native/consts";
 import {parseMetadata} from "@/components/MainUI/ProfileList/parser";
 import {useCallback, useEffect, useState} from "react";
@@ -12,7 +12,6 @@ import {useNavigation} from "@react-navigation/native";
 import {useTranslation} from "react-i18next";
 import BlockingLoader from "@/components/common/BlockingLoader";
 import {findPhoneNumbersInText} from "libphonenumber-js/min";
-import {SvgUri, SvgXml} from "react-native-svg";
 import {Flags} from "@/assets/flags";
 
 
@@ -37,8 +36,10 @@ export default function ProfileSelector({ eUICC = "SIM1" }) {
   const { stealthMode } = useSelector(selectAppConfig);
 
 
+
   const { profileList, status} = useSelector(selectEuicc(eUICC), shallowEqual);
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const onRefresh = useCallback(() => {
     dispatch(setState([{profileList: {
@@ -64,7 +65,7 @@ export default function ProfileSelector({ eUICC = "SIM1" }) {
     ...profileList.availableProfiles.map((profile: Profile) => ({...profile, selected: false})),
   ] : []
 
-  const isLoading = status !== undefined && loadingStates.includes(status);
+  const isLoading = loading; // (status !== undefined && loadingStates.includes(status)) || ;
 
   return (
     <View
@@ -122,14 +123,6 @@ export default function ProfileSelector({ eUICC = "SIM1" }) {
                 <Card
                   flex
                   left
-                  onPress={() => {
-                    // @ts-ignore
-                    navigation.navigate('Profile', {
-                      ICCID: metadata.ICCID,
-                      metadata: metadata,
-                      eUICC: eUICC,
-                    });
-                  }}
                   key={`${metadata.ICCID}_${i}`}
                   padding={false}
                   backgroundColor={colors.cardBackground}
@@ -140,9 +133,23 @@ export default function ProfileSelector({ eUICC = "SIM1" }) {
                     borderBottomWidth: 2,
                   }}
                 >
-                  <View style={{ paddingLeft: 15, paddingVertical: 5, paddingRight: 10, gap: 5 }} paddingH-0 margin-0>
+                  <View
+                    style={{ paddingLeft: 15, paddingVertical: 5, paddingRight: 10, gap: 5 }}
+                    paddingH-0
+                    margin-0
+                  >
                     <View row flex width="100%">
-                      <View style={{ flexShrink: 1, flexGrow: 1 }}>
+                      <TouchableOpacity
+                        style={{ flexShrink: 1, flexGrow: 1 }}
+                        onPress={() => {
+                          // @ts-ignore
+                          navigation.navigate('Profile', {
+                            ICCID: metadata.ICCID,
+                            metadata: metadata,
+                            eUICC: eUICC,
+                          });
+                        }}
+                      >
                         <View row>
                           <Flag
                             width={20}
@@ -161,23 +168,35 @@ export default function ProfileSelector({ eUICC = "SIM1" }) {
                             {metadata?.PROVIDER_NAME} / {metadata?.NAME}
                           </Text>
                         </View>
-                      </View>
+                      </TouchableOpacity>
                       <View
                         style={{
                           padding: 5, width: 50,
-                          flexShrink: 0, flexGrow: 0
+                          flexShrink: 0, flexGrow: 0,
                         }}
                       >
                         <Switch
                           value={profile.selected}
                           disabled={isLoading}
                           padding-5
-                          onValueChange={(value2: boolean) => {
-                            if (profile.selected) {
-                              InfiLPA.disableProfileByIccId(metadata.ICCID);
-                            } else {
-                              InfiLPA.enableProfileByIccId(metadata.ICCID);
-                            }
+                          onValueChange={async (value2: boolean) => {
+                            setLoading(true);
+                            setTimeout(() => {
+                              try {
+                                if (profile.selected) {
+                                  InfiLPA.disableProfileByIccId(metadata.ICCID);
+                                } else {
+                                  InfiLPA.enableProfileByIccId(metadata.ICCID);
+                                }
+                              } finally {
+                                setTimeout(() => {
+                                  InfiLPA.refreshProfileList(eUICC);
+                                  setTimeout(() => {
+                                    setLoading(false);
+                                  }, 300);
+                                }, 100);
+                              }
+                            }, 10);
                           }}
                         />
                       </View>

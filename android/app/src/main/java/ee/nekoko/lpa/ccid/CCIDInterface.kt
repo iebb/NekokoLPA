@@ -60,11 +60,7 @@ class CCIDInterface(context: Context) : USBReaderInterface {
 
     override fun refreshEuiccNames(): List<String> {
         euiccNames.clear()
-
-        if (isInterfaceConnected) {
-            euiccNames.addAll(ccidService.refreshEuiccNames())
-        }
-
+        euiccNames.addAll(ccidService.refreshEuiccNames())
         return euiccNames
     }
 

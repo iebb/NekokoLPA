@@ -8,13 +8,14 @@ import TabController from "@/components/ui/tabController";
 import {EUICCPage} from "@/components/MainUI/EUICCPage";
 import {useTranslation} from "react-i18next";
 import {RefreshControl, ScrollView} from "react-native";
-import {faCreditCard, faPencil, faSimCard} from "@fortawesome/free-solid-svg-icons";
+import {faDownload, faSimCard} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 
 export default function SIMSelector() {
   const { colors } = useTheme();
   const dispatch = useDispatch();
   const [width, setWidth] = useState<number>(0);
+  const [check, setCheck] = useState<number>(0);
   const { euiccList: _euiccList, currentEuicc} = useSelector((state: RootState) => state.LPA);
   const { t } = useTranslation(['main']);
   const [refreshing, setRefreshing] = useState(false);
@@ -30,11 +31,14 @@ export default function SIMSelector() {
   const euiccList = Array.from(new Set(_euiccList)).filter(e => e.length);
 
   useEffect(() => {
-    if (euiccList && !euiccList.includes(currentEuicc)) {
-      if (euiccList.length) {
+    if (euiccList.includes(currentEuicc)) {
+      setCheck(check + 1);
+      if (euiccList.length && check < 3) {
         InfiLPA.selectEUICC(euiccList[0]);
         dispatch(setGlobalState({currentEuicc: euiccList[0]}))
       }
+    } else {
+      setCheck(0);
     }
   }, [euiccList, currentEuicc]);
 
@@ -79,21 +83,32 @@ export default function SIMSelector() {
               euiccList.map((name, _idx) => ({
                 label: name,
                 icon: (
-                  <FontAwesomeIcon icon={
-                    name.startsWith("SIM") ? faSimCard : faCreditCard
-                  } style={{ color: colors.std200, marginRight: 6  }} />
+                  <FontAwesomeIcon
+                    icon={
+                      name.startsWith("SIM") ? faSimCard : faDownload
+                    }
+                    style={{
+                      color: colors.std200,
+                      marginRight: 6,
+                    }}
+                    size={14}
+                  />
                 ),
                 labelStyle: {
                   padding: 0,
-                  fontSize: name.length > 4 ? 12 : 16,
+                  fontSize: name.length > 4 ? 12 : 14,
+                  lineHeight: name.length > 4 ? 12 : 14,
                 },
                 selectedLabelStyle: {
                   padding: 0,
-                  fontSize: name.length > 4 ? 12 : 16,
+                  fontSize: name.length > 4 ? 12 : 14,
+                  lineHeight: name.length > 4 ? 12 : 14,
                   fontWeight: '500',
                 },
-                labelColor: colors.std400,
+                iconColor: colors.std600,
+                labelColor: colors.std600,
                 selectedLabelColor: colors.std200,
+                selectedIconColor: colors.std200,
                 width: width / euiccList.length,
                 onPress: () => {
                   if (euiccList.includes(name)) {

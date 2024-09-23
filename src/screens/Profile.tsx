@@ -85,10 +85,10 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 		<SafeScreen>
 			{
 				status === ActionStatus.SET_NICKNAME_STARTED && (
-					<BlockingLoader message="正在设置昵称" />
+					<BlockingLoader message={t('profile:profile_detail')} />
 				)
 			}
-			<Title>配置详情</Title>
+			<Title>{t('profile:profile_detail')}</Title>
 			<Dialog
 				useSafeArea
 				bottom
@@ -244,7 +244,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 								onPress={() => setTagModal(true)}
 								containerStyle={{
 									borderWidth: 0,
-									backgroundColor: colors.green500,
+									backgroundColor: colors.blue400,
 								}}
 							/>
 						</View>

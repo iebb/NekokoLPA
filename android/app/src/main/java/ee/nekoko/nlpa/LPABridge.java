@@ -21,7 +21,7 @@
  * (C)Copyright INFINEON TECHNOLOGIES All rights reserved
  */
 
-package com.infineon.esim.lpa.data;
+package ee.nekoko.nlpa;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -44,6 +44,10 @@ import com.infineon.esim.lpa.core.dtos.profile.ProfileMetadata;
 import com.infineon.esim.lpa.core.dtos.result.remote.AuthenticateResult;
 import com.infineon.esim.lpa.core.dtos.result.remote.CancelSessionResult;
 import com.infineon.esim.lpa.core.dtos.result.remote.DownloadResult;
+import com.infineon.esim.lpa.data.ActionStatus;
+import com.infineon.esim.lpa.data.AsyncActionStatus;
+import com.infineon.esim.lpa.data.Error;
+import com.infineon.esim.lpa.data.StatusAndEventHandler;
 import com.infineon.esim.lpa.euicc.EuiccManager;
 import com.infineon.esim.lpa.lpa.LocalProfileAssistant;
 import com.infineon.esim.lpa.util.android.OneTimeEvent;
@@ -57,7 +61,7 @@ import java.util.concurrent.TimeUnit;
 import io.sentry.Sentry;
 import io.sentry.protocol.User;
 
-public class DataModel extends ReactContextBaseJavaModule implements StatusAndEventHandler {
+public class LPABridge extends ReactContextBaseJavaModule implements StatusAndEventHandler {
 
     @NonNull
     @Override
@@ -66,9 +70,9 @@ public class DataModel extends ReactContextBaseJavaModule implements StatusAndEv
     }
 
 
-    private static final String TAG = DataModel.class.getName();
+    private static final String TAG = LPABridge.class.getName();
 
-    private static DataModel instance;
+    private static LPABridge instance;
 
     private LocalProfileAssistant lpa;
     private EuiccManager euiccManager;
@@ -83,7 +87,7 @@ public class DataModel extends ReactContextBaseJavaModule implements StatusAndEv
 
 
     @ReactMethod()
-    public DataModel(ReactContext context) {
+    public LPABridge(ReactContext context) {
         this.context = context;
         this.euiccManager = new EuiccManager(context, this);
         this.lpa = new LocalProfileAssistant(euiccManager, this);
@@ -104,8 +108,6 @@ public class DataModel extends ReactContextBaseJavaModule implements StatusAndEv
                     String name = eID.substring(0, 10) + "*" + eID.substring(eID.length() - 6);
                     u.setName(name);
                     u.setId(name);
-
-                    // u.setData(eUICC);
                     Sentry.setUser(u);
                 } catch (Exception e) {
 
@@ -132,12 +134,12 @@ public class DataModel extends ReactContextBaseJavaModule implements StatusAndEv
 
     public static void initializeInstance(ReactContext context) {
         if(instance == null) {
-            instance = new DataModel(context);
+            instance = new LPABridge(context);
         }
     }
 
     @ReactMethod()
-    public static DataModel getInstance() {
+    public static LPABridge getInstance() {
         return instance;
     }
 
@@ -165,16 +167,16 @@ public class DataModel extends ReactContextBaseJavaModule implements StatusAndEv
         emitData("statusText", actionStatus.getActionStatus(), false);
 
         switch (actionStatus.getActionStatus()) {
-            case ENABLE_PROFILE_FINISHED:
-            case DELETE_PROFILE_FINISHED:
-            case DISABLE_PROFILE_FINISHED:
-            case SET_NICKNAME_FINISHED:
-                try {
-                    TimeUnit.SECONDS.sleep(1);
-                } catch (InterruptedException ignored) {
-                }
-                refreshProfileList();
-                break;
+//            case ENABLE_PROFILE_FINISHED:
+//            case DELETE_PROFILE_FINISHED:
+//            case DISABLE_PROFILE_FINISHED:
+//            case SET_NICKNAME_FINISHED:
+//                try {
+//                    TimeUnit.SECONDS.sleep(1);
+//                } catch (InterruptedException ignored) {
+//                }
+//                refreshProfileList();
+//                break;
 
             case AUTHENTICATE_DOWNLOAD_STARTED:
             case AUTHENTICATE_DOWNLOAD_FINISHED:
@@ -308,15 +310,16 @@ public class DataModel extends ReactContextBaseJavaModule implements StatusAndEv
     public void refreshEuiccs() {
         waitUntilFree();
         Log.debug(TAG, "Refreshing eUICC list...");
-        euiccManager.startRefreshingEuiccList();
+        euiccManager.refreshEuiccList();
     }
 
     @ReactMethod(isBlockingSynchronousMethod = true)
-    public void selectEuicc(String euiccName) {
+    public String selectEuicc(String euiccName) {
         waitUntilFree();
         Log.debug(TAG, "Selecting euicc " + euiccName + "...");
+
         try {
-            euiccManager.selectEuicc(euiccName);
+            return euiccManager.selectEuicc(euiccName);
         } catch (Exception e) {
             Log.debug(TAG, "SelectEUICC Failed");
             Log.debug(TAG, e.getMessage());
@@ -370,10 +373,8 @@ public class DataModel extends ReactContextBaseJavaModule implements StatusAndEv
 
     @ReactMethod()
     public void refreshProfileListWithDevice(String device) {
-        waitUntilFree();
         Log.debug(TAG, "Refreshing eUICC list...");
-        euiccManager.startRefreshingEuiccList();
-        waitUntilFree();
+        euiccManager.refreshEuiccList();
         String currentEuicc = euiccManager.getCurrentEuiccLiveData().getValue();
         if (currentEuicc != null && currentEuicc.equals(device)) {
             lpa.refreshProfileList();
@@ -508,6 +509,8 @@ public class DataModel extends ReactContextBaseJavaModule implements StatusAndEv
         OneTimeEvent<Error> newErrorEvent = new OneTimeEvent<>(error);
         errorEventLiveData.postValue(newErrorEvent);
     }
+
+
 
     // endregion
 }

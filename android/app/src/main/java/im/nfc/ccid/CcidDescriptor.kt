@@ -4,6 +4,9 @@ data class CcidDescriptor(
     val protocols: Byte,
     val levelOfExchange: LevelOfExchange,
     val maxIFSD: Int,
+    val maxSlot: Int,
+    val voltage: Int,
+    val rawDescriptors: String,
 ) {
     fun supportsProtocol(protocol: Protocol): Boolean {
         return (protocols.toInt() and protocol.value) > 0
