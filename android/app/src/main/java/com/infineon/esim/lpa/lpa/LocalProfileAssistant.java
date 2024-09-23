@@ -194,13 +194,9 @@ public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl i
         // sync mode
         statusAndEventHandler.onStatusChange(ActionStatus.DELETE_PROFILE_STARTED);
         try {
-            if (!profile.isEnabled()) {
-                Log.debug(TAG, "Profile already disabled!");
-            } else {
-                new ProfileActionTask(this, ProfileActionType.PROFILE_ACTION_DELETE, profile).call();
-                ProfileList result = new GetProfileListTask(this).call();
-                profileList.postValue(result);
-            }
+            new ProfileActionTask(this, ProfileActionType.PROFILE_ACTION_DELETE, profile).call();
+            ProfileList result = new GetProfileListTask(this).call();
+            profileList.postValue(result);
         } catch (Exception e) {
             if (e.getMessage().contains("Opening eUICC connection failed.")) {
 

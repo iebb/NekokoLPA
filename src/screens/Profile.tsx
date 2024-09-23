@@ -42,6 +42,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 	const { colors, gutters, fonts } = useTheme();
 	const { eUICC, ICCID } = route.params;
 	const [tags, setTags] = useState<Tag[]>([]);
+	const [loading, setLoading] = useState(false);
 
 	const [metadata, setMetadata] = useState(route.params.metadata);
 	const [nickname, setNickname] = useState('');
@@ -86,6 +87,11 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 			{
 				status === ActionStatus.SET_NICKNAME_STARTED && (
 					<BlockingLoader message={t('profile:profile_detail')} />
+				)
+			}
+			{
+				loading && (
+					<BlockingLoader />
 				)
 			}
 			<Title>{t('profile:profile_detail')}</Title>
@@ -324,8 +330,20 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 																text: t('profile:delete_tag_ok'),
 																style: 'destructive',
 																onPress: () => {
-																	InfiLPA.deleteProfileByIccId(ICCID);
-																	navigation.goBack();
+																	setLoading(true);
+																	setTimeout(() => {
+																		try {
+																			InfiLPA.deleteProfileByIccId(ICCID);
+																		} finally {
+																			setTimeout(() => {
+																				InfiLPA.refreshProfileList(eUICC);
+																				setTimeout(() => {
+																					setLoading(false);
+																					navigation.goBack();
+																				}, 300);
+																			}, 100);
+																		}
+																	}, 10);
 																}
 															},
 															{
