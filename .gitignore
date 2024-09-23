@@ -76,5 +76,6 @@ yarn-error.log
 
 sentry.properties
 
-signer/*.apk
-
+*.aab
+*.apk
+upload.sh

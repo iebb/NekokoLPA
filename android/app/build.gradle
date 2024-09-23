@@ -1,16 +1,6 @@
 // On top of your file import a JSON parser
 import groovy.json.JsonSlurper
 
-// Create an easy to use function
-def getVersionFromNpm() {
-    //  Read and parse package.json file from project root
-    def inputFile = new File("$rootDir/../package.json")
-    def packageJson = new JsonSlurper().parseText(inputFile.text)
-
-    // Return the version, you can get any value this way
-    return packageJson["version"]
-}
-
 plugins {
     id 'io.sentry.android.gradle' version '4.11.0'
 }
@@ -93,12 +83,16 @@ android {
     compileSdk rootProject.ext.compileSdkVersion
 
     namespace "ee.nekoko.nlpa"
+
+    def inputFile = new File("$rootDir/../package.json")
+    def packageJson = new JsonSlurper().parseText(inputFile.text)
+
     defaultConfig {
         applicationId "ee.nekoko.nlpa"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName getVersionFromNpm()
+        versionCode packageJson["buildVersion"]
+        versionName packageJson["version"]
     }
     signingConfigs {
         community {

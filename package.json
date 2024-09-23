@@ -1,6 +1,7 @@
 {
   "name": "nekokolpa",
-  "version": "1.0.12.227",
+  "buildVersion": 228,
+  "version": "1.0.12.228",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -12,7 +13,9 @@
     "test:report": "jest --collectCoverage --coverageDirectory=\"./coverage\" --ci --reporters=default --reporters=jest-junit --coverage",
     "pod-install": "cd ios && pod install && cd ..",
     "get-mcc-mnc": "python3 scripts/mcc_mnc.py",
-    "build-android": "cd android && ./gradlew app:clean app:aR && cd ../signer && bash signer.sh",
+    "build": "bash build.sh",
+    "build-and-upload": "bash build.sh && bash upload.sh",
+    "bump": "python3 bump_version.py",
     "postinstall": "npx patch-package"
   },
   "dependencies": {
