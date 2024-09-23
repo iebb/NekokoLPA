@@ -32,10 +32,10 @@ export default function SIMSelector() {
 
   useEffect(() => {
     if (euiccList.includes(currentEuicc)) {
-      setCheck(check + 1);
       if (euiccList.length && check < 3) {
         InfiLPA.selectEUICC(euiccList[0]);
-        dispatch(setGlobalState({currentEuicc: euiccList[0]}))
+        dispatch(setGlobalState({currentEuicc: euiccList[0]}));
+        setCheck(check + 1);
       }
     } else {
       setCheck(0);
