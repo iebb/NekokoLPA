@@ -1,13 +1,13 @@
 {
   "name": "nekokolpa",
-  "buildVersion": 231,
-  "version": "1.0.12.231",
+  "buildVersion": 233,
+  "version": "1.0.13.233-alpha",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "lint": "eslint .",
-    "start": "react-native start",
+    "start": "react-native start --variant=development",
     "test": "jest",
     "type-check": "tsc",
     "test:report": "jest --collectCoverage --coverageDirectory=\"./coverage\" --ci --reporters=default --reporters=jest-junit --coverage",
@@ -15,7 +15,7 @@
     "get-mcc-mnc": "python3 scripts/mcc_mnc.py",
     "build": "bash build.sh",
     "build-and-upload": "bash build.sh && bash upload.sh",
-    "bump": "python3 bump_version.py",
+    "bump": "python3 bump_version.py && bash build.sh && bash upload.sh",
     "postinstall": "npx patch-package"
   },
   "dependencies": {
@@ -39,6 +39,7 @@
     "react": "18.2.0",
     "react-i18next": "^14.1.0",
     "react-native": "0.74.1",
+    "react-native-config": "^1.5.3",
     "react-native-gesture-handler": "^2.19.0",
     "react-native-mmkv": "^2.12.2",
     "react-native-reanimated": "^3.15.1",

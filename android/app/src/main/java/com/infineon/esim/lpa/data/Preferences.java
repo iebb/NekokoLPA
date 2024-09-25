@@ -24,7 +24,6 @@ package com.infineon.esim.lpa.data;
 
 import android.content.SharedPreferences;
 
-import ee.nekoko.lpa.euicc.EuiccConnectionSettings;
 import com.infineon.esim.util.Log;
 
 import ee.nekoko.nlpa.MainApplication;
@@ -101,12 +100,6 @@ final public class Preferences implements SharedPreferences.OnSharedPreferenceCh
         return MainApplication.getSharedPreferences().getBoolean(key, defaultValue);
     }
 
-    public static EuiccConnectionSettings getReaderSettings() {
-        return new EuiccConnectionSettings(getShallSendTerminalCapabilityCommand(),
-                getShallOpenLogicalChannel(),
-                getProfileInitializationTime());
-    }
-
     private static int getProfileInitializationTime() {
         String key = MainApplication.getStringResource(R.string.pref_key_euicc_profile_init_time);
         String defaultValue = MainApplication.getStringResource(R.string.pref_def_value_euicc_profile_init_time);
@@ -114,7 +107,7 @@ final public class Preferences implements SharedPreferences.OnSharedPreferenceCh
     }
 
     private static Boolean getShallSendTerminalCapabilityCommand() {
-        return false;
+        return true;
         /*
         String key = MainApplication.getStringResource(R.string.pref_key_sim_slot_needs_term_cap_cmd);
         boolean defaultValue = Boolean.parseBoolean(MainApplication.getStringResource(R.string.pref_def_value_simslots_need_term_cap_cmd));

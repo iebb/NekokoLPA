@@ -1,9 +1,7 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {Action, configureStore, createSlice, PayloadAction, ThunkAction} from '@reduxjs/toolkit';
 import {AuthenticateResult, DownloadResult, EuiccInfo2, Profiles} from "@/native/types";
 import {ActionStatus} from "@/native/consts";
-import {Action, configureStore, ThunkAction} from '@reduxjs/toolkit';
 import {TypedUseSelectorHook, useDispatch, useSelector} from 'react-redux';
-import {getConfig} from "@testing-library/react-native/build/config";
 import {MMKV} from "react-native-mmkv";
 
 
@@ -35,9 +33,18 @@ interface EUICCState {
     eid?: string;
 }
 
+export interface EuiccList {
+    available: boolean;
+    eid?: string;
+    euiccInfo2?: EuiccInfo2;
+    profiles?: Profiles;
+    message: string;
+    name: string;
+}
+
 
 interface LPAState {
-    euiccList: string[];
+    euiccList: EuiccList[];
     // euiccReaders: { available: boolean, name: string }[];
     currentEuicc: string;
     error?: ErrorBodyHeader;

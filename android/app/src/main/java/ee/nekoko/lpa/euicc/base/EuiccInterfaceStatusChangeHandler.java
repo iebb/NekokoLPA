@@ -32,5 +32,5 @@ public interface EuiccInterfaceStatusChangeHandler {
     void onEuiccInterfaceDisconnected(String interfaceTag);
 
     void onEuiccConnected(String euiccName, EuiccConnection euiccConnection);
-    void onEuiccListRefreshed(List<String> euiccDescriptions);
+    void onEuiccListRefreshed(List<EuiccSlot> euiccDescriptions);
 }

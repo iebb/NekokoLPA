@@ -24,13 +24,10 @@
 package ee.nekoko.lpa.euicc.base;
 
 import com.infineon.esim.lpa.core.es10.EuiccChannel;
-import ee.nekoko.lpa.euicc.EuiccConnectionSettings;
 
 
 @SuppressWarnings("unused")
 public interface EuiccConnection extends EuiccChannel {
-
-    void updateEuiccConnectionSettings(EuiccConnectionSettings euiccConnectionSettings);
 
     String getEuiccName();
 

@@ -48,18 +48,16 @@ import com.infineon.esim.lpa.data.ActionStatus;
 import com.infineon.esim.lpa.data.AsyncActionStatus;
 import com.infineon.esim.lpa.data.Error;
 import com.infineon.esim.lpa.data.StatusAndEventHandler;
-import ee.nekoko.lpa.euicc.EuiccManager;
 import com.infineon.esim.lpa.lpa.LocalProfileAssistant;
 import com.infineon.esim.lpa.util.android.OneTimeEvent;
 import com.infineon.esim.util.Log;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import ee.nekoko.lpa.euicc.EuiccManager;
 import io.sentry.Sentry;
-import io.sentry.protocol.User;
 
 public class LPABridge extends ReactContextBaseJavaModule implements StatusAndEventHandler {
 
@@ -93,31 +91,14 @@ public class LPABridge extends ReactContextBaseJavaModule implements StatusAndEv
         this.lpa = new LocalProfileAssistant(euiccManager, this);
 
         new Handler(Looper.getMainLooper()).post(() -> {
-
             actionStatusLiveData.observeForever(actionStatusObserver);
             errorEventLiveData.observeForever(errorObserver);
-
             this.lpa.getProfileListLiveData().observeForever(data -> {
-                try {
-                    var eID = this.lpa.es10Interface.es10c_getEid().getEidValue().toString();
-                    var eUICC = this.lpa.es10Interface.es10b_getEuiccInfo2();
-                    emitData("euiccInfo2", eUICC, false);
-                    emitData("eid", eID, false);
-                    User u = new User();
-
-                    String name = eID.substring(0, 10) + "*" + eID.substring(eID.length() - 6);
-                    u.setName(name);
-                    u.setId(name);
-                    Sentry.setUser(u);
-                } catch (Exception e) {
-
-                }
                 emitData("profileList", data, false);
             });
             this.euiccManager.getEuiccListLiveData().observeForever(data -> {
                 emitData("euiccList", data, true);
             });
-
         });
 
         euiccManager.initializeInterfaces();
@@ -275,47 +256,17 @@ public class LPABridge extends ReactContextBaseJavaModule implements StatusAndEv
         return errorEventLiveData;
     }
 
-    public void waitUntilFree() {
-        for(var i = 0; i < 5; i++) {
-            AsyncActionStatus val = this.actionStatusLiveData.getValue();
-            if (val != null) {
-                switch (val.getActionStatus()) {
-                    case OPENING_EUICC_CONNECTION_STARTED:
-                    case GET_PROFILE_LIST_STARTED:
-                    case ENABLE_PROFILE_STARTED:
-                    case DISABLE_PROFILE_STARTED:
-                    case DELETE_PROFILE_STARTED:
-                    case SET_NICKNAME_STARTED:
-                    case AUTHENTICATE_DOWNLOAD_STARTED:
-                    case DOWNLOAD_PROFILE_STARTED:
-                    case CANCEL_SESSION_STARTED:
-                    case CLEAR_ALL_NOTIFICATIONS_STARTED:
-                        try {
-                            TimeUnit.MILLISECONDS.sleep(300);
-                        } catch (InterruptedException ignored) {
-                        }
-                    default:
-                        return;
-                }
-
-            }
-        }
-    }
-
-
     // endregion
 
     // region eUICC interface methods
     @ReactMethod()
     public void refreshEuiccs() {
-        waitUntilFree();
         Log.debug(TAG, "Refreshing eUICC list...");
         euiccManager.refreshEuiccList();
     }
 
     @ReactMethod(isBlockingSynchronousMethod = true)
     public String selectEuicc(String euiccName) {
-        waitUntilFree();
         Log.debug(TAG, "Selecting euicc " + euiccName + "...");
 
         try {
@@ -368,33 +319,19 @@ public class LPABridge extends ReactContextBaseJavaModule implements StatusAndEv
 
     @ReactMethod()
     public void refreshProfileList() {
-        lpa.refreshProfileList();
+        // lpa.refreshProfileList();
+        euiccManager.refreshEuiccList();
     }
 
     @ReactMethod()
     public void refreshProfileListWithDevice(String device) {
         Log.debug(TAG, "Refreshing eUICC list...");
         euiccManager.refreshEuiccList();
-        String currentEuicc = euiccManager.getCurrentEuiccLiveData().getValue();
-        if (currentEuicc != null && currentEuicc.equals(device)) {
-            lpa.refreshProfileList();
-        } else {
-            List<String> availableEuiccs = euiccManager.getEuiccListLiveData().getValue();
-            if (availableEuiccs != null && availableEuiccs.contains(device)) {
-                try {
-                    euiccManager.selectEuicc(device);
-                    lpa.refreshProfileList();
-                } catch (Exception e) {
-                    Log.debug(TAG, "SelectEUICC Failed");
-                    Log.debug(TAG, e.getMessage());
-                    throw new RuntimeException(e);
-                }
-            }
-        }
     }
 
     public void enableProfile(ProfileMetadata profile) {
         lpa.enableProfile(profile);
+        euiccManager.refreshSingleEuicc(getCurrentEuicc());
     }
 
     @ReactMethod()
@@ -406,8 +343,8 @@ public class LPABridge extends ReactContextBaseJavaModule implements StatusAndEv
     }
 
     public void disableProfile(ProfileMetadata profile) {
-        this._suppressErrorsUntil = new Date().getTime() + 12 * 1000;
         lpa.disableProfile(profile);
+        euiccManager.refreshSingleEuicc(getCurrentEuicc());
     }
 
     @ReactMethod()
@@ -420,6 +357,7 @@ public class LPABridge extends ReactContextBaseJavaModule implements StatusAndEv
 
     public void deleteProfile(ProfileMetadata profile) {
         lpa.deleteProfile(profile);
+        euiccManager.refreshSingleEuicc(getCurrentEuicc());
     }
 
     @ReactMethod()
@@ -432,6 +370,7 @@ public class LPABridge extends ReactContextBaseJavaModule implements StatusAndEv
 
     public void setNickname(ProfileMetadata profile) {
         lpa.setNickname(profile);
+        euiccManager.refreshSingleEuicc(getCurrentEuicc());
     }
 
     @ReactMethod()

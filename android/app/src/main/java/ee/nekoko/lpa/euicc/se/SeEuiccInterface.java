@@ -34,6 +34,7 @@ import com.infineon.esim.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import ee.nekoko.lpa.euicc.base.EuiccSlot;
 import ee.nekoko.nlpa.MainApplication;
 
 final public class SeEuiccInterface implements EuiccInterface {
@@ -42,7 +43,7 @@ final public class SeEuiccInterface implements EuiccInterface {
     public static final String INTERFACE_TAG = "SE";
 
     public final SeService seService;
-    private final List<String> euiccNames;
+    private final List<EuiccSlot> euiccNames;
 
     private EuiccConnection euiccConnection;
 
@@ -113,19 +114,19 @@ final public class SeEuiccInterface implements EuiccInterface {
     }
 
     @Override
-    public List<String> refreshEuiccNames() {
+    public List<EuiccSlot> refreshSlots() {
         Log.debug(TAG, "Refreshing SE eUICC names...");
         euiccNames.clear();
         
         if(isInterfaceConnected()) {
-            euiccNames.addAll(seService.refreshEuiccNames());
+            euiccNames.addAll(seService.refreshSlots());
         }
 
         return euiccNames;
     }
 
     @Override
-    public List<String> getEuiccNames() {
+    public List<EuiccSlot> getEuiccNames() {
         return euiccNames;
     }
 

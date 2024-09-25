@@ -1,7 +1,7 @@
 import {Button, Card, Text, View} from "react-native-ui-lib";
 import {useEffect, useState} from "react";
 import {shallowEqual, useDispatch, useSelector} from "react-redux";
-import {selectEuicc, setState} from "@/redux/reduxDataStore";
+import {EuiccList, selectEuicc, setState} from "@/redux/reduxDataStore";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faPlus} from '@fortawesome/free-solid-svg-icons'
 import {useTheme} from "@/theme";
@@ -12,14 +12,13 @@ import {ToastAndroid} from "react-native";
 import {nextValue, selectAppConfig} from "@/redux/reduxDataStore";
 
 
-export default function ProfileMenu({ eUICC = "SIM1" }) {
+export default function ProfileMenu({ eUICC } : { eUICC: EuiccList }) {
   const { colors } = useTheme();
   const { t } = useTranslation(['main']);
   const navigation = useNavigation();
 
   const dispatch = useDispatch();
   const { stealthMode } = useSelector(selectAppConfig);
-  const {euiccInfo2, eid} = useSelector(selectEuicc(eUICC), shallowEqual);
   const [layout, setLayout] = useState({
     width: 0,
     height: 0
@@ -28,8 +27,8 @@ export default function ProfileMenu({ eUICC = "SIM1" }) {
   const [extCardResource, setExtCardResource] = useState<number[]>([0, 0, 0]);
 
   useEffect(() => {
-    if (euiccInfo2) {
-      const ecr = euiccInfo2.extCardResource.value;
+    if (eUICC.euiccInfo2) {
+      const ecr = eUICC.euiccInfo2.extCardResource.value;
       const data = [];
       for(let i = 0; i < ecr.length;) {
         i++;
@@ -43,9 +42,9 @@ export default function ProfileMenu({ eUICC = "SIM1" }) {
       }
       setExtCardResource(data);
     }
-  }, [euiccInfo2]);
+  }, [eUICC.euiccInfo2]);
 
-  if (!euiccInfo2) return null;
+  if (!eUICC.euiccInfo2) return null;
 
   return (
     <View
@@ -65,7 +64,7 @@ export default function ProfileMenu({ eUICC = "SIM1" }) {
         onPress={
           () => {
             ToastAndroid.show('EID Copied', ToastAndroid.SHORT);
-            Clipboard.setString(eid!)
+            Clipboard.setString(eUICC.eid!)
           }
         }
         onLongPress={
@@ -81,7 +80,7 @@ export default function ProfileMenu({ eUICC = "SIM1" }) {
             </Text>
             <Text text100L color={colors.std50}>
               EID: {
-                stealthMode === 'none' ? eid : (eid || '').replaceAll(
+                stealthMode === 'none' ? eUICC.eid : (eUICC.eid || '').replaceAll(
                   stealthMode === 'medium' ? /(?<=\d{16})\d(?=\d{6})/g : /./g, '*')
               }
             </Text>
@@ -98,7 +97,7 @@ export default function ProfileMenu({ eUICC = "SIM1" }) {
             style={{ flex: 1, width: 40 }}
             size="small"
             onPress={() => {
-              dispatch(setState([{authenticateResult: null, downloadResult: null}, eUICC]));
+              dispatch(setState([{authenticateResult: null, downloadResult: null}, eUICC.name]));
               // @ts-ignore
               navigation.navigate('Scanner', {
 

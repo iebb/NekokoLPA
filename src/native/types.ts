@@ -1,6 +1,5 @@
 export interface Profiles {
-  availableProfiles: Profile[];
-  selectedProfile:   Profile[];
+  profiles: Profile[];
 }
 
 export interface Profile {

@@ -50,12 +50,11 @@ import com.infineon.esim.lpa.util.android.InternetConnectionConsumer;
 import com.infineon.esim.lpa.util.threading.TaskRunner;
 import com.infineon.esim.util.Log;
 
-public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl implements EuiccConnectionConsumer, InternetConnectionConsumer {
+public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl implements EuiccConnectionConsumer {
     private static final String TAG = LocalProfileAssistant.class.getName();
 
     private final StatusAndEventHandler statusAndEventHandler;
     private final MutableLiveData<ProfileList> profileList;
-    private final NetworkStatusBroadcastReceiver networkStatusBroadcastReceiver;
 
     private EuiccConnection euiccConnection;
 
@@ -67,12 +66,9 @@ public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl i
     public LocalProfileAssistant(EuiccManager euiccManager, StatusAndEventHandler statusAndEventHandler) {
         super();
         Log.debug(TAG,"Creating LocalProfileAssistant...");
-
-        this.networkStatusBroadcastReceiver = new NetworkStatusBroadcastReceiver(this);
         this.statusAndEventHandler = statusAndEventHandler;
         this.profileList = new MutableLiveData<>();
-
-        networkStatusBroadcastReceiver.registerReceiver();
+        super.enableEs9PlusInterface();
         euiccManager.setEuiccConnectionConsumer(this);
     }
 
@@ -154,8 +150,6 @@ public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl i
                 Log.debug(TAG, "Profile already enabled!");
             } else {
                 new ProfileActionTask(this, ProfileActionType.PROFILE_ACTION_ENABLE, profile).call();
-                ProfileList result = new GetProfileListTask(this).call();
-                profileList.postValue(result);
             }
         } catch (Exception e) {
             if (e.getMessage().contains("Opening eUICC connection failed.")) {
@@ -176,8 +170,6 @@ public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl i
                 Log.debug(TAG, "Profile already disabled!");
             } else {
                 new ProfileActionTask(this, ProfileActionType.PROFILE_ACTION_DISABLE, profile).call();
-                ProfileList result = new GetProfileListTask(this).call();
-                profileList.postValue(result);
             }
         } catch (Exception e) {
             if (e.getMessage().contains("Opening eUICC connection failed.")) {
@@ -195,8 +187,6 @@ public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl i
         statusAndEventHandler.onStatusChange(ActionStatus.DELETE_PROFILE_STARTED);
         try {
             new ProfileActionTask(this, ProfileActionType.PROFILE_ACTION_DELETE, profile).call();
-            ProfileList result = new GetProfileListTask(this).call();
-            profileList.postValue(result);
         } catch (Exception e) {
             if (e.getMessage().contains("Opening eUICC connection failed.")) {
 
@@ -214,8 +204,6 @@ public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl i
         statusAndEventHandler.onStatusChange(ActionStatus.SET_NICKNAME_STARTED);
         try {
             new ProfileActionTask(this, ProfileActionType.PROFILE_ACTION_SET_NICKNAME, profile).call();
-            ProfileList result = new GetProfileListTask(this).call();
-            profileList.postValue(result);
         } catch (Exception e) {
             if (e.getMessage().contains("Opening eUICC connection failed.")) {
 
@@ -336,21 +324,20 @@ public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl i
         }
     }
 
-    @Override
-    public void onConnected() {
-        Log.debug(TAG, "Internet connection established.");
-        super.enableEs9PlusInterface();
-    }
-
-    @Override
-    public void onDisconnected() {
-        Log.debug(TAG, "Internet connection lost.");
-        super.disableEs9PlusInterface();
-    }
+//    @Override
+//    public void onConnected() {
+//        Log.debug(TAG, "Internet connection established.");
+//        super.enableEs9PlusInterface();
+//    }
+//
+//    @Override
+//    public void onDisconnected() {
+//        Log.debug(TAG, "Internet connection lost.");
+//        super.disableEs9PlusInterface();
+//    }
 
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
-        networkStatusBroadcastReceiver.unregisterReceiver();
     }
 }

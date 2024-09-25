@@ -14,6 +14,7 @@ import android.hardware.usb.UsbManager
 import android.os.Build
 import android.util.Log
 import im.nfc.ccid.Ccid
+import im.nfc.ccid.CcidException
 import im.nfc.ccid.Protocol
 
 data class CCIDReader (
@@ -25,7 +26,6 @@ data class CCIDReader (
     var device: UsbDevice,
     var context: Context,
 ) {
-
 
     private val usbReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -64,6 +64,9 @@ data class CCIDReader (
 
     @OptIn(ExperimentalStdlibApi::class)
     private fun connectToInterface(): Ccid? {
+
+        Log.e(TAG, "Connecting: Current CCID: ${ccid}")
+        Log.e(TAG, "Connecting: Current USB Connection: ${ccid?.usbDeviceConnection}")
         val usbInterface = device.getInterface(interfaceIdx)
         val usbConnection = usbManager.openDevice(device)
         if (usbConnection == null) {
@@ -71,8 +74,8 @@ data class CCIDReader (
             return null
         }
         val endpoints = getEndpoints(usbInterface)
-        val ccid = Ccid(usbConnection, endpoints.first, endpoints.second)
-        val descriptor = ccid.getDescriptor(interfaceIdx)
+        val _ccid = Ccid(usbConnection, endpoints.first, endpoints.second)
+        val descriptor = _ccid.getDescriptor(interfaceIdx)
         if (descriptor?.supportsProtocol(Protocol.T0) != true) {
             Log.d(TAG, "Unsupported protocol")
             return null
@@ -81,21 +84,20 @@ data class CCIDReader (
             Log.e(TAG, "Failed to claim interface")
             return null
         }
-        for(i in 0 until 5) {
+        for(i in 0 until 4) {
             // AUTO, 5V, 3V, 1.8V
             if ((descriptor.voltage and (1 shl i)) > 0) {
                 try {
                     Log.d(TAG, "Trying Supported Voltage #$i")
-                    val atr = ccid.iccPowerOn(i.toByte())
+                    val atr = _ccid.iccPowerOn(i.toByte())
                     Log.d(TAG, "ATR: ${atr.toHexString()}")
-                    return ccid
+                    return _ccid
                 } catch (ex: Exception) {
                     Log.d(TAG, "Voltage #$i Failed")
                 }
             }
         }
-        return ccid
-        // throw Exception("Power On failed")
+        throw Exception("Power On failed")
     }
 
     @Throws(Exception::class)
@@ -103,11 +105,19 @@ data class CCIDReader (
         if (ccid == null) {
             throw Exception("CCID_READER_NOT_CONNECTED")
         }
-        val resp = ccid!!.xfrBlock(command)
-        return resp
+        try {
+            val resp = ccid!!.xfrBlock(command)
+            return resp
+        } catch (ex: CcidException) {
+            ccid = null
+            connectCard()
+            val resp = ccid!!.xfrBlock(command)
+            return resp
+        }
     }
 
     fun disconnectCard() {
+        ccid?.usbDeviceConnection?.close()
         ccid = null
     }
 

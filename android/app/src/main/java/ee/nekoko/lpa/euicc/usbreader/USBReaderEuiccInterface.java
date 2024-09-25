@@ -33,6 +33,7 @@ import com.infineon.esim.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import ee.nekoko.lpa.euicc.base.EuiccSlot;
 import ee.nekoko.lpa.euicc.usbreader.drivers.ccid.CCIDInterface;
 import ee.nekoko.nlpa.MainApplication;
 
@@ -123,15 +124,15 @@ final public class USBReaderEuiccInterface implements EuiccInterface {
     }
 
     @Override
-    public List<String> refreshEuiccNames() throws Exception {
+    public List<EuiccSlot> refreshSlots() throws Exception {
         if(currentDriver == null){
             return new ArrayList<>();
         }
-        return currentDriver.refreshEuiccNames();
+        return currentDriver.refreshSlots();
     }
 
     @Override
-    public synchronized List<String> getEuiccNames() {
+    public synchronized List<EuiccSlot> getEuiccNames() {
         return currentDriver.getEuiccNames();
     }
 

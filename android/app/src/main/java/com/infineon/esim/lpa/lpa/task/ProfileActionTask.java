@@ -106,6 +106,7 @@ public class ProfileActionTask implements Callable<Void> {
 
     private void performEuiccReset() throws Exception {
         Log.debug(TAG, "Performing eUICC reset.");
+
         switch (profileActionType) {
             case PROFILE_ACTION_ENABLE:
             case PROFILE_ACTION_DISABLE:

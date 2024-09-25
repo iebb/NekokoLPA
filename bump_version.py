@@ -13,5 +13,3 @@ print("buildVersion", new_version)
 print("version", version)
 
 json.dump(package_json, open("package.json", "w+"), indent=2)
-
-os.system("bash build.sh && bash upload.sh")

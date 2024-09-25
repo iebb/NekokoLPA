@@ -28,7 +28,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface EuiccService {
 
-    List<String> refreshEuiccNames();
+    List<EuiccSlot> refreshSlots();
 
     void connect() throws Exception;
     void disconnect() throws Exception;

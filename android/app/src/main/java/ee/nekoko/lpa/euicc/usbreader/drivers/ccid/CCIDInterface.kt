@@ -4,10 +4,11 @@ import android.content.Context
 import ee.nekoko.lpa.euicc.base.EuiccConnection
 import ee.nekoko.lpa.euicc.usbreader.USBReaderInterface
 import com.infineon.esim.util.Log
+import ee.nekoko.lpa.euicc.base.EuiccSlot
 
 class CCIDInterface(context: Context) : USBReaderInterface {
     private val ccidService: CCIDService
-    private val euiccNames: MutableList<String>
+    private val euiccNames: MutableList<EuiccSlot>
 
     private var euiccConnection: EuiccConnection? = null
 
@@ -52,20 +53,19 @@ class CCIDInterface(context: Context) : USBReaderInterface {
         }
 
         ccidService.disconnect()
-
         euiccNames.clear()
 
         return !ccidService.isConnected
     }
 
-    override fun refreshEuiccNames(): List<String> {
+    override fun refreshSlots(): List<EuiccSlot> {
         euiccNames.clear()
-        euiccNames.addAll(ccidService.refreshEuiccNames())
+        euiccNames.addAll(ccidService.refreshSlots())
         return euiccNames
     }
 
     @Synchronized
-    override fun getEuiccNames(): List<String> {
+    override fun getEuiccNames(): List<EuiccSlot> {
         return euiccNames
     }
 

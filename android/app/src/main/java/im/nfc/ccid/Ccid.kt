@@ -2,12 +2,9 @@ package im.nfc.ccid
 
 import android.hardware.usb.UsbDeviceConnection
 import android.hardware.usb.UsbEndpoint
-import kotlin.math.max
 
 class Ccid(
-    private val usbDeviceConnection: UsbDeviceConnection,
-    private val bulkIn: UsbEndpoint,
-    private val bulkOut: UsbEndpoint
+    val usbDeviceConnection: UsbDeviceConnection, val bulkIn: UsbEndpoint, val bulkOut: UsbEndpoint
 ) {
     private var currentSeq = 0.toByte()
 

@@ -34,22 +34,23 @@ import com.infineon.esim.lpa.data.AsyncActionStatus;
 import com.infineon.esim.lpa.data.Error;
 import com.infineon.esim.lpa.data.Preferences;
 import com.infineon.esim.lpa.data.StatusAndEventHandler;
-import ee.nekoko.lpa.euicc.base.EuiccConnection;
-import ee.nekoko.lpa.euicc.base.EuiccConnectionConsumer;
-import ee.nekoko.lpa.euicc.base.EuiccInterface;
-import ee.nekoko.lpa.euicc.base.EuiccInterfaceStatusChangeHandler;
-import ee.nekoko.lpa.euicc.base.task.ConnectInterfaceTask;
-import ee.nekoko.lpa.euicc.base.task.DisconnectReaderTask;
-import ee.nekoko.lpa.euicc.base.task.RefreshEuiccNamesTask;
-import ee.nekoko.lpa.euicc.base.task.SwitchEuiccTask;
-import ee.nekoko.lpa.euicc.se.SeEuiccInterface;
-import ee.nekoko.lpa.euicc.usbreader.USBReaderEuiccInterface;
 import com.infineon.esim.lpa.util.threading.TaskRunner;
 import com.infineon.esim.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+
+import ee.nekoko.lpa.euicc.base.EuiccConnection;
+import ee.nekoko.lpa.euicc.base.EuiccConnectionConsumer;
+import ee.nekoko.lpa.euicc.base.EuiccInterface;
+import ee.nekoko.lpa.euicc.base.EuiccInterfaceStatusChangeHandler;
+import ee.nekoko.lpa.euicc.base.EuiccSlot;
+import ee.nekoko.lpa.euicc.base.task.ConnectInterfaceTask;
+import ee.nekoko.lpa.euicc.base.task.DisconnectReaderTask;
+import ee.nekoko.lpa.euicc.base.task.SwitchEuiccTask;
+import ee.nekoko.lpa.euicc.se.SeEuiccInterface;
 
 public class EuiccManager implements EuiccInterfaceStatusChangeHandler {
     private static final String TAG = EuiccManager.class.getName();
@@ -62,7 +63,9 @@ public class EuiccManager implements EuiccInterfaceStatusChangeHandler {
 
     // eUICCs
     private final MutableLiveData<String> currentEuicc;
-    private final MutableLiveData<List<String>> euiccList;
+    private final MutableLiveData<List<EuiccSlot>> euiccList;
+    private final HashMap<String, EuiccSlot> euiccSlotMap = new HashMap<>();
+
 
     private final StatusAndEventHandler statusAndEventHandler;
 
@@ -71,9 +74,7 @@ public class EuiccManager implements EuiccInterfaceStatusChangeHandler {
     private String switchEuiccInterface;
     private boolean enableFallbackEuicc;
 
-    public EuiccManager(Context context,
-                        StatusAndEventHandler statusAndEventHandler) {
-        Log.debug(TAG,"Constructor");
+    public EuiccManager(Context context, StatusAndEventHandler statusAndEventHandler) {
 
         this.switchEuiccInterface = null;
 
@@ -85,14 +86,14 @@ public class EuiccManager implements EuiccInterfaceStatusChangeHandler {
 
         euiccInterfaces = new ArrayList<>();
         euiccInterfaces.add(new SeEuiccInterface(context, this));
-        euiccInterfaces.add(new USBReaderEuiccInterface(context, this));
+        // euiccInterfaces.add(new USBReaderEuiccInterface(context, this));
     }
 
     public LiveData<String> getCurrentEuiccLiveData() {
         return currentEuicc;
     }
 
-    public LiveData<List<String>> getEuiccListLiveData() {
+    public LiveData<List<EuiccSlot>> getEuiccListLiveData() {
         return euiccList;
     }
 
@@ -200,19 +201,6 @@ public class EuiccManager implements EuiccInterfaceStatusChangeHandler {
         }
     }
 
-    public void startRefreshingEuiccList() {
-        statusAndEventHandler.onStatusChange(ActionStatus.REFRESHING_EUICC_LIST_STARTED);
-        Log.debug(TAG,"Refreshing eUICC list.");
-        try {
-            var result = new RefreshEuiccNamesTask(euiccInterfaces).call();
-            onEuiccListRefreshed(result);
-        } catch (Exception e) {
-            statusAndEventHandler.onError(new Error("Exception during refreshing eUICC list.", e.getMessage(), e));
-        } finally {
-            statusAndEventHandler.onStatusChange(ActionStatus.REFRESHING_EUICC_LIST_FINISHED);
-        }
-    }
-
     private String startEuiccInitialization(String euiccName) {
         return startEuiccInitialization(euiccName, 3);
     }
@@ -225,7 +213,7 @@ public class EuiccManager implements EuiccInterfaceStatusChangeHandler {
             EuiccConnection oldEuiccConnection = currentEuiccConnection;
             EuiccConnection newEuiccConnection = getEuiccConnectionFromName(euiccName);
             if (newEuiccConnection != null) {
-                var success = new SwitchEuiccTask(oldEuiccConnection, newEuiccConnection, Preferences.getReaderSettings()).call();
+                var success = new SwitchEuiccTask(oldEuiccConnection, newEuiccConnection).call();
                 if (success) {
                     currentEuiccConnection = newEuiccConnection;
                     onEuiccConnected(euiccName, newEuiccConnection);
@@ -262,7 +250,7 @@ public class EuiccManager implements EuiccInterfaceStatusChangeHandler {
         Log.debug(TAG, "Handling connect of interface: " + interfaceTag);
         statusAndEventHandler.onStatusChange(new AsyncActionStatus(ActionStatus.CONNECTING_INTERFACE_FINISHED).addExtras(interfaceTag));
 
-        startRefreshingEuiccList();
+        refreshEuiccList();
     }
 
     @Override
@@ -274,7 +262,7 @@ public class EuiccManager implements EuiccInterfaceStatusChangeHandler {
             // Enable initialisation of fallback eUICC after eUICC list refresh
             enableFallbackEuicc = true;
 
-            startRefreshingEuiccList();
+            refreshEuiccList();
         }
     }
 
@@ -290,7 +278,7 @@ public class EuiccManager implements EuiccInterfaceStatusChangeHandler {
     }
 
     @Override
-    public void onEuiccListRefreshed(List<String> euiccList) {
+    public void onEuiccListRefreshed(List<EuiccSlot> euiccList) {
         Log.debug(TAG, "eUICC list has been refreshed: " + euiccList);
         this.euiccList.postValue(euiccList);
 
@@ -325,10 +313,10 @@ public class EuiccManager implements EuiccInterfaceStatusChangeHandler {
 
         try {
             EuiccInterface euiccInterface = getEuiccInterfaceFromTag(interfaceTag);
-            List<String> euiccNames = euiccInterface.getEuiccNames();
+            List<EuiccSlot> euiccNames = euiccInterface.getEuiccNames();
 
-            for (String readerName : euiccNames) {
-                defaultEuiccName = readerName;
+            for (EuiccSlot reader : euiccNames) {
+                defaultEuiccName = reader.getName();
                 break;
             }
 
@@ -344,17 +332,16 @@ public class EuiccManager implements EuiccInterfaceStatusChangeHandler {
         Log.debug(TAG, "Searching for fallback eUICC...");
         String fallbackEuicc = Preferences.getNoEuiccName();
 
-        for (EuiccInterface euiccInterface : euiccInterfaces) {
-            if(euiccInterface.isAvailable()) {
-                List<String> euiccNamesForInterface = euiccInterface.getEuiccNames();
-                Log.debug(TAG, euiccInterface.getTag() + " - " + euiccNamesForInterface);
-
-                for (String euiccNameLocal : euiccNamesForInterface) {
-                    fallbackEuicc = euiccNameLocal;
+        if (euiccList != null) {
+            var euiccSlots = euiccList.getValue();
+            if (euiccSlots != null) {
+                for (EuiccSlot euiccSlot: euiccSlots) {
+                    if (euiccSlot.getAvailable()) {
+                        return euiccSlot.getName();
+                    }
                 }
             }
         }
-
         Log.debug(TAG, "Fallback eUICC: " + fallbackEuicc);
         return fallbackEuicc;
     }
@@ -364,10 +351,10 @@ public class EuiccManager implements EuiccInterfaceStatusChangeHandler {
 
         for(EuiccInterface euiccInterface : euiccInterfaces) {
             if (euiccInterface != null) {
-                List<String> euiccNamesForInterface = euiccInterface.getEuiccNames();
-                for(String euiccNameLocal : euiccNamesForInterface) {
-                    if(euiccNameLocal.equals(euiccName)) {
-                        return euiccInterface.getEuiccConnection(euiccName);
+                List<EuiccSlot> euiccNamesForInterface = euiccInterface.getEuiccNames();
+                for(EuiccSlot euiccNameLocal : euiccNamesForInterface) {
+                    if(euiccNameLocal.getName().equals(euiccName)) {
+                        return euiccNameLocal.getConnection();
                     }
                 }
             }
@@ -394,13 +381,39 @@ public class EuiccManager implements EuiccInterfaceStatusChangeHandler {
     /* sync calls */
 
     public void refreshEuiccList() {
+        // refreshing eUICCs
+        statusAndEventHandler.onStatusChange(ActionStatus.REFRESHING_EUICC_LIST_STARTED);
         Log.debug(TAG,"Refreshing eUICC list.");
+        euiccSlotMap.clear();
         try {
-            var result = new RefreshEuiccNamesTask(euiccInterfaces).call();
-            onEuiccListRefreshed(result);
+            List<EuiccSlot> euiccList = new ArrayList<>();
+            for(EuiccInterface euiccInterface : euiccInterfaces) {
+                for (EuiccSlot slot : euiccInterface.refreshSlots()) {
+                    slot.refresh();
+                    Log.debug(TAG, euiccInterface.getTag() + ": " + slot.getName());
+                    euiccSlotMap.put(slot.getName(), slot);
+                    euiccList.add(slot);
+                }
+            }
+            onEuiccListRefreshed(euiccList);
         } catch (Exception e) {
             statusAndEventHandler.onError(new Error("Exception during refreshing eUICC list.", e.getMessage(), e));
+        } finally {
+            statusAndEventHandler.onStatusChange(ActionStatus.REFRESHING_EUICC_LIST_FINISHED);
         }
+    }
+
+    public void refreshSingleEuicc(String slotName) {
+        var slot = euiccSlotMap.get(slotName);
+        if (slot == null) {
+            refreshEuiccList();
+            return;
+        }
+        // refreshing eUICCs
+        statusAndEventHandler.onStatusChange(ActionStatus.REFRESHING_EUICC_LIST_STARTED);
+        Log.debug(TAG,"Refreshing eUICC list.");
+        slot.refresh();
+        onEuiccListRefreshed(euiccList.getValue());
     }
 
 }

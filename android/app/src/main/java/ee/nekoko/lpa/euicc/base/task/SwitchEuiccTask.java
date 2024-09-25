@@ -23,7 +23,6 @@
 
 package ee.nekoko.lpa.euicc.base.task;
 
-import ee.nekoko.lpa.euicc.EuiccConnectionSettings;
 import ee.nekoko.lpa.euicc.base.EuiccConnection;
 import com.infineon.esim.util.Log;
 
@@ -34,12 +33,10 @@ public class SwitchEuiccTask implements Callable<Boolean> {
 
     private final EuiccConnection oldEuiccConnection;
     private final EuiccConnection newEuiccConnection;
-    private final EuiccConnectionSettings euiccConnectionSettings;
 
-    public SwitchEuiccTask(EuiccConnection oldEuiccConnection, EuiccConnection newEuiccConnection, EuiccConnectionSettings euiccConnectionSettings) {
+    public SwitchEuiccTask(EuiccConnection oldEuiccConnection, EuiccConnection newEuiccConnection) {
         this.oldEuiccConnection = oldEuiccConnection;
         this.newEuiccConnection = newEuiccConnection;
-        this.euiccConnectionSettings = euiccConnectionSettings;
     }
 
     @Override
@@ -51,10 +48,6 @@ public class SwitchEuiccTask implements Callable<Boolean> {
             Log.debug(TAG, "Closing old eUICC connection first...");
             oldEuiccConnection.close();
         }
-
-        // Update eUICC connection settings for new reader
-        Log.debug(TAG, "Updating eUICC connection settings...");
-        newEuiccConnection.updateEuiccConnectionSettings(euiccConnectionSettings);
 
         // Open new eUICC connection
         Log.debug(TAG, "Opening new eUICC connection ...");

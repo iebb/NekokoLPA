@@ -4,8 +4,8 @@ import android.content.Context
 import android.hardware.usb.UsbConstants
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
+import com.infineon.esim.lpa.core.es10.Es10Interface
 import ee.nekoko.lpa.euicc.base.EuiccSlot
-import im.nfc.ccid.Ccid
 
 
 class CCIDCard(private val context: Context) {
@@ -32,41 +32,28 @@ class CCIDCard(private val context: Context) {
 
 
 
-    val readerNames: List<String>
-        get() {
-            val readerTree = mutableMapOf<String, MutableList<CCIDReader>>()
-            val newReaders = mutableMapOf<String, CCIDReader>()
+    fun readerSlots(): List<EuiccSlot> {
+        val displayNameSet = mutableSetOf<String>()
 
-            usbManager.deviceList.values.forEach { device ->
-                (0 until device.interfaceCount).forEach { i ->
-                    val usbInterface = device.getInterface(i)
-                    if (usbInterface.interfaceClass == UsbConstants.USB_CLASS_CSCID) {
-                        val displayName = getDisplayName(device)
-                        var ccid: Ccid? = null
-                        for (reader in readers.values) {
-                            if (reader.interfaceIdx == i && reader.deviceName == device.deviceName) {
-                                ccid = reader.ccid;
-                            }
-                        }
-                        val reader = CCIDReader(displayName, device.deviceName, i, ccid, usbManager, device, context)
-                        readerTree.getOrPut(displayName) { mutableListOf() }.add(reader)
+        slots.clear();
+        usbManager.deviceList.values.forEach { device ->
+            (0 until device.interfaceCount).forEach { i ->
+                val usbInterface = device.getInterface(i)
+                if (usbInterface.interfaceClass == UsbConstants.USB_CLASS_CSCID) {
+                    var displayName = getDisplayName(device)
+                    if (displayNameSet.contains(displayName)) {
+                        displayName += " [$i]"
                     }
+                    for (reader in readers.values) {
+                        reader.disconnectCard()
+                    }
+                    val reader = CCIDReader(displayName, device.deviceName, i, null, usbManager, device, context)
+                    getEuiccSlot(reader) // slots added here
                 }
             }
-
-            readerTree.forEach { (name, list) ->
-                if (list.size > 1) {
-                    list.forEachIndexed { index, reader ->
-                        newReaders["$name (${index + 1})"] = reader
-                    }
-                } else {
-                    newReaders[name] = list[0]
-                }
-            }
-
-            readers = newReaders
-            return readers.keys.toList()
         }
+        return slots.values.toList()
+    }
 
     @Throws(Exception::class)
     fun establishContext() {
@@ -76,34 +63,26 @@ class CCIDCard(private val context: Context) {
     fun releaseContext() {
     }
 
-/*
-    private fun getEuiccSlot(readerName: String): EuiccSlot {
+    private fun getEuiccSlot(reader: CCIDReader): EuiccSlot {
         try {
-            val currentSlot: EuiccSlot? = slots[readerName]
+            val currentSlot: EuiccSlot? = slots[reader.name]
             val connection = if (currentSlot != null) {
                 currentSlot.connection
             } else {
-                CCIDEuiccConnection(this, readerName)
+                CCIDEuiccConnection(reader)
             }
-            val es10Interface = Es10Interface(connection)
-            val eid = es10Interface.es10c_getEid().eidValue.toString()
-            val euiccInfo2 = es10Interface.es10b_getEuiccInfo2()
-            com.infineon.esim.util.Log.debug(TAG, "Reader name: " + readerName)
-            com.infineon.esim.util.Log.debug(TAG, "EID is $eid")
-            val ret = EuiccSlot(readerName, true, "ok", eid, euiccInfo2, connection)
-            slots.put(readerName, ret)
+            com.infineon.esim.util.Log.debug(TAG, "Reader name: " + reader.name)
+            val ret = EuiccSlot(reader.name, true, "ok", connection)
+            slots.put(reader.name, ret)
             return ret
         } catch (e: java.lang.Exception) {
             com.infineon.esim.util.Log.debug(TAG, "[GET EUICC SLOT FAILED] $e")
-            com.infineon.esim.util.Log.debug(TAG, "[SESSION FAILED] " + readerName)
+            com.infineon.esim.util.Log.debug(TAG, "[SESSION FAILED] " + reader.name)
         }
-        return EuiccSlot(readerName, false, "", null, null, null)
+        return EuiccSlot(reader.name, false, "", null)
     }
 
-
- */
     companion object {
         private val TAG: String = CCIDCard::class.java.name
-        private const val ACTION_USB_PERMISSION = "ee.nekoko.lpa.ccid.USB_PERMISSION"
     }
 }

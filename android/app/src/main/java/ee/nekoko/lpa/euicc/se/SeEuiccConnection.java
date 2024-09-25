@@ -27,7 +27,6 @@ import android.se.omapi.Channel;
 import android.se.omapi.Reader;
 import android.se.omapi.Session;
 
-import ee.nekoko.lpa.euicc.EuiccConnectionSettings;
 import ee.nekoko.lpa.euicc.base.EuiccConnection;
 import ee.nekoko.lpa.euicc.base.generic.Definitions;
 import com.infineon.esim.util.Bytes;
@@ -45,15 +44,8 @@ public class SeEuiccConnection implements EuiccConnection {
     private Session session;
     private Channel channel;
 
-    private EuiccConnectionSettings euiccConnectionSettings;
-
     public SeEuiccConnection(Reader reader) {
         this.reader = reader;
-    }
-
-    @Override
-    public void updateEuiccConnectionSettings(EuiccConnectionSettings euiccConnectionSettings) {
-        this.euiccConnectionSettings = euiccConnectionSettings;
     }
 
     @Override
@@ -69,14 +61,18 @@ public class SeEuiccConnection implements EuiccConnection {
         close();
 
         // Wait for the phone to detect the profile change
-        try {
-            Thread.sleep(euiccConnectionSettings.getProfileInitializationTime());
-        } catch (Exception e) {
-            Log.error(Log.getFileLineNumber() + " " + e.getMessage());
+        for (var i = 1; i < 10; i++) {
+            try {
+                Thread.sleep(i * 1000);
+                return open();
+            } catch (IOException e) {
+                // Log.error(Log.getFileLineNumber() + " " + e.getMessage());
+            } catch (Exception e) {
+                Log.error(Log.getFileLineNumber() + " " + e.getMessage());
+            }
         }
-
-        // Open the connection again
         return open();
+        // Open the connection again
     }
 
     @Override
@@ -88,6 +84,11 @@ public class SeEuiccConnection implements EuiccConnection {
                 session = reader.openSession();
             }
             session.getATR(); // weird
+            try {
+                session.closeChannels();
+            } catch (Exception ex) {
+                Log.debug(TAG, "Closing channel failed. Ex: " + ex.getMessage());
+            }
 
             if (channel == null || !channel.isOpen()) {
                 Log.debug(TAG, "Opening a new logical channel...");

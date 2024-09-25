@@ -24,7 +24,6 @@
 package ee.nekoko.lpa.euicc.base.generic;
 
 import com.infineon.esim.lpa.core.dtos.apdu.Apdu;
-import ee.nekoko.lpa.euicc.EuiccConnectionSettings;
 import com.infineon.esim.util.Bytes;
 import com.infineon.esim.util.Log;
 
@@ -48,22 +47,14 @@ public class ISO7816Channel {
         this.apduTransmitter = apduTransmitter;
     }
 
-    public void openChannel(EuiccConnectionSettings euiccConnectionSettings) throws Exception {
-        if(euiccConnectionSettings.isShallSendTerminalCapability()) {
-            sendTerminalCapability();
-        }
-
-        if(euiccConnectionSettings.isShallSendOpenLogicalChannel()) {
-            openLogicalChannel();
-        }
-
+    public void openChannel() throws Exception {
+        sendTerminalCapability();
+        openLogicalChannel();
         selectIsdr();
     }
 
-    public void closeChannel(EuiccConnectionSettings euiccConnectionSettings) throws Exception {
-        if(euiccConnectionSettings.isShallSendOpenLogicalChannel()) {
-            closeLogicalChannel();
-        }
+    public void closeChannel() throws Exception {
+        closeLogicalChannel();
     }
 
     public List<String> transmitAPDUS(List<String> apdus) {

@@ -1,6 +1,6 @@
 import {Card, Switch, Text, View} from "react-native-ui-lib";
 import {shallowEqual, useDispatch, useSelector} from "react-redux";
-import {selectAppConfig, selectEuicc, setState} from "@/redux/reduxDataStore";
+import {EuiccList, selectAppConfig, selectEuicc, setState} from "@/redux/reduxDataStore";
 import {Profile} from "@/native/types";
 import InfiLPA from "@/native/InfiLPA";
 import {RefreshControl, ScrollView, TouchableOpacity} from "react-native";
@@ -19,51 +19,32 @@ interface ProfileExt extends Profile {
   selected: boolean;
 }
 
-const loadingStates = [
-  ActionStatus.ENABLE_PROFILE_STARTED,
-  ActionStatus.DISABLE_PROFILE_STARTED,
-  ActionStatus.DELETE_PROFILE_STARTED,
-  ActionStatus.SET_NICKNAME_STARTED,
-  ActionStatus.GET_PROFILE_LIST_STARTED,
-];
-
-export default function ProfileSelector({ eUICC = "SIM1" }) {
+export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
 
   const { colors} = useTheme();
   const { t } = useTranslation(['profile']);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { stealthMode } = useSelector(selectAppConfig);
-
-
-
-  const { profileList, status} = useSelector(selectEuicc(eUICC), shallowEqual);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const onRefresh = useCallback(() => {
     dispatch(setState([{profileList: {
-        selectedProfile: [],
-        availableProfiles: []
-    }}, eUICC]));
+      profiles: [],
+    }}, eUICC.name]));
     setRefreshing(true);
-    InfiLPA.refreshProfileList(eUICC);
+    InfiLPA.refreshProfileList(eUICC.name);
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
   }, []);
 
+  const profileList = eUICC.profiles;
 
-  useEffect(() => {
-    if (status === ActionStatus.GET_PROFILE_LIST_FINISHED) {
-      setRefreshing(false);
-    }
-  }, [status]);
-
-  const profiles = profileList ? [
-    ...profileList.selectedProfile.map((profile: Profile) => ({...profile, selected: true})),
-    ...profileList.availableProfiles.map((profile: Profile) => ({...profile, selected: false})),
-  ] : []
+  const profiles = profileList?.profiles?.map(
+    (profile: Profile) => ({...profile, selected: profile.profileMetadataMap.STATE === "Enabled"})
+  ) || []
 
   const isLoading = loading; // (status !== undefined && loadingStates.includes(status)) || ;
 
@@ -190,10 +171,7 @@ export default function ProfileSelector({ eUICC = "SIM1" }) {
                                 }
                               } finally {
                                 setTimeout(() => {
-                                  InfiLPA.refreshProfileList(eUICC);
-                                  setTimeout(() => {
-                                    setLoading(false);
-                                  }, 300);
+                                  setLoading(false);
                                 }, 100);
                               }
                             }, 10);

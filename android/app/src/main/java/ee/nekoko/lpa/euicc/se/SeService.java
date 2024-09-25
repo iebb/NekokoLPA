@@ -27,6 +27,9 @@ import android.content.Context;
 import android.se.omapi.Reader;
 import android.se.omapi.SEService;
 
+import com.gsma.sgp.messages.rspdefinitions.ProfileInfo;
+import com.gsma.sgp.messages.rspdefinitions.ProfileInfoListResponse;
+import com.infineon.esim.lpa.core.dtos.profile.ProfileMetadata;
 import com.infineon.esim.lpa.core.es10.Es10Interface;
 import com.infineon.esim.util.Log;
 
@@ -64,14 +67,13 @@ public class SeService implements EuiccService {
         this.seServiceMutex = new Object();
     }
 
-    public List<String> refreshEuiccNames() {
+    public List<EuiccSlot> refreshSlots() {
         Log.debug(TAG, "Refreshing eUICC names...");
-        List<String> euiccNames = new ArrayList<>();
+        List<EuiccSlot> euiccNames = new ArrayList<>();
         for(Reader reader : seService.getReaders()) {
-            String readerName = reader.getName();
             var result = getEuiccSlot(reader);
             if (result.getAvailable()) {
-                euiccNames.add(readerName);
+                euiccNames.add(result);
             }
         }
         return euiccNames;
@@ -191,22 +193,19 @@ public class SeService implements EuiccService {
             } else {
                 connection = new SeEuiccConnection(reader);
             }
-            var es10Interface = new Es10Interface(connection);
-            var eid = es10Interface.es10c_getEid().getEidValue().toString();
-            var euiccInfo2 = es10Interface.es10b_getEuiccInfo2();
+
             Log.debug(TAG,"Reader name: " + reader.getName());
-            Log.debug(TAG,"EID is " + eid);
-            var ret = new EuiccSlot(reader.getName(), true, "ok", eid, euiccInfo2, connection);
+            var ret = new EuiccSlot(reader.getName(), true, "ok", connection);
             slots.put(reader.getName(), ret);
             return ret;
         } catch (java.lang.SecurityException e) {
             /* ARA-M not found */
             Log.debug(TAG,"[GET EUICC SLOT FAILED - SecurityException] " + e.toString());
-            return new EuiccSlot(reader.getName(), false, "no_ara_m", null, null, null);
+            return new EuiccSlot(reader.getName(), false, "no_ara_m", null);
         } catch (Exception e) {
             Log.debug(TAG,"[GET EUICC SLOT FAILED] " + e.toString());
             Log.debug(TAG,"[SESSION FAILED] " + reader.getName());
         }
-        return new EuiccSlot(reader.getName(), false, "", null, null, null);
+        return new EuiccSlot(reader.getName(), false, "", null);
     }
 }

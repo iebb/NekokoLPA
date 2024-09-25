@@ -64,12 +64,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 
 	useEffect(() => {
 		if (profileList) {
-			for (const p of profileList?.availableProfiles) {
-				if (p.profileMetadataMap.ICCID === ICCID) {
-					setMetadata(p.profileMetadataMap);
-				}
-			}
-			for (const p of profileList?.selectedProfile) {
+			for (const p of profileList?.profiles) {
 				if (p.profileMetadataMap.ICCID === ICCID) {
 					setMetadata(p.profileMetadataMap);
 				}

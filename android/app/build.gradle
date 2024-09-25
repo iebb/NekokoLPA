@@ -119,13 +119,37 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.community
+            applicationIdSuffix ".dev"
+            debuggable true
+            manifestPlaceholders = [
+                appIcon: "@mipmap/ic_launcher_debug"
+            ]
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.esim9
+            signingConfig signingConfigs.community
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            manifestPlaceholders = [
+                appIcon: "@mipmap/ic_launcher"
+            ]
+        }
+    }
+    flavorDimensions "version"
+    productFlavors {
+        multisign {
+            dimension "version"
+            applicationIdSuffix ".multisign"
+            versionNameSuffix "-ms"
+            manifestPlaceholders = [
+                appIcon: "@mipmap/multisign"
+            ]
+        }
+//         esim9 {
+//             applicationIdSuffix ".9esim"
+//             dimension "version"
+//         }
+        store {
+            dimension "version"
         }
     }
 }

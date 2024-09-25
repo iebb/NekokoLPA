@@ -4,6 +4,7 @@ import android.content.Context
 import ee.nekoko.lpa.euicc.base.EuiccConnection
 import ee.nekoko.lpa.euicc.base.EuiccService
 import com.infineon.esim.util.Log
+import ee.nekoko.lpa.euicc.base.EuiccSlot
 
 
 class CCIDService(context: Context) : EuiccService {
@@ -16,9 +17,9 @@ class CCIDService(context: Context) : EuiccService {
         this.isConnected = false
     }
 
-    override fun refreshEuiccNames(): List<String> {
+    override fun refreshSlots(): List<EuiccSlot> {
         Log.debug(TAG, "Refreshing CCID eUICC names...")
-        return CCIDCard.readerNames
+        return CCIDCard.readerSlots()
     }
 
     @Throws(Exception::class)

@@ -19,7 +19,7 @@ import Title from "@/components/common/Title";
 import Container from "@/components/common/Container";
 
 
-const LPACode = /^((LPA:1)\$([^$]+)\$([A-Z0-9-]+)(?:\$([0-9]+(?:\.[0-9]+)*)?)?(?:\$(1))?)?$/;
+const LPACode = /(((:?LPA:)?1)\$([^$]+)\$([A-Z0-9-]+)(?:\$([0-9]+(?:\.[0-9]+)*)?)?(?:\$(1))?)?$/;
 
 const filteredStates = [
 	ActionStatus.AUTHENTICATE_DOWNLOAD_STARTED,

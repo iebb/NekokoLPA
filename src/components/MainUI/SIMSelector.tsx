@@ -1,8 +1,8 @@
 import {Text, View} from "react-native-ui-lib";
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useMemo, useState} from "react";
 import InfiLPA from "@/native/InfiLPA";
-import {useDispatch, useSelector} from "react-redux";
-import {RootState, setGlobalState} from "@/redux/reduxDataStore";
+import {useSelector} from "react-redux";
+import {RootState} from "@/redux/reduxDataStore";
 import {useTheme} from "@/theme";
 import TabController from "@/components/ui/tabController";
 import {EUICCPage} from "@/components/MainUI/EUICCPage";
@@ -13,23 +13,24 @@ import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 
 export default function SIMSelector() {
   const { colors } = useTheme();
-  const dispatch = useDispatch();
   const [width, setWidth] = useState<number>(0);
-  const { euiccList: _euiccList, currentEuicc} = useSelector((state: RootState) => state.LPA);
+  const { euiccList, currentEuicc} = useSelector((state: RootState) => state.LPA);
   const { t } = useTranslation(['main']);
   const [refreshing, setRefreshing] = useState(false);
+
+  const initialIndex = useMemo(
+    () => Math.max(euiccList.map(x => x.name).indexOf(currentEuicc), 0), [refreshing]
+  );
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     InfiLPA.refreshEUICC();
     setTimeout(() => {
       setRefreshing(false);
-    }, 2000);
+    }, 1000);
   }, []);
 
-  const euiccList = Array.from(new Set(_euiccList)).filter(e => e.length);
-  console.log("index", euiccList.indexOf(currentEuicc));
-
+  console.log("re-render euicc from SIMselector", euiccList);
 
   if (!euiccList?.length) {
     return (
@@ -65,14 +66,13 @@ export default function SIMSelector() {
       {
         width > 0 && (euiccList?.length >= 1 && (
           <TabController
-            key={JSON.stringify(euiccList)}
             items={
-              euiccList.map((name, _idx) => ({
-                label: name,
+              euiccList.map((eUICC, _idx) => ({
+                label: eUICC.name,
                 icon: (
                   <FontAwesomeIcon
                     icon={
-                      name.startsWith("SIM") ? faSimCard : faDownload
+                      eUICC.name.startsWith("SIM") ? faSimCard : faDownload
                     }
                     style={{
                       color: colors.std400,
@@ -84,13 +84,13 @@ export default function SIMSelector() {
                 ),
                 labelStyle: {
                   padding: 0,
-                  fontSize: name.length > 4 ? 12 : 14,
-                  lineHeight: name.length > 4 ? 12 : 14,
+                  fontSize: eUICC.name.length > 4 ? 12 : 14,
+                  lineHeight: eUICC.name.length > 4 ? 12 : 14,
                 },
                 selectedLabelStyle: {
                   padding: 0,
-                  fontSize: name.length > 4 ? 12 : 14,
-                  lineHeight: name.length > 4 ? 12 : 14,
+                  fontSize: eUICC.name.length > 4 ? 12 : 14,
+                  lineHeight: eUICC.name.length > 4 ? 12 : 14,
                   fontWeight: '500',
                 },
                 iconColor: colors.std400,
@@ -99,13 +99,13 @@ export default function SIMSelector() {
                 selectedIconColor: colors.purple300,
                 width: width / euiccList.length,
                 onPress: () => {
-                  if (euiccList.includes(name)) {
-                    InfiLPA.selectEUICC(name);
+                  if (euiccList.map(x => x.name).includes(eUICC.name)) {
+                    InfiLPA.selectEUICC(eUICC.name);
                   }
                 }
               }))
             }
-            initialIndex={euiccList.indexOf(currentEuicc)}
+            initialIndex={initialIndex}
           >
             <TabController.TabBar
               containerWidth={width}
@@ -119,9 +119,9 @@ export default function SIMSelector() {
             />
             <View flexG>
               {
-                euiccList.map((name, _idx) => (
-                  <TabController.TabPage index={_idx} lazy key={name}>
-                    <EUICCPage eUICC={name} />
+                euiccList.map((euicc, _idx) => (
+                  <TabController.TabPage index={_idx} key={euicc.name}>
+                    <EUICCPage eUICC={euicc} />
                   </TabController.TabPage>
                 ))
               }

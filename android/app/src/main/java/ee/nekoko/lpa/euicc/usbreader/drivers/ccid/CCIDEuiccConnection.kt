@@ -1,6 +1,5 @@
 package ee.nekoko.lpa.euicc.usbreader.drivers.ccid
 
-import ee.nekoko.lpa.euicc.EuiccConnectionSettings
 import ee.nekoko.lpa.euicc.base.EuiccConnection
 import ee.nekoko.lpa.euicc.base.generic.ISO7816Channel
 import ee.nekoko.lpa.euicc.base.generic.ISO7816Channel.ApduTransmitter
@@ -9,12 +8,6 @@ import com.infineon.esim.util.Log
 
 class CCIDEuiccConnection(private val reader: CCIDReader) : EuiccConnection, ApduTransmitter {
     private val iso7816Channel = ISO7816Channel(this)
-
-    private var euiccConnectionSettings: EuiccConnectionSettings? = null
-
-    override fun updateEuiccConnectionSettings(euiccConnectionSettings: EuiccConnectionSettings) {
-        this.euiccConnectionSettings = euiccConnectionSettings
-    }
 
     override fun getEuiccName(): String {
         return reader.name
@@ -27,7 +20,7 @@ class CCIDEuiccConnection(private val reader: CCIDReader) : EuiccConnection, Apd
         reader.connectCard()
 
         // Open (logical) channel to ISD-R
-        iso7816Channel.openChannel(euiccConnectionSettings)
+        iso7816Channel.openChannel()
 
         Log.debug(
             TAG,
@@ -40,10 +33,7 @@ class CCIDEuiccConnection(private val reader: CCIDReader) : EuiccConnection, Apd
     override fun close() {
         Log.debug(TAG, "Closing Identive eUICC connection...")
         if (isOpen) {
-            // Close (logical) channel
-            iso7816Channel.closeChannel(euiccConnectionSettings)
-
-            // Disconnect card
+            iso7816Channel.closeChannel()
             reader.disconnectCard()
         }
     }
@@ -57,13 +47,13 @@ class CCIDEuiccConnection(private val reader: CCIDReader) : EuiccConnection, Apd
         Log.debug(TAG, "Resetting card.")
 
         // Close (logical) channel
-        iso7816Channel.closeChannel(euiccConnectionSettings)
+        iso7816Channel.closeChannel()
 
         // Reset card
         reader.resetCard()
 
         // Open (logical) channel
-        iso7816Channel.openChannel(euiccConnectionSettings)
+        iso7816Channel.openChannel()
 
         return isOpen
     }

@@ -79,3 +79,7 @@ sentry.properties
 *.aab
 *.apk
 upload.sh
+
+
+output-metadata.json
+*.aab.idsig

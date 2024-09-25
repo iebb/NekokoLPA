@@ -4,13 +4,14 @@ import ErrorToast from "@/components/ErrorToast";
 import {Text, View} from "react-native-ui-lib";
 import React, {useCallback, useState} from "react";
 import {useSelector} from "react-redux";
-import {RootState} from "@/redux/reduxDataStore";
+import {EuiccList, RootState} from "@/redux/reduxDataStore";
 import {useTheme} from "@/theme";
 import {RefreshControl, ScrollView} from "react-native";
 import InfiLPA from "@/native/InfiLPA";
 import {useTranslation} from "react-i18next";
+import {EuiccInfo2} from "@/native/types";
 
-export function EUICCPage({ eUICC = "SIM1" }) {
+export function EUICCPage({ eUICC } : { eUICC: EuiccList }) {
   const { colors } = useTheme();
   const { t } = useTranslation(['main']);
   const {euiccList} = useSelector((state: RootState) => state.LPA);
@@ -22,11 +23,13 @@ export function EUICCPage({ eUICC = "SIM1" }) {
     InfiLPA.refreshEUICC();
     setTimeout(() => {
       setRefreshing(false);
-    }, 2000);
+    }, 1000);
   }, []);
 
+  console.log("re-render euicc", eUICC);
 
-  if (!euiccList.includes(eUICC)) {
+
+  if (!euiccList.map(x => x.name).includes(eUICC.name)) {
     return (
       <ScrollView
         bounces
