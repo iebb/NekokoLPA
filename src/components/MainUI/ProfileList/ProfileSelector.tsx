@@ -1,12 +1,11 @@
 import {Card, Switch, Text, View} from "react-native-ui-lib";
-import {shallowEqual, useDispatch, useSelector} from "react-redux";
-import {EuiccList, selectAppConfig, selectEuicc, setState} from "@/redux/reduxDataStore";
+import {useDispatch, useSelector} from "react-redux";
+import {EuiccList, selectAppConfig, setState} from "@/redux/reduxDataStore";
 import {Profile} from "@/native/types";
 import InfiLPA from "@/native/InfiLPA";
 import {RefreshControl, ScrollView, TouchableOpacity} from "react-native";
-import {ActionStatus} from "@/native/consts";
 import {parseMetadata} from "@/components/MainUI/ProfileList/parser";
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useState} from "react";
 import {useTheme} from "@/theme";
 import {useNavigation} from "@react-navigation/native";
 import {useTranslation} from "react-i18next";
@@ -20,6 +19,7 @@ interface ProfileExt extends Profile {
 }
 
 export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
+  const device = eUICC.name;
 
   const { colors} = useTheme();
   const { t } = useTranslation(['profile']);
@@ -165,9 +165,9 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
                             setTimeout(() => {
                               try {
                                 if (profile.selected) {
-                                  InfiLPA.disableProfileByIccId(metadata.ICCID);
+                                  InfiLPA.disableProfileByIccId(device, metadata.ICCID);
                                 } else {
-                                  InfiLPA.enableProfileByIccId(metadata.ICCID);
+                                  InfiLPA.enableProfileByIccId(device, metadata.ICCID);
                                 }
                               } finally {
                                 setTimeout(() => {

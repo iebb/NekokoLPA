@@ -28,12 +28,13 @@ import android.content.pm.PackageManager;
 
 import ee.nekoko.lpa.euicc.base.EuiccConnection;
 import ee.nekoko.lpa.euicc.base.EuiccInterface;
-import ee.nekoko.lpa.euicc.base.EuiccInterfaceStatusChangeHandler;
+
 import com.infineon.esim.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import ee.nekoko.lpa.euicc.base.EuiccInterfaceStatusChangeHandler;
 import ee.nekoko.lpa.euicc.base.EuiccSlot;
 import ee.nekoko.nlpa.MainApplication;
 
@@ -47,10 +48,10 @@ final public class SeEuiccInterface implements EuiccInterface {
 
     private EuiccConnection euiccConnection;
 
-    public SeEuiccInterface(Context context, EuiccInterfaceStatusChangeHandler euiccInterfaceStatusChangeHandler) {
+    public SeEuiccInterface(Context context, EuiccInterfaceStatusChangeHandler handler) {
         Log.debug(TAG, "Constructor of SeEuiccReader.");
 
-        this.seService = new SeService(context, euiccInterfaceStatusChangeHandler);
+        this.seService = new SeService(context, handler);
         this.euiccNames = new ArrayList<>();
     }
 
@@ -114,14 +115,11 @@ final public class SeEuiccInterface implements EuiccInterface {
     }
 
     @Override
-    public List<EuiccSlot> refreshSlots() {
+    public List<EuiccSlot> refreshSlots() throws Exception {
         Log.debug(TAG, "Refreshing SE eUICC names...");
         euiccNames.clear();
-        
-        if(isInterfaceConnected()) {
-            euiccNames.addAll(seService.refreshSlots());
-        }
-
+        this.connectInterface();
+        euiccNames.addAll(seService.refreshSlots());
         return euiccNames;
     }
 

@@ -19,7 +19,7 @@ export default function SIMSelector() {
   const [refreshing, setRefreshing] = useState(false);
 
   const initialIndex = useMemo(
-    () => Math.max(euiccList.map(x => x.name).indexOf(currentEuicc), 0), [refreshing]
+    () => Math.max((euiccList || []).map(x => x.name).indexOf(currentEuicc), 0), [refreshing]
   );
 
   const onRefresh = useCallback(() => {
@@ -29,8 +29,6 @@ export default function SIMSelector() {
       setRefreshing(false);
     }, 1000);
   }, []);
-
-  console.log("re-render euicc from SIMselector", euiccList);
 
   if (!euiccList?.length) {
     return (
@@ -98,11 +96,6 @@ export default function SIMSelector() {
                 selectedLabelColor: colors.purple300,
                 selectedIconColor: colors.purple300,
                 width: width / euiccList.length,
-                onPress: () => {
-                  if (euiccList.map(x => x.name).includes(eUICC.name)) {
-                    InfiLPA.selectEUICC(eUICC.name);
-                  }
-                }
               }))
             }
             initialIndex={initialIndex}

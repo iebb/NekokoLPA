@@ -1,7 +1,7 @@
 import {Toast} from "react-native-ui-lib";
 import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
-import {selectEuicc, selectState} from "@/redux/reduxDataStore";
+import {selectState} from "@/redux/reduxDataStore";
 import {useTheme} from "@/theme";
 
 const errorDisplayTime = 5000;

@@ -1,7 +1,9 @@
 module.exports = {
     project: {
         ios: {},
-        android: {},
+        android: {
+            watchModeCommandParams: ['--mode', 'StoreDebug'],
+        },
     },
     assets: [
 

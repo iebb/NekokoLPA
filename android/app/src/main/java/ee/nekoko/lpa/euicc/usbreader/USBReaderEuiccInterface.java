@@ -27,12 +27,13 @@ import android.content.Context;
 
 import ee.nekoko.lpa.euicc.base.EuiccConnection;
 import ee.nekoko.lpa.euicc.base.EuiccInterface;
-import ee.nekoko.lpa.euicc.base.EuiccInterfaceStatusChangeHandler;
+
 import com.infineon.esim.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import ee.nekoko.lpa.euicc.base.EuiccInterfaceStatusChangeHandler;
 import ee.nekoko.lpa.euicc.base.EuiccSlot;
 import ee.nekoko.lpa.euicc.usbreader.drivers.ccid.CCIDInterface;
 import ee.nekoko.nlpa.MainApplication;
@@ -40,16 +41,16 @@ import ee.nekoko.nlpa.MainApplication;
 final public class USBReaderEuiccInterface implements EuiccInterface {
     public static final String INTERFACE_TAG = "USB";
     private static final String TAG = USBReaderEuiccInterface.class.getName();
-    private final EuiccInterfaceStatusChangeHandler euiccInterfaceStatusChangeHandler;
+    private final EuiccInterfaceStatusChangeHandler handler;
     private static ArrayList<USBReaderInterface> usbReaderInterfaces = new ArrayList<USBReaderInterface>();
     private static USBReaderInterface currentDriver;
 
-    public USBReaderEuiccInterface(Context context, EuiccInterfaceStatusChangeHandler euiccInterfaceStatusChangeHandler) {
+    public USBReaderEuiccInterface(Context context, EuiccInterfaceStatusChangeHandler handler) {
         Log.debug(TAG, "Constructor of USBReader.");
 
         currentDriver = null;
 
-        this.euiccInterfaceStatusChangeHandler = euiccInterfaceStatusChangeHandler;
+        this.handler = handler;
 
         usbReaderInterfaces.add(new CCIDInterface(context));
 
@@ -105,10 +106,6 @@ final public class USBReaderEuiccInterface implements EuiccInterface {
         }
 
         ret = currentDriver.connectInterface();
-        if (ret) {
-            euiccInterfaceStatusChangeHandler.onEuiccInterfaceConnected(INTERFACE_TAG);
-        }
-
         return ret;
     }
 
@@ -152,8 +149,6 @@ final public class USBReaderEuiccInterface implements EuiccInterface {
             } catch (Exception e) {
                 Log.error(TAG, "Catched exception during disconnecting interface.", e);
             }
-
-            euiccInterfaceStatusChangeHandler.onEuiccInterfaceDisconnected(INTERFACE_TAG);
         }
     };
 }

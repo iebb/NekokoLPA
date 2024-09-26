@@ -30,6 +30,8 @@
   "download_confcode_required": "需要确认码",
   "camera_unsupported": "没有摄像头权限！",
   "scan_qr_prompt": "扫描二维码或手动填写以下载 Profile",
+  "current_euicc": "当前卡槽: {{device}}",
+  "choose_reader": "请选择读卡设备: {{device}}",
   "title_download_profile": "下载配置",
   "title_confirm_profile": "确认配置",
   "loading_validating_profile": "正在确认运营商配置",

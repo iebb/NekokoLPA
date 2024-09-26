@@ -1,32 +1,58 @@
 import {createStackNavigator} from '@react-navigation/stack';
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, NavigationContainerRef} from '@react-navigation/native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 
-import {NekokoLPA, Profile, Scanner, Startup} from '@/screens';
+import {NekokoLPA, Profile, Scanner} from '@/screens';
 import {useTheme} from '@/theme';
 
 import type {RootStackParamList} from '@/navigators/navigation';
-import ErrorToast from "@/components/ErrorToast";
-import React, {useEffect} from "react";
+import ErrorToast from "@/components/common/ErrorToast";
+import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {RootState} from "@/redux/reduxDataStore";
 import InfiLPA from "@/native/InfiLPA";
+import {Linking} from "react-native";
+import {LPACode} from "@/components/utils/lpaRegex";
 
 const Stack = createStackNavigator<RootStackParamList>();
+
 
 function ApplicationNavigator() {
 	const { variant, navigationTheme } = useTheme();
 	const {currentEuicc} = useSelector((state: RootState) => state.LPA);
-
+	const navigationRef = React.createRef<NavigationContainerRef<RootStackParamList>>();
+	const [reset, setReset] = useState(0);
 
 	useEffect(() => {
 		InfiLPA.refreshEUICC();
 	}, []);
 
+	useEffect(() => {
+		const processUrl = (url: string) => {
+			if (url) {
+				const match = url.match(LPACode);
+				if (match && match[0].length) {
+					navigationRef.current?.navigate('Scanner', {
+						appLink: url,
+					});
+				}
+			}
+		}
+		if (navigationRef) {
+			Linking.addEventListener('url', ({url}) => processUrl(url));
+			const getUrlAsync = async () => {
+				const linkUrl = await Linking.getInitialURL();
+				if (linkUrl) {
+					processUrl(linkUrl);
+				}
+			};
+			getUrlAsync();
+		}
+	}, [navigationRef, reset]);
 
 	return (
 		<SafeAreaProvider style={{ backgroundColor: "transparent" }}>
-			<NavigationContainer theme={navigationTheme}>
+			<NavigationContainer theme={navigationTheme} ref={navigationRef}>
 				<Stack.Navigator key={variant} screenOptions={{ headerShown: false }}>
 					<Stack.Screen name="NekokoLPA" component={NekokoLPA} />
 					<Stack.Screen name="Scanner" component={Scanner} />

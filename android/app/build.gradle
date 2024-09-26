@@ -119,37 +119,44 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.community
-            applicationIdSuffix ".dev"
             debuggable true
+            versionNameSuffix "-debug"
             manifestPlaceholders = [
-                appIcon: "@mipmap/ic_launcher_debug"
+                    appIcon: "@mipmap/ic_launcher_debug"
             ]
         }
         release {
             signingConfig signingConfigs.community
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-            manifestPlaceholders = [
-                appIcon: "@mipmap/ic_launcher"
-            ]
         }
     }
     flavorDimensions "version"
     productFlavors {
         multisign {
-            dimension "version"
             applicationIdSuffix ".multisign"
-            versionNameSuffix "-ms"
+            dimension "version"
             manifestPlaceholders = [
-                appIcon: "@mipmap/multisign"
+                    appLabel: 'NekokoLPA M',
+                    appIcon: "@mipmap/ic_launcher_multi"
             ]
         }
-//         esim9 {
-//             applicationIdSuffix ".9esim"
-//             dimension "version"
-//         }
+        esim9 {
+            applicationIdSuffix ".esim9"
+            dimension "version"
+            versionNameSuffix "-9e"
+            signingConfig signingConfigs.esim9
+            manifestPlaceholders = [
+                    appLabel: '9eSIM',
+                    appIcon: "@mipmap/ic_launcher_9esim"
+            ]
+        }
         store {
             dimension "version"
+            manifestPlaceholders = [
+                    appLabel: 'NekokoLPA',
+                    appIcon: "@mipmap/ic_launcher"
+            ]
         }
     }
 }
@@ -193,26 +200,26 @@ dependencies {
     // Lifecycle management
     // ---------------------------------------------------------------------------------------------
     // ViewModel
-    implementation "androidx.lifecycle:lifecycle-viewmodel:2.8.5"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.5"
+    implementation "androidx.lifecycle:lifecycle-viewmodel:2.8.6"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6"
     // LiveData
-    implementation "androidx.lifecycle:lifecycle-livedata:2.8.5"
+    implementation "androidx.lifecycle:lifecycle-livedata:2.8.6"
     // Lifecycle runtime only (without ViewModel or LiveData)
-    implementation "androidx.lifecycle:lifecycle-runtime:2.8.5"
+    implementation "androidx.lifecycle:lifecycle-runtime:2.8.6"
     // Saved state module for ViewModel
-    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.5"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.6"
     // Annotation processor
     // annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
     // alternately - if using Java8, use the following instead of lifecycle-compiler
-    implementation "androidx.lifecycle:lifecycle-common-java8:2.8.5"
+    implementation "androidx.lifecycle:lifecycle-common-java8:2.8.6"
     // optional - helpers for implementing LifecycleOwner in a Service
-    implementation "androidx.lifecycle:lifecycle-service:2.8.5"
+    implementation "androidx.lifecycle:lifecycle-service:2.8.6"
     // optional - ProcessLifecycleOwner provides a lifecycle for the whole application process
-    implementation "androidx.lifecycle:lifecycle-process:2.8.5"
+    implementation "androidx.lifecycle:lifecycle-process:2.8.6"
     // optional - ReactiveStreams support for LiveData
-    implementation "androidx.lifecycle:lifecycle-reactivestreams:2.8.5"
+    implementation "androidx.lifecycle:lifecycle-reactivestreams:2.8.6"
     implementation 'com.google.code.gson:gson:2.11.0'
-    implementation 'com.google.android.datatransport:transport-api:2.2.1'
+    implementation 'com.google.android.datatransport:transport-api:3.2.0'
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Testing

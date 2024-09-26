@@ -33,20 +33,22 @@ import com.infineon.esim.lpa.core.dtos.profile.ProfileMetadata;
 import com.infineon.esim.lpa.core.dtos.result.remote.AuthenticateResult;
 import com.infineon.esim.lpa.core.dtos.result.remote.CancelSessionResult;
 import com.infineon.esim.lpa.core.dtos.result.remote.DownloadResult;
+import com.infineon.esim.lpa.core.dtos.result.remote.FuncExecException;
+import com.infineon.esim.lpa.core.dtos.result.remote.RemoteError;
+import com.infineon.esim.lpa.core.es9plus.Es9PlusInterface;
 import com.infineon.esim.lpa.data.StatusAndEventHandler;
-import ee.nekoko.lpa.euicc.EuiccManager;
+
 import ee.nekoko.lpa.euicc.base.EuiccConnection;
 import ee.nekoko.lpa.euicc.base.EuiccConnectionConsumer;
+
 import com.infineon.esim.lpa.lpa.task.AuthenticateTask;
 import com.infineon.esim.lpa.lpa.task.CancelSessionTask;
 import com.infineon.esim.lpa.lpa.task.DownloadTask;
 import com.infineon.esim.lpa.lpa.task.GetEuiccInfoTask;
-import com.infineon.esim.lpa.lpa.task.GetProfileListTask;
 import com.infineon.esim.lpa.lpa.task.HandleAndClearAllNotificationsTask;
 import com.infineon.esim.lpa.lpa.task.ProfileActionTask;
 import com.infineon.esim.lpa.data.ActionStatus;
 import com.infineon.esim.lpa.data.Error;
-import com.infineon.esim.lpa.util.android.InternetConnectionConsumer;
 import com.infineon.esim.lpa.util.threading.TaskRunner;
 import com.infineon.esim.util.Log;
 
@@ -63,13 +65,14 @@ public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl i
     private DownloadResult downloadResult;
     private CancelSessionResult cancelSessionResult;
 
-    public LocalProfileAssistant(EuiccManager euiccManager, StatusAndEventHandler statusAndEventHandler) {
+    public LocalProfileAssistant(EuiccConnection euiccConnection, StatusAndEventHandler statusAndEventHandler) {
         super();
         Log.debug(TAG,"Creating LocalProfileAssistant...");
         this.statusAndEventHandler = statusAndEventHandler;
         this.profileList = new MutableLiveData<>();
-        super.enableEs9PlusInterface();
-        euiccManager.setEuiccConnectionConsumer(this);
+        this.euiccConnection = euiccConnection;
+        this.es9PlusInterface = new Es9PlusInterface();
+        this.setEuiccChannel(euiccConnection);
     }
 
     public MutableLiveData<ProfileList> getProfileListLiveData() {
@@ -101,32 +104,19 @@ public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl i
     }
 
 
-    public void refreshProfileList() {
+    public ProfileList refreshProfileList() {
         Log.debug(TAG,"Refreshing profile list.");
         statusAndEventHandler.onStatusChange(ActionStatus.GET_PROFILE_LIST_STARTED);
         try {
-            ProfileList result = new GetProfileListTask(this).call();
+            ProfileList result = new ProfileList(this.getProfiles());
             profileList.postValue(result);
+            return result;
         } catch (Exception e) {
             statusAndEventHandler.onError(new Error("Exception during getting of profile list.", e.getMessage(), e));
         } finally {
             statusAndEventHandler.onStatusChange(ActionStatus.GET_PROFILE_LIST_FINISHED);
         }
-    }
-
-
-    public void refreshProfileListAsync() {
-        Log.debug(TAG,"Refreshing profile list.");
-        statusAndEventHandler.onStatusChange(ActionStatus.GET_PROFILE_LIST_STARTED);
-
-        new TaskRunner().executeAsync(new GetProfileListTask(this),
-                result -> {
-                    if (result != null) { // sometimes it hasn't been initialized
-                        statusAndEventHandler.onStatusChange(ActionStatus.GET_PROFILE_LIST_FINISHED);
-                        profileList.setValue(result);
-                    }
-                },
-                e -> statusAndEventHandler.onError(new Error("Exception during getting of profile list.", e.getMessage(), e)));
+        return profileList.getValue();
     }
 
     public void refreshEuiccInfo() {
@@ -150,6 +140,7 @@ public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl i
                 Log.debug(TAG, "Profile already enabled!");
             } else {
                 new ProfileActionTask(this, ProfileActionType.PROFILE_ACTION_ENABLE, profile).call();
+                refreshProfileList();
             }
         } catch (Exception e) {
             if (e.getMessage().contains("Opening eUICC connection failed.")) {
@@ -170,6 +161,7 @@ public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl i
                 Log.debug(TAG, "Profile already disabled!");
             } else {
                 new ProfileActionTask(this, ProfileActionType.PROFILE_ACTION_DISABLE, profile).call();
+                refreshProfileList();
             }
         } catch (Exception e) {
             if (e.getMessage().contains("Opening eUICC connection failed.")) {
@@ -187,6 +179,7 @@ public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl i
         statusAndEventHandler.onStatusChange(ActionStatus.DELETE_PROFILE_STARTED);
         try {
             new ProfileActionTask(this, ProfileActionType.PROFILE_ACTION_DELETE, profile).call();
+            refreshProfileList();
         } catch (Exception e) {
             if (e.getMessage().contains("Opening eUICC connection failed.")) {
 
@@ -204,6 +197,7 @@ public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl i
         statusAndEventHandler.onStatusChange(ActionStatus.SET_NICKNAME_STARTED);
         try {
             new ProfileActionTask(this, ProfileActionType.PROFILE_ACTION_SET_NICKNAME, profile).call();
+            refreshProfileList();
         } catch (Exception e) {
             if (e.getMessage().contains("Opening eUICC connection failed.")) {
 
@@ -225,54 +219,18 @@ public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl i
                 e -> statusAndEventHandler.onError(new Error("Error during clearing of all eUICC notifications.", e.getMessage(), e)));
     }
 
-    public void startAuthentication(ActivationCode activationCode) {
-        authenticateResult = null;
-        statusAndEventHandler.onStatusChange(ActionStatus.AUTHENTICATE_DOWNLOAD_STARTED);
-
-        AuthenticateTask authenticateTask = new AuthenticateTask(
-                this,
-                activationCode);
-
-        new TaskRunner().executeAsync(authenticateTask,
-                authenticateResult -> {
-                    postProcessAuthenticate(authenticateResult);
-                    statusAndEventHandler.onStatusChange(ActionStatus.AUTHENTICATE_DOWNLOAD_FINISHED);
-                },
-                e -> statusAndEventHandler.onError(new Error("Error authentication of profile download.", e.getMessage(), e)));
-    }
-
-    public void postProcessAuthenticate(AuthenticateResult authenticateResult) {
-        this.authenticateResult = authenticateResult;
-
-        if(authenticateResult.getSuccess()) {
-            // Check if there is a matching profile already installed
-            ProfileMetadata newProfile = authenticateResult.getProfileMetadata();
-            ProfileMetadata matchingProfile = null;
-            if (newProfile != null) {
-                ProfileList profileList = this.profileList.getValue();
-                if(profileList != null) {
-                    matchingProfile = profileList.findMatchingProfile(newProfile.getIccid());
-                }
-                if ((matchingProfile != null) && (matchingProfile.getNickname() != null)) {
-                    Log.debug(TAG, "Profile already installed: " + matchingProfile.getNickname());
-                    String errorMessage = "Profile with this ICCID already installed: " + matchingProfile.getNickname();
-                    statusAndEventHandler.onError(new Error("Profile already installed!", errorMessage));
-                }
-            }
-        }
-    }
-
-    public void startProfileDownload(String confirmationCode) {
-        downloadResult = null;
+    public DownloadResult download(String confirmationCode) {
+        Log.debug(TAG, "Authenticate");
         statusAndEventHandler.onStatusChange(ActionStatus.DOWNLOAD_PROFILE_STARTED);
-
-        new TaskRunner().executeAsync(
-                new DownloadTask(this, confirmationCode),
-                downloadResult -> {
-                    postProcessDownloadProfile(downloadResult);
-                    statusAndEventHandler.onStatusChange(ActionStatus.DOWNLOAD_PROFILE_FINISHED);
-                },
-                e -> statusAndEventHandler.onError(new Error("Error during download of profile.", e.getMessage(), e)));
+        try {
+            return new DownloadTask(this, confirmationCode).call();
+            //  postProcessDownloadProfile(downloadResult);
+        } catch (Exception e) {
+            statusAndEventHandler.onError(new Error("Error during download of profile.", e.getMessage(), e));
+        } finally {
+            statusAndEventHandler.onStatusChange(ActionStatus.DOWNLOAD_PROFILE_FINISHED);
+        }
+        return null;
     }
 
 
@@ -296,22 +254,35 @@ public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl i
         }
     }
 
-    public void startCancelSession(long cancelSessionReason) {
+    public CancelSessionResult cancelSession(long cancelSessionReason) {
         Log.debug(TAG, "Cancel session: " + cancelSessionReason);
 
         statusAndEventHandler.onStatusChange(ActionStatus.CANCEL_SESSION_STARTED);
-
-        CancelSessionTask cancelSessionTask = new CancelSessionTask(
-                this,
-                cancelSessionReason);
-
-        new TaskRunner().executeAsync(cancelSessionTask,
-                result -> {
-                    cancelSessionResult = result;
-                    statusAndEventHandler.onStatusChange(ActionStatus.CANCEL_SESSION_FINISHED);
-                },
-                e -> statusAndEventHandler.onError(new Error("Error cancelling session.", e.getMessage(), e)));
+        try {
+            return new CancelSessionTask(this, cancelSessionReason).call();
+        } catch (Exception e) {
+            statusAndEventHandler.onError(new Error("Error cancelling session.", e.getMessage(), e));
+        } finally {
+            statusAndEventHandler.onStatusChange(ActionStatus.CANCEL_SESSION_FINISHED);
+        }
+        return null;
     }
+
+    // TODO: @ieb: simplify
+
+    public AuthenticateResult authenticateWith(ActivationCode activationCode) {
+        try {
+            return this.authenticate(activationCode);
+        } catch (FuncExecException fe) {
+            Log.error(TAG," " + "Authenticating failed with exception: " + fe.getMessage());
+            return new AuthenticateResult(new RemoteError(fe.getFunctionExecutionStatus()));
+        } catch (Exception e) {
+            Log.error(TAG," " + "Authenticating failed with exception: " + e.getMessage());
+            return new AuthenticateResult(this.getLastEs9PlusError());
+        }
+    }
+
+
 
     @Override
     public void onEuiccConnectionUpdate(EuiccConnection euiccConnection) {
@@ -320,21 +291,9 @@ public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl i
         super.setEuiccChannel(euiccConnection);
 
         if(euiccConnection != null) {
-            refreshProfileListAsync();
+            refreshProfileList();
         }
     }
-
-//    @Override
-//    public void onConnected() {
-//        Log.debug(TAG, "Internet connection established.");
-//        super.enableEs9PlusInterface();
-//    }
-//
-//    @Override
-//    public void onDisconnected() {
-//        Log.debug(TAG, "Internet connection lost.");
-//        super.disableEs9PlusInterface();
-//    }
 
     @Override
     protected void finalize() throws Throwable {

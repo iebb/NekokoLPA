@@ -24,28 +24,6 @@ export default function ProfileMenu({ eUICC } : { eUICC: EuiccList }) {
     height: 0
   });
 
-  const [extCardResource, setExtCardResource] = useState<number[]>([0, 0, 0]);
-
-  useEffect(() => {
-    if (eUICC.euiccInfo2) {
-      const ecr = eUICC.euiccInfo2.extCardResource.value;
-      const data = [];
-      for(let i = 0; i < ecr.length;) {
-        i++;
-        const dataLen = ecr[i++];
-        let val = 0;
-        for(let j = 0; j < dataLen; i++, j++) {
-          val <<= 8;
-          val += (ecr[i] & 0xff);
-        }
-        data.push(val);
-      }
-      setExtCardResource(data);
-    }
-  }, [eUICC.euiccInfo2]);
-
-  if (!eUICC.euiccInfo2) return null;
-
   return (
     <View
       onLayout={e => setLayout(e.nativeEvent.layout)}
@@ -76,13 +54,15 @@ export default function ProfileMenu({ eUICC } : { eUICC: EuiccList }) {
         <View style={{ flexGrow: 1 }}>
           <View paddingH-15 paddingV-3 style={{ overflow: 'hidden', width: layout.width - 50 }}>
             <Text text100L color={colors.std50}>
-              {t('main:available_space', { bytes: Intl.NumberFormat().format(extCardResource[1])})}
+              {t('main:available_space', {
+                bytes: eUICC.bytesFree !== null ? Intl.NumberFormat().format(eUICC.bytesFree || 0) : "??"
+              })}
             </Text>
             <Text text100L color={colors.std50}>
               EID: {
                 stealthMode === 'none' ? eUICC.eid : (eUICC.eid || '').replaceAll(
                   stealthMode === 'medium' ? /(?<=\d{16})\d(?=\d{6})/g : /./g, '*')
-              }
+              } / v{eUICC.version}
             </Text>
           </View>
         </View>
@@ -100,7 +80,7 @@ export default function ProfileMenu({ eUICC } : { eUICC: EuiccList }) {
               dispatch(setState([{authenticateResult: null, downloadResult: null}, eUICC.name]));
               // @ts-ignore
               navigation.navigate('Scanner', {
-
+                eUICC: eUICC,
               });
             }}
           >

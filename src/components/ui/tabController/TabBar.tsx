@@ -20,7 +20,7 @@ import useScrollToItem from './useScrollToItem';
 import {useDidUpdate} from "react-native-ui-lib/src/hooks";
 
 const FIX_RTL = Constants.isRTL && Constants.isAndroid;
-const DEFAULT_HEIGHT = 48;
+const DEFAULT_HEIGHT = 40;
 
 const DEFAULT_LABEL_STYLE = {
   ...Typography.text80M,

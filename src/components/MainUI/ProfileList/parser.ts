@@ -84,7 +84,7 @@ export function parseMetadata(metadata: ProfileMetadataMap, colors: any, t: TFun
   for(const match of it) {
     tags.push({
       tag: 'text',
-      value: match[1],
+      value: match[1].replaceAll("_", " "),
       rawValue: `t:${match[1]}`,
       color: colors.blue700,
       backgroundColor: colors.blue100,

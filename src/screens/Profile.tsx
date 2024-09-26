@@ -18,7 +18,7 @@ import {
 	View
 } from "react-native-ui-lib";
 import {shallowEqual, useSelector} from "react-redux";
-import {selectEuicc} from "@/redux/reduxDataStore";
+import {selectEuicc, selectState} from "@/redux/reduxDataStore";
 import {ActionStatus} from "@/native/consts";
 import BlockingLoader from "@/components/common/BlockingLoader";
 import MetadataView from "@/components/common/MetadataView";
@@ -41,6 +41,10 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 	const { t } = useTranslation(['profile', 'welcome']);
 	const { colors, gutters, fonts } = useTheme();
 	const { eUICC, ICCID } = route.params;
+
+
+	const device = eUICC.name;
+
 	const [tags, setTags] = useState<Tag[]>([]);
 	const [loading, setLoading] = useState(false);
 
@@ -53,7 +57,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 	const [newTagType, setNewTagType] = useState('date');
 	const [tagValue, setTagValue] = useState('');
 
-	const { status, profileList} = useSelector(selectEuicc(eUICC), shallowEqual);
+	const { euiccList } = useSelector(selectState, shallowEqual);
 
 	useEffect(() => {
 		const { tags, name, country } = parseMetadata(metadata, colors, t);
@@ -63,27 +67,39 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 	}, [metadata]);
 
 	useEffect(() => {
-		if (profileList) {
-			for (const p of profileList?.profiles) {
-				if (p.profileMetadataMap.ICCID === ICCID) {
-					setMetadata(p.profileMetadataMap);
+		if (euiccList) {
+			for(const eU of euiccList) {
+				if (eU.eid == eUICC.eid) {
+					for (const p of eU.profiles?.profiles || []) {
+						if (p.profileMetadataMap.ICCID === ICCID) {
+							setMetadata(p.profileMetadataMap);
+						}
+					}
 				}
 			}
 		}
-	}, [profileList]);
+	}, [euiccList]);
 
 
 	const tagChars = tags.length ? " " + (tags.map(t => t.rawValue)).join(" ") : "";
 
 	const Flag = (Flags[country] || Flags.UN).default;
 
+	const updateNickname = (n: string) => {
+		setLoading(true);
+		setTimeout(() => {
+			try {
+				InfiLPA.setNicknameByIccId(device, ICCID, n);
+			} finally {
+				setTimeout(() => {
+					setLoading(false);
+				}, 100);
+			}
+		}, 10);
+	}
+
 	return (
 		<SafeScreen>
-			{
-				status === ActionStatus.SET_NICKNAME_STARTED && (
-					<BlockingLoader message={t('profile:profile_detail')} />
-				)
-			}
 			{
 				loading && (
 					<BlockingLoader />
@@ -150,7 +166,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 										labelColor={colors.std200}
 										placeholderTextColor={colors.std200}
 										onChangeText={c => {
-											setTagValue(`t:${c}`)
+											setTagValue(`t:${c.replaceAll(" ", "_")}`)
 										}}
 									/>
 								) : null
@@ -158,9 +174,9 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 						</View>
 					</View>
 					<View right>
-						<Button label="Done" link onPress={() => {
+						<Button label="Done" onPress={() => {
 							if (tagValue.length) {
-								InfiLPA.setNicknameByIccId(ICCID, nickname + tagChars + " " + tagValue);
+								updateNickname(nickname + tagChars + " " + tagValue);
 								setTagValue('');
 							}
 							setTagModal(false);
@@ -218,8 +234,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 													text: t('profile:delete_tag_ok'),
 													style: 'destructive',
 													onPress: () => {
-														InfiLPA.setNicknameByIccId(
-															ICCID,
+														updateNickname(
 															(nickname + " " + tags.filter(
 																tag_ => tag_.value !== tag.value
 															).map(tag => tag.rawValue).join(" ")).trimEnd()
@@ -271,37 +286,23 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 								showCharCounter
 							/>
 							<View>
-								{
-									(status === ActionStatus.SET_NICKNAME_STARTED) ? (
-										<ActivityIndicator color={Colors.$iconDefault}/>
-									) : (
-										<Button
-											marginL-10
-											style={{ borderRadius: 5, paddingHorizontal: 0, width: 50, height: 50, padding: 0 }}
-											$iconDefault
-											backgroundColor={colors.std400}
-											labelProps={{
-												style: {width: 10, padding: 10}
-											}}
-											round
-											onPress={() => {
-												setLoading(true);
-												setTimeout(() => {
-													try {
-														InfiLPA.setNicknameByIccId(ICCID, nickname + tagChars);
-													} finally {
-														setTimeout(() => {
-															setLoading(false);
-															navigation.goBack();
-														}, 100);
-													}
-												}, 10);
-											}}
-										>
-											<FontAwesomeIcon icon={faSave} style={{ color: colors.std900 }} />
-										</Button>
-									)
-								}
+								<Button
+									disabled={loading}
+									marginL-10
+									style={{ borderRadius: 5, paddingHorizontal: 0, width: 50, height: 50, padding: 0 }}
+									$iconDefault
+									backgroundColor={colors.std400}
+									labelProps={{
+										style: {width: 10, padding: 10}
+									}}
+									round
+									onPress={() => {
+										setLoading(true);
+										updateNickname(nickname + tagChars);
+									}}
+								>
+									<FontAwesomeIcon icon={faSave} style={{ color: colors.std900 }} />
+								</Button>
 							</View>
 						</View>
 					</View>
@@ -338,7 +339,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 																	setLoading(true);
 																	setTimeout(() => {
 																		try {
-																			InfiLPA.deleteProfileByIccId(ICCID);
+																			InfiLPA.deleteProfileByIccId(device, ICCID);
 																		} finally {
 																			setTimeout(() => {
 																				setLoading(false);

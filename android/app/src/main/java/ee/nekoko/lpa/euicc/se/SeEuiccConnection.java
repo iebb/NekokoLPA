@@ -62,9 +62,12 @@ public class SeEuiccConnection implements EuiccConnection {
 
         // Wait for the phone to detect the profile change
         for (var i = 1; i < 10; i++) {
+            Thread.sleep(i * 500);
             try {
-                Thread.sleep(i * 1000);
-                return open();
+                var result = open();
+                if (result) {
+                    return true;
+                }
             } catch (IOException e) {
                 // Log.error(Log.getFileLineNumber() + " " + e.getMessage());
             } catch (Exception e) {
@@ -81,14 +84,11 @@ public class SeEuiccConnection implements EuiccConnection {
         try {
             if (session == null || session.isClosed()) {
                 Log.debug(TAG, "Opening a new session...");
-                session = reader.openSession();
+            } else {
+                session.close();
             }
+            session = reader.openSession();
             session.getATR(); // weird
-            try {
-                session.closeChannels();
-            } catch (Exception ex) {
-                Log.debug(TAG, "Closing channel failed. Ex: " + ex.getMessage());
-            }
 
             if (channel == null || !channel.isOpen()) {
                 Log.debug(TAG, "Opening a new logical channel...");
@@ -101,6 +101,11 @@ public class SeEuiccConnection implements EuiccConnection {
                     return false;
                 }
             }
+
+            if (channel == null || !channel.isOpen()) {
+                return false;
+            }
+
         } catch (IOException e) {
             Log.error(TAG, "Opening eUICC connection failed.", e);
             throw new Exception("Opening eUICC connection failed.", e);

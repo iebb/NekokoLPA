@@ -28,9 +28,9 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface EuiccInterfaceStatusChangeHandler {
 
-    void onEuiccInterfaceConnected(String interfaceTag);
-    void onEuiccInterfaceDisconnected(String interfaceTag);
-
-    void onEuiccConnected(String euiccName, EuiccConnection euiccConnection);
-    void onEuiccListRefreshed(List<EuiccSlot> euiccDescriptions);
+//    void onEuiccInterfaceConnected(String interfaceTag);
+//    void onEuiccInterfaceDisconnected(String interfaceTag);
+//
+//    void onEuiccConnected(String euiccName, EuiccConnection euiccConnection);
+//    void onEuiccListRefreshed(List<EuiccSlot> euiccDescriptions);
 }

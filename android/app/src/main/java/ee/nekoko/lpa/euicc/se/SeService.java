@@ -27,10 +27,6 @@ import android.content.Context;
 import android.se.omapi.Reader;
 import android.se.omapi.SEService;
 
-import com.gsma.sgp.messages.rspdefinitions.ProfileInfo;
-import com.gsma.sgp.messages.rspdefinitions.ProfileInfoListResponse;
-import com.infineon.esim.lpa.core.dtos.profile.ProfileMetadata;
-import com.infineon.esim.lpa.core.es10.Es10Interface;
 import com.infineon.esim.util.Log;
 
 import java.util.ArrayList;
@@ -55,22 +51,23 @@ public class SeService implements EuiccService {
     private final Context context;
     private final Object seServiceMutex;
 
-    private final EuiccInterfaceStatusChangeHandler euiccInterfaceStatusChangeHandler;
+    private final EuiccInterfaceStatusChangeHandler handler;
 
     private SEService seService; // OMAPI / Secure Element
 
     private final HashMap<String, EuiccSlot> slots = new HashMap<>();
 
-    public SeService(Context context, EuiccInterfaceStatusChangeHandler euiccInterfaceStatusChangeHandler) {
+    public SeService(Context context, EuiccInterfaceStatusChangeHandler handler) {
         this.context = context;
-        this.euiccInterfaceStatusChangeHandler = euiccInterfaceStatusChangeHandler;
+        this.handler = handler;
         this.seServiceMutex = new Object();
     }
 
     public List<EuiccSlot> refreshSlots() {
-        Log.debug(TAG, "Refreshing eUICC names...");
+        Log.debug(TAG, "[RS] Refreshing SE eUICC names...");
         List<EuiccSlot> euiccNames = new ArrayList<>();
         for(Reader reader : seService.getReaders()) {
+            Log.debug(TAG, "Checking Reader..." + reader.getName());
             var result = getEuiccSlot(reader);
             if (result.getAvailable()) {
                 euiccNames.add(result);
@@ -107,8 +104,6 @@ public class SeService implements EuiccService {
             Log.debug(TAG, "Shutting down SE service.");
             seService.shutdown();
             seService = null;
-
-            euiccInterfaceStatusChangeHandler.onEuiccInterfaceDisconnected(SeEuiccInterface.INTERFACE_TAG);
         }
     }
 
@@ -128,8 +123,6 @@ public class SeService implements EuiccService {
             synchronized (seServiceMutex) {
                 seServiceMutex.notify();
             }
-
-            euiccInterfaceStatusChangeHandler.onEuiccInterfaceConnected(SeEuiccInterface.INTERFACE_TAG);
         });
     }
 

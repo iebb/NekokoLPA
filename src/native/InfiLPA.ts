@@ -1,17 +1,15 @@
-/**
- * This exposes the native CalendarModule module as a JS module. This has a
- * function 'createCalendarEvent' which takes the following parameters:
-
- * 1. String name: A string representing the name of the event
- * 2. String location: A string representing the location of the event
- */
 import {NativeModules} from 'react-native';
 import {Profiles} from "@/native/types";
 
 
-const {InfineonDataModel} = NativeModules;
+const {
+    InfineonDataModel
+} = NativeModules;
 
 class InfiLPA {
+
+    static currentEuicc = "";
+
     static refreshEUICC() {
         InfineonDataModel.refreshEuiccs();
     }
@@ -21,15 +19,12 @@ class InfiLPA {
     static getEuiccList(): string[] {
         return JSON.parse(InfineonDataModel.getEuiccListJSON()) as string[];
     }
+
     static selectEUICC(device: string) {
-        InfineonDataModel.selectEuicc(device);
+        this.currentEuicc = device;
+        // InfineonDataModel.selectEuicc(device);
     }
-    static getProfiles(): Profiles {
-        return JSON.parse(InfineonDataModel.getProfileListJSON()) as Profiles;
-    }
-    static enableProfileByIccId(iccid: string) {
-        InfineonDataModel.enableProfileByIccId(iccid);
-    }
+
     static refreshProfileList(device?: string) {
         if (device) {
             InfineonDataModel.refreshProfileListWithDevice(device);
@@ -37,23 +32,28 @@ class InfiLPA {
             InfineonDataModel.refreshProfileList();
         }
     }
-    static disableProfileByIccId(iccid: string) {
-        InfineonDataModel.disableProfileByIccId(iccid);
+
+    static enableProfileByIccId(device: string, iccid: string) {
+        InfineonDataModel.enableProfileByIccId(device, iccid);
     }
-    static deleteProfileByIccId(iccid: string) {
-        InfineonDataModel.deleteProfileByIccId(iccid);
+    static disableProfileByIccId(device: string, iccid: string) {
+        InfineonDataModel.disableProfileByIccId(device, iccid);
     }
-    static setNicknameByIccId(iccid: string, nickname: string) {
-        InfineonDataModel.setNicknameByIccId(iccid, nickname);
+    static deleteProfileByIccId(device: string, iccid: string) {
+        InfineonDataModel.deleteProfileByIccId(device, iccid);
     }
-    static authenticateWithCode(activationCode: string) {
-        InfineonDataModel.authenticateWithCode(activationCode);
+    static setNicknameByIccId(device: string, iccid: string, nickname: string) {
+        InfineonDataModel.setNicknameByIccId(device, iccid, nickname);
     }
-    static downloadProfile(code: string) {
-        InfineonDataModel.downloadProfile(code);
+    static authenticateWithCode(device: string, activationCode: string): object {
+        const v = InfineonDataModel.authenticateWithCode(device, activationCode);
+        return JSON.parse(v);
     }
-    static cancelSession(reason: number) {
-        InfineonDataModel.cancelSession(reason);
+    static downloadProfile(device: string, code: string) {
+        return JSON.parse(InfineonDataModel.downloadProfile(device, code));
+    }
+    static cancelSession(device: string, reason: number) {
+        return JSON.parse(InfineonDataModel.cancelSession(device, reason));
     }
 
 }

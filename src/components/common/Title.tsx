@@ -8,7 +8,7 @@ export default function Title({ children }: { children: string }) {
   return (
     <View
       paddingH-30
-      paddingT-20
+      paddingT-30
     >
       <Text style={[fonts.size_24, fonts.gray800, fonts.bold]}>
         {children}

@@ -26,7 +26,7 @@ interface ErrorBodyHeader {
 
 interface EUICCState {
     profileList?: Profiles;
-    euiccInfo2?: EuiccInfo2;
+    // euiccInfo2?: EuiccInfo2;
     status?: ActionStatus;
     authenticateResult?: AuthenticateResult;
     downloadResult?: DownloadResult;
@@ -36,7 +36,9 @@ interface EUICCState {
 export interface EuiccList {
     available: boolean;
     eid?: string;
-    euiccInfo2?: EuiccInfo2;
+    bytesFree?: number;
+    version?: string;
+    // euiccInfo2?: EuiccInfo2;
     profiles?: Profiles;
     message: string;
     name: string;
