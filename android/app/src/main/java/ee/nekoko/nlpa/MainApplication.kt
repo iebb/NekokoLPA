@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.hardware.usb.UsbManager
 import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
+import android.util.Log
 import androidx.preference.PreferenceManager
 import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
@@ -21,7 +22,6 @@ import com.facebook.soloader.SoLoader
 import com.infineon.esim.lpa.core.es9plus.TlsUtil
 import com.infineon.esim.lpa.util.android.IO
 import com.infineon.esim.lpa.util.android.NetworkStatus
-import com.infineon.esim.util.Log
 
 
 class MainApplication : Application(), ReactApplication {
@@ -89,7 +89,7 @@ class MainApplication : Application(), ReactApplication {
 
     override fun onCreate() {
         super.onCreate()
-        Log.debug("nekoko.nlpa", "Initializing application.")
+        Log.d("nekoko.nlpa", "Initializing application.")
 
         // Register network callback for network status
         NetworkStatus.registerNetworkCallback()

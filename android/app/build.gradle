@@ -15,14 +15,14 @@ apply plugin: "com.facebook.react"
  */
 react {
     /* Folders */
-    //   The root of your project, i.e. where "package.json" lives. Default is '..'
-    // root = file("../")
-    //   The folder where the react-native NPM package is. Default is ../node_modules/react-native
-    // reactNativeDir = file("../node_modules/react-native")
-    //   The folder where the react-native Codegen package is. Default is ../node_modules/@react-native/codegen
-    // codegenDir = file("../node_modules/@react-native/codegen")
-    //   The cli.js file which is the React Native CLI entrypoint. Default is ../node_modules/react-native/cli.js
-    // cliFile = file("../node_modules/react-native/cli.js")
+    //   The root of your project, i.e. where "package.json" lives. Default is '../..'
+    // root = file("../../")
+    //   The folder where the react-native NPM package is. Default is ../../node_modules/react-native
+    // reactNativeDir = file("../../node_modules/react-native")
+    //   The folder where the react-native Codegen package is. Default is ../../node_modules/@react-native/codegen
+    // codegenDir = file("../../node_modules/@react-native/codegen")
+    //   The cli.js file which is the React Native CLI entrypoint. Default is ../../node_modules/react-native/cli.js
+    // cliFile = file("../../node_modules/react-native/cli.js")
 
     /* Variants */
     //   The list of variants to that are debuggable. For those we're going to
@@ -56,6 +56,9 @@ react {
     //
     //   The list of flags to pass to the Hermes compiler. By default is "-O", "-output-source-map"
     // hermesFlags = ["-O", "-output-source-map"]
+
+    /* Autolinking */
+    autolinkLibrariesWithApp()
 }
 
 /**
@@ -87,6 +90,9 @@ android {
     def inputFile = new File("$rootDir/../package.json")
     def packageJson = new JsonSlurper().parseText(inputFile.text)
 
+    buildFeatures {
+        buildConfig true
+    }
     defaultConfig {
         applicationId "ee.nekoko.nlpa"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -112,8 +118,8 @@ android {
         abi {
             enable true
             reset()
-            include 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
-            universalApk true
+            include 'arm64-v8a', 'x86_64' // , 'armeabi-v7a',  'x86'
+            // universalApk true
         }
     }
     buildTypes {
@@ -220,6 +226,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-reactivestreams:2.8.6"
     implementation 'com.google.code.gson:gson:2.11.0'
     implementation 'com.google.android.datatransport:transport-api:3.2.0'
+    implementation 'com.google.android.apps.common.testing.accessibility.framework:accessibility-test-framework:3.1.2'
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Testing
@@ -249,9 +256,6 @@ dependencies {
     }
 
 }
-
-apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
-
 
 sentry {
     org = "kosmoneko-ou-ud"
