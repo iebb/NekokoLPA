@@ -39,7 +39,7 @@ export function ScannerInitial({ appLink, eUICC, finishAuthenticate }: any) {
     const match = str.match(LPACode);
     if (match) {
       const [
-        _1, _2, LPA, SMDP, AC_TOKEN, OID, CCREQ, CONFIRMATION_CODE
+        _1, LPA, SMDP, AC_TOKEN, OID, CCREQ, CONFIRMATION_CODE
       ] = match;
       setSmdp(SMDP);
       setAcToken(AC_TOKEN);
@@ -62,7 +62,7 @@ export function ScannerInitial({ appLink, eUICC, finishAuthenticate }: any) {
         const match = code.value!.match(LPACode);
 
         if (match) {
-          const [_1, _2, LPA, SMDP, AC_TOKEN, OID, CONFIRMATION_CODE] = match;
+          const [_1, LPA, SMDP, AC_TOKEN, OID, CONFIRMATION_CODE] = match;
           setSmdp(SMDP);
           setAcToken(AC_TOKEN);
           setOid(OID);

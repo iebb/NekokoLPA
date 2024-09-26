@@ -53,8 +53,8 @@ export function ScannerAuthentication(
               justifyContent: "space-between", gap: 10
             }}>
               {
-                (authenticateResult.isCcRequired) && (
-                  <View style={styles.tableRow}>
+                (authenticateResult.isCcRequired || confirmationCode) && (
+                  <View style={styles.tableRow} row>
                     <Text style={styles.tableHeader} color={colors.std200}>
                       {t('profile:conf_code')}:
                     </Text>
@@ -65,7 +65,16 @@ export function ScannerAuthentication(
                       enableErrors
                       validate={['required']}
                       validationMessage={['Field is required']}
-                      style={{...styles.tableColumn, borderBottomWidth: 1, marginBottom: -10, flexGrow: 1, marginTop: -5 }}
+                      color={colors.std200}
+                      style={{
+                        ...styles.tableColumn,
+                        borderColor: colors.std400,
+                        borderBottomWidth: 1,
+                        marginBottom: -10,
+                        flexGrow: 1,
+                        marginTop: -5,
+                        marginLeft: -5
+                    }}
                     />
                   </View>
                 )

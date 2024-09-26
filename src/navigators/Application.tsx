@@ -32,6 +32,7 @@ function ApplicationNavigator() {
 			if (url) {
 				const match = url.match(LPACode);
 				if (match && match[0].length) {
+					console.log("App Link: URL", url);
 					navigationRef.current?.navigate('Scanner', {
 						appLink: url,
 					});

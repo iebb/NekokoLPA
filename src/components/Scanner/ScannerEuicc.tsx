@@ -37,8 +37,9 @@ export function ScannerEuicc({ appLink, eUICC, setEUICC, finishAuthenticate }: a
     if (appLink) {
       const match = appLink.match(LPACode);
       const [
-        _1, _2, LPA, SMDP, AC_TOKEN, OID, CCREQ, CONFIRMATION_CODE
+        _1, LPA, SMDP, AC_TOKEN, OID, CCREQ, CONFIRMATION_CODE
       ] = match;
+      console.log("cc", CONFIRMATION_CODE);
       setSmdp(SMDP);
       setAcToken(AC_TOKEN);
       setOid(OID);
