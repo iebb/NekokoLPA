@@ -92,8 +92,7 @@ public class SeEuiccConnection implements EuiccConnection {
 
         } catch (IOException e) {
             Log.error(TAG, "Opening eUICC connection failed. [IO]", e);
-            Thread.sleep(500);
-            return open();
+            throw e;
         } catch (java.lang.SecurityException e) {
             Log.error(TAG, "Opening eUICC connection failed. [java.lang.SecurityException]", e);
             Log.error(TAG, "NO ARA-M", e);

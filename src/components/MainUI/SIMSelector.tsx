@@ -65,69 +65,77 @@ export default function SIMSelector() {
   return (
     <View
       key={euiccList.map(x => x.name).join("|")}
+      onLayout={(e) => {
+        setWidth(e.nativeEvent.layout.width);
+      }}
       style={{
         flexGrow: 1,
         flexShrink: 0,
       }}
     >
-      <TabController
-      items={
-        euiccList.map((eUICC, _idx) => ({
-          label: eUICC.name,
-          icon: (
-            <FontAwesomeIcon
-              icon={
-                eUICC.name.startsWith("SIM") ? faSimCard : faDownload
-              }
-              style={{
-                color: colors.std400,
-                marginRight: 4,
-                marginTop: -2,
+      {
+        width > 0 && (
+          <TabController
+            items={
+              euiccList.map((eUICC, _idx) => ({
+                label: eUICC.name,
+                icon: (
+                  <FontAwesomeIcon
+                    icon={
+                      eUICC.name.startsWith("SIM") ? faSimCard : faDownload
+                    }
+                    style={{
+                      color: colors.std400,
+                      marginRight: 4,
+                      marginTop: -2,
+                    }}
+                    size={12}
+                  />
+                ),
+                labelStyle: {
+                  padding: 0,
+                  fontSize: eUICC.name.length > 4 ? 12 : 14,
+                  lineHeight: eUICC.name.length > 4 ? 12 : 14,
+                },
+                selectedLabelStyle: {
+                  padding: 0,
+                  fontSize: eUICC.name.length > 4 ? 12 : 14,
+                  lineHeight: eUICC.name.length > 4 ? 12 : 14,
+                  fontWeight: '500',
+                },
+                iconColor: colors.std400,
+                labelColor: colors.std400,
+                selectedLabelColor: colors.purple300,
+                selectedIconColor: colors.purple300,
+                width: euiccList.length <= 3 ? width / euiccList.length : undefined,
+              }))
+            }
+            initialIndex={initialIndex}
+          >
+            <TabController.TabBar
+              backgroundColor={colors.cardBackground}
+              labelColor={colors.purple300}
+              containerWidth={width}
+              containerStyle={{
+                width: '100%',
+                overflow: "hidden",
+                borderRadius: 20,
+                marginBottom: 10,
+                height: 40,
               }}
-              size={12}
             />
-          ),
-          labelStyle: {
-            padding: 0,
-            fontSize: eUICC.name.length > 4 ? 12 : 14,
-            lineHeight: eUICC.name.length > 4 ? 12 : 14,
-          },
-          selectedLabelStyle: {
-            padding: 0,
-            fontSize: eUICC.name.length > 4 ? 12 : 14,
-            lineHeight: eUICC.name.length > 4 ? 12 : 14,
-            fontWeight: '500',
-          },
-          iconColor: colors.std400,
-          labelColor: colors.std400,
-          selectedLabelColor: colors.purple300,
-          selectedIconColor: colors.purple300,
-          width: width / euiccList.length,
-        }))
+            <View flexG>
+              {
+                euiccList.map((euicc, _idx) => (
+                  <TabController.TabPage index={_idx} key={euicc.name}>
+                    <EUICCPage eUICC={euicc} />
+                  </TabController.TabPage>
+                ))
+              }
+            </View>
+          </TabController>
+        )
       }
-      initialIndex={initialIndex}
-    >
-      <TabController.TabBar
-        backgroundColor={colors.cardBackground}
-        labelColor={colors.purple300}
-        containerStyle={{
-          width: '100%',
-          overflow: "hidden",
-          borderRadius: 20,
-          marginBottom: 10,
-          height: 40,
-        }}
-      />
-      <View flexG>
-        {
-          euiccList.map((euicc, _idx) => (
-            <TabController.TabPage index={_idx} key={euicc.name}>
-              <EUICCPage eUICC={euicc} />
-            </TabController.TabPage>
-          ))
-        }
-      </View>
-    </TabController>
     </View>
   )
 }
