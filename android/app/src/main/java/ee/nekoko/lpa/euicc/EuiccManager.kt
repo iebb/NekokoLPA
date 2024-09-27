@@ -27,40 +27,27 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.infineon.esim.lpa.data.ActionStatus
 import com.infineon.esim.lpa.data.Error
-import com.infineon.esim.lpa.data.Preferences
 import com.infineon.esim.lpa.data.StatusAndEventHandler
 import com.infineon.esim.lpa.lpa.LocalProfileAssistant
 import com.infineon.esim.util.Log
-import ee.nekoko.lpa.euicc.base.EuiccConnection
-import ee.nekoko.lpa.euicc.base.EuiccConnectionConsumer
 import ee.nekoko.lpa.euicc.base.EuiccInterface
 import ee.nekoko.lpa.euicc.base.EuiccInterfaceStatusChangeHandler
 import ee.nekoko.lpa.euicc.base.EuiccSlot
 import ee.nekoko.lpa.euicc.se.SeEuiccInterface
+import ee.nekoko.lpa.euicc.usbreader.USBReaderEuiccInterface
 
 class EuiccManager(context: Context?, private val statusAndEventHandler: StatusAndEventHandler): EuiccInterfaceStatusChangeHandler {
     // eUICC interfaces
     private val euiccInterfaces: MutableList<EuiccInterface> = ArrayList()
 
-    // eUICC connection
-    private var currentEuiccConnection: EuiccConnection? = null
-
-    // eUICCs
-
     private val currentEuicc = MutableLiveData<String>()
     private val euiccList: MutableLiveData<List<EuiccSlot>>? = MutableLiveData()
     private val euiccSlotMap = HashMap<String, EuiccSlot>()
 
-
-    private var euiccConnectionConsumer: EuiccConnectionConsumer? = null
-
-    private var switchEuiccInterface: String? = null
-    private var enableFallbackEuicc = false
-
     init {
         euiccInterfaces.add(SeEuiccInterface(context, this))
+        euiccInterfaces.add(USBReaderEuiccInterface(context, this))
         refreshEuiccList()
-        // euiccInterfaces.add(new USBReaderEuiccInterface(context, this));
     }
 
     val currentEuiccLiveData: LiveData<String>
@@ -68,17 +55,6 @@ class EuiccManager(context: Context?, private val statusAndEventHandler: StatusA
 
     val euiccListLiveData: LiveData<List<EuiccSlot>>?
         get() = euiccList
-
-    fun setEuiccConnectionConsumer(euiccConnectionConsumer: EuiccConnectionConsumer?) {
-        this.euiccConnectionConsumer = euiccConnectionConsumer
-    }
-
-    private fun updateEuiccConnectionOnConsumer(euiccConnection: EuiccConnection) {
-        Log.debug(TAG, "Updating eUICC connection on consumer.")
-        if (euiccConnectionConsumer != null) {
-            euiccConnectionConsumer!!.onEuiccConnectionUpdate(euiccConnection)
-        }
-    }
 
     fun getSlot(name: String?): EuiccSlot? {
         Log.debug(TAG, "Switch eUICC to: $name")
@@ -117,13 +93,14 @@ class EuiccManager(context: Context?, private val statusAndEventHandler: StatusA
     fun refreshEuiccList() {
         // refreshing eUICCs
         statusAndEventHandler.onStatusChange(ActionStatus.REFRESHING_EUICC_LIST_STARTED)
-        Log.debug(TAG, "Refreshing eUICC list.")
+        Log.debug(TAG, "Refreshing eUICC list from refreshEuiccList")
         euiccSlotMap.clear()
         try {
             val euiccList: MutableList<EuiccSlot> = ArrayList()
             for (euiccInterface in euiccInterfaces) {
                 for (slot in euiccInterface.refreshSlots()) {
                     slot.refresh()
+                    slot.manager = this
                     Log.debug(TAG, euiccInterface.tag + ": " + slot.name)
                     euiccSlotMap[slot.name] = slot
                     euiccList.add(slot)

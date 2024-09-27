@@ -19,7 +19,7 @@ class CCIDService(context: Context) : EuiccService {
 
     override fun refreshSlots(): List<EuiccSlot> {
         Log.debug(TAG, "Refreshing CCID eUICC names...")
-        return CCIDCard.readerSlots()
+        return CCIDCard.refreshSlots()
     }
 
     @Throws(Exception::class)

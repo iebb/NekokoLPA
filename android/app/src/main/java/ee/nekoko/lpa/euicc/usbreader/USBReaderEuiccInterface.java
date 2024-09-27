@@ -43,16 +43,17 @@ final public class USBReaderEuiccInterface implements EuiccInterface {
     private static final String TAG = USBReaderEuiccInterface.class.getName();
     private final EuiccInterfaceStatusChangeHandler handler;
     private static ArrayList<USBReaderInterface> usbReaderInterfaces = new ArrayList<USBReaderInterface>();
-    private static USBReaderInterface currentDriver;
+    private static CCIDInterface ccidInterface;
 
     public USBReaderEuiccInterface(Context context, EuiccInterfaceStatusChangeHandler handler) {
         Log.debug(TAG, "Constructor of USBReader.");
 
-        currentDriver = null;
 
         this.handler = handler;
 
-        usbReaderInterfaces.add(new CCIDInterface(context));
+        ccidInterface = new CCIDInterface(context);
+
+        usbReaderInterfaces.add(ccidInterface);
 
         // Create BroadcastReceiver for USB attached/detached events
         USBReaderConnectionBroadcastReceiver USBReaderConnectionBroadcastReceiver = new USBReaderConnectionBroadcastReceiver(MainApplication.getAppContext(), onDisconnectCallback, this);
@@ -60,13 +61,7 @@ final public class USBReaderEuiccInterface implements EuiccInterface {
     }
 
     public static boolean checkDevice(String readerName) {
-        for(USBReaderInterface eif : usbReaderInterfaces){
-            if(eif.checkDevice(readerName)){
-                currentDriver = eif;
-                return true;
-            }
-        }
-        return false;
+        return ccidInterface.checkDevice(readerName);
     }
 
     @Override
@@ -86,56 +81,33 @@ final public class USBReaderEuiccInterface implements EuiccInterface {
     @Override
     public boolean isInterfaceConnected() {
         boolean isConnected = false;
-        if (isAvailable()) {
-            if(currentDriver != null){
-                isConnected = currentDriver.isInterfaceConnected();
-            }
-        }
-        Log.debug(TAG, "Is USB interface connected: " + isConnected);
         return isConnected;
     }
 
     @Override
     public boolean connectInterface() throws Exception {
-        boolean ret;
-
-        Log.debug(TAG, "Connecting USB interface.");
-
-        if(currentDriver == null){
-            return false;
-        }
-
-        ret = currentDriver.connectInterface();
-        return ret;
+        return false;
     }
 
     @Override
     public boolean disconnectInterface() throws Exception {
         Log.debug(TAG, "Disconnecting USB interface.");
-
-        if(currentDriver == null){
-            return false;
-        }
-
-        return currentDriver.disconnectInterface();
+        return false;
     }
 
     @Override
     public List<EuiccSlot> refreshSlots() throws Exception {
-        if(currentDriver == null){
-            return new ArrayList<>();
-        }
-        return currentDriver.refreshSlots();
+        return ccidInterface.refreshSlots();
     }
 
     @Override
     public synchronized List<EuiccSlot> getEuiccNames() {
-        return currentDriver.getEuiccNames();
+        return ccidInterface.getEuiccNames();
     }
 
     @Override
     public EuiccConnection getEuiccConnection(String euiccName) throws Exception {
-        return currentDriver.getEuiccConnection(euiccName);
+        return ccidInterface.getEuiccConnection(euiccName);
     }
 
     @SuppressWarnings("FieldCanBeLocal")
@@ -143,12 +115,13 @@ final public class USBReaderEuiccInterface implements EuiccInterface {
         @Override
         public void onDisconnect() {
             Log.debug(TAG, "USB reader has been disconnected.");
+            // refreshSlots();
 
-            try {
-                currentDriver.disconnectInterface();
-            } catch (Exception e) {
-                Log.error(TAG, "Catched exception during disconnecting interface.", e);
-            }
+//            try {
+//                currentDriver.disconnectInterface();
+//            } catch (Exception e) {
+//                Log.error(TAG, "Catched exception during disconnecting interface.", e);
+//            }
         }
     };
 }

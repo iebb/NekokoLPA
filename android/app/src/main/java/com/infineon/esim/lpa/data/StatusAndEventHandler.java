@@ -27,8 +27,6 @@ import com.infineon.esim.lpa.data.ActionStatus;
 import com.infineon.esim.lpa.data.AsyncActionStatus;
 
 public interface StatusAndEventHandler {
-
-    void onStatusChange(AsyncActionStatus asyncActionStatus);
     void onStatusChange(ActionStatus actionStatus);
     void onError(Error error);
 }

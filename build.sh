@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
+rm outputs/apk/*
 cd android
 ./gradlew app:clean app:assembleMultisignRelease
-./gradlew bundleStoreRelease
+cp -fv app/build/outputs/apk/multisign/release/*.apk ../outputs/apk/
 
-cp -f app/build/outputs/apk/multisign/release/* ../outputs/apk/
+./gradlew bundleStoreRelease
 cp -f app/build/outputs/bundle/* ../outputs/bundle/
 # /storeRelease/release
+
 cd ..
 for filename in outputs/apk/*.apk; do
   java -jar signer/apksigner.jar sign --v1-signing-enabled --v2-signing-enabled --v3-signing-enabled=false \
@@ -25,4 +27,4 @@ done
 rm outputs/ee.nekoko.*.apk
 
 cp outputs/apk/app-multisign-arm64-v8a-release.apk "outputs/ee.nekoko.nlpa.multisign-arm64-v8a-$(jq .version package.json -r).apk"
-cp outputs/apk/app-multisign-universal-release.apk "outputs/ee.nekoko.nlpa.multisign-universal-$(jq .version package.json -r).apk"
+# cp outputs/apk/app-multisign-universal-release.apk "outputs/ee.nekoko.nlpa.multisign-universal-$(jq .version package.json -r).apk"

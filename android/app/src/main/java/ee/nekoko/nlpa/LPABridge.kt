@@ -127,16 +127,12 @@ class LPABridge @ReactMethod constructor(private val context: ReactContext?) : R
 
 
     init {
-        // this.lpa = new LocalProfileAssistant(euiccManager, this);
         Handler(Looper.getMainLooper()).post {
             errorEventLiveData.observeForever(errorObserver)
             euiccManager.euiccListLiveData!!.observeForever { data: List<EuiccSlot?>? ->
                 emitData("euiccList", data, true)
             }
         }
-
-        euiccManager.refreshEuiccList()
-
         instance = this
     }
 
@@ -272,12 +268,6 @@ class LPABridge @ReactMethod constructor(private val context: ReactContext?) : R
         val lpa = euiccManager.getLPA(device) ?: return "null"
         val result = lpa.cancelSession(cancelSessionReason.toLong())
         return Gson().toJson(result)
-    }
-
-    // endregion
-    // region Status and error handling
-    override fun onStatusChange(newAsyncActionStatus: AsyncActionStatus) {
-        // actionStatusLiveData.postValue(newAsyncActionStatus)
     }
 
     override fun onStatusChange(actionStatus: ActionStatus) {

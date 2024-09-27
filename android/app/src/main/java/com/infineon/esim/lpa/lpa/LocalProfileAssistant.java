@@ -52,6 +52,8 @@ import com.infineon.esim.lpa.data.Error;
 import com.infineon.esim.lpa.util.threading.TaskRunner;
 import com.infineon.esim.util.Log;
 
+import java.util.ArrayList;
+
 public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl implements EuiccConnectionConsumer {
     private static final String TAG = LocalProfileAssistant.class.getName();
 
@@ -59,11 +61,6 @@ public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl i
     private final MutableLiveData<ProfileList> profileList;
 
     private EuiccConnection euiccConnection;
-
-    private EuiccInfo euiccInfo;
-    private AuthenticateResult authenticateResult;
-    private DownloadResult downloadResult;
-    private CancelSessionResult cancelSessionResult;
 
     public LocalProfileAssistant(EuiccConnection euiccConnection, StatusAndEventHandler statusAndEventHandler) {
         super();
@@ -79,21 +76,6 @@ public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl i
         return profileList;
     }
 
-    public EuiccInfo getEuiccInfo() {
-        return euiccInfo;
-    }
-
-    public AuthenticateResult getAuthenticateResult() {
-        return authenticateResult;
-    }
-
-    public DownloadResult getDownloadResult() {
-        return downloadResult;
-    }
-
-    public CancelSessionResult getCancelSessionResult() {
-        return cancelSessionResult;
-    }
 
     public Boolean resetEuicc() throws Exception {
         if(euiccConnection == null) {
@@ -112,23 +94,12 @@ public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl i
             profileList.postValue(result);
             return result;
         } catch (Exception e) {
+            profileList.postValue(new ProfileList(new ArrayList<>()));
             statusAndEventHandler.onError(new Error("Exception during getting of profile list.", e.getMessage(), e));
         } finally {
             statusAndEventHandler.onStatusChange(ActionStatus.GET_PROFILE_LIST_FINISHED);
         }
         return profileList.getValue();
-    }
-
-    public void refreshEuiccInfo() {
-        Log.debug(TAG, "Refreshing eUICC info.");
-        statusAndEventHandler.onStatusChange(ActionStatus.GETTING_EUICC_INFO_STARTED);
-
-        new TaskRunner().executeAsync(new GetEuiccInfoTask(this),
-                result -> {
-                    euiccInfo = result;
-                    statusAndEventHandler.onStatusChange(ActionStatus.GETTING_EUICC_INFO_FINISHED);
-                },
-                e -> statusAndEventHandler.onError(new Error("Exception during getting of eUICC info.", e.getMessage(), e)));
     }
 
     public void enableProfile(ProfileMetadata profile) {
@@ -231,27 +202,6 @@ public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl i
             statusAndEventHandler.onStatusChange(ActionStatus.DOWNLOAD_PROFILE_FINISHED);
         }
         return null;
-    }
-
-
-    private void postProcessDownloadProfile(DownloadResult downloadResult) {
-        this.downloadResult = downloadResult;
-        ProfileList profileList = this.profileList.getValue();
-
-        Log.debug(TAG, "Post processing new profile. download success: " + downloadResult.getSuccess());
-        if(downloadResult.getSuccess() && (profileList != null)) {
-            ProfileMetadata profileMetadata = authenticateResult.getProfileMetadata();
-            Log.debug(TAG, "Post processing new profile: " + profileMetadata);
-
-            Log.debug(TAG, "Profile nickname: \"" + profileMetadata.getNickname() + "\"");
-            if(!profileMetadata.hasNickname()) {
-                String nickname = profileList.getUniqueNickname(profileMetadata);
-
-                Log.debug(TAG, "Profile does not have a nickname. So set a new one: \"" + nickname + "\"");
-                profileMetadata.setNickname(nickname);
-                setNickname(profileMetadata);
-            }
-        }
     }
 
     public CancelSessionResult cancelSession(long cancelSessionReason) {

@@ -2,10 +2,10 @@
 import groovy.json.JsonSlurper
 
 plugins {
+    id "com.android.application"
     id 'io.sentry.android.gradle' version '4.11.0'
 }
 
-apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 
@@ -133,6 +133,7 @@ android {
         }
         release {
             signingConfig signingConfigs.community
+            debuggable true
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }

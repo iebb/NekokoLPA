@@ -4,18 +4,19 @@ import com.gsma.sgp.messages.rspdefinitions.EUICCInfo2
 import com.infineon.esim.lpa.core.dtos.profile.ProfileList
 import com.infineon.esim.lpa.core.es10.Es10Interface
 import com.infineon.esim.lpa.data.ActionStatus
-import com.infineon.esim.lpa.data.AsyncActionStatus
 import com.infineon.esim.lpa.data.Error
 import com.infineon.esim.lpa.data.StatusAndEventHandler
 import com.infineon.esim.lpa.lpa.LocalProfileAssistant
 import com.infineon.esim.util.Log
+import ee.nekoko.lpa.euicc.EuiccManager
+import io.sentry.Sentry
 
 class EuiccSlot (
     val name: String,
-    val available: Boolean,
-    val message: String,
+    var message: String,
     @Transient val connection: EuiccConnection?,
 ): StatusAndEventHandler {
+    var available: Boolean = false
     var eid: String? = null
     @Transient var euiccInfo2: EUICCInfo2? = null
     var installedApplications = 0
@@ -26,6 +27,7 @@ class EuiccSlot (
     var profiles: ProfileList? = null
     var status: String? = null
     @Transient var lpa: LocalProfileAssistant? = null
+    @Transient var manager: EuiccManager? = null
 
     fun parse() {
         if (euiccInfo2 == null) return
@@ -56,24 +58,25 @@ class EuiccSlot (
     }
 
     fun refresh() {
-        if (connection != null) {
-            val es10Interface = Es10Interface(connection)
-            eid = es10Interface.es10c_getEid().eidValue.toString()
-            euiccInfo2 = es10Interface.es10b_getEuiccInfo2()
-            parse()
-            if (lpa == null) {
-                lpa = LocalProfileAssistant(connection, this)
+        try {
+            if (connection != null) {
+                val es10Interface = Es10Interface(connection)
+                eid = es10Interface.es10c_getEid().eidValue.toString()
+                euiccInfo2 = es10Interface.es10b_getEuiccInfo2()
+                available = true
+                parse()
+                if (lpa == null) {
+                    lpa = LocalProfileAssistant(connection, this)
+                }
+                profiles = lpa!!.refreshProfileList()
             }
-            profiles = lpa!!.refreshProfileList()
+        } catch (e: Exception) {
+            Sentry.captureException(e)
         }
     }
 
-
-    // endregion
-    // region Status and error handling
-    override fun onStatusChange(newAsyncActionStatus: AsyncActionStatus?) {
-        status = newAsyncActionStatus.toString()
-        Log.debug(name, "Changing action status to: $status")
+    init {
+        refresh()
     }
 
     override fun onStatusChange(actionStatus: ActionStatus) {
@@ -82,8 +85,7 @@ class EuiccSlot (
     }
 
     override fun onError(error: Error) {
-        Log.error(name, error.header + ": " + error.body)
-        // triggerErrorEvent(error)
+        message = error.header + ": " + error.body
     }
 
 }

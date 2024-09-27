@@ -20,185 +20,176 @@
  *
  * (C)Copyright INFINEON TECHNOLOGIES All rights reserved
  */
+package ee.nekoko.lpa.euicc.se
 
-package ee.nekoko.lpa.euicc.se;
+import android.content.Context
+import android.se.omapi.Reader
+import android.se.omapi.SEService
+import com.infineon.esim.lpa.core.es10.Es10Interface
+import com.infineon.esim.util.Log
+import ee.nekoko.lpa.euicc.base.EuiccConnection
+import ee.nekoko.lpa.euicc.base.EuiccInterfaceStatusChangeHandler
+import ee.nekoko.lpa.euicc.base.EuiccService
+import ee.nekoko.lpa.euicc.base.EuiccSlot
+import io.sentry.Sentry
+import java.util.Timer
+import java.util.TimerTask
+import java.util.concurrent.TimeoutException
 
-import android.content.Context;
-import android.se.omapi.Reader;
-import android.se.omapi.SEService;
+class SeService(private val context: Context, private val handler: EuiccInterfaceStatusChangeHandler) : EuiccService {
+    private val seServiceMutex = Any()
 
-import com.infineon.esim.util.Log;
+    private var seService: SEService? = null // OMAPI / Secure Element
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeoutException;
+    private val slots = HashMap<String, EuiccSlot>()
 
-import ee.nekoko.lpa.euicc.base.EuiccConnection;
-import ee.nekoko.lpa.euicc.base.EuiccInterfaceStatusChangeHandler;
-import ee.nekoko.lpa.euicc.base.EuiccService;
-import ee.nekoko.lpa.euicc.base.EuiccSlot;
-import io.sentry.Sentry;
-
-public class SeService implements EuiccService {
-    private static final String TAG = SeService.class.getName();
-
-    private final static String UICC_READER_PREFIX = "SIM";
-    private static final long SERVICE_CONNECTION_TIME_OUT = 4000;
-
-    private final Context context;
-    private final Object seServiceMutex;
-
-    private final EuiccInterfaceStatusChangeHandler handler;
-
-    private SEService seService; // OMAPI / Secure Element
-
-    private final HashMap<String, EuiccSlot> slots = new HashMap<>();
-
-    public SeService(Context context, EuiccInterfaceStatusChangeHandler handler) {
-        this.context = context;
-        this.handler = handler;
-        this.seServiceMutex = new Object();
-    }
-
-    public List<EuiccSlot> refreshSlots() {
-        Log.debug(TAG, "[RS] Refreshing SE eUICC names...");
-        List<EuiccSlot> euiccNames = new ArrayList<>();
-        for(Reader reader : seService.getReaders()) {
-            Log.debug(TAG, "Checking Reader..." + reader.getName());
-            var result = getEuiccSlot(reader);
-            if (result.getAvailable()) {
-                euiccNames.add(result);
+    override fun refreshSlots(): List<EuiccSlot> {
+        Log.debug(TAG, "[RS] Refreshing SE eUICC names...")
+        val euiccNames: MutableList<EuiccSlot> = ArrayList()
+        for (reader in seService!!.readers) {
+            try {
+                Log.debug(TAG, "Checking Reader..." + reader.name)
+                val result = getEuiccSlot(reader)
+                if (result.available) {
+                    euiccNames.add(result)
+                }
+            } finally {
             }
         }
-        return euiccNames;
+        return euiccNames
     }
 
-    public Reader[] getReaders() {
-        return seService.getReaders();
-    }
+    val readers: Array<Reader>
+        get() = seService!!.readers
 
-    public void connect() throws TimeoutException {
-        Log.debug(TAG, "Opening connection to SE service...");
+    @Throws(TimeoutException::class)
+    override fun connect() {
+        Log.debug(TAG, "Opening connection to SE service...")
 
         // Initialize secure element if not available
         if (seService == null) {
-            initializeConnection();
+            initializeConnection()
         }
 
         // Connect to secure element if connection is not already established
-        if (seService.isConnected()) {
-            Log.debug(TAG, "SE connection is already open.");
+        if (seService!!.isConnected) {
+            Log.debug(TAG, "SE connection is already open.")
         } else {
             // Connect to secure element
-            waitForConnection();
+            waitForConnection()
         }
     }
 
-    public void disconnect() {
-        Log.debug(TAG, "Closing connection to SE service...");
+    override fun disconnect() {
+        Log.debug(TAG, "Closing connection to SE service...")
 
-        if (seService != null && seService.isConnected()) {
-            Log.debug(TAG, "Shutting down SE service.");
-            seService.shutdown();
-            seService = null;
+        if (seService != null && seService!!.isConnected) {
+            Log.debug(TAG, "Shutting down SE service.")
+            seService!!.shutdown()
+            seService = null
         }
     }
 
-    public boolean isConnected() {
-        if(seService == null) {
-            return false;
+    override fun isConnected(): Boolean {
+        return if (seService == null) {
+            false
         } else {
-            return seService.isConnected();
+            seService!!.isConnected
         }
     }
 
-    private void initializeConnection() {
-        Log.debug(TAG, "Initializing SE connection.");
+    private fun initializeConnection() {
+        Log.debug(TAG, "Initializing SE connection.")
 
-        seService = new SEService(context, Runnable::run, () -> {
-            Log.debug(TAG, "SE service is connected!");
-            synchronized (seServiceMutex) {
-                seServiceMutex.notify();
+        seService = SEService(context, { obj: Runnable -> obj.run() }, {
+            Log.debug(TAG, "SE service is connected!")
+            synchronized(seServiceMutex) {
+                (seServiceMutex as Object).notify()
             }
-        });
+        })
     }
 
-    private void waitForConnection() throws TimeoutException {
-        Log.debug(TAG, "Waiting for SE connection...");
+    @Throws(TimeoutException::class)
+    private fun waitForConnection() {
+        Log.debug(TAG, "Waiting for SE connection...")
 
-        Timer connectionTimer = new Timer();
-        connectionTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                synchronized (seServiceMutex) {
-                    seServiceMutex.notifyAll();
+        val connectionTimer = Timer()
+        connectionTimer.schedule(object : TimerTask() {
+            override fun run() {
+                synchronized(seServiceMutex) {
+                    (seServiceMutex as Object).notifyAll()
                 }
             }
-        }, SERVICE_CONNECTION_TIME_OUT);
+        }, SERVICE_CONNECTION_TIME_OUT)
 
-        synchronized (seServiceMutex) {
-            if (!seService.isConnected()) {
+        synchronized(seServiceMutex) {
+            if (!seService!!.isConnected) {
                 try {
-                    seServiceMutex.wait();
-                } catch (InterruptedException e) {
-                    Sentry.captureException(e);
-                    Log.error(TAG, "SE service could not be waited for.", e);
+                    (seServiceMutex as Object).wait()
+                } catch (e: InterruptedException) {
+                    Sentry.captureException(e)
+                    Log.error(TAG, "SE service could not be waited for.", e)
                 }
             }
-            if (!seService.isConnected()) {
-                throw new TimeoutException(
-                        "SE Service could not be connected after "
-                                + SERVICE_CONNECTION_TIME_OUT + " ms.");
+            if (!seService!!.isConnected) {
+                throw TimeoutException(
+                    "SE Service could not be connected after "
+                            + SERVICE_CONNECTION_TIME_OUT + " ms."
+                )
             }
-            connectionTimer.cancel();
+            connectionTimer.cancel()
         }
     }
 
-    public EuiccConnection openEuiccConnection(String euiccName) throws Exception {
-        if(!seService.isConnected()) {
-            throw new Exception("Secure element is not connected.");
+    @Throws(Exception::class)
+    override fun openEuiccConnection(euiccName: String): EuiccConnection {
+        if (!seService!!.isConnected) {
+            throw Exception("Secure element is not connected.")
         }
 
-        Reader[] readers = getReaders();
-        if (readers.length == 0) {
-            Log.error(TAG, "Cannot open session: no reader found from SE service.");
-            throw new Exception("Cannot open session: no reader found from SE service.");
+        val readers = readers
+        if (readers.size == 0) {
+            Log.error(TAG, "Cannot open session: no reader found from SE service.")
+            throw Exception("Cannot open session: no reader found from SE service.")
         }
 
-        for (Reader reader : readers) {
-            if (reader.getName().equals(euiccName)) {
-                return getEuiccSlot(reader).getConnection();
+        for (reader in readers) {
+            if (reader.name == euiccName) {
+                return getEuiccSlot(reader).connection!!
             }
         }
 
-        throw new Exception("No found reader matches with reader name \"" + euiccName + "\"");
+        throw Exception("No found reader matches with reader name \"$euiccName\"")
     }
 
-    private EuiccSlot getEuiccSlot(Reader reader) {
+    private fun getEuiccSlot(reader: Reader): EuiccSlot {
         try {
-            var currentSlot = slots.get(reader.getName());
-            EuiccConnection connection;
-            if (currentSlot != null) {
-                connection = currentSlot.getConnection();
+            val currentSlot = slots[reader.name]
+            val connection = if (currentSlot != null) {
+                currentSlot.connection
             } else {
-                connection = new SeEuiccConnection(reader);
+                SeEuiccConnection(reader)
             }
-
-            Log.debug(TAG,"Reader name: " + reader.getName());
-            var ret = new EuiccSlot(reader.getName(), true, "ok", connection);
-            slots.put(reader.getName(), ret);
-            return ret;
-        } catch (java.lang.SecurityException e) {
+            Log.debug(TAG, "Reader name: " + reader.name)
+            val ret = EuiccSlot(reader.name, "ok", connection)
+            slots[reader.name] = ret
+            return ret
+        } catch (e: SecurityException) {
             /* ARA-M not found */
-            Log.debug(TAG,"[GET EUICC SLOT FAILED - SecurityException] " + e.toString());
-            return new EuiccSlot(reader.getName(), false, "no_ara_m", null);
-        } catch (Exception e) {
-            Log.debug(TAG,"[GET EUICC SLOT FAILED] " + e.toString());
-            Log.debug(TAG,"[SESSION FAILED] " + reader.getName());
+            Log.debug(TAG, "[GET EUICC SLOT FAILED - SecurityException] $e")
+            return EuiccSlot(reader.name, "no_ara_m", null)
+        } catch (e: Exception) {
+            Log.debug(TAG, "[GET EUICC SLOT FAILED] Cause: ${e.cause}")
+            Log.debug(TAG, "[GET EUICC SLOT FAILED] Message: ${e.message}")
+            Log.debug(TAG, "[SESSION FAILED] " + reader.name)
         }
-        return new EuiccSlot(reader.getName(), false, "", null);
+        return EuiccSlot(reader.name, "", null)
+    }
+
+    companion object {
+        private val TAG: String = SeService::class.java.name
+
+        private const val UICC_READER_PREFIX = "SIM"
+        private const val SERVICE_CONNECTION_TIME_OUT: Long = 4000
     }
 }

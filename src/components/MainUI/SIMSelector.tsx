@@ -55,6 +55,7 @@ export default function SIMSelector() {
     <View
       onLayout={(e) => {
         setWidth(e.nativeEvent.layout.width);
+        console.log(e.nativeEvent.layout);
       }}
       style={{
         flexGrow: 1,
@@ -108,6 +109,7 @@ export default function SIMSelector() {
                 overflow: "hidden",
                 borderRadius: 20,
                 marginBottom: 10,
+                height: 40,
               }}
             />
             <View flexG>

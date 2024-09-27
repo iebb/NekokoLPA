@@ -24,10 +24,6 @@ function ApplicationNavigator() {
 	const [reset, setReset] = useState(0);
 
 	useEffect(() => {
-		InfiLPA.refreshEUICC();
-	}, []);
-
-	useEffect(() => {
 		const processUrl = (url: string) => {
 			if (url) {
 				const match = url.match(LPACode);

@@ -29,6 +29,12 @@ import android.se.omapi.Session;
 
 import ee.nekoko.lpa.euicc.base.EuiccConnection;
 import ee.nekoko.lpa.euicc.base.generic.Definitions;
+import io.sentry.Sentry;
+import io.sentry.SentryEvent;
+import io.sentry.SentryLevel;
+import io.sentry.protocol.Message;
+
+import com.infineon.esim.lpa.lpa.task.DownloadTask;
 import com.infineon.esim.util.Bytes;
 import com.infineon.esim.util.Log;
 
@@ -56,36 +62,17 @@ public class SeEuiccConnection implements EuiccConnection {
     @Override
     public boolean resetEuicc() throws Exception {
         Log.debug(TAG, "Resetting the eUICC.");
-
-        // Close the connection first
         close();
-
-        // Wait for the phone to detect the profile change
-        for (var i = 1; i < 10; i++) {
-            Thread.sleep(i * 500);
-            try {
-                var result = open();
-                if (result) {
-                    return true;
-                }
-            } catch (IOException e) {
-                // Log.error(Log.getFileLineNumber() + " " + e.getMessage());
-            } catch (Exception e) {
-                Log.error(Log.getFileLineNumber() + " " + e.getMessage());
-            }
-        }
+        Thread.sleep(500);
         return open();
-        // Open the connection again
     }
 
-    @Override
-    public boolean open() throws Exception {
+    public boolean _open() throws Exception {
         Log.debug(TAG, "Opening connection for eUICC " + reader.getName());
+
         try {
             if (session == null || session.isClosed()) {
                 Log.debug(TAG, "Opening a new session...");
-            } else {
-                session.close();
             }
             session = reader.openSession();
             session.getATR(); // weird
@@ -93,6 +80,8 @@ public class SeEuiccConnection implements EuiccConnection {
             if (channel == null || !channel.isOpen()) {
                 Log.debug(TAG, "Opening a new logical channel...");
                 channel = session.openLogicalChannel(Bytes.decodeHexString(Definitions.ISDR_AID));
+                Log.debug(TAG, "Session: " + session.toString());
+                Log.debug(TAG, "Channel: " + channel.toString());
                 if (channel != null) {
                     byte[] response = channel.getSelectResponse();
                     Log.debug(TAG, "Opened logical channel: " + Bytes.encodeHexString(response));
@@ -102,20 +91,56 @@ public class SeEuiccConnection implements EuiccConnection {
                 }
             }
 
-            if (channel == null || !channel.isOpen()) {
-                return false;
-            }
-
         } catch (IOException e) {
-            Log.error(TAG, "Opening eUICC connection failed.", e);
-            throw new Exception("Opening eUICC connection failed.", e);
+            Log.error(TAG, "Opening eUICC connection failed. [IO]", e);
+            throw e;
+        } catch (java.lang.SecurityException e) {
+            Log.error(TAG, "Opening eUICC connection failed. [java.lang.SecurityException]", e);
+            Log.error(TAG, "NO ARA-M", e);
+            throw e;
+        } catch (Exception e) {
+            Log.error(TAG, "Opening eUICC connection failed. [EX]", e);
+            throw e;
         }
 
-        if(channel != null) {
-            return channel.isOpen();
-        } else {
+
+        if (channel == null || !channel.isOpen()) {
             return false;
         }
+        return true;
+    }
+
+    @Override
+    public boolean open() throws Exception {
+        for (var i = 0; i < 6; i++) {
+            try {
+                var result = _open();
+                if (result) {
+                    return true;
+                }
+            } catch (IOException e) {
+                if (i == 0) {
+                    Sentry.captureException(e);
+                }
+                // Log.error(Log.getFileLineNumber() + " " + e.getMessage());
+            } catch (java.security.AccessControlException e) {
+                if (i == 0) {
+                    Sentry.captureException(e);
+                }
+                Log.error(Log.getFileLineNumber() + " " + e.getMessage());
+                break;
+            } catch (Exception e) {
+                if (i == 0) {
+                    Sentry.captureException(e);
+                }
+                if (e.getMessage().contains("java.security.AccessControlException")) {
+                    break;
+                }
+                Log.error(Log.getFileLineNumber() + " " + e.getMessage());
+            }
+            Thread.sleep(i * 500);
+        }
+        return false;
     }
 
     @Override
