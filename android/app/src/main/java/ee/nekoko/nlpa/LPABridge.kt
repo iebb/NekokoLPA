@@ -22,6 +22,7 @@
  */
 package ee.nekoko.nlpa
 
+import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.LiveData
@@ -46,14 +47,15 @@ import ee.nekoko.lpa.euicc.base.EuiccSlot
 import io.sentry.Sentry
 import java.util.Date
 import java.util.concurrent.TimeUnit
+import kotlin.concurrent.thread
 
 class LPABridge @ReactMethod constructor(private val context: ReactContext?) : ReactContextBaseJavaModule(), StatusAndEventHandler {
     override fun getName(): String {
-        return "InfineonDataModel"
+        return "LPABridge"
     }
 
 
-    private val euiccManager = EuiccManager(context, this)
+    private val euiccManager = EuiccManager(context as Context, this)
 
     private val actionStatusLiveData = MutableLiveData<AsyncActionStatus>()
     private val errorEventLiveData = MutableLiveData<OneTimeEvent<Error>>()
@@ -64,7 +66,7 @@ class LPABridge @ReactMethod constructor(private val context: ReactContext?) : R
 
 
     override fun initialize() {
-        emitData("euiccList", euiccManager.euiccListLiveData!!.value, true)
+        emitData("euiccList", euiccManager.euiccListLiveData.value, true)
     }
 
     fun emitData(key: String, value: Any?, global: Boolean) {
@@ -126,12 +128,15 @@ class LPABridge @ReactMethod constructor(private val context: ReactContext?) : R
 
 
     init {
-        Handler(Looper.getMainLooper()).post {
-            errorEventLiveData.observeForever(errorObserver)
-            euiccManager.euiccListLiveData!!.observeForever { data: List<EuiccSlot?>? ->
-                emitData("euiccList", data, true)
-            }
+        thread(start = true) {
             euiccManager.refreshEuiccList()
+            Handler(Looper.getMainLooper()).post {
+                errorEventLiveData.observeForever(errorObserver)
+                euiccManager.euiccListLiveData.observeForever { data: List<EuiccSlot?>? ->
+                    emitData("euiccList", data, true)
+                }
+                emitData("euiccList", euiccManager.euiccListLiveData.value, true)
+            }
         }
         instance = this
     }
@@ -177,7 +182,7 @@ class LPABridge @ReactMethod constructor(private val context: ReactContext?) : R
 
     @ReactMethod
     fun refreshProfileListWithDevice(device: String?) {
-        Log.debug(TAG, "Refreshing eUICC list...")
+        Log.debug(TAG, "Refreshing eUICC list for " + device)
         val lpa = euiccManager.getLPA(device) ?: return
         lpa.refreshProfileList();
     }
@@ -185,7 +190,7 @@ class LPABridge @ReactMethod constructor(private val context: ReactContext?) : R
     fun enableProfile(device: String?, profile: ProfileMetadata?) {
         val lpa = euiccManager.getLPA(device) ?: return
         lpa.enableProfile(profile)
-        euiccManager.refreshEuiccList()
+        euiccManager.refreshSingleEuicc(device!!)
     }
 
     @ReactMethod
@@ -200,7 +205,7 @@ class LPABridge @ReactMethod constructor(private val context: ReactContext?) : R
     fun disableProfile(device: String?, profile: ProfileMetadata?) {
         val lpa = euiccManager.getLPA(device) ?: return
         lpa.disableProfile(profile)
-        euiccManager.refreshEuiccList()
+        euiccManager.refreshSingleEuicc(device!!)
     }
 
     @ReactMethod
@@ -215,7 +220,7 @@ class LPABridge @ReactMethod constructor(private val context: ReactContext?) : R
     fun deleteProfile(device: String?, profile: ProfileMetadata?) {
         val lpa = euiccManager.getLPA(device) ?: return
         lpa.deleteProfile(profile)
-        euiccManager.refreshEuiccList()
+        euiccManager.refreshSingleEuicc(device!!)
     }
 
     @ReactMethod
@@ -230,7 +235,7 @@ class LPABridge @ReactMethod constructor(private val context: ReactContext?) : R
     fun setNickname(device: String?, profile: ProfileMetadata?) {
         val lpa = euiccManager.getLPA(device) ?: return
         lpa.setNickname(profile)
-        euiccManager.refreshEuiccList()
+        euiccManager.refreshSingleEuicc(device!!)
     }
 
     @ReactMethod

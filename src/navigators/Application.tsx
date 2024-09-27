@@ -23,29 +23,33 @@ function ApplicationNavigator() {
 	const navigationRef = React.createRef<NavigationContainerRef<RootStackParamList>>();
 	const [reset, setReset] = useState(0);
 
-	useEffect(() => {
-		const processUrl = (url: string) => {
-			if (url) {
-				const match = url.match(LPACode);
-				if (match && match[0].length) {
-					console.log("App Link: URL", url);
-					navigationRef.current?.navigate('Scanner', {
-						appLink: url,
-					});
-				}
+	const processUrl = (url: string) => {
+		if (url) {
+			console.log("App Link: URL", url);
+			const match = url.match(LPACode);
+			if (match && match[0].length) {
+				console.log("App Link Matched: URL", url);
+				navigationRef.current?.navigate('Scanner', {
+					appLink: url,
+				});
 			}
 		}
+	}
+
+	useEffect(() => {
 		if (navigationRef) {
 			Linking.addEventListener('url', ({url}) => processUrl(url));
 			const getUrlAsync = async () => {
-				const linkUrl = await Linking.getInitialURL();
-				if (linkUrl) {
-					processUrl(linkUrl);
-				}
+				try {
+					const linkUrl = await Linking.getInitialURL();
+					if (linkUrl) {
+						processUrl(linkUrl);
+					}
+				} catch (e) {}
 			};
 			getUrlAsync();
 		}
-	}, [navigationRef, reset]);
+	}, [navigationRef]);
 
 	return (
 		<SafeAreaProvider style={{ backgroundColor: "transparent" }}>

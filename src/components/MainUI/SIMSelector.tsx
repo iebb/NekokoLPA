@@ -1,4 +1,4 @@
-import {Text, View} from "react-native-ui-lib";
+import {LoaderScreen, Text, View} from "react-native-ui-lib";
 import React, {useCallback, useMemo, useState} from "react";
 import InfiLPA from "@/native/InfiLPA";
 import {useSelector} from "react-redux";
@@ -24,106 +24,110 @@ export default function SIMSelector() {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    InfiLPA.refreshEUICC();
     setTimeout(() => {
+      InfiLPA.refreshEUICC();
       setRefreshing(false);
-    }, 1000);
+    }, 100);
   }, []);
+
+  if (!euiccList) {
+    return (
+      <LoaderScreen
+        color={colors.blue500}
+        size="large"
+        loaderColor={colors.std200}
+      />
+    )
+  }
 
   if (!euiccList?.length) {
     return (
-      <View>
-        <ScrollView
-          bounces
-          alwaysBounceVertical
-          overScrollMode="always"
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
-          <View flex paddingT-20 gap-20 height={500}>
-            <Text color={colors.std200} center text60L>
-              {t('main:no_device')}
-            </Text>
-          </View>
-        </ScrollView>
-      </View>
+      <ScrollView
+        bounces
+        alwaysBounceVertical
+        overScrollMode="always"
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        <View flex paddingT-20 gap-20>
+          <Text color={colors.std200} center text70L>
+            {t('main:unsupported_device')}
+          </Text>
+          <Text color={colors.std200} center>
+            {t('main:insert_supported_sim')}
+          </Text>
+        </View>
+      </ScrollView>
     );
   }
 
   return (
     <View
-      onLayout={(e) => {
-        setWidth(e.nativeEvent.layout.width);
-        console.log(e.nativeEvent.layout);
-      }}
+      key={euiccList.map(x => x.name).join("|")}
       style={{
         flexGrow: 1,
         flexShrink: 0,
       }}
     >
-      {
-        width > 0 && (euiccList?.length >= 1 && (
-          <TabController
-            items={
-              euiccList.map((eUICC, _idx) => ({
-                label: eUICC.name,
-                icon: (
-                  <FontAwesomeIcon
-                    icon={
-                      eUICC.name.startsWith("SIM") ? faSimCard : faDownload
-                    }
-                    style={{
-                      color: colors.std400,
-                      marginRight: 4,
-                      marginTop: -2,
-                    }}
-                    size={12}
-                  />
-                ),
-                labelStyle: {
-                  padding: 0,
-                  fontSize: eUICC.name.length > 4 ? 12 : 14,
-                  lineHeight: eUICC.name.length > 4 ? 12 : 14,
-                },
-                selectedLabelStyle: {
-                  padding: 0,
-                  fontSize: eUICC.name.length > 4 ? 12 : 14,
-                  lineHeight: eUICC.name.length > 4 ? 12 : 14,
-                  fontWeight: '500',
-                },
-                iconColor: colors.std400,
-                labelColor: colors.std400,
-                selectedLabelColor: colors.purple300,
-                selectedIconColor: colors.purple300,
-                width: width / euiccList.length,
-              }))
-            }
-            initialIndex={initialIndex}
-          >
-            <TabController.TabBar
-              containerWidth={width}
-              backgroundColor={colors.cardBackground}
-              labelColor={colors.purple300}
-              containerStyle={{
-                overflow: "hidden",
-                borderRadius: 20,
-                marginBottom: 10,
-                height: 40,
-              }}
-            />
-            <View flexG>
-              {
-                euiccList.map((euicc, _idx) => (
-                  <TabController.TabPage index={_idx} key={euicc.name}>
-                    <EUICCPage eUICC={euicc} />
-                  </TabController.TabPage>
-                ))
+      <TabController
+      items={
+        euiccList.map((eUICC, _idx) => ({
+          label: eUICC.name,
+          icon: (
+            <FontAwesomeIcon
+              icon={
+                eUICC.name.startsWith("SIM") ? faSimCard : faDownload
               }
-            </View>
-          </TabController>
-        ))
+              style={{
+                color: colors.std400,
+                marginRight: 4,
+                marginTop: -2,
+              }}
+              size={12}
+            />
+          ),
+          labelStyle: {
+            padding: 0,
+            fontSize: eUICC.name.length > 4 ? 12 : 14,
+            lineHeight: eUICC.name.length > 4 ? 12 : 14,
+          },
+          selectedLabelStyle: {
+            padding: 0,
+            fontSize: eUICC.name.length > 4 ? 12 : 14,
+            lineHeight: eUICC.name.length > 4 ? 12 : 14,
+            fontWeight: '500',
+          },
+          iconColor: colors.std400,
+          labelColor: colors.std400,
+          selectedLabelColor: colors.purple300,
+          selectedIconColor: colors.purple300,
+          width: width / euiccList.length,
+        }))
       }
+      initialIndex={initialIndex}
+    >
+      <TabController.TabBar
+        backgroundColor={colors.cardBackground}
+        labelColor={colors.purple300}
+        containerStyle={{
+          width: '100%',
+          overflow: "hidden",
+          borderRadius: 20,
+          marginBottom: 10,
+          height: 40,
+        }}
+      />
+      <View flexG>
+        {
+          euiccList.map((euicc, _idx) => (
+            <TabController.TabPage index={_idx} key={euicc.name}>
+              <EUICCPage eUICC={euicc} />
+            </TabController.TabPage>
+          ))
+        }
+      </View>
+    </TabController>
     </View>
   )
 }

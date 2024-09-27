@@ -1,38 +1,46 @@
 package ee.nekoko.lpa.euicc.usbreader.drivers.ccid
 
 import android.content.Context
-import ee.nekoko.lpa.euicc.base.EuiccConnection
-import ee.nekoko.lpa.euicc.usbreader.USBReaderInterface
 import com.infineon.esim.util.Log
+import ee.nekoko.lpa.euicc.base.EuiccConnection
+import ee.nekoko.lpa.euicc.base.EuiccInterface
+import ee.nekoko.lpa.euicc.base.EuiccInterfaceStatusChangeHandler
 import ee.nekoko.lpa.euicc.base.EuiccSlot
+import ee.nekoko.lpa.euicc.usbreader.OnDisconnectCallback
+import ee.nekoko.lpa.euicc.usbreader.USBReaderConnectionBroadcastReceiver
+import ee.nekoko.nlpa.MainApplication.Companion.getAppContext
 
-class CCIDInterface(context: Context) : USBReaderInterface {
+class CCIDInterface(context: Context, handler: EuiccInterfaceStatusChangeHandler) : EuiccInterface {
     private val ccidService: CCIDService
     private val euiccNames: MutableList<EuiccSlot>
 
     private var euiccConnection: EuiccConnection? = null
 
+    private val onDisconnectCallback = OnDisconnectCallback {
+        Log.debug(TAG, "USB reader has been disconnected.")
+        handler.onEuiccRefresh(INTERFACE_TAG)
+    }
+
+    val receiver = USBReaderConnectionBroadcastReceiver(getAppContext(), onDisconnectCallback, this)
+
     init {
         Log.debug(TAG, "Constructor of CCIDReader.")
 
-        this.ccidService = CCIDService(context)
+        this.ccidService = CCIDService(context, handler)
         this.euiccNames = ArrayList()
+        receiver.registerReceiver()
     }
 
-    override fun checkDevice(name: String): Boolean {
+    override fun getTag(): String {
+        return INTERFACE_TAG
+    }
+
+    override fun isAvailable(): Boolean {
+        return receiver.isDeviceAttached()
+    }
+
+    fun checkDevice(device: String?): Boolean {
         return true
-    }
-
-    override fun isInterfaceConnected(): Boolean {
-        var isConnected = false
-
-        isConnected = ccidService.isConnected
-        Log.debug(
-            TAG,
-            "Is CCID interface connected: $isConnected"
-        )
-
-        return isConnected
     }
 
     @Throws(Exception::class)
@@ -89,5 +97,6 @@ class CCIDInterface(context: Context) : USBReaderInterface {
 
     companion object {
         private val TAG: String = CCIDInterface::class.java.name
+        const val INTERFACE_TAG: String = "USB"
     }
 }

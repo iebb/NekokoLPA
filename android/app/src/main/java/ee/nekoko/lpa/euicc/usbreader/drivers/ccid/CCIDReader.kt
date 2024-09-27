@@ -13,6 +13,7 @@ import android.hardware.usb.UsbInterface
 import android.hardware.usb.UsbManager
 import android.os.Build
 import android.util.Log
+import ee.nekoko.lpa.euicc.base.EuiccSlot
 import im.nfc.ccid.Ccid
 import im.nfc.ccid.CcidException
 import im.nfc.ccid.Protocol
@@ -27,21 +28,7 @@ data class CCIDReader (
     var context: Context,
 ) {
 
-    private val usbReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == ACTION_USB_PERMISSION) {
-                // val _device: UsbDevice? = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
-                if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
-                    val _ccid = connectToInterface()
-                    if (_ccid != null) {
-                        ccid = _ccid
-                    }
-                } else {
-                    Log.d(TAG, "permission denied for device $device")
-                }
-            }
-        }
-    }
+    var slot: EuiccSlot? = null
 
     private fun getEndpoints(usbInterface: UsbInterface): Pair<UsbEndpoint, UsbEndpoint> {
         var bulkIn: UsbEndpoint? = null
@@ -130,33 +117,16 @@ data class CCIDReader (
         get() = (ccid != null)
 
     fun connectCard() {
-        if (!usbManager.hasPermission(device)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                context.registerReceiver(usbReceiver, IntentFilter(ACTION_USB_PERMISSION), Context.RECEIVER_NOT_EXPORTED)
-            } else @SuppressLint("UnspecifiedRegisterReceiverFlag") {
-                context.registerReceiver(usbReceiver, IntentFilter(ACTION_USB_PERMISSION))
-            }
-
-            val intent = Intent(ACTION_USB_PERMISSION)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                intent.identifier = name
-            }
-            val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-            usbManager.requestPermission(device, pendingIntent)
-            throw Exception("CCID_READER_NO_PERMISSION")
+        val _ccid = connectToInterface()
+        if (_ccid != null) {
+            Log.i(TAG, "Connecting Reader: $name")
+            ccid = _ccid
         } else {
-            val _ccid = connectToInterface()
-            if (_ccid != null) {
-                Log.i(TAG, "Connecting Reader: $name")
-                ccid = _ccid
-            } else {
-                throw Exception("CCID_READER_CONNECT_ERROR")
-            }
+            throw Exception("CCID_READER_CONNECT_ERROR")
         }
     }
 
     companion object {
         private val TAG: String = CCIDReader::class.java.name
-        private const val ACTION_USB_PERMISSION = "ee.nekoko.lpa.ccid.USB_PERMISSION"
     }
 }

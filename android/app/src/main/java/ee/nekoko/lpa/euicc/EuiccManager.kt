@@ -34,9 +34,9 @@ import ee.nekoko.lpa.euicc.base.EuiccInterface
 import ee.nekoko.lpa.euicc.base.EuiccInterfaceStatusChangeHandler
 import ee.nekoko.lpa.euicc.base.EuiccSlot
 import ee.nekoko.lpa.euicc.se.SeEuiccInterface
-import ee.nekoko.lpa.euicc.usbreader.USBReaderEuiccInterface
+import ee.nekoko.lpa.euicc.usbreader.drivers.ccid.CCIDInterface
 
-class EuiccManager(context: Context?, private val statusAndEventHandler: StatusAndEventHandler): EuiccInterfaceStatusChangeHandler {
+class EuiccManager(context: Context, private val statusAndEventHandler: StatusAndEventHandler): EuiccInterfaceStatusChangeHandler {
     // eUICC interfaces
     private val euiccInterfaces: MutableList<EuiccInterface> = ArrayList()
 
@@ -46,20 +46,20 @@ class EuiccManager(context: Context?, private val statusAndEventHandler: StatusA
 
     init {
         euiccInterfaces.add(SeEuiccInterface(context, this))
-        euiccInterfaces.add(USBReaderEuiccInterface(context, this))
+        euiccInterfaces.add(CCIDInterface(context, this))
     }
 
     val currentEuiccLiveData: LiveData<String>
         get() = currentEuicc
 
-    val euiccListLiveData: LiveData<List<EuiccSlot>>?
+    val euiccListLiveData: LiveData<List<EuiccSlot>>
         get() = euiccList
 
     fun getSlot(name: String?): EuiccSlot? {
         Log.debug(TAG, "Switch eUICC to: $name")
         var target: EuiccSlot? = null
         if (name == null) {
-            val euiccListV = euiccList!!.value
+            val euiccListV = euiccList.value
             if (!euiccListV.isNullOrEmpty()) {
                 target = euiccListV[0]
             }
@@ -76,21 +76,8 @@ class EuiccManager(context: Context?, private val statusAndEventHandler: StatusA
         return getSlot(name)?.lpa
     }
 
-//
-//    override fun onEuiccConnected(euiccName: String, euiccConnection: EuiccConnection) {
-//        Log.debug(TAG, "Euicc initialized: $euiccName")
-//
-//        enableFallbackEuicc = false
-//        Preferences.setEuiccName(euiccName)
-//        currentEuicc.postValue(euiccName)
-//
-//        updateEuiccConnectionOnConsumer(euiccConnection)
-//    }
-
-
     /* sync calls */
     fun refreshEuiccList() {
-        // refreshing eUICCs
         statusAndEventHandler.onStatusChange(ActionStatus.REFRESHING_EUICC_LIST_STARTED)
         Log.debug(TAG, "Refreshing eUICC list from refreshEuiccList")
         euiccSlotMap.clear()
@@ -106,12 +93,16 @@ class EuiccManager(context: Context?, private val statusAndEventHandler: StatusA
                     euiccList.add(slot)
                 }
             }
-            this.euiccList!!.postValue(euiccList)
+            this.euiccList.postValue(euiccList)
         } catch (e: Exception) {
             statusAndEventHandler.onError(Error("Exception during refreshing eUICC list.", e.message, e))
         } finally {
             statusAndEventHandler.onStatusChange(ActionStatus.REFRESHING_EUICC_LIST_FINISHED)
         }
+    }
+
+    fun updateEuiccList() {
+        this.euiccList.postValue(this.euiccList.value)
     }
 
     fun refreshSingleEuicc(slotName: String) {
@@ -124,10 +115,14 @@ class EuiccManager(context: Context?, private val statusAndEventHandler: StatusA
         statusAndEventHandler.onStatusChange(ActionStatus.REFRESHING_EUICC_LIST_STARTED)
         Log.debug(TAG, "Refreshing eUICC list.")
         slot.refresh()
-        this.euiccList!!.postValue(euiccList.value!!)
+        this.euiccList.postValue(euiccList.value!!)
     }
 
     companion object {
         private val TAG: String = EuiccManager::class.java.name
+    }
+
+    override fun onEuiccRefresh(interfaceTag: String?) {
+        refreshEuiccList()
     }
 }

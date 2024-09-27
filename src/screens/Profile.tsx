@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, Alert, ScrollView, ToastAndroid, TouchableOpacity,} from 'react-native';
+import {Alert, ScrollView, ToastAndroid, TouchableOpacity,} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {SafeScreen} from '@/components/template';
 import {useTheme} from '@/theme';
@@ -7,7 +7,6 @@ import type {RootScreenProps} from "@/navigators/navigation";
 import {
 	Button,
 	Chip,
-	Colors,
 	DateTimePicker,
 	Dialog,
 	PanningProvider,
@@ -18,8 +17,7 @@ import {
 	View
 } from "react-native-ui-lib";
 import {shallowEqual, useSelector} from "react-redux";
-import {selectEuicc, selectState} from "@/redux/reduxDataStore";
-import {ActionStatus} from "@/native/consts";
+import {selectState} from "@/redux/reduxDataStore";
 import BlockingLoader from "@/components/common/BlockingLoader";
 import MetadataView from "@/components/common/MetadataView";
 import InfiLPA from "@/native/InfiLPA";

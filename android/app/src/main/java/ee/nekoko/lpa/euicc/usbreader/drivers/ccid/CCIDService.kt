@@ -4,13 +4,12 @@ import android.content.Context
 import ee.nekoko.lpa.euicc.base.EuiccConnection
 import ee.nekoko.lpa.euicc.base.EuiccService
 import com.infineon.esim.util.Log
+import ee.nekoko.lpa.euicc.base.EuiccInterfaceStatusChangeHandler
 import ee.nekoko.lpa.euicc.base.EuiccSlot
 
 
-class CCIDService(context: Context) : EuiccService {
-    private val CCIDCard = CCIDCard(context)
-
-    private var ccidEuiccConnection: CCIDEuiccConnection? = null
+class CCIDService(context: Context, handler: EuiccInterfaceStatusChangeHandler) : EuiccService {
+    private val cardReader = CCIDCard(context, handler)
     private var isConnected: Boolean
 
     init {
@@ -19,22 +18,20 @@ class CCIDService(context: Context) : EuiccService {
 
     override fun refreshSlots(): List<EuiccSlot> {
         Log.debug(TAG, "Refreshing CCID eUICC names...")
-        return CCIDCard.refreshSlots()
+        return cardReader.refreshSlots()
     }
 
     @Throws(Exception::class)
     override fun connect() {
         Log.debug(TAG, "Opening connection to CCID service...")
-        CCIDCard.establishContext()
-
+        cardReader.establishContext()
         isConnected = true
     }
 
     @Throws(Exception::class)
     override fun disconnect() {
         Log.debug(TAG, "Closing connection to CCID service...")
-        CCIDCard.releaseContext()
-
+        cardReader.releaseContext()
         isConnected = false
     }
 
@@ -43,14 +40,7 @@ class CCIDService(context: Context) : EuiccService {
     }
 
     override fun openEuiccConnection(euiccName: String): EuiccConnection {
-        if (ccidEuiccConnection != null && euiccName == ccidEuiccConnection!!.euiccName) {
-            Log.debug(TAG, "eUICC is already connected. Return existing eUICC connection.")
-            return ccidEuiccConnection as CCIDEuiccConnection
-        }
-
-        ccidEuiccConnection = CCIDEuiccConnection(CCIDCard.readers.get(euiccName)!!)
-
-        return ccidEuiccConnection!!
+        return cardReader.slots[euiccName]!!.connection!!
     }
 
     companion object {

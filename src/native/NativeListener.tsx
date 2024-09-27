@@ -20,8 +20,6 @@ export function NativeListener({ children }: { children?: React.ReactNode }) {
           }
         }
       } else {
-        // global state
-        console.log("Global", props);
         for(const key of Object.keys(props)) {
           const value = JSON.parse(props[key]);
           dispatch(setGlobalState({[key]: value}))
@@ -32,7 +30,7 @@ export function NativeListener({ children }: { children?: React.ReactNode }) {
 
     // replace `LiveDataExample` with the name of your native module
     const eventEmitter = new NativeEventEmitter(
-      // NativeModules.InfineonDataModel
+      // NativeModules.LPABridge
       // only required on iOS but it's android-only
     );
     // replace the `onDataUpdate` with your event name

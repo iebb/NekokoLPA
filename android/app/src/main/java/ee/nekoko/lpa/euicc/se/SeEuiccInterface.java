@@ -86,16 +86,6 @@ final public class SeEuiccInterface implements EuiccInterface {
     }
 
     @Override
-    public boolean isInterfaceConnected() {
-        boolean isConnected = false;
-        if(isAvailable()) {
-            isConnected = seService.isConnected();
-        }
-
-        return isConnected;
-    }
-
-    @Override
     public boolean connectInterface() throws Exception {
         seService.connect();
         return seService.isConnected();

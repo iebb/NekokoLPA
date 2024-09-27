@@ -31,7 +31,6 @@ public interface EuiccInterface {
     String getTag();
 
     boolean isAvailable();
-    boolean isInterfaceConnected();
     boolean connectInterface() throws Exception;
     boolean disconnectInterface() throws Exception;
 

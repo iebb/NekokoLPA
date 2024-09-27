@@ -1,7 +1,7 @@
 {
   "name": "nekokolpa",
-  "buildVersion": 245,
-  "version": "1.0.14.245",
+  "buildVersion": 258,
+  "version": "1.0.15.258",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -23,16 +23,13 @@
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-native-fontawesome": "^0.3.2",
     "@react-native-clipboard/clipboard": "^1.14.1",
-    "@react-native-community/datetimepicker": "^8.2.0",
     "@react-native-masked-view/masked-view": "^0.3.1",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/stack": "^6.3.29",
     "@reduxjs/toolkit": "^2.2.7",
     "@tanstack/react-query": "^5.31.0",
     "babel-plugin-inline-import": "^3.0.0",
-    "deepmerge": "^4.3.1",
     "i18next": "^23.11.2",
-    "ky": "^1.2.4",
     "libphonenumber-js": "^1.11.8",
     "lodash": "^4.17.21",
     "moment": "^2.30.1",
@@ -50,7 +47,6 @@
     "react-native-ui-lib": "^7.31.0",
     "react-native-vision-camera": "^4.5.2",
     "react-redux": "^9.1.2",
-    "react-string-replace": "^1.1.1",
     "zod": "^3.23.0"
   },
   "devDependencies": {

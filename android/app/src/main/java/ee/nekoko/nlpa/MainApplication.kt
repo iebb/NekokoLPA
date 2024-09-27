@@ -80,27 +80,19 @@ class MainApplication : Application(), ReactApplication {
         fun getConnectivityManager(): ConnectivityManager {
             return instance!!.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         }
-
-        @JvmStatic
-        fun getWifiManager(): WifiManager {
-            return instance!!.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-        }
     }
 
     override fun onCreate() {
         super.onCreate()
         Log.d("nekoko.nlpa", "Initializing application.")
-
-        // Register network callback for network status
         NetworkStatus.registerNetworkCallback()
-
-        // Set trusted Root CAs
         initializeTrustedRootCas()
         SoLoader.init(this, false)
         if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
             // If you opted-in for the New Architecture, we load the native entry point for this app.
             load()
         }
+        Log.d("nekoko.nlpa", "Initialized.")
     }
 
     fun initializeTrustedRootCas() {
@@ -135,7 +127,7 @@ class MainApplication : Application(), ReactApplication {
         )
         TlsUtil.initializeCertificates(liveCertificates, testCertificates)
 
-        TlsUtil.setTrustLevel(false) // true => trust test CI
+        TlsUtil.setTrustLevel(true) // true => trust test CI
     }
 
 

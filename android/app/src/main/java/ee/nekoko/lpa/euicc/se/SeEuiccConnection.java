@@ -63,7 +63,6 @@ public class SeEuiccConnection implements EuiccConnection {
     public boolean resetEuicc() throws Exception {
         Log.debug(TAG, "Resetting the eUICC.");
         close();
-        Thread.sleep(500);
         return open();
     }
 
@@ -93,7 +92,8 @@ public class SeEuiccConnection implements EuiccConnection {
 
         } catch (IOException e) {
             Log.error(TAG, "Opening eUICC connection failed. [IO]", e);
-            throw e;
+            Thread.sleep(500);
+            return open();
         } catch (java.lang.SecurityException e) {
             Log.error(TAG, "Opening eUICC connection failed. [java.lang.SecurityException]", e);
             Log.error(TAG, "NO ARA-M", e);
@@ -119,26 +119,17 @@ public class SeEuiccConnection implements EuiccConnection {
                     return true;
                 }
             } catch (IOException e) {
-                if (i == 0) {
-                    Sentry.captureException(e);
-                }
+                Sentry.captureException(e);
                 // Log.error(Log.getFileLineNumber() + " " + e.getMessage());
             } catch (java.security.AccessControlException e) {
-                if (i == 0) {
-                    Sentry.captureException(e);
-                }
+                Sentry.captureException(e);
                 Log.error(Log.getFileLineNumber() + " " + e.getMessage());
                 break;
             } catch (Exception e) {
-                if (i == 0) {
-                    Sentry.captureException(e);
-                }
-                if (e.getMessage().contains("java.security.AccessControlException")) {
-                    break;
-                }
+                Sentry.captureException(e);
                 Log.error(Log.getFileLineNumber() + " " + e.getMessage());
             }
-            Thread.sleep(i * 500);
+            Thread.sleep(500);
         }
         return false;
     }

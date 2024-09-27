@@ -5,8 +5,7 @@ cd android
 cp -fv app/build/outputs/apk/multisign/release/*.apk ../outputs/apk/
 
 ./gradlew bundleStoreRelease
-cp -f app/build/outputs/bundle/* ../outputs/bundle/
-# /storeRelease/release
+cp -rv app/build/outputs/bundle/storeRelease/* ../outputs/bundle/
 
 cd ..
 for filename in outputs/apk/*.apk; do

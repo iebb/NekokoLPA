@@ -46,13 +46,13 @@ export interface EuiccList {
 
 
 interface LPAState {
-    euiccList: EuiccList[];
+    euiccList?: EuiccList[];
     // euiccReaders: { available: boolean, name: string }[];
     currentEuicc: string;
     error?: ErrorBodyHeader;
 }
 const initialState: LPAState = {
-    euiccList: [],
+    euiccList: undefined,
     currentEuicc: "NONE",
     // euiccReaders: [],
 };

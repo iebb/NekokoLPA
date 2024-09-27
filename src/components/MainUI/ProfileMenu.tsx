@@ -16,7 +16,6 @@ export default function ProfileMenu({ eUICC } : { eUICC: EuiccList }) {
   const { colors } = useTheme();
   const { t } = useTranslation(['main']);
   const navigation = useNavigation();
-
   const dispatch = useDispatch();
   const { stealthMode } = useSelector(selectAppConfig);
   const [layout, setLayout] = useState({
@@ -68,7 +67,6 @@ export default function ProfileMenu({ eUICC } : { eUICC: EuiccList }) {
         </View>
         <View
           style={{ width: 40, flexBasis: 40 }}
-          onLayout={e => console.log(e.nativeEvent.layout)}
         >
           <Button
             borderRadius={0}

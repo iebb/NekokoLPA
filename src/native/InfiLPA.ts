@@ -3,7 +3,7 @@ import {Profiles} from "@/native/types";
 
 
 const {
-    InfineonDataModel
+    LPABridge
 } = NativeModules;
 
 class InfiLPA {
@@ -11,49 +11,49 @@ class InfiLPA {
     static currentEuicc = "";
 
     static refreshEUICC() {
-        InfineonDataModel.refreshEuiccs();
+        LPABridge.refreshEuiccs();
     }
     static getCurrentEuicc() {
-        return InfineonDataModel.getCurrentEuicc();
+        return LPABridge.getCurrentEuicc();
     }
     static getEuiccList(): string[] {
-        return JSON.parse(InfineonDataModel.getEuiccListJSON()) as string[];
+        return JSON.parse(LPABridge.getEuiccListJSON()) as string[];
     }
 
     static selectEUICC(device: string) {
         this.currentEuicc = device;
-        // InfineonDataModel.selectEuicc(device);
+        // LPABridge.selectEuicc(device);
     }
 
     static refreshProfileList(device?: string) {
         if (device) {
-            InfineonDataModel.refreshProfileListWithDevice(device);
+            LPABridge.refreshProfileListWithDevice(device);
         } else {
-            InfineonDataModel.refreshProfileList();
+            LPABridge.refreshProfileList();
         }
     }
 
     static enableProfileByIccId(device: string, iccid: string) {
-        InfineonDataModel.enableProfileByIccId(device, iccid);
+        LPABridge.enableProfileByIccId(device, iccid);
     }
     static disableProfileByIccId(device: string, iccid: string) {
-        InfineonDataModel.disableProfileByIccId(device, iccid);
+        LPABridge.disableProfileByIccId(device, iccid);
     }
     static deleteProfileByIccId(device: string, iccid: string) {
-        InfineonDataModel.deleteProfileByIccId(device, iccid);
+        LPABridge.deleteProfileByIccId(device, iccid);
     }
     static setNicknameByIccId(device: string, iccid: string, nickname: string) {
-        InfineonDataModel.setNicknameByIccId(device, iccid, nickname);
+        LPABridge.setNicknameByIccId(device, iccid, nickname);
     }
     static authenticateWithCode(device: string, activationCode: string): object {
-        const v = InfineonDataModel.authenticateWithCode(device, activationCode);
+        const v = LPABridge.authenticateWithCode(device, activationCode);
         return JSON.parse(v);
     }
     static downloadProfile(device: string, code: string) {
-        return JSON.parse(InfineonDataModel.downloadProfile(device, code));
+        return JSON.parse(LPABridge.downloadProfile(device, code));
     }
     static cancelSession(device: string, reason: number) {
-        return JSON.parse(InfineonDataModel.cancelSession(device, reason));
+        return JSON.parse(LPABridge.cancelSession(device, reason));
     }
 
 }
