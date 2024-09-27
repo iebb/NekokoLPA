@@ -112,7 +112,7 @@ public class SeEuiccConnection implements EuiccConnection {
 
     @Override
     public boolean open() throws Exception {
-        for (var i = 0; i < 6; i++) {
+        for (var i = 0; i < 2; i++) {
             try {
                 var result = _open();
                 if (result) {

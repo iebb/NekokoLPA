@@ -201,7 +201,7 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
                       margin-0
                     >
                       <View row flex width="100%">
-                        <TouchableOpacity
+                        <View
                           style={{ flexShrink: 1, flexGrow: 1 }}
                         >
                           <View row>
@@ -222,7 +222,7 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
                               {metadata?.PROVIDER_NAME} / {metadata?.NAME}
                             </Text>
                           </View>
-                        </TouchableOpacity>
+                        </View>
                         <View
                           style={{
                             padding: 5, width: 50,

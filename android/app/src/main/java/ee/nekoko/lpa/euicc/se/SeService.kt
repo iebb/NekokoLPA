@@ -25,27 +25,31 @@ package ee.nekoko.lpa.euicc.se
 import android.content.Context
 import android.se.omapi.Reader
 import android.se.omapi.SEService
-import com.infineon.esim.lpa.core.es10.Es10Interface
 import com.infineon.esim.util.Log
 import ee.nekoko.lpa.euicc.base.EuiccConnection
 import ee.nekoko.lpa.euicc.base.EuiccInterfaceStatusChangeHandler
 import ee.nekoko.lpa.euicc.base.EuiccService
 import ee.nekoko.lpa.euicc.base.EuiccSlot
 import io.sentry.Sentry
+import java.util.Date
 import java.util.Timer
 import java.util.TimerTask
 import java.util.concurrent.TimeoutException
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 
 class SeService(private val context: Context, private val handler: EuiccInterfaceStatusChangeHandler) : EuiccService {
-    private val seServiceMutex = Any()
-
+    private val lock = ReentrantLock()
+    private val condition = lock.newCondition()
     private var seService: SEService? = null // OMAPI / Secure Element
-
     private val slots = HashMap<String, EuiccSlot>()
 
     override fun refreshSlots(): List<EuiccSlot> {
         Log.debug(TAG, "[RS] Refreshing SE eUICC names...")
         val euiccNames: MutableList<EuiccSlot> = ArrayList()
+        if (seService == null) {
+            Log.debug(TAG, "No connected SE available")
+        }
         for (reader in seService!!.readers) {
             try {
                 Log.debug(TAG, "Checking Reader..." + reader.name)
@@ -68,6 +72,7 @@ class SeService(private val context: Context, private val handler: EuiccInterfac
 
         // Initialize secure element if not available
         if (seService == null) {
+            Log.debug(TAG, "Initializing SE connection")
             initializeConnection()
         }
 
@@ -75,9 +80,11 @@ class SeService(private val context: Context, private val handler: EuiccInterfac
         if (seService!!.isConnected) {
             Log.debug(TAG, "SE connection is already open.")
         } else {
+            Log.debug(TAG, "Waiting for connection")
             // Connect to secure element
             waitForConnection()
         }
+        Log.debug(TAG, "Connected!")
     }
 
     override fun disconnect() {
@@ -100,11 +107,12 @@ class SeService(private val context: Context, private val handler: EuiccInterfac
 
     private fun initializeConnection() {
         Log.debug(TAG, "Initializing SE connection.")
-
+        val t = Date().time
         seService = SEService(context, { obj: Runnable -> obj.run() }, {
-            Log.debug(TAG, "SE service is connected!")
-            synchronized(seServiceMutex) {
-                (seServiceMutex as Object).notify()
+            val dt = Date().time - t
+            Log.debug(TAG, "SE service is connected after $dt ms")
+            lock.withLock {
+                condition.signalAll()
             }
         })
     }
@@ -116,29 +124,31 @@ class SeService(private val context: Context, private val handler: EuiccInterfac
         val connectionTimer = Timer()
         connectionTimer.schedule(object : TimerTask() {
             override fun run() {
-                synchronized(seServiceMutex) {
-                    (seServiceMutex as Object).notifyAll()
+                lock.withLock {
+                    condition.signalAll()
                 }
             }
         }, SERVICE_CONNECTION_TIME_OUT)
 
-        synchronized(seServiceMutex) {
-            if (!seService!!.isConnected) {
-                try {
-                    (seServiceMutex as Object).wait()
-                } catch (e: InterruptedException) {
-                    Sentry.captureException(e)
-                    Log.error(TAG, "SE service could not be waited for.", e)
+        if (!seService!!.isConnected) {
+            try {
+                lock.withLock {
+                    Log.error(TAG, "Waiting for signal")
+                    condition.await()
+                    Log.error(TAG, "OK")
                 }
+            } catch (e: InterruptedException) {
+                Sentry.captureException(e)
+                Log.error(TAG, "SE service could not be waited for.", e)
             }
-            if (!seService!!.isConnected) {
-                throw TimeoutException(
-                    "SE Service could not be connected after "
-                            + SERVICE_CONNECTION_TIME_OUT + " ms."
-                )
-            }
-            connectionTimer.cancel()
         }
+        if (!seService!!.isConnected) {
+            throw TimeoutException(
+                "SE Service could not be connected after $SERVICE_CONNECTION_TIME_OUT ms."
+            )
+        }
+        connectionTimer.cancel()
+
     }
 
     @Throws(Exception::class)
@@ -190,6 +200,6 @@ class SeService(private val context: Context, private val handler: EuiccInterfac
         private val TAG: String = SeService::class.java.name
 
         private const val UICC_READER_PREFIX = "SIM"
-        private const val SERVICE_CONNECTION_TIME_OUT: Long = 4000
+        private const val SERVICE_CONNECTION_TIME_OUT: Long = 12000
     }
 }

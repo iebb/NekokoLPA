@@ -41,13 +41,12 @@ class EuiccManager(context: Context?, private val statusAndEventHandler: StatusA
     private val euiccInterfaces: MutableList<EuiccInterface> = ArrayList()
 
     private val currentEuicc = MutableLiveData<String>()
-    private val euiccList: MutableLiveData<List<EuiccSlot>>? = MutableLiveData()
+    private val euiccList: MutableLiveData<List<EuiccSlot>> = MutableLiveData()
     private val euiccSlotMap = HashMap<String, EuiccSlot>()
 
     init {
         euiccInterfaces.add(SeEuiccInterface(context, this))
         euiccInterfaces.add(USBReaderEuiccInterface(context, this))
-        refreshEuiccList()
     }
 
     val currentEuiccLiveData: LiveData<String>
@@ -98,6 +97,7 @@ class EuiccManager(context: Context?, private val statusAndEventHandler: StatusA
         try {
             val euiccList: MutableList<EuiccSlot> = ArrayList()
             for (euiccInterface in euiccInterfaces) {
+                Log.debug(TAG, "Refreshing eUICC ${euiccInterface.tag}")
                 for (slot in euiccInterface.refreshSlots()) {
                     slot.refresh()
                     slot.manager = this

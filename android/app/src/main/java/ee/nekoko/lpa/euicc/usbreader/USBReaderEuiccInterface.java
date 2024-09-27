@@ -101,11 +101,6 @@ final public class USBReaderEuiccInterface implements EuiccInterface {
     }
 
     @Override
-    public synchronized List<EuiccSlot> getEuiccNames() {
-        return ccidInterface.getEuiccNames();
-    }
-
-    @Override
     public EuiccConnection getEuiccConnection(String euiccName) throws Exception {
         return ccidInterface.getEuiccConnection(euiccName);
     }

@@ -36,7 +36,6 @@ public interface EuiccInterface {
     boolean disconnectInterface() throws Exception;
 
     List<EuiccSlot> refreshSlots() throws Exception;
-    List<EuiccSlot> getEuiccNames();
 
     EuiccConnection getEuiccConnection(String euiccName) throws Exception;
 }

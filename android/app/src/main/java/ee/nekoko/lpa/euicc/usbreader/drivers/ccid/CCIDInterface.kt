@@ -64,11 +64,6 @@ class CCIDInterface(context: Context) : USBReaderInterface {
         return euiccNames
     }
 
-    @Synchronized
-    override fun getEuiccNames(): List<EuiccSlot> {
-        return euiccNames
-    }
-
     @Throws(Exception::class)
     override fun getEuiccConnection(euiccName: String): EuiccConnection {
         if (isNotYetOpen(euiccName)) {

@@ -53,6 +53,11 @@ final public class SeEuiccInterface implements EuiccInterface {
 
         this.seService = new SeService(context, handler);
         this.euiccNames = new ArrayList<>();
+        try {
+            this.connectInterface();
+        } catch (Exception ex) {
+            Log.debug(TAG, "SE Connection failed");
+        }
     }
 
     @Override
@@ -93,7 +98,6 @@ final public class SeEuiccInterface implements EuiccInterface {
     @Override
     public boolean connectInterface() throws Exception {
         seService.connect();
-
         return seService.isConnected();
     }
 
@@ -117,14 +121,14 @@ final public class SeEuiccInterface implements EuiccInterface {
     @Override
     public List<EuiccSlot> refreshSlots() throws Exception {
         Log.debug(TAG, "Refreshing SE eUICC names...");
+        try {
+            this.connectInterface();
+        } catch (Exception e) {
+            Log.debug(TAG, "Exc" + e.getMessage());
+        }
+        Log.debug(TAG, "Connected to SE");
         euiccNames.clear();
-        this.connectInterface();
         euiccNames.addAll(seService.refreshSlots());
-        return euiccNames;
-    }
-
-    @Override
-    public List<EuiccSlot> getEuiccNames() {
         return euiccNames;
     }
 

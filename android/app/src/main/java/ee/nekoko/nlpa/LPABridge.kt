@@ -45,7 +45,6 @@ import ee.nekoko.lpa.euicc.EuiccManager
 import ee.nekoko.lpa.euicc.base.EuiccSlot
 import io.sentry.Sentry
 import java.util.Date
-import java.util.Objects
 import java.util.concurrent.TimeUnit
 
 class LPABridge @ReactMethod constructor(private val context: ReactContext?) : ReactContextBaseJavaModule(), StatusAndEventHandler {
@@ -69,10 +68,10 @@ class LPABridge @ReactMethod constructor(private val context: ReactContext?) : R
     }
 
     fun emitData(key: String, value: Any?, global: Boolean) {
-        if (context == null || !context.hasActiveReactInstance()) {
+        while (context == null || !context.hasActiveReactInstance()) {
             Log.debug(TAG, "Not ready!")
             Log.debug(TAG, "Failed sending: $key")
-            return
+            Thread.sleep(500)
         }
         val jsonData = Gson().toJson(value)
         val params = Arguments.createMap()
@@ -132,6 +131,7 @@ class LPABridge @ReactMethod constructor(private val context: ReactContext?) : R
             euiccManager.euiccListLiveData!!.observeForever { data: List<EuiccSlot?>? ->
                 emitData("euiccList", data, true)
             }
+            euiccManager.refreshEuiccList()
         }
         instance = this
     }
