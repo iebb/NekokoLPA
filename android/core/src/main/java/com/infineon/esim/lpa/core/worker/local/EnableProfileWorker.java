@@ -46,6 +46,7 @@ public class EnableProfileWorker {
         Iccid iccid = new Iccid(Bytes.decodeHexString(iccidString));
 
         EnableProfileResponse enableProfileResponse = es10Interface.es10c_enableProfileByIccid(iccid, new BerBoolean(refreshFlag));
+        Log.debug(TAG, "Return Value: " + enableProfileResponse.getEnableResult().intValue());
 
         return enableProfileResponse.getEnableResult().intValue();
     }

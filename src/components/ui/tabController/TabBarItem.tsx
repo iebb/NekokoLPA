@@ -75,6 +75,7 @@ export interface TabControllerItemProps extends Pick<TabControllerBarProps, 'spr
    * callback for when pressing a tab
    */
   onPress?: (index: number) => void;
+  onLongPress?: (index: number) => void;
   /**
    * whether to change the text to uppercase
    */
@@ -201,7 +202,7 @@ export default function TabBarItem({
   }, [style, spreadItems]);
 
   const gesture = Gesture.Tap()
-    .maxDuration(60000)
+    .maxDuration(1000)
     .onEnd(() => {
       if (!ignore) {
         setCurrentIndex(index);
@@ -216,8 +217,16 @@ export default function TabBarItem({
       isPressed.value = true;
     });
 
+  const longPress = Gesture.LongPress()
+    .minDuration(1000)
+    .onEnd(() => {
+      props.onLongPress && runOnJS(props.onLongPress)(index);
+    })
+
+  const composed = Gesture.Exclusive(longPress, gesture);
+
   return (
-    <GestureDetector gesture={gesture}>
+    <GestureDetector gesture={composed}>
       <View
         reanimated
         // @ts-expect-error

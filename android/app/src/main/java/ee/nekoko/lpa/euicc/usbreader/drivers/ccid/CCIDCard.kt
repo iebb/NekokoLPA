@@ -23,10 +23,10 @@ class CCIDCard(private val context: Context, handler: EuiccInterfaceStatusChange
             if (intent.action == ACTION_USB_PERMISSION) {
                 val _device: UsbDevice = deviceIdentifiers[intent.identifier]!!
                 if (usbManager.hasPermission(_device)) {
-                    android.util.Log.i(TAG, "CCID Permission Granted!")
+                    Log.info(TAG, "CCID Permission Granted!")
                     handler.onEuiccRefresh("USB")
                 } else {
-                    android.util.Log.d(TAG, "permission denied for device $_device")
+                    Log.debug(TAG, "permission denied for device $_device")
                 }
             }
         }
@@ -78,7 +78,7 @@ class CCIDCard(private val context: Context, handler: EuiccInterfaceStatusChange
                         val intent = Intent(ACTION_USB_PERMISSION)
                         intent.identifier = device.deviceName
                         deviceIdentifiers[device.deviceName] = device
-                        val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
+                        val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
                         usbManager.requestPermission(device, pendingIntent)
                     }
                 }

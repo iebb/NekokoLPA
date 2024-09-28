@@ -35,6 +35,10 @@ import ee.nekoko.lpa.euicc.base.EuiccInterfaceStatusChangeHandler
 import ee.nekoko.lpa.euicc.base.EuiccSlot
 import ee.nekoko.lpa.euicc.se.SeEuiccInterface
 import ee.nekoko.lpa.euicc.usbreader.drivers.ccid.CCIDInterface
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.runBlocking
 
 class EuiccManager(context: Context, private val statusAndEventHandler: StatusAndEventHandler): EuiccInterfaceStatusChangeHandler {
     // eUICC interfaces
@@ -83,16 +87,30 @@ class EuiccManager(context: Context, private val statusAndEventHandler: StatusAn
         euiccSlotMap.clear()
         try {
             val euiccList: MutableList<EuiccSlot> = ArrayList()
-            for (euiccInterface in euiccInterfaces) {
-                Log.debug(TAG, "Refreshing eUICC ${euiccInterface.tag}")
-                for (slot in euiccInterface.refreshSlots()) {
-                    slot.refresh()
-                    slot.manager = this
-                    Log.debug(TAG, euiccInterface.tag + ": " + slot.name)
-                    euiccSlotMap[slot.name] = slot
-                    euiccList.add(slot)
+
+            val man = this
+            runBlocking {
+                val outerDeferredList = euiccInterfaces.map { euiccInterface ->
+                    async(Dispatchers.IO) { // Concurrent execution for each euiccInterface
+                        Log.debug(TAG, "Refreshing eUICC ${euiccInterface.tag}")
+
+                        val innerDeferredList = euiccInterface.refreshSlots().map { slot ->
+                            async(Dispatchers.IO) { // Concurrent execution for each slot
+                                slot.refresh()
+                                slot.manager = man
+                                Log.debug(TAG, euiccInterface.tag + ": " + slot.name)
+                                synchronized(euiccList) { // Synchronizing access to shared resources
+                                    euiccSlotMap[slot.name] = slot
+                                    euiccList.add(slot)
+                                }
+                            }
+                        }
+                        innerDeferredList.awaitAll() // Wait for all slots to complete
+                    }
                 }
+                outerDeferredList.awaitAll() // Wait for all interfaces to complete
             }
+            euiccList.sortBy { k -> k.name }
             this.euiccList.postValue(euiccList)
         } catch (e: Exception) {
             statusAndEventHandler.onError(Error("Exception during refreshing eUICC list.", e.message, e))
@@ -106,6 +124,12 @@ class EuiccManager(context: Context, private val statusAndEventHandler: StatusAn
     }
 
     fun refreshSingleEuicc(slotName: String) {
+        refreshSingleEuicc(slotName, 5)
+    }
+
+
+    fun refreshSingleEuicc(slotName: String, _retry: Int) {
+        var retry = _retry
         val slot = euiccSlotMap[slotName]
         if (slot == null) {
             refreshEuiccList()
@@ -114,7 +138,17 @@ class EuiccManager(context: Context, private val statusAndEventHandler: StatusAn
         // refreshing eUICCs
         statusAndEventHandler.onStatusChange(ActionStatus.REFRESHING_EUICC_LIST_STARTED)
         Log.debug(TAG, "Refreshing eUICC list.")
-        slot.refresh()
+
+        while (retry > 0) {
+            try {
+                slot.refresh()
+                break
+            } catch (e: Exception) {
+                Log.error(TAG, "Refreshing eUICC list failed. Retries: $retry")
+                retry -= 1
+                Thread.sleep(600)
+            }
+        }
         this.euiccList.postValue(euiccList.value!!)
     }
 

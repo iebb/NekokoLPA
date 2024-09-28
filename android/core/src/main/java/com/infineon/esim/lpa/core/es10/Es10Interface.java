@@ -198,7 +198,8 @@ public class Es10Interface {
     public ProfileInfoListResponse es10c_getProfilesInfoAll() throws Exception {
         ProfileInfoListRequest profileInfoListRequest = new ProfileInfoListRequest();
         profileInfoListRequest.setTagList(
-                new BerOctetString(Bytes.decodeHexString("5A4F9F709091929395B6B79F25"))
+                new BerOctetString(Bytes.decodeHexString("5A4F9F709091929395B6B7"))
+                // 9F25: profile size (not supported)
                 // 9F25 9F24 9F1F unsupported: new additions
                 // 94 icon
                 // B8 SM-DP+ proprietary data - may crash!
@@ -211,7 +212,7 @@ public class Es10Interface {
         EnableProfileRequest.ProfileIdentifier profileIdentifier = new EnableProfileRequest.ProfileIdentifier();
         profileIdentifier.setIccid(iccid);
 
-        return es10c_enableProfile(profileIdentifier,refreshFlag);
+        return es10c_enableProfile(profileIdentifier, refreshFlag);
     }
 
     public EnableProfileResponse es10c_enableProfileByIsdpAid(OctetTo16 isdpAid, BerBoolean refreshFlag) throws Exception {

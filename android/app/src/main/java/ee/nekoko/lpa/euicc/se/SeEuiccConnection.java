@@ -62,8 +62,17 @@ public class SeEuiccConnection implements EuiccConnection {
     @Override
     public boolean resetEuicc() throws Exception {
         Log.debug(TAG, "Resetting the eUICC.");
-        close();
-        return open();
+        for (var i = 0;i < 6; i++) {
+            try {
+                close();
+                Thread.sleep(1000);
+                if (open()) {
+                    return true;
+                }
+            } catch (Exception e) {
+            }
+        }
+        return false;
     }
 
     public boolean _open() throws Exception {
@@ -121,7 +130,6 @@ public class SeEuiccConnection implements EuiccConnection {
                 Sentry.captureException(e);
                 // Log.error(Log.getFileLineNumber() + " " + e.getMessage());
             } catch (java.security.AccessControlException e) {
-                Sentry.captureException(e);
                 Log.error(Log.getFileLineNumber() + " " + e.getMessage());
                 break;
             } catch (Exception e) {

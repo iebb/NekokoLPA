@@ -8,7 +8,7 @@ import android.content.pm.PackageManager
 import android.hardware.usb.UsbManager
 import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
-import android.util.Log
+import com.infineon.esim.util.Log
 import androidx.preference.PreferenceManager
 import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
@@ -84,7 +84,7 @@ class MainApplication : Application(), ReactApplication {
 
     override fun onCreate() {
         super.onCreate()
-        Log.d("nekoko.nlpa", "Initializing application.")
+        Log.debug("nekoko.nlpa", "Initializing application.")
         NetworkStatus.registerNetworkCallback()
         initializeTrustedRootCas()
         SoLoader.init(this, false)
@@ -92,7 +92,7 @@ class MainApplication : Application(), ReactApplication {
             // If you opted-in for the New Architecture, we load the native entry point for this app.
             load()
         }
-        Log.d("nekoko.nlpa", "Initialized.")
+        Log.debug("nekoko.nlpa", "Initialized.")
     }
 
     fun initializeTrustedRootCas() {

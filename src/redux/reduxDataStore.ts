@@ -94,6 +94,7 @@ export const eUICCDataStore = createSlice({
 
 
 
+
 export const storage = new MMKV();
 
 function getAppConfig(): AppConfig {
@@ -101,6 +102,7 @@ function getAppConfig(): AppConfig {
         stealthMode: storage.getString('stealthMode') || 'none',
         language: storage.getString('language') || 'en',
         theme: storage.getString('theme') || 'default',
+        nicknames: JSON.parse(storage.getString('nicknames') || '{}'),
     }
 }
 
@@ -108,6 +110,7 @@ interface AppConfig {
     stealthMode: string;
     language: string;
     theme: string;
+    nicknames: { [key: string]: string };
 }
 
 const nextValues = {
@@ -126,6 +129,14 @@ export const appConfigStore = createSlice({
                 state[k] = action.payload[k];
                 // @ts-ignore
                 storage.set(k, action.payload[k]);
+            }
+        },
+        setNickname: (state, action: PayloadAction<object>) => {
+            for(const k of Object.keys(action.payload)) {
+                // @ts-ignore
+                state.nicknames[k] = action.payload[k];
+                // @ts-ignore
+                storage.set('nicknames', JSON.stringify(state.nicknames));
             }
         },
         nextValue: (state, action: PayloadAction<string>) => {
@@ -154,4 +165,4 @@ export const selectAppConfig = (state: RootState) => state.AppConfig;
 
 export const { setGlobalState } = globalDataStore.actions;
 export const { setState } = eUICCDataStore.actions;
-export const { nextValue } = appConfigStore.actions;
+export const { nextValue, setNickname } = appConfigStore.actions;

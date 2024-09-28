@@ -29,6 +29,7 @@ import {dateToDate6, parseMetadata, Tag} from "@/components/MainUI/ProfileList/p
 import {Spacings} from "react-native-ui-lib/src/components/../style";
 import Container from "@/components/common/Container";
 import {Flags} from "@/assets/flags";
+import {Colors} from "react-native-ui-lib/src/style";
 
 
 function getUTF8Length(s: string) {
@@ -106,10 +107,10 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 			<Title>{t('profile:profile_detail')}</Title>
 			<Dialog
 				useSafeArea
-				bottom
+				center
 				visible={tagModal}
 				onDismiss={() => setTagModal(false)}
-				panDirection={PanningProvider.Directions.DOWN}
+				panDirection={PanningProvider.Directions.RIGHT}
 				renderPannableHeader={props => {
 					const {title} = props;
 					return (
@@ -123,8 +124,12 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 				}}
 				pannableHeaderProps={{ title: t('profile:add_tag')}}
 				containerStyle={{
-					backgroundColor: colors.std800,
+					backgroundColor: colors.white,
 					borderRadius: 12,
+					shadowColor: colors.black,
+					shadowOpacity: 0.05,
+					shadowRadius: 12,
+					shadowOffset: {height: 6, width: 0},
 				}}
 			>
 				<View height={200} padding-20>

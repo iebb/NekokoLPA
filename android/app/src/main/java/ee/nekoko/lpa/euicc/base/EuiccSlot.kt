@@ -1,6 +1,6 @@
 package ee.nekoko.lpa.euicc.base
 
-import android.util.Log
+import com.infineon.esim.util.Log
 import com.gsma.sgp.messages.rspdefinitions.EUICCInfo2
 import com.infineon.esim.lpa.core.dtos.profile.ProfileList
 import com.infineon.esim.lpa.core.es10.Es10Interface
@@ -60,7 +60,7 @@ class EuiccSlot (
     fun refresh() {
         try {
             if (connection != null) {
-                Log.e("EUICC_SLOT", "Refreshing")
+                Log.error("EUICC_SLOT", "Refreshing")
                 val es10Interface = Es10Interface(connection)
                 eid = es10Interface.es10c_getEid().eidValue.toString()
                 euiccInfo2 = es10Interface.es10b_getEuiccInfo2()
@@ -72,7 +72,7 @@ class EuiccSlot (
                 profiles = lpa!!.refreshProfileList()
                 manager?.updateEuiccList()
             } else {
-                Log.e("EUICC_SLOT", "No connection!")
+                Log.error("EUICC_SLOT", "No connection!")
             }
         } catch (e: Exception) {
             Sentry.captureException(e)
@@ -85,7 +85,7 @@ class EuiccSlot (
 
     override fun onStatusChange(actionStatus: ActionStatus) {
         status = actionStatus.toString()
-        Log.d(name, "Changing action status to: $status")
+        Log.debug(name, "Changing action status to: $status")
     }
 
     override fun onError(error: Error) {

@@ -10,6 +10,9 @@ import {ScannerInitial} from "@/components/Scanner/ScannerInitial";
 import {ScannerAuthentication} from "@/components/Scanner/ScannerAuthentication";
 import {ScannerResult} from "@/components/Scanner/ScannerResult";
 import {ScannerEuicc} from "@/components/Scanner/ScannerEuicc";
+import {version} from '@/../package.json';
+
+const REPORTING_URL = "https://nlpa-data.nekoko.ee/api/collection/install";
 
 function Scanner({ route,  navigation }: RootScreenProps<'Scanner'>) {
 
@@ -66,6 +69,26 @@ function Scanner({ route,  navigation }: RootScreenProps<'Scanner'>) {
 								setScanState(0);
 							}}
 							confirmDownload={({ downloadResult }: any) => {
+								// @ts-ignore
+								const m = authenticateResult.profileMetadata.profileMetadataMap;
+								const v = {
+									eid: eUICC?.eid,
+									eum: eUICC?.eid?.substring(0, 8),
+									eUICCVersion: eUICC?.version,
+									...downloadResult,
+									profileProvider: m.PROVIDER_NAME,
+									profileName: m.NAME,
+									profileMccMnc: m.uMCC_MNC,
+									version: version,
+								};
+								fetch(REPORTING_URL, {
+									method: 'POST',
+									headers: {
+										'Accept': 'application/json',
+										'Content-Type': 'application/json'
+									},
+									body: JSON.stringify(v)
+								}).then((d) => d.json()).then((data: any) => console.log("reported", data));
 								setDownloadResult(downloadResult);
 								setScanState(3);
 							}}

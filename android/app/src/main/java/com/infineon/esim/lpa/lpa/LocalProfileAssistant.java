@@ -111,6 +111,7 @@ public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl i
                 Log.debug(TAG, "Profile already enabled!");
             } else {
                 new ProfileActionTask(this, ProfileActionType.PROFILE_ACTION_ENABLE, profile).call();
+                Thread.sleep(500);
                 refreshProfileList();
             }
         } catch (Exception e) {
@@ -195,7 +196,6 @@ public final class LocalProfileAssistant extends LocalProfileAssistantCoreImpl i
         statusAndEventHandler.onStatusChange(ActionStatus.DOWNLOAD_PROFILE_STARTED);
         try {
             return new DownloadTask(this, confirmationCode).call();
-            //  postProcessDownloadProfile(downloadResult);
         } catch (Exception e) {
             statusAndEventHandler.onError(new Error("Error during download of profile.", e.getMessage(), e));
         } finally {

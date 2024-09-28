@@ -23,6 +23,7 @@
 
 package com.infineon.esim.lpa.core.worker.remote;
 
+import com.gsma.sgp.messages.rspdefinitions.EUICCInfo2;
 import com.gsma.sgp.messages.rspdefinitions.GetBoundProfilePackageRequest;
 import com.gsma.sgp.messages.rspdefinitions.GetBoundProfilePackageResponse;
 import com.gsma.sgp.messages.rspdefinitions.Octet32;
@@ -32,11 +33,14 @@ import com.gsma.sgp.messages.rspdefinitions.ProfileInstallationResult;
 import com.infineon.esim.lpa.core.dtos.ConfirmationCode;
 import com.infineon.esim.lpa.core.dtos.ProfileDownloadSession;
 import com.infineon.esim.lpa.core.dtos.result.remote.DownloadException;
+import com.infineon.esim.lpa.core.dtos.result.remote.DownloadResult;
 import com.infineon.esim.lpa.core.dtos.result.remote.FuncExecException;
 import com.infineon.esim.lpa.core.es10.Es10Interface;
 import com.infineon.esim.lpa.core.es9plus.Es9PlusInterface;
 import com.infineon.esim.lpa.core.es9plus.messages.response.base.FunctionExecutionStatus;
 import com.infineon.esim.util.Log;
+
+import java.util.ArrayList;
 
 public class DownloadProfileWorker {
     private static final String TAG = DownloadProfileWorker.class.getName();
@@ -52,7 +56,7 @@ public class DownloadProfileWorker {
         this.es9PlusInterface = profileDownloadSession.getEs9PlusInterface();
     }
 
-    public boolean downloadProfile(String confirmationCode) throws Exception {
+    public DownloadResult downloadProfile(String confirmationCode) throws Exception {
         Log.debug(TAG, "Downloading profile...");
 
         // Process confirmation code hash (optional)
@@ -60,6 +64,8 @@ public class DownloadProfileWorker {
         if(confirmationCode != null) {
             hashCc = ConfirmationCode.getHashCC(confirmationCode, profileDownloadSession.getTransactionId());
         }
+
+        var freeSpace = parse(es10Interface.es10b_getEuiccInfo2());
 
         // Send PrepareDownloadRequest to eUICC
         PrepareDownloadRequest prepareDownloadRequest = profileDownloadSession.es10_getPrepareDownloadRequest(hashCc);
@@ -75,21 +81,50 @@ public class DownloadProfileWorker {
         ProfileInstallationResult profileInstallationResult = es10Interface.es10b_loadBoundProfilePackage(profileDownloadSession.es10_getBoundProfilePackage());
         profileDownloadSession.es10_processProfileInstallationResult(profileInstallationResult);
 
+
         boolean result = profileDownloadSession.isProfileInstalledSuccessfully();
         if (!result) {
-            throw new DownloadException(
-                    "Error Code " + profileInstallationResult.getProfileInstallationResultData().getFinalResult().getErrorResult().getErrorReason().toString() +
-                            " in downloading profile from " + profileInstallationResult.getProfileInstallationResultData().getNotificationMetadata().getNotificationAddress(),
-                    profileInstallationResult.getProfileInstallationResultData(),
-                    profileDownloadSession
-            );
-            /*
-              prepareDownloadRequest,
-                    prepareDownloadResponse,
-                    getBoundProfilePackageRequest,
-                    getBoundProfilePackageResponse,
-             */
+//            throw new DownloadException(
+//                    "Error Code " + profileInstallationResult.getProfileInstallationResultData().getFinalResult().getErrorResult().getErrorReason().toString() +
+//                            " in downloading profile from " + profileInstallationResult.getProfileInstallationResultData().getNotificationMetadata().getNotificationAddress(),
+//                    profileInstallationResult.getProfileInstallationResultData(),
+//                    profileDownloadSession
+//            );
+            return new DownloadResult(profileDownloadSession.getLastError());
+
+        } else {
+            var freeSpaceAfter = parse(es10Interface.es10b_getEuiccInfo2());
+            var deltaSpace = freeSpace - freeSpaceAfter;
+            var data = new DownloadResult();
+            data.deltaSpace = deltaSpace;
+            data.downloadBytes = profileDownloadSession.es10_getBoundProfilePackage().getBoundProfilePackage().getSequenceOf86().toString().length();
+            data.notificationAddress = profileInstallationResult.getProfileInstallationResultData().getNotificationMetadata().getNotificationAddress().toString();
+
+            return data;
         }
-        return result;
+    }
+
+    int parse(EUICCInfo2 euiccInfo2) {
+        byte[] ecr = euiccInfo2.getExtCardResource().value;
+        ArrayList<Integer> data = new ArrayList<>();
+        int i = 0;
+
+        if (ecr != null) {
+            while (i < ecr.length) {
+                i++;
+                int dataLen = ecr[i++];
+                int v = 0;
+                int j = 0;
+                while (j < dataLen) {
+                    v = (v << 8);
+                    v += (ecr[i] & 0xFF); // Convert byte to unsigned int
+                    i++;
+                    j++;
+                }
+                data.add(v);
+            }
+            return data.get(1);
+        }
+        return 0;
     }
 }

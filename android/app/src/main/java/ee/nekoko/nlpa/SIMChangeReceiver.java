@@ -3,15 +3,15 @@ package ee.nekoko.nlpa;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+import com.infineon.esim.util.Log;
 
 public class SIMChangeReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(final Context context, final Intent intent) {
 
-        Log.d("SimChangedReceiver", "--> SIM state changed <--");
-        Log.d("SimChangedReceiver", "--> Refreshing eUICCs <--");
+        Log.debug("SimChangedReceiver", "--> SIM state changed <--");
+        Log.debug("SimChangedReceiver", "--> Refreshing eUICCs <--");
 //        var model = LPABridge.getInstance();
 //        model.refreshEuiccs();
     }

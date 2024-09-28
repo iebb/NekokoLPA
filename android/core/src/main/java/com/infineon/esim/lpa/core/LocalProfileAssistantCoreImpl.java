@@ -87,7 +87,9 @@ public class LocalProfileAssistantCoreImpl implements LocalProfileAssistantCore 
     @Override
     public EnableResult enableProfile(String iccid, boolean refreshFlag) throws Exception {
         int result = new EnableProfileWorker(es10Interface).enable(iccid, refreshFlag);
-
+        if (refreshFlag && result > 0) {
+            result = new EnableProfileWorker(es10Interface).enable(iccid, false);
+        }
         return new EnableResult(result);
     }
 
@@ -159,13 +161,7 @@ public class LocalProfileAssistantCoreImpl implements LocalProfileAssistantCore 
             throw new Exception("ES9+ interface is not available! Enable internet connection?");
         }
 
-        boolean success = new DownloadProfileWorker(profileDownloadSession).downloadProfile(confirmationCode);
-
-        if(success) {
-            return new DownloadResult();
-        } else {
-            return new DownloadResult(getLastEs9PlusError());
-        }
+        return new DownloadProfileWorker(profileDownloadSession).downloadProfile(confirmationCode);
     }
 
     @Override

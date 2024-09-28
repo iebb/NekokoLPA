@@ -1,18 +1,12 @@
 package ee.nekoko.lpa.euicc.usbreader.drivers.ccid
 
-import android.annotation.SuppressLint
-import android.app.PendingIntent
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.hardware.usb.UsbConstants
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbEndpoint
 import android.hardware.usb.UsbInterface
 import android.hardware.usb.UsbManager
-import android.os.Build
-import android.util.Log
+import com.infineon.esim.util.Log
 import ee.nekoko.lpa.euicc.base.EuiccSlot
 import im.nfc.ccid.Ccid
 import im.nfc.ccid.CcidException
@@ -52,35 +46,35 @@ data class CCIDReader (
     @OptIn(ExperimentalStdlibApi::class)
     private fun connectToInterface(): Ccid? {
 
-        Log.e(TAG, "Connecting: Current CCID: ${ccid}")
-        Log.e(TAG, "Connecting: Current USB Connection: ${ccid?.usbDeviceConnection}")
+        Log.error(TAG, "Connecting: Current CCID: ${ccid}")
+        Log.error(TAG, "Connecting: Current USB Connection: ${ccid?.usbDeviceConnection}")
         val usbInterface = device.getInterface(interfaceIdx)
         val usbConnection = usbManager.openDevice(device)
         if (usbConnection == null) {
-            Log.e(TAG, "Failed to open device")
+            Log.error(TAG, "Failed to open device")
             return null
         }
         val endpoints = getEndpoints(usbInterface)
         val _ccid = Ccid(usbConnection, endpoints.first, endpoints.second)
         val descriptor = _ccid.getDescriptor(interfaceIdx)
         if (descriptor?.supportsProtocol(Protocol.T0) != true) {
-            Log.d(TAG, "Unsupported protocol")
+            Log.debug(TAG, "Unsupported protocol")
             return null
         }
         if (!usbConnection.claimInterface(usbInterface, true)) {
-            Log.e(TAG, "Failed to claim interface")
+            Log.error(TAG, "Failed to claim interface")
             return null
         }
         for(i in 0 until 4) {
             // AUTO, 5V, 3V, 1.8V
             if ((descriptor.voltage and (1 shl i)) > 0) {
                 try {
-                    Log.d(TAG, "Trying Supported Voltage #$i")
+                    Log.debug(TAG, "Trying Supported Voltage #$i")
                     val atr = _ccid.iccPowerOn(i.toByte())
-                    Log.d(TAG, "ATR: ${atr.toHexString()}")
+                    Log.debug(TAG, "ATR: ${atr.toHexString()}")
                     return _ccid
                 } catch (ex: Exception) {
-                    Log.d(TAG, "Voltage #$i Failed")
+                    Log.debug(TAG, "Voltage #$i Failed")
                 }
             }
         }
@@ -119,7 +113,7 @@ data class CCIDReader (
     fun connectCard() {
         val _ccid = connectToInterface()
         if (_ccid != null) {
-            Log.i(TAG, "Connecting Reader: $name")
+            Log.info(TAG, "Connecting Reader: $name")
             ccid = _ccid
         } else {
             throw Exception("CCID_READER_CONNECT_ERROR")

@@ -4,13 +4,16 @@ import {Button, Checkbox, Colors, Text, TextField, View} from "react-native-ui-l
 import {Camera, useCameraDevice, useCameraPermission, useCodeScanner} from "react-native-vision-camera";
 import InfiLPA from "@/native/InfiLPA";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
-import {faDownload} from "@fortawesome/free-solid-svg-icons";
+import {faDownload, faPhotoFilm} from "@fortawesome/free-solid-svg-icons";
 import React, {useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {useTheme} from "@/theme";
 import {makeLoading} from "@/components/utils/loading";
 import BlockingLoader from "@/components/common/BlockingLoader";
 import {LPACode} from "@/components/utils/lpaRegex";
+import {launchImageLibrary} from "react-native-image-picker";
+import QrImageReader from 'react-native-qr-image-reader';
+import {Dimensions} from "react-native";
 
 export function ScannerInitial({ appLink, eUICC, finishAuthenticate }: any) {
   const device = eUICC.name;
@@ -59,22 +62,15 @@ export function ScannerInitial({ appLink, eUICC, finishAuthenticate }: any) {
     codeTypes: ['qr'],
     onCodeScanned: (codes) => {
       for(const code of codes) {
-        const match = code.value!.match(LPACode);
-
-        if (match) {
-          const [_1, LPA, SMDP, AC_TOKEN, OID, CONFIRMATION_CODE] = match;
-          setSmdp(SMDP);
-          setAcToken(AC_TOKEN);
-          setOid(OID);
-          setConfirmationCodeReq(CONFIRMATION_CODE === "1");
-          setConfirmationCode("");
-        }
+        processLPACode(code.value!);
       }
     }
   })
+
+
   const cameraDevice = useCameraDevice('back');
 
-  const [size, setSize] = useState<number>(0);
+  const size = Math.min(250, Dimensions.get('window').width - 50);
 
   return (
     <View>
@@ -88,13 +84,8 @@ export function ScannerInitial({ appLink, eUICC, finishAuthenticate }: any) {
         <View
           flex
           style={{ gap: 10 }}
-          onLayout={(e) => {
-            setSize(
-              Math.min(e.nativeEvent.layout.width - 100, 200)
-            );
-          }}
         >
-          <View center gap-10 marginV-10>
+          <View center gap-5 marginV-10>
             <Text text70M color={colors.std200}>
               {t('profile:scan_qr_prompt')}
             </Text>
@@ -103,27 +94,51 @@ export function ScannerInitial({ appLink, eUICC, finishAuthenticate }: any) {
             </Text>
           </View>
           <View center style={{ borderRadius: 30 }}>
-            <View
-              style={{ width: size, height: size, borderRadius: 20, overflow: "hidden" }}
-            >
-              {
-                cameraDevice && hasPermission ? (
+            {
+              cameraDevice && hasPermission ? (
+                <View
+                  style={{ width: size, height: size, borderRadius: 20, overflow: "hidden" }}
+                >
+                  <Button
+                    round
+                    style={{ borderRadius: 20, position: "absolute", top: 0, right: 0, zIndex: 100 }}
+                    onPress={() => {
+                      launchImageLibrary({
+                        mediaType: "photo",
+                      }, (result) => {
+                        if (result.assets) {
+                          for(const a of result.assets) {
+                            QrImageReader.decode({ path: a.uri })
+                              .then(({result}) => {
+                                processLPACode(result!);
+                              })
+                              .catch(error => console.log(error || 'No QR code found.'));
+                          }
+
+                        }
+                      });
+                    }}
+                    backgroundColor={colors.blue500}
+                  >
+                    <FontAwesomeIcon icon={faPhotoFilm} style={{ color: Colors.$backgroundDefault }} />
+                  </Button>
                   <Camera
                     device={cameraDevice}
                     isActive
                     codeScanner={codeScanner}
                     style={{ width: size, height: size}}
                   />
-                ) : (
-                  <Text color={colors.std200}>
-                    {t('profile:camera_unsupported')}
-                  </Text>
-                )
-              }
-            </View>
+                </View>
+              ) : (
+                <Text color={colors.std200}>
+                  {t('profile:camera_unsupported')}
+                </Text>
+              )
+            }
+
           </View>
           <Button
-            style={[gutters.marginVertical_12]}
+            marginV-12
             borderRadius={210}
             backgroundColor={colors.blue500}
             onPress={() => {
@@ -168,15 +183,15 @@ export function ScannerInitial({ appLink, eUICC, finishAuthenticate }: any) {
               color={colors.std200}
               style={{ borderBottomWidth: 1, marginBottom: -10, borderColor: colors.std400 }}
             />
-            <TextField
-              placeholder={'OID'}
-              floatingPlaceholder
-              value={oid}
-              onChangeText={c => c.includes('$') ? processLPACode(c) : setOid(c)}
-              enableErrors
-              color={colors.std200}
-              style={{ borderBottomWidth: 1, marginBottom: -10, borderColor: colors.std400 }}
-            />
+            {/*<TextField*/}
+            {/*  placeholder={'OID'}*/}
+            {/*  floatingPlaceholder*/}
+            {/*  value={oid}*/}
+            {/*  onChangeText={c => c.includes('$') ? processLPACode(c) : setOid(c)}*/}
+            {/*  enableErrors*/}
+            {/*  color={colors.std200}*/}
+            {/*  style={{ borderBottomWidth: 1, marginBottom: -10, borderColor: colors.std400 }}*/}
+            {/*/>*/}
             <Checkbox
               label={t('profile:download_confcode_required')}
               value={confirmationCodeReq}

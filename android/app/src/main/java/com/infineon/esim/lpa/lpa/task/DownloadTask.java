@@ -38,7 +38,9 @@ import java.util.concurrent.Callable;
 import io.sentry.Sentry;
 import io.sentry.SentryEvent;
 import io.sentry.SentryLevel;
+import io.sentry.UserFeedback;
 import io.sentry.protocol.Message;
+import io.sentry.protocol.SentryId;
 
 public class DownloadTask implements Callable<DownloadResult> {
     private static final String TAG = DownloadTask.class.getName();
@@ -56,8 +58,6 @@ public class DownloadTask implements Callable<DownloadResult> {
         try {
             // Download the profile
             DownloadResult downloadResult = lpa.downloadProfile(confirmationCode);
-
-            // Send notification
             HandleNotificationsResult handleNotificationsResult;
             try {
                 handleNotificationsResult = lpa.handleNotifications();
@@ -68,33 +68,14 @@ public class DownloadTask implements Callable<DownloadResult> {
 
             if(handleNotificationsResult.getSuccess()) {
                 return downloadResult;
-            } else {
-                return new DownloadResult(handleNotificationsResult.getRemoteError());
             }
-        } catch (DownloadException fe) {
-            String code = fe.getResultData().getFinalResult().getErrorResult().getErrorReason().toString();
-            Log.error(TAG,"Downloading profile failed with exception: " + fe.getMessage());
-            String eid;
-            try {
-                eid = lpa.getEID();
-            } catch (Exception e) {
-                eid = "UNKNOWN";
-            }
-            String eum = eid.substring(0, 8);
-            // telemetry. todo: remove it?
-            SentryEvent event = new SentryEvent();
-            Message message = new Message();
-            message.setMessage("Profile Download Failed");
-            event.setMessage(message);
-            event.setTag("smdp", fe.getResultData().getNotificationMetadata().getNotificationAddress().toString());
-            event.setTag("eum", eum);
-            event.setLevel(code.equals("10") ? SentryLevel.INFO : SentryLevel.WARNING);
-            event.setLogger(DownloadTask.class.getName());
-            event.setExtra("result_data", fe.getResultData());
-            event.setThrowable(fe);
+            return downloadResult;
 
-            Sentry.captureEvent(event);
-            return new DownloadResult(fe.getRemoteError());
+        } catch (DownloadException fe) {
+            var downloadResult = new DownloadResult(fe.getRemoteError());
+            downloadResult.errorCode = fe.getResultData().getFinalResult().getErrorResult().getErrorReason().toString();
+            downloadResult.notificationAddress = fe.getResultData().getNotificationMetadata().getNotificationAddress().toString();
+            return downloadResult;
         } catch (Exception e) {
             e.printStackTrace();
             Log.error(TAG," " + "Downloading profile failed with exception: " + e.getMessage());

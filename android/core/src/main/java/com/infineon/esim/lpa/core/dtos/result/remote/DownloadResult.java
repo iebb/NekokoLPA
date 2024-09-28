@@ -25,6 +25,10 @@ package com.infineon.esim.lpa.core.dtos.result.remote;
 
 public class DownloadResult extends RemoteOperationResult {
 
+    public int deltaSpace = 0;
+    public int downloadBytes = 0;
+    public String errorCode = "";
+    public String notificationAddress = "";
     public DownloadResult() {
         super();
     }

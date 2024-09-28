@@ -29,7 +29,7 @@
   "delete_profile_alert2_body": "Proceed with removal? You cannot undo it.",
   "download_confcode_required": "Confirmation Code Required",
   "camera_unsupported": "Camera is not supported!",
-  "scan_qr_prompt": "Scan QR or Enter activation information manually.",
+  "scan_qr_prompt": "Scan QR or Enter code manually.",
   "current_euicc": "Current Reader: {{device}}",
   "choose_reader": "Please Choose a Reader: {{device}}",
   "title_download_profile": "Download Profile",

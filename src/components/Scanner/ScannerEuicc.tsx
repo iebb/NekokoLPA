@@ -172,17 +172,17 @@ export function ScannerEuicc({ appLink, eUICC, setEUICC, finishAuthenticate }: a
               style={{ borderBottomWidth: 1, marginBottom: -10, borderColor: colors.std400 }}
             />
             {
-              oid && (
-                <TextField
-                  placeholder={'OID'}
-                  floatingPlaceholder
-                  value={oid}
-                  readonly
-                  enableErrors
-                  color={colors.std200}
-                  style={{ borderBottomWidth: 1, marginBottom: -10, borderColor: colors.std400 }}
-                />
-              )
+              // oid && (
+              //   <TextField
+              //     placeholder={'OID'}
+              //     floatingPlaceholder
+              //     value={oid}
+              //     readonly
+              //     enableErrors
+              //     color={colors.std200}
+              //     style={{ borderBottomWidth: 1, marginBottom: -10, borderColor: colors.std400 }}
+              //   />
+              // )
             }
             {
               confirmationCodeReq && (

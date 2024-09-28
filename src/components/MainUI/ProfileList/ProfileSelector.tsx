@@ -36,7 +36,7 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
         profiles: [],
       }}, eUICC.name]));
     setRefreshing(true);
-    InfiLPA.refreshProfileList(eUICC.name);
+    InfiLPA.refreshProfileList();
     setTimeout(() => {
       setRefreshing(false);
     }, 200);

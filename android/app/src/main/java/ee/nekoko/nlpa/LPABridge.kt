@@ -70,6 +70,7 @@ class LPABridge @ReactMethod constructor(private val context: ReactContext?) : R
     }
 
     fun emitData(key: String, value: Any?, global: Boolean) {
+        Log.debug(TAG, "Emitting $key")
         while (context == null || !context.hasActiveReactInstance()) {
             Log.debug(TAG, "Not ready!")
             Log.debug(TAG, "Failed sending: $key")
