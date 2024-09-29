@@ -61,8 +61,8 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: v${{ env.VERSION }}
-        release_name: Release ${{ env.VERSION }}
+        tag: v${{ env.VERSION }}
+        name: Release ${{ env.VERSION }}
         draft: false
         prerelease: false
         body: |
