@@ -37,6 +37,8 @@ jobs:
 
     # Step 5: Run the build script
     - name: Build APK
+      env: # Or as an environment variable
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       run: chmod +x build_for_github.sh && ./build_for_github.sh
 
     # Step 6: Upload APK to artifacts (optional)
