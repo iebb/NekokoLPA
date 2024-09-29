@@ -11,3 +11,4 @@ done
 rm outputs/ee.nekoko.*.apk
 
 cp outputs/apk/app-multisign-arm64-v8a-release.apk "outputs/ee.nekoko.nlpa.multisign-arm64-v8a-$(jq .version package.json -r).apk"
+cp outputs/apk/app-multisign-x86_64-release.apk "outputs/ee.nekoko.nlpa.multisign-x86_64-$(jq .version package.json -r).apk"
