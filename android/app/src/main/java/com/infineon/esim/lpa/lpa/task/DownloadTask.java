@@ -86,6 +86,7 @@ public class DownloadTask implements Callable<DownloadResult> {
             Log.error(TAG," " + "Downloading profile failed with exception: " + e.getMessage());
             var downloadResult = new DownloadResult(lpa.getLastEs9PlusError());
             downloadResult.errorCode = "X";
+            downloadResult.error = "Downloading profile failed with exception: " + e.getMessage();
             return downloadResult;
         }
     }
