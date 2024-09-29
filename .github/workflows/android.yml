@@ -1,0 +1,82 @@
+name: Android CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: set up JDK 11
+      uses: actions/setup-java@v4
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: gradle
+        
+    # Step 2: Set up Node.js (required for package.json)
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'  # You can adjust the version as needed
+
+    # Step 3: Install dependencies (if necessary)
+    - name: Install dependencies
+      run: npm install
+
+    # Step 4: Get version from package.json
+    - name: Extract version from package.json
+      id: extract_version
+      run: echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
+
+    # Step 5: Run the build script
+    - name: Build APK
+      run: ./build.sh
+
+    # Step 6: Upload APK to artifacts (optional)
+    - name: Upload APK as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: apk
+        path: ./outputs/ee.nekoko.nlpa.multisign-arm64-v8a-${{ env.VERSION }}.apk
+
+  create-release:
+    needs: build
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Get version from package.json
+      - name: Extract version from package.json
+        id: extract_version
+        run: echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
+
+      # Step 3: Create a new release
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: v${{ env.VERSION }}
+          release_name: Release ${{ env.VERSION }}
+          draft: false
+          prerelease: false
+          body: |
+            Release for version ${{ env.VERSION }}.
+
+      # Step 4: Upload APK to the release
+      - name: Upload APK to Release
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./outputs/ee.nekoko.nlpa.multisign-arm64-v8a-${{ env.VERSION }}.apk
+          asset_name: ee.nekoko.nlpa.multisign-arm64-v8a-${{ env.VERSION }}.apk
+          asset_content_type: application/vnd.android.package-archive
