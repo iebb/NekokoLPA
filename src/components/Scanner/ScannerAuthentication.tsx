@@ -41,7 +41,7 @@ export function ScannerAuthentication(
       <Title>{t('profile:title_confirm_profile')}</Title>
       {
         loading && (
-          <BlockingLoader />
+          <BlockingLoader message={t('profile:loading_download_profile')} />
         )
       }
       {
@@ -89,7 +89,7 @@ export function ScannerAuthentication(
                     makeLoading(
                       setLoading,
                       () => {
-                        InfiLPA.cancelSession(device, CancelSessionReasons.END_USER_REJECTION);
+                        InfiLPA.cancelSession(device);
                         goBack();
                       }
                     )

@@ -4,13 +4,13 @@ import {useTranslation} from 'react-i18next';
 import {SafeScreen} from '@/components/template';
 import type {RootScreenProps} from "@/navigators/navigation";
 import {Text} from "react-native-ui-lib";
-import {ActionStatus} from "@/native/consts";
-import BlockingLoader from "@/components/common/BlockingLoader";
 import {ScannerInitial} from "@/components/Scanner/ScannerInitial";
 import {ScannerAuthentication} from "@/components/Scanner/ScannerAuthentication";
 import {ScannerResult} from "@/components/Scanner/ScannerResult";
 import {ScannerEuicc} from "@/components/Scanner/ScannerEuicc";
 import {version} from '@/../package.json';
+import {storage} from "@/redux/reduxDataStore";
+import {sizeStats} from "@/storage/sizeStats";
 
 const REPORTING_URL = "https://nlpa-data.nekoko.ee/api/collection/install";
 
@@ -27,16 +27,6 @@ function Scanner({ route,  navigation }: RootScreenProps<'Scanner'>) {
 
 	return (
 		<SafeScreen>
-			{
-				scanState === ActionStatus.AUTHENTICATE_DOWNLOAD_STARTED && (
-					<BlockingLoader message={t('profile:loading_validating_profile')} />
-				)
-			}
-			{
-				scanState === ActionStatus.DOWNLOAD_PROFILE_STARTED && (
-					<BlockingLoader message={t('profile:loading_download_profile')} />
-				)
-			}
 			<ScrollView>
 				{
 					scanState === -1 ? (
@@ -89,6 +79,12 @@ function Scanner({ route,  navigation }: RootScreenProps<'Scanner'>) {
 									},
 									body: JSON.stringify(v)
 								}).then((d) => d.json()).then((data: any) => console.log("reported", data));
+
+								if (downloadResult?.deltaSpace) {
+									sizeStats.set(m.uICCID, downloadResult.deltaSpace);
+								}
+
+
 								setDownloadResult(downloadResult);
 								setScanState(3);
 							}}

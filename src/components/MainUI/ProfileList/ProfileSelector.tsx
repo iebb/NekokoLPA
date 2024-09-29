@@ -14,6 +14,7 @@ import {findPhoneNumbersInText} from "libphonenumber-js/min";
 import {Flags} from "@/assets/flags";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faPencil, faPlus, faTrash} from "@fortawesome/free-solid-svg-icons";
+import {sizeStats} from "@/storage/sizeStats";
 
 
 interface ProfileExt extends Profile {
@@ -100,7 +101,7 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
               }
 
               const Flag = (Flags[country] || Flags.UN).default;
-
+              const Size = sizeStats.getNumber(metadata?.uICCID) || 0 ;
 
               return (
                 <Drawer
@@ -264,9 +265,13 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
                             )
                           })}
                         </View>
-                        {/*<Text text90L $textDefault color={colors.std200}>*/}
-                        {/*  ICCID: {metadata?.uICCID.replaceAll(/(?<=\d{10})\d/g, '*')}*/}
-                        {/*</Text>*/}
+                        {
+                          Size > 0 && (
+                            <Text text90L $textDefault color={colors.std200} style={{ position: "absolute", right: 5, bottom: -5 }}>
+                              ~{(Size / 1024).toFixed(1)}kB
+                            </Text>
+                          )
+                        }
                       </View>
                     </View>
                   </Card>

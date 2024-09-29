@@ -147,14 +147,12 @@ export default function SIMSelector() {
                     />
                   ),
                   labelStyle: {
-                    width: '100%',
                     padding: 0,
                     margin: 0,
                     fontSize: 12,
                     lineHeight: 16,
                   },
                   selectedLabelStyle: {
-                    width: '100%',
                     padding: 0,
                     margin: 0,
                     fontSize: 12,

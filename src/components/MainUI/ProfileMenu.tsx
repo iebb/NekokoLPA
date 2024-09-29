@@ -58,10 +58,7 @@ export default function ProfileMenu({ eUICC } : { eUICC: EuiccList }) {
               })}
             </Text>
             <Text text100L color={colors.std50}>
-              EID: {
-                stealthMode === 'none' ? eUICC.eid : (eUICC.eid || '').replaceAll(
-                  stealthMode === 'medium' ? /(?<=\d{16})\d(?=\d{6})/g : /./g, '*')
-              } / v{eUICC.version}
+              EUM: {eUICC.eid?.substring(0, 8)} / v{eUICC.version}
             </Text>
           </View>
         </View>

@@ -79,9 +79,6 @@ class LPABridge @ReactMethod constructor(private val context: ReactContext?) : R
         val jsonData = Gson().toJson(value)
         val params = Arguments.createMap()
         params.putString(key, jsonData)
-        if (!global) {
-            params.putString("currentEuicc", euiccManager.currentEuiccLiveData.value)
-        }
         context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit("onDataUpdate", params)
     }
 
@@ -111,19 +108,6 @@ class LPABridge @ReactMethod constructor(private val context: ReactContext?) : R
                     refreshProfileList()
                 }
             }
-            val action = actionStatusLiveData.value
-            val euicc = euiccManager.currentEuiccLiveData.value
-
-
-            if (euicc != null && euicc != "NONE") {
-                val body = e.body
-                if (body != null && body.contains("no APDU access")) {
-                    if (action != null && action.actionStatus == ActionStatus.GET_PROFILE_LIST_STARTED) {
-                    } else {
-                        refreshProfileList()
-                    }
-                }
-            }
         }
     }
 
@@ -141,10 +125,6 @@ class LPABridge @ReactMethod constructor(private val context: ReactContext?) : R
         }
         instance = this
     }
-
-    @get:ReactMethod(isBlockingSynchronousMethod = true)
-    val currentEuicc: String?
-        get() = euiccManager.currentEuiccLiveData.value
 
     @get:ReactMethod(isBlockingSynchronousMethod = true)
     val euiccListJSON: String

@@ -31,7 +31,7 @@ class EuiccSlot (
 
     fun parse() {
         if (euiccInfo2 == null) return
-        val _version = euiccInfo2?.globalplatformVersion.toString()
+        val _version = euiccInfo2?.lowestSvn.toString()
 
         version = "${_version[1]}.${_version[3]}.${_version[5]}"
         val ecr = euiccInfo2?.extCardResource?.value

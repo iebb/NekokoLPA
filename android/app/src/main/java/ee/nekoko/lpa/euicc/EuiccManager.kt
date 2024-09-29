@@ -44,7 +44,6 @@ class EuiccManager(context: Context, private val statusAndEventHandler: StatusAn
     // eUICC interfaces
     private val euiccInterfaces: MutableList<EuiccInterface> = ArrayList()
 
-    private val currentEuicc = MutableLiveData<String>()
     private val euiccList: MutableLiveData<List<EuiccSlot>> = MutableLiveData()
     private val euiccSlotMap = HashMap<String, EuiccSlot>()
 
@@ -52,9 +51,6 @@ class EuiccManager(context: Context, private val statusAndEventHandler: StatusAn
         euiccInterfaces.add(SeEuiccInterface(context, this))
         euiccInterfaces.add(CCIDInterface(context, this))
     }
-
-    val currentEuiccLiveData: LiveData<String>
-        get() = currentEuicc
 
     val euiccListLiveData: LiveData<List<EuiccSlot>>
         get() = euiccList

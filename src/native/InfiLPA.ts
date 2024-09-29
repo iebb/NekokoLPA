@@ -1,5 +1,6 @@
-import {NativeModules} from 'react-native';
+import {NativeModules, Platform} from 'react-native';
 import {Profiles} from "@/native/types";
+import {CancelSessionReasons} from "@/native/consts";
 
 
 const {
@@ -13,6 +14,11 @@ class InfiLPA {
     static refreshEUICC() {
         LPABridge.refreshEuiccs();
     }
+
+    static isAllowed() {
+        return Platform.OS === 'android';
+    }
+
     static getCurrentEuicc() {
         return LPABridge.getCurrentEuicc();
     }
@@ -52,8 +58,8 @@ class InfiLPA {
     static downloadProfile(device: string, code: string) {
         return JSON.parse(LPABridge.downloadProfile(device, code));
     }
-    static cancelSession(device: string, reason: number) {
-        return JSON.parse(LPABridge.cancelSession(device, reason));
+    static cancelSession(device: string) {
+        return JSON.parse(LPABridge.cancelSession(device, CancelSessionReasons.END_USER_REJECTION));
     }
 
 }

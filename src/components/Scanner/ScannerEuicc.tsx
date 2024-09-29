@@ -205,7 +205,7 @@ export function ScannerEuicc({ appLink, eUICC, setEUICC, finishAuthenticate }: a
           </View>
           <View marginH-10 flex gap-10>
             {
-              euiccList.map(renderRow)
+              euiccList?.map(renderRow)
             }
           </View>
         </View>
