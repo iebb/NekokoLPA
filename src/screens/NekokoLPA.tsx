@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import i18next from 'i18next';
 import {useTranslation} from 'react-i18next';
 import {SafeScreen} from '@/components/template';
@@ -15,7 +15,7 @@ import SIMSelector from "@/components/MainUI/SIMSelector";
 import type {RootScreenProps} from "@/navigators/navigation";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faLanguage, faMoon} from "@fortawesome/free-solid-svg-icons";
-import {Image} from "react-native";
+import {Image, Linking, Platform} from "react-native";
 import {version} from '@/../package.json';
 import {useDispatch, useSelector} from "react-redux";
 import {nextValue, selectAppConfig} from "@/redux/reduxDataStore";
@@ -43,6 +43,9 @@ function NekokoLPA({ navigation }: RootScreenProps<'NekokoLPA'>) {
 
 	const dispatch = useDispatch();
 	const { language, theme } = useSelector(selectAppConfig);
+	const [release, setRelease] = useState({
+		tag_name: `v${version}`,
+	});
 
 
 	useEffect(() => {
@@ -52,6 +55,19 @@ function NekokoLPA({ navigation }: RootScreenProps<'NekokoLPA'>) {
 	useEffect(() => {
 		changeTheme(theme as Variant);
 	}, [theme]);
+
+
+	useEffect(() => {
+		if (Platform.OS === 'android') {
+			fetch('https://api.github.com/repos/iebb/NekokoLPA/releases/latest').then(
+				r => r.json()
+			).then(
+				data => setRelease(data)
+			)
+		}
+	}, [theme]);
+
+	const isLatest = release.tag_name === `v${version}`;
 
 	return (
 		<SafeScreen>
@@ -68,13 +84,29 @@ function NekokoLPA({ navigation }: RootScreenProps<'NekokoLPA'>) {
 								source={CatImage}
 								style={{ width: 40, height: 40 }}
 							/>
-							<View>
+							<View onTouchStart={() => {
+								if (Platform.OS === 'android' && !isLatest) {
+									// @ts-ignore
+									try {
+										Linking.openURL(release.assets[0].browser_download_url);
+									} finally {
+
+									}
+								}
+							}}>
 								<Text style={[fonts.size_16, fonts.gray800, fonts.bold]} >
 									{t('welcome:title')}
 								</Text>
-								<Text style={{ fontSize: 12 , color: colors.std200 }}>
-									v{version}
+								<Text style={{ fontSize: 12 , color: isLatest ? colors.std200 : colors.red400 }}>
+									v{version} {!isLatest && "↑"}
 								</Text>
+								{
+									!isLatest && (
+										<Text style={{ fontSize: 12 , color: isLatest ? colors.std200 : colors.green400 }}>
+											{release.tag_name} available
+										</Text>
+									)
+								}
 							</View>
 						</View>
 						<View row gap-10>

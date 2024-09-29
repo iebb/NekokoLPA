@@ -98,8 +98,16 @@ public class DownloadProfileWorker {
         } else {
             var data = new DownloadResult();
             data.deltaSpace = deltaSpace;
-            data.downloadBytes = profileDownloadSession.es10_getBoundProfilePackage().getBoundProfilePackage().getSequenceOf86().toString().length();
-            data.notificationAddress = profileInstallationResult.getProfileInstallationResultData().getNotificationMetadata().getNotificationAddress().toString();
+            try {
+                data.downloadBytes = profileDownloadSession.es10_getBoundProfilePackage().getBoundProfilePackage().getSequenceOf86().toString().length();
+            } finally {
+
+            }
+            try {
+                data.notificationAddress = profileInstallationResult.getProfileInstallationResultData().getNotificationMetadata().getNotificationAddress().toString();
+            } finally {
+
+            }
 
             return data;
         }

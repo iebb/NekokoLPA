@@ -137,11 +137,6 @@ public class LocalProfileAssistantCoreImpl implements LocalProfileAssistantCore 
 
     @Override
     public AuthenticateResult authenticate(ActivationCode activationCode) throws Exception {
-        if(isEs9PlusInterfaceUnavailable()) {
-            Log.error(TAG, "ES9+ interface is not available! Enable internet connection?");
-            throw new Exception("ES9+ interface is not available! Enable internet connection?");
-        }
-
         profileDownloadSession = new ProfileDownloadSession(activationCode, es10Interface, es9PlusInterface);
 
         boolean success = new AuthenticateWorker(profileDownloadSession).authenticate();
@@ -156,21 +151,11 @@ public class LocalProfileAssistantCoreImpl implements LocalProfileAssistantCore 
 
     @Override
     public DownloadResult downloadProfile(String confirmationCode) throws Exception {
-        if(isEs9PlusInterfaceUnavailable()) {
-            Log.error(TAG, "ES9+ interface is not available! Enable internet connection?");
-            throw new Exception("ES9+ interface is not available! Enable internet connection?");
-        }
-
         return new DownloadProfileWorker(profileDownloadSession).downloadProfile(confirmationCode);
     }
 
     @Override
     public CancelSessionResult cancelSession(long cancelSessionReasonValue) throws Exception {
-        if(isEs9PlusInterfaceUnavailable()) {
-            Log.error(TAG, "ES9+ interface is not available! Enable internet connection?");
-            throw new Exception("ES9+ interface is not available! Enable internet connection?");
-        }
-
         if (profileDownloadSession != null) {
             boolean success = new CancelSessionWorker(profileDownloadSession).cancelSession(cancelSessionReasonValue);
 
@@ -186,11 +171,6 @@ public class LocalProfileAssistantCoreImpl implements LocalProfileAssistantCore 
 
     @Override
     public HandleNotificationsResult handleNotifications() throws Exception {
-        if(isEs9PlusInterfaceUnavailable()) {
-            Log.error(TAG, "ES9+ interface is not available! Enable internet connection?");
-            throw new Exception("ES9+ interface is not available! Enable internet connection?");
-        }
-
         boolean success = new HandleNotificationsWorker(es10Interface, es9PlusInterface).handleNotifications();
 
         if (success) {

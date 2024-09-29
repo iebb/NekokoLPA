@@ -78,9 +78,10 @@ public class DownloadTask implements Callable<DownloadResult> {
             downloadResult.notificationAddress = fe.getResultData().getNotificationMetadata().getNotificationAddress().toString();
             return downloadResult;
         } catch (Exception e) {
-            e.printStackTrace();
             Log.error(TAG," " + "Downloading profile failed with exception: " + e.getMessage());
-            return new DownloadResult(lpa.getLastEs9PlusError());
+            var downloadResult = new DownloadResult(lpa.getLastEs9PlusError());
+            downloadResult.errorCode = e.getMessage();
+            return downloadResult;
         }
     }
 }
