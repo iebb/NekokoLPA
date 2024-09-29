@@ -194,8 +194,16 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
                       margin-0
                     >
                       <View row flex width="100%">
-                        <View
+                        <TouchableOpacity
                           style={{ flexShrink: 1, flexGrow: 1 }}
+                          onPress={() => {
+                            // @ts-ignore
+                            navigation.navigate('Profile', {
+                              ICCID: metadata.ICCID,
+                              metadata: metadata,
+                              eUICC: eUICC,
+                            });
+                          }}
                         >
                           <View row>
                             <Flag
@@ -215,7 +223,7 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
                               {metadata?.PROVIDER_NAME} / {metadata?.NAME}
                             </Text>
                           </View>
-                        </View>
+                        </TouchableOpacity>
                         <View
                           style={{
                             padding: 5, width: 50,

@@ -55,10 +55,12 @@ export default function ProfileMenu({ eUICC } : { eUICC: EuiccList }) {
             <Text text100L color={colors.std50}>
               {t('main:available_space', {
                 bytes: eUICC.bytesFree !== null ? Intl.NumberFormat().format(eUICC.bytesFree || 0) : "??"
-              })}
+              })} / SGP.22 v{eUICC.version}
             </Text>
             <Text text100L color={colors.std50}>
-              EUM: {eUICC.eid?.substring(0, 8)} / v{eUICC.version}
+              {
+                stealthMode === 'none' ? `EID: ` + eUICC.eid : `EUM: ${eUICC.eid?.substring(0, 8)}`
+              }
             </Text>
           </View>
         </View>

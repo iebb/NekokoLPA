@@ -1,5 +1,5 @@
 {
-  "available_space": "可用空间: {{bytes}} B",
+  "available_space": "可用: {{bytes}} B",
   "no_device": "没有找到支持的读卡器。请下拉刷新",
   "unsupported_device": "{{name}} 不受支持",
   "insert_supported_sim": "请尝试插入受支持的卡片，或者重启应用再次尝试。",
