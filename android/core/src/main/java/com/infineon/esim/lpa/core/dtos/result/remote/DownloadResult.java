@@ -29,6 +29,7 @@ public class DownloadResult extends RemoteOperationResult {
     public int downloadBytes = 0;
     public String errorCode = "";
     public String notificationAddress = "";
+    public String error = "";
     public DownloadResult() {
         super();
     }

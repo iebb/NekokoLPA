@@ -64,9 +64,13 @@ public class DownloadTask implements Callable<DownloadResult> {
             } catch (ConnectException e) {
                 // Ignore exceptions (E.g. no internet connection) and retry later
                 return downloadResult;
+            } catch (Exception e) {
+                downloadResult.errorCode = "NOTI";
+                downloadResult.error = e.getMessage();
+                return downloadResult;
             }
 
-            if(handleNotificationsResult.getSuccess()) {
+            if (handleNotificationsResult.getSuccess()) {
                 return downloadResult;
             }
             return downloadResult;
@@ -76,11 +80,12 @@ public class DownloadTask implements Callable<DownloadResult> {
             downloadResult.deltaSpace = fe.deltaSpace;
             downloadResult.errorCode = fe.getResultData().getFinalResult().getErrorResult().getErrorReason().toString();
             downloadResult.notificationAddress = fe.getResultData().getNotificationMetadata().getNotificationAddress().toString();
+            downloadResult.error = fe.getMessage();
             return downloadResult;
         } catch (Exception e) {
             Log.error(TAG," " + "Downloading profile failed with exception: " + e.getMessage());
             var downloadResult = new DownloadResult(lpa.getLastEs9PlusError());
-            downloadResult.errorCode = e.getMessage();
+            downloadResult.errorCode = "X";
             return downloadResult;
         }
     }
