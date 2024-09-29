@@ -12,6 +12,7 @@ import {faDownload, faSimCard} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import prompt from 'react-native-prompt-android';
 import {setNickname} from "@/redux/reduxDataStore";
+import {makeLoading} from "@/components/utils/loading";
 
 export default function SIMSelector() {
   const { colors } = useTheme();
@@ -27,11 +28,9 @@ export default function SIMSelector() {
   );
 
   const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => {
+    makeLoading(setRefreshing, () => {
       InfiLPA.refreshEUICC();
-      setRefreshing(false);
-    }, 100);
+    })
   }, []);
 
   if (!euiccList) {

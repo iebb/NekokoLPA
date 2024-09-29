@@ -96,7 +96,6 @@ export function ScannerResult(
                       makeLoading(
                         setLoading,
                         () => {
-                          InfiLPA.refreshProfileList(device);
                           InfiLPA.enableProfileByIccId(device, authenticateResult.profileMetadata.profileMetadataMap.ICCID);
                           goBack();
                         }
@@ -127,7 +126,10 @@ export function ScannerResult(
                       style={{ flex: 1, ...gutters.marginVertical_12 }}
                       backgroundColor={colors.gray500}
                       onPress={() => {
-                        goBack();
+                        makeLoading(setLoading, () => {
+                          InfiLPA.refreshProfileList(device);
+                          goBack();
+                        });
                       }}
                     >
                       <FontAwesomeIcon

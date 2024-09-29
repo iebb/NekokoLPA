@@ -30,6 +30,7 @@ import {Spacings} from "react-native-ui-lib/src/components/../style";
 import Container from "@/components/common/Container";
 import {Flags} from "@/assets/flags";
 import {Colors} from "react-native-ui-lib/src/style";
+import {makeLoading} from "@/components/utils/loading";
 
 
 function getUTF8Length(s: string) {
@@ -85,16 +86,9 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 	const Flag = (Flags[country] || Flags.UN).default;
 
 	const updateNickname = (n: string) => {
-		setLoading(true);
-		setTimeout(() => {
-			try {
-				InfiLPA.setNicknameByIccId(device, ICCID, n);
-			} finally {
-				setTimeout(() => {
-					setLoading(false);
-				}, 100);
-			}
-		}, 10);
+		makeLoading(setLoading, () => {
+			InfiLPA.setNicknameByIccId(device, ICCID, n);
+		});
 	}
 
 	return (
@@ -339,17 +333,9 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 																text: t('profile:delete_tag_ok'),
 																style: 'destructive',
 																onPress: () => {
-																	setLoading(true);
-																	setTimeout(() => {
-																		try {
-																			InfiLPA.deleteProfileByIccId(device, ICCID);
-																		} finally {
-																			setTimeout(() => {
-																				setLoading(false);
-																				navigation.goBack();
-																			}, 100);
-																		}
-																	}, 10);
+																	makeLoading(setLoading, () => {
+																		InfiLPA.deleteProfileByIccId(device, ICCID);
+																	});
 																}
 															},
 															{

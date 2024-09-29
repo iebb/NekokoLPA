@@ -15,6 +15,7 @@ import {Flags} from "@/assets/flags";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faPencil, faPlus, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {sizeStats} from "@/storage/sizeStats";
+import {makeLoading} from "@/components/utils/loading";
 
 
 interface ProfileExt extends Profile {
@@ -36,11 +37,9 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
     dispatch(setState([{profileList: {
         profiles: [],
       }}, eUICC.name]));
-    setRefreshing(true);
-    InfiLPA.refreshProfileList();
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 200);
+    makeLoading(setRefreshing, () => {
+      InfiLPA.refreshProfileList();
+    })
   }, []);
 
   const profileList = eUICC.profiles;
@@ -135,16 +134,9 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
                                   text: t('profile:delete_tag_ok'),
                                   style: 'destructive',
                                   onPress: () => {
-                                    setLoading(true);
-                                    setTimeout(() => {
-                                      try {
-                                        InfiLPA.deleteProfileByIccId(device, metadata.ICCID);
-                                      } finally {
-                                        setTimeout(() => {
-                                          setLoading(false);
-                                        }, 100);
-                                      }
-                                    }, 10);
+                                    makeLoading(setLoading, () => {
+                                      InfiLPA.deleteProfileByIccId(device, metadata.ICCID);
+                                    })
                                   }
                                 },
                                 {
@@ -235,20 +227,13 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
                             disabled={isLoading}
                             padding-5
                             onValueChange={async (value2: boolean) => {
-                              setLoading(true);
-                              setTimeout(() => {
-                                try {
-                                  if (profile.selected) {
-                                    InfiLPA.disableProfileByIccId(device, metadata.ICCID);
-                                  } else {
-                                    InfiLPA.enableProfileByIccId(device, metadata.ICCID);
-                                  }
-                                } finally {
-                                  setTimeout(() => {
-                                    setLoading(false);
-                                  }, 100);
+                              makeLoading(setLoading, () => {
+                                if (profile.selected) {
+                                  InfiLPA.disableProfileByIccId(device, metadata.ICCID);
+                                } else {
+                                  InfiLPA.enableProfileByIccId(device, metadata.ICCID);
                                 }
-                              }, 10);
+                              })
                             }}
                           />
                         </View>

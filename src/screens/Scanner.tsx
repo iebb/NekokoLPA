@@ -11,6 +11,8 @@ import {ScannerEuicc} from "@/components/Scanner/ScannerEuicc";
 import {version} from '@/../package.json';
 import {storage} from "@/redux/reduxDataStore";
 import {sizeStats} from "@/storage/sizeStats";
+import {makeLoading} from "@/components/utils/loading";
+import InfiLPA from "@/native/InfiLPA";
 
 const REPORTING_URL = "https://nlpa-data.nekoko.ee/api/collection/install";
 
@@ -99,7 +101,6 @@ function Scanner({ route,  navigation }: RootScreenProps<'Scanner'>) {
 								setScanState(0);
 								setDownloadResult(null);
 								setAuthenticateResult(null);
-								navigation.goBack();
 							}}
 						/>
 					) : (
