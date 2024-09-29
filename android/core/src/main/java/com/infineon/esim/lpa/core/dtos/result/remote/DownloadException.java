@@ -32,6 +32,7 @@ public class DownloadException extends RuntimeException
 
     private ProfileInstallationResultData result = null;
     private ProfileDownloadSession session = null;
+    public int deltaSpace = 0;
 
     public DownloadException(String message, ProfileInstallationResultData dt)
     {
@@ -44,6 +45,13 @@ public class DownloadException extends RuntimeException
         super(message);
         this.result = dt;
         this.session = ss;
+    }
+    public DownloadException(String message, ProfileInstallationResultData dt, ProfileDownloadSession ss, int ds)
+    {
+        super(message);
+        this.result = dt;
+        this.session = ss;
+        this.deltaSpace = ds;
     }
     public DownloadException(String message, ProfileInstallationResultData dt, Throwable cause)
     {

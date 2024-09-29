@@ -73,6 +73,7 @@ public class DownloadTask implements Callable<DownloadResult> {
 
         } catch (DownloadException fe) {
             var downloadResult = new DownloadResult(fe.getRemoteError());
+            downloadResult.deltaSpace = fe.deltaSpace;
             downloadResult.errorCode = fe.getResultData().getFinalResult().getErrorResult().getErrorReason().toString();
             downloadResult.notificationAddress = fe.getResultData().getNotificationMetadata().getNotificationAddress().toString();
             return downloadResult;

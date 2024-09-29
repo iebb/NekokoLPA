@@ -83,18 +83,19 @@ public class DownloadProfileWorker {
 
 
         boolean result = profileDownloadSession.isProfileInstalledSuccessfully();
+        var freeSpaceAfter = parse(es10Interface.es10b_getEuiccInfo2());
+        var deltaSpace = freeSpace - freeSpaceAfter;
         if (!result) {
-//            throw new DownloadException(
-//                    "Error Code " + profileInstallationResult.getProfileInstallationResultData().getFinalResult().getErrorResult().getErrorReason().toString() +
-//                            " in downloading profile from " + profileInstallationResult.getProfileInstallationResultData().getNotificationMetadata().getNotificationAddress(),
-//                    profileInstallationResult.getProfileInstallationResultData(),
-//                    profileDownloadSession
-//            );
-            return new DownloadResult(profileDownloadSession.getLastError());
+            throw new DownloadException(
+                    "Error Code " + profileInstallationResult.getProfileInstallationResultData().getFinalResult().getErrorResult().getErrorReason().toString() +
+                            " in downloading profile from " + profileInstallationResult.getProfileInstallationResultData().getNotificationMetadata().getNotificationAddress(),
+                    profileInstallationResult.getProfileInstallationResultData(),
+                    profileDownloadSession,
+                    deltaSpace
+            );
+            // return new DownloadResult(profileDownloadSession.getLastError());
 
         } else {
-            var freeSpaceAfter = parse(es10Interface.es10b_getEuiccInfo2());
-            var deltaSpace = freeSpace - freeSpaceAfter;
             var data = new DownloadResult();
             data.deltaSpace = deltaSpace;
             data.downloadBytes = profileDownloadSession.es10_getBoundProfilePackage().getBoundProfilePackage().getSequenceOf86().toString().length();
