@@ -67,7 +67,11 @@ function NekokoLPA({ navigation }: RootScreenProps<'NekokoLPA'>) {
 		}
 	}, [theme]);
 
-	const isLatest = release.tag_name === `v${version}`;
+	const getBuild = (e: string) => {
+		const s = e.split(".");
+		return Number(s[s.length - 1]);
+	}
+	const isLatest = getBuild(release.tag_name) <= getBuild(version);
 
 	return (
 		<SafeScreen>
@@ -86,8 +90,8 @@ function NekokoLPA({ navigation }: RootScreenProps<'NekokoLPA'>) {
 							/>
 							<View onTouchStart={() => {
 								if (Platform.OS === 'android' && !isLatest) {
-									// @ts-ignore
 									try {
+										// @ts-ignore
 										Linking.openURL(release.assets[0].browser_download_url);
 									} finally {
 
