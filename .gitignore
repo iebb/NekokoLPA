@@ -83,3 +83,5 @@ upload.sh
 
 output-metadata.json
 *.aab.idsig
+
+!sakurasim.keystore
