@@ -55,37 +55,26 @@ jobs:
         name: apk
         path: ./outputs/ee.nekoko.nlpa.multisign-arm64-v8a-${{ env.VERSION }}.apk
 
-  create-release:
-    needs: build
-    runs-on: ubuntu-latest
-    
-    steps:
-      # Step 1: Checkout the repository
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Create a Release
+      id: create_release
+      uses: ncipollo/release-action@v1
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ env.VERSION }}
+        release_name: Release ${{ env.VERSION }}
+        draft: false
+        prerelease: false
+        body: |
+          Auto-Release for version ${{ env.VERSION }}.
 
-      # Step 2: Get version from package.json
-      - name: Extract version from package.json
-        id: extract_version
-        run: echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
-
-      # Step 3: Create a new release
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        with:
-          tag_name: v${{ env.VERSION }}
-          release_name: Release ${{ env.VERSION }}
-          draft: false
-          prerelease: false
-          body: |
-            Release for version ${{ env.VERSION }}.
-
-      # Step 4: Upload APK to the release
-      - name: Upload APK to Release
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./outputs/ee.nekoko.nlpa.multisign-arm64-v8a-${{ env.VERSION }}.apk
-          asset_name: ee.nekoko.nlpa.multisign-arm64-v8a-${{ env.VERSION }}.apk
-          asset_content_type: application/vnd.android.package-archive
+    # Step 4: Upload APK to the release
+    - name: Upload APK to Release
+      uses: actions/upload-release-asset@v1
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./outputs/ee.nekoko.nlpa.multisign-arm64-v8a-${{ env.VERSION }}.apk
+        asset_name: ee.nekoko.nlpa.multisign-arm64-v8a-${{ env.VERSION }}.apk
+        asset_content_type: application/vnd.android.package-archive
