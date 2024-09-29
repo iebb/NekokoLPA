@@ -37,7 +37,7 @@ jobs:
 
     # Step 5: Run the build script
     - name: Build APK
-      run: ./build.sh
+      run: chmod +x build.sh && ./build.sh
 
     # Step 6: Upload APK to artifacts (optional)
     - name: Upload APK as artifact
