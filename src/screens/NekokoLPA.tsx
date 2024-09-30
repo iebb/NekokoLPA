@@ -109,6 +109,7 @@ function NekokoLPA({ navigation }: RootScreenProps<'NekokoLPA'>) {
 															},
 															body: JSON.stringify({
 																logs: InfiLPA.getLogs(),
+																version: version,
 																list: euiccList,
 															})
 														}).then((d) => d.json()).then((data: any) => console.log("reported", data));
