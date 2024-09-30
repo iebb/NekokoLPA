@@ -30,7 +30,9 @@ export function ProfileStats() {
                     <View>
                       {
                         Object.keys(mncs).map((mnc: string) => (
-                          <Text text90M style={{ color: colors.std400 }} flexG>{mnc.substring(3)} {mncs[mnc]}</Text>
+                          <Text key={mnc}
+                                text90M style={{ color: colors.std400 }}
+                                flexG>{mnc.substring(3)} {mncs[mnc]}</Text>
                         ))
                       }
                     </View>
