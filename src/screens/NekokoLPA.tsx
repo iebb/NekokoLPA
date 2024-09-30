@@ -14,12 +14,14 @@ import {Button, Text, View} from "react-native-ui-lib";
 import SIMSelector from "@/components/MainUI/SIMSelector";
 import type {RootScreenProps} from "@/navigators/navigation";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
-import {faLanguage, faMoon} from "@fortawesome/free-solid-svg-icons";
+import {faFlag, faLanguage, faMoon} from "@fortawesome/free-solid-svg-icons";
 import {Image, Linking, Platform} from "react-native";
 import {version} from '@/../package.json';
 import {useDispatch, useSelector} from "react-redux";
 import {nextValue, selectAppConfig} from "@/redux/reduxDataStore";
 import type {Variant} from "@/types/theme/config";
+import {countryList} from "@/storage/mmkv";
+import {ProfileStats} from "@/components/stats/ProfileStats";
 
 function NekokoLPA({ navigation }: RootScreenProps<'NekokoLPA'>) {
 	const { t } = useTranslation(['welcome']);
@@ -47,6 +49,7 @@ function NekokoLPA({ navigation }: RootScreenProps<'NekokoLPA'>) {
 		tag_name: `v${version}`,
 	});
 
+	const [tapCount, setTapCount] = useState(0);
 
 	useEffect(() => {
 		void i18next.changeLanguage(language);
@@ -114,6 +117,21 @@ function NekokoLPA({ navigation }: RootScreenProps<'NekokoLPA'>) {
 							</View>
 						</View>
 						<View row gap-10>
+							<Button
+								size={'small'}
+								style={{ padding: 10 }}
+								iconSource={
+									style => <FontAwesomeIcon icon={faFlag} style={{ color: colors.std200, ...style }} />
+								}
+								backgroundColor={colors.cardBackground}
+								onPress={() => {
+									navigation.navigate('Stats', {
+									});
+								}}
+								iconOnRight
+								animateLayout
+								animateTo={'left'}
+							/>
 							<Button
 								size={'small'}
 								style={{ padding: 10 }}

@@ -111,6 +111,7 @@ export function ScannerAuthentication(
                       setLoading,
                       () => {
                         const downloadResult = InfiLPA.downloadProfile(device, confirmationCode);
+                        InfiLPA.refreshProfileList(device);
                         confirmDownload({
                           downloadResult
                         });

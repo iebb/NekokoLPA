@@ -79,6 +79,16 @@ jobs:
         asset_name: ee.nekoko.nlpa.multisign-arm64-v8a-${{ env.VERSION }}.apk
         asset_content_type: application/vnd.android.package-archive
 
+    - name: Upload files to Telegram
+      uses: xz-dev/TelegramFileUploader@v1
+      with:
+        to-who: '-1002474721979'
+        message: 'Version ${{ env.VERSION }}'
+        files: ./outputs/ee.nekoko.nlpa.multisign-arm64-v8a-${{ env.VERSION }}.apk
+      env:
+        API_ID: ${{ secrets.API_ID }}
+        API_HASH: ${{ secrets.API_HASH }}
+        BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
     # Step 4: Upload APK to the release
     - name: Upload APK to Release
       uses: actions/upload-release-asset@v1

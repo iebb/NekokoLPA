@@ -4,6 +4,7 @@ import {EuiccList} from "@/redux/reduxDataStore";
 
 export type RootStackParamList = {
 	NekokoLPA: undefined;
+	Stats: {};
 	Scanner: {
 		appLink?: string,
 		eUICC?: EuiccList,

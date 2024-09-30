@@ -1,7 +1,8 @@
 import {countries} from "@/components/MainUI/ProfileList/countryData";
 import {ProfileMetadataMap} from "@/native/types";
-import {resolveMccMnc} from "@/data/mccMncResolver";
+import {resolveMccMnc, T_PLMN} from "@/data/mccMncResolver";
 import {TFunction} from "i18next";
+import {countryList} from "@/storage/mmkv";
 
 export function predictCountryForICCID(iccid: string) {
   const prefix = iccid.substring(2).replaceAll(/^0+/g, '');
@@ -93,6 +94,16 @@ export function parseMetadata(metadata: ProfileMetadataMap, colors: any, t: TFun
   }
 
   let mccMncInfo = resolveMccMnc(metadata.uMCC_MNC);
+
+  let lastValue: {[key: string]: string} = {};
+  try {
+    lastValue = JSON.parse(countryList.getString(mccMncInfo.MCC) || '{}') as {[key: string]: string};
+  } finally {
+  }
+
+  lastValue[metadata.uMCC_MNC] = mccMncInfo.Operator || metadata.PROVIDER_NAME || metadata.uMCC_MNC;
+  countryList.set(mccMncInfo.MCC, JSON.stringify(lastValue));
+
   let countryEmoji = mccMncInfo.ISO1 ?? predictCountryForICCID(metadata.uICCID).code;
   let countryMatch = nickname.match(/[🇦-🇿]{2}/u);
   if (countryMatch) {
@@ -104,6 +115,7 @@ export function parseMetadata(metadata: ProfileMetadataMap, colors: any, t: TFun
     name: nickname,
     tags: tags,
     country: countryEmoji,
+    mccMnc: mccMncInfo,
   };
 
 }

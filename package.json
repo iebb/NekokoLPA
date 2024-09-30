@@ -1,7 +1,7 @@
 {
   "name": "nekokolpa",
-  "buildVersion": 274,
-  "version": "1.0.16.274",
+  "buildVersion": 275,
+  "version": "1.0.16.275",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -15,7 +15,7 @@
     "get-mcc-mnc": "python3 scripts/mcc_mnc.py",
     "build": "bash build.sh",
     "build-and-upload": "bash build.sh && bash upload.sh",
-    "bump": "python3 bump_version.py && bash build.sh && bash upload.sh",
+    "bump": "python3 bump_version.py",
     "postinstall": "npx patch-package"
   },
   "dependencies": {

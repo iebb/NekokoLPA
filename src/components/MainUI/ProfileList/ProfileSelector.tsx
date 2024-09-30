@@ -1,6 +1,6 @@
 import {Card, Colors, Drawer, Switch, Text, View} from "react-native-ui-lib";
 import {useDispatch, useSelector} from "react-redux";
-import {EuiccList, selectAppConfig, setState} from "@/redux/reduxDataStore";
+import {EuiccList, selectAppConfig, setState, storage} from "@/redux/reduxDataStore";
 import {Profile} from "@/native/types";
 import InfiLPA from "@/native/InfiLPA";
 import {Alert, RefreshControl, ScrollView, TouchableOpacity} from "react-native";
@@ -14,8 +14,9 @@ import {findPhoneNumbersInText} from "libphonenumber-js/min";
 import {Flags} from "@/assets/flags";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faPencil, faPlus, faTrash} from "@fortawesome/free-solid-svg-icons";
-import {sizeStats} from "@/storage/sizeStats";
+import {sizeStats} from "@/storage/mmkv";
 import {makeLoading} from "@/components/utils/loading";
+import {size} from "lodash";
 
 
 interface ProfileExt extends Profile {
@@ -100,6 +101,11 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
               }
 
               const Flag = (Flags[country] || Flags.UN).default;
+              const v = storage.getNumber(metadata?.uICCID) || 0;
+              if (v > 0) {
+                sizeStats.set(metadata?.uICCID, v);
+                storage.delete(metadata?.uICCID);
+              }
               const Size = sizeStats.getNumber(metadata?.uICCID) || 0 ;
 
               return (

@@ -9,7 +9,7 @@ import {ScannerAuthentication} from "@/components/Scanner/ScannerAuthentication"
 import {ScannerResult} from "@/components/Scanner/ScannerResult";
 import {ScannerEuicc} from "@/components/Scanner/ScannerEuicc";
 import {version} from '@/../package.json';
-import {sizeStats} from "@/storage/sizeStats";
+import {sizeStats} from "@/storage/mmkv";
 
 const REPORTING_URL = "https://nlpa-data.nekoko.ee/api/collection/install";
 
@@ -82,7 +82,6 @@ function Scanner({ route,  navigation }: RootScreenProps<'Scanner'>) {
 								if (downloadResult?.deltaSpace) {
 									sizeStats.set(m.uICCID, downloadResult.deltaSpace);
 								}
-
 
 								setDownloadResult(downloadResult);
 								setScanState(3);

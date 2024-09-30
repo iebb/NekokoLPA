@@ -2,7 +2,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {NavigationContainer, NavigationContainerRef} from '@react-navigation/native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 
-import {NekokoLPA, Profile, Scanner} from '@/screens';
+import {NekokoLPA, Profile, Scanner, Stats} from '@/screens';
 import {useTheme} from '@/theme';
 
 import type {RootStackParamList} from '@/navigators/navigation';
@@ -58,6 +58,7 @@ function ApplicationNavigator() {
 					<Stack.Screen name="NekokoLPA" component={NekokoLPA} />
 					<Stack.Screen name="Scanner" component={Scanner} />
 					<Stack.Screen name="Profile" component={Profile} />
+					<Stack.Screen name="Stats" component={Stats} />
 				</Stack.Navigator>
 				<ErrorToast eUICC={currentEuicc} />
 			</NavigationContainer>
