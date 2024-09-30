@@ -229,6 +229,6 @@ export const countries: any = {
   "+1869": {name: 'Saint Kitts and Nevis', dial_code: '+1869', emoji: '🇰🇳', code: 'KN'},
   "+1876": {name: 'Jamaica', dial_code: '+1876', emoji: '🇯🇲', code: 'JM'},
   "+1939": {name: 'Puerto Rico', dial_code: '+1939', emoji: '🇵🇷', code: 'PR'},
-  "+88": {name: 'International', dial_code: '+88', emoji: '🇺🇳', code: 'UN'},
+  "+88": {name: 'International', dial_code: '+88', emoji: '🇺🇳', code: 'XX'},
   "+388": {name: 'EU +388', dial_code: '+388', emoji: '🇪🇺', code: 'EU'},
 }

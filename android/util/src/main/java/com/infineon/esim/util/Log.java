@@ -22,6 +22,9 @@
  */
 package com.infineon.esim.util;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 final public class Log {
 
     static String logs = "";
@@ -62,6 +65,10 @@ final public class Log {
     public static void warn(final String tag, final String msg, final Throwable error) {
         logs += new java.util.Date().toString() + " [W][" + tag + "] " + msg + "\n";
         logs += " >> [Error] " + error.getMessage() + "\n";
+        StringWriter sw = new StringWriter();
+        error.printStackTrace(new PrintWriter(sw));
+        String exceptionAsString = sw.toString();
+        logs += " >> [Trace] " + exceptionAsString + "\n\n";
         android.util.Log.w(tag, msg, error);
     }
 
@@ -77,6 +84,10 @@ final public class Log {
     public static void error(final String tag, final String msg, final Throwable error) {
         logs += new java.util.Date().toString() + " [E][" + tag + "] " + msg + "\n";
         logs += " >> [Error] " + error.getMessage() + "\n";
+        StringWriter sw = new StringWriter();
+        error.printStackTrace(new PrintWriter(sw));
+        String exceptionAsString = sw.toString();
+        logs += " >> [Trace] " + exceptionAsString + "\n\n";
         android.util.Log.e(tag, msg, error);
     }
 
