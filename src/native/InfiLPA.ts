@@ -61,7 +61,9 @@ class InfiLPA {
     static cancelSession(device: string) {
         return JSON.parse(LPABridge.cancelSession(device, CancelSessionReasons.END_USER_REJECTION));
     }
-
+    static getLogs() {
+        return LPABridge.getLogs();
+    }
 }
 
 export default InfiLPA;

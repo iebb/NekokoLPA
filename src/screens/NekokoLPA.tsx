@@ -15,13 +15,14 @@ import SIMSelector from "@/components/MainUI/SIMSelector";
 import type {RootScreenProps} from "@/navigators/navigation";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faFlag, faLanguage, faMoon} from "@fortawesome/free-solid-svg-icons";
-import {Image, Linking, Platform} from "react-native";
+import {Alert, Image, Linking, Platform, TouchableOpacity} from "react-native";
 import {version} from '@/../package.json';
 import {useDispatch, useSelector} from "react-redux";
-import {nextValue, selectAppConfig} from "@/redux/reduxDataStore";
+import {nextValue, selectAppConfig, selectState} from "@/redux/reduxDataStore";
 import type {Variant} from "@/types/theme/config";
-import {countryList} from "@/storage/mmkv";
-import {ProfileStats} from "@/components/stats/ProfileStats";
+import InfiLPA from "@/native/InfiLPA";
+
+const DEBUG_REPORTING_URL = "https://nlpa-data.nekoko.ee/api/debug/log";
 
 function NekokoLPA({ navigation }: RootScreenProps<'NekokoLPA'>) {
 	const { t } = useTranslation(['welcome']);
@@ -45,6 +46,7 @@ function NekokoLPA({ navigation }: RootScreenProps<'NekokoLPA'>) {
 
 	const dispatch = useDispatch();
 	const { language, theme } = useSelector(selectAppConfig);
+	const { euiccList } = useSelector(selectState);
 	const [release, setRelease] = useState({
 		tag_name: `v${version}`,
 	});
@@ -85,12 +87,47 @@ function NekokoLPA({ navigation }: RootScreenProps<'NekokoLPA'>) {
 				}}
 			>
 				<View style={{flexDirection: 'column', display: 'flex', height: '100%', gap: 10}}>
-					<View  row>
+					<View row>
 						<View row gap-5 flexG>
-							<Image
-								source={CatImage}
-								style={{ width: 40, height: 40 }}
-							/>
+							<TouchableOpacity
+								onPress={() => {
+									setTapCount(tapCount + 1);
+									if (tapCount >= 5) {
+										setTapCount(0);
+										Alert.alert(
+											'Uploading Logs',
+											'Do you want to upload debug logs? That might contain the metadata of your profile.', [
+												{
+													text: 'OK',
+													style: 'destructive',
+													onPress: () => {
+														fetch(DEBUG_REPORTING_URL, {
+															method: 'POST',
+															headers: {
+																'Accept': 'application/json',
+																'Content-Type': 'application/json'
+															},
+															body: JSON.stringify({
+																logs: InfiLPA.getLogs(),
+																list: euiccList,
+															})
+														}).then((d) => d.json()).then((data: any) => console.log("reported", data));
+													}
+												},
+												{
+													text: 'Cancel',
+													onPress: () => {},
+													style: 'cancel',
+												},
+											])
+									}
+								}}
+							>
+								<Image
+									source={CatImage}
+									style={{ width: 40, height: 40 }}
+								/>
+							</TouchableOpacity>
 							<View onTouchStart={() => {
 								if (Platform.OS === 'android' && !isLatest) {
 									try {

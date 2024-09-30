@@ -256,6 +256,13 @@ class LPABridge @ReactMethod constructor(private val context: ReactContext?) : R
         return Gson().toJson(result)
     }
 
+
+    @ReactMethod(isBlockingSynchronousMethod = true)
+    fun getLogs(): String {
+        val logs = Log.getLogs()
+        return logs
+    }
+
     override fun onStatusChange(actionStatus: ActionStatus) {
         Log.debug(TAG, "Changing action status to: $actionStatus")
         // actionStatusLiveData.postValue(AsyncActionStatus(actionStatus))

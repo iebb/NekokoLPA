@@ -24,6 +24,8 @@ package com.infineon.esim.util;
 
 final public class Log {
 
+    static String logs = "";
+
     // Ref:
     // https://stackoverflow.com/questions/8355632/how-do-you-usually-tag-log-entries-android
     public static String getFileLineNumber() {
@@ -38,34 +40,47 @@ final public class Log {
     }
 
     public static void verbose(final String tag, final String msg) {
+        logs += new java.util.Date().toString() + " [V][" + tag + "] " + msg + "\n";
         android.util.Log.v(tag, msg);
     }
 
     public static void debug(final String tag, final String msg) {
+        logs += new java.util.Date().toString() + " [D][" + tag + "] " + msg + "\n";
         android.util.Log.d(tag, msg);
     }
 
     public static void info(final String tag, final String msg) {
+        logs += new java.util.Date().toString() + " [I][" + tag + "] " + msg + "\n";
         android.util.Log.i(tag, msg);
     }
 
     public static void warn(final String tag, final String msg) {
+        logs += new java.util.Date().toString() + " [W][" + tag + "] " + msg + "\n";
         android.util.Log.w(tag, msg);
     }
 
     public static void warn(final String tag, final String msg, final Throwable error) {
+        logs += new java.util.Date().toString() + " [W][" + tag + "] " + msg + "\n";
+        logs += " >> [Error] " + error.getMessage() + "\n";
         android.util.Log.w(tag, msg, error);
     }
 
     public static void error(final String msg) {
-        android.util.Log.e("", msg);
+        error("", msg);
     }
 
     public static void error(final String tag, final String msg) {
+        logs += new java.util.Date().toString() + " [E][" + tag + "] " + msg + "\n";
         android.util.Log.e(tag, msg);
     }
 
     public static void error(final String tag, final String msg, final Throwable error) {
+        logs += new java.util.Date().toString() + " [E][" + tag + "] " + msg + "\n";
+        logs += " >> [Error] " + error.getMessage() + "\n";
         android.util.Log.e(tag, msg, error);
+    }
+
+    public static String getLogs() {
+        return logs;
     }
 }
