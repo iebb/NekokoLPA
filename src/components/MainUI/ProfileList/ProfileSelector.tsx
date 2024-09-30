@@ -101,12 +101,14 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
               }
 
               const Flag = (Flags[country] || Flags.UN).default;
-              const v = storage.getNumber(metadata?.uICCID) || 0;
-              if (v > 0) {
-                sizeStats.set(metadata?.uICCID, v);
-                storage.delete(metadata?.uICCID);
+              let Size = 0;
+              if (metadata?.uICCID) {
+                Size = storage.getNumber(metadata?.uICCID) || 0;
+                if (Size > 0) {
+                  sizeStats.set(metadata?.uICCID, Size);
+                  storage.delete(metadata?.uICCID);
+                }
               }
-              const Size = sizeStats.getNumber(metadata?.uICCID) || 0 ;
 
               return (
                 <Drawer

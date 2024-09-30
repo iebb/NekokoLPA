@@ -97,12 +97,13 @@ export function parseMetadata(metadata: ProfileMetadataMap, colors: any, t: TFun
 
   let lastValue: {[key: string]: string} = {};
   try {
-    lastValue = JSON.parse(countryList.getString(mccMncInfo.MCC) || '{}') as {[key: string]: string};
+    if (mccMncInfo.MCC) {
+      lastValue = JSON.parse(countryList.getString(mccMncInfo.MCC) || '{}') as {[key: string]: string};
+      lastValue[metadata.uMCC_MNC] = mccMncInfo.Operator || metadata.PROVIDER_NAME || metadata.uMCC_MNC;
+      countryList.set(mccMncInfo.MCC, JSON.stringify(lastValue));
+    }
   } finally {
   }
-
-  lastValue[metadata.uMCC_MNC] = mccMncInfo.Operator || metadata.PROVIDER_NAME || metadata.uMCC_MNC;
-  countryList.set(mccMncInfo.MCC, JSON.stringify(lastValue));
 
   let countryEmoji = mccMncInfo.ISO1 ?? predictCountryForICCID(metadata.uICCID).code;
   let countryMatch = nickname.match(/[🇦-🇿]{2}/u);
