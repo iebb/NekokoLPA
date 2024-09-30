@@ -97,6 +97,7 @@ function Scanner({ route,  navigation }: RootScreenProps<'Scanner'>) {
 								setScanState(0);
 								setDownloadResult(null);
 								setAuthenticateResult(null);
+								navigation.goBack();
 							}}
 						/>
 					) : (
