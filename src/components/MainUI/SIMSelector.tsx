@@ -125,7 +125,7 @@ export default function SIMSelector() {
               items={
                 euiccList.map((eUICC, _idx) => ({
                   label: (eUICC.eid && nicknames[eUICC.eid!]) ? (
-                    eUICC.name + "\n" + nicknames[eUICC.eid!]
+                    (eUICC.name.length > 10 ? eUICC.name.substring(0, 10) : eUICC.name) + "\n" + nicknames[eUICC.eid!]
                   ) : (
                     eUICC.name
                   ),
