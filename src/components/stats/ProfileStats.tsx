@@ -24,7 +24,7 @@ export function ProfileStats() {
                     height={20}
                   />
                   <View flexG>
-                    <Text text70M style={{ color: colors.std200 }} flexG>
+                    <Text text70M style={{ color: colors.std200, marginTop: -2 }} flexG>
                       {mcc} {mccData.Country}
                     </Text>
                     <View>
