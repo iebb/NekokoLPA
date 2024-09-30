@@ -82,7 +82,7 @@ jobs:
     - name: Upload files to Telegram
       uses: xz-dev/TelegramFileUploader@v1.1.1
       with:
-        to-who: '-1002474721979'
+        to-who: -1002474721979
         message: 'Version ${{ env.VERSION }}'
         files: ./outputs/ee.nekoko.nlpa.multisign-arm64-v8a-${{ env.VERSION }}.apk
       env:
