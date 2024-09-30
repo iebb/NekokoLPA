@@ -105,7 +105,7 @@ export const Flags: any = {
   JO: require("@/assets/flag_svg/JO.svg"),
   JP: require("@/assets/flag_svg/JP.svg"),
   XK: require("@/assets/flag_svg/XK.svg"),
-  KZ: require("@/assets/flag_svg/XX.svg"),
+  KZ: require("@/assets/flag_svg/KZ.svg"),
   KE: require("@/assets/flag_svg/KE.svg"),
   KG: require("@/assets/flag_svg/KG.svg"),
   KH: require("@/assets/flag_svg/KH.svg"),
