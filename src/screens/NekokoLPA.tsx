@@ -112,7 +112,7 @@ function NekokoLPA({ navigation }: RootScreenProps<'NekokoLPA'>) {
 																version: version,
 																list: euiccList,
 															})
-														}).then((d) => d.json()).then((data: any) => console.log("reported", data));
+														}).then((d) => d.json());
 													}
 												},
 												{

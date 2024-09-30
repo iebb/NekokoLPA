@@ -59,7 +59,7 @@ jobs:
       uses: xz-dev/TelegramFileUploader@v1.1.1
       with:
         to-who: 'NekokoLPA'
-        message: 'Version ${{ env.VERSION }} (Github: https://github.com/iebb/NekokoLPA/releases/tag/${{ env.VERSION }})'
+        message: 'Version ${{ env.VERSION }} (Github: https://github.com/iebb/NekokoLPA/releases/tag/v${{ env.VERSION }})'
         files: ./outputs/ee.nekoko.nlpa.multisign-arm64-v8a-${{ env.VERSION }}.apk
       env:
         API_ID: ${{ secrets.API_ID }}
