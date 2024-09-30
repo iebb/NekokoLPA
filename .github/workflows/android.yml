@@ -80,7 +80,7 @@ jobs:
         asset_content_type: application/vnd.android.package-archive
 
     - name: Upload files to Telegram
-      uses: xz-dev/TelegramFileUploader@v1
+      uses: xz-dev/TelegramFileUploader@v1.1.1
       with:
         to-who: '-1002474721979'
         message: 'Version ${{ env.VERSION }}'
