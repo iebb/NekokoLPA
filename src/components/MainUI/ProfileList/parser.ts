@@ -14,6 +14,19 @@ export function predictCountryForICCID(iccid: string) {
   return {name: 'United States', dial_code: '+1', emoji: '🇺🇸', code: 'US'}
 }
 
+function emojiToCountryCode(emoji: string) {
+  // Extract the two regional indicator symbols from the emoji
+  const codePoints = [...emoji].map(char => char.codePointAt(0));
+
+  // Convert them to ISO country code (subtract 0x1F1E6 which is the base for 'A')
+  const countryCode = codePoints
+    .map(cp => String.fromCharCode(cp! - 0x1F1E6 + 65))
+    .join('');
+
+  return countryCode.toUpperCase();
+}
+
+
 export interface Tag {
   tag: string;
   value: string;
@@ -108,7 +121,7 @@ export function parseMetadata(metadata: ProfileMetadataMap, colors: any, t: TFun
   let countryEmoji = mccMncInfo.ISO1 ?? predictCountryForICCID(metadata.uICCID).code;
   let countryMatch = nickname.match(/[🇦-🇿]{2}/u);
   if (countryMatch) {
-    countryEmoji = countryMatch[0];
+    countryEmoji = emojiToCountryCode(countryMatch[0]);
     nickname = nickname.replace(countryMatch[0], "").trim();
   }
 
