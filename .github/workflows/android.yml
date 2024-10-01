@@ -46,6 +46,7 @@ jobs:
     - name: Sign APK
       env: # Or as an environment variable
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        SIGN_PASS_NEKOKO_BEEF: ${{ secrets.SIGN_PASS_NEKOKO_BEEF }}
       run: chmod +x sign.sh && bash ./sign.sh
 
     # Step 6: Upload APK to artifacts (optional)

@@ -185,8 +185,8 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 				<ScrollView>
 					<View marginB-10 row gap-5>
 						<Flag
-							width={32}
-							height={32}
+							width={24}
+							height={24}
 						/>
 						<TouchableOpacity
 							style={{ flex: 1, marginLeft: 5 }}

@@ -7,6 +7,7 @@ import {resolveMccMnc, T_PLMN} from "@/data/mccMncResolver";
 import {parseMetadata} from "@/components/MainUI/ProfileList/parser";
 import {useTranslation} from "react-i18next";
 import Clipboard from "@react-native-clipboard/clipboard";
+import {Flags} from "@/assets/flags";
 
 export default function MetadataView({ metadata }: { metadata?: ProfileMetadataMap }) {
   const { colors} = useTheme();
@@ -21,6 +22,9 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
 
   if (!metadata) return null;
   const readableMccMnc = metadata.uMCC_MNC.replaceAll("F", " ");
+
+  const Flag = (Flags[resolvedMccMnc?.ISO1 || "UN"] || Flags.UN).default;
+
   return (
     <View left style={{
       flexDirection: "column", display: "flex",
@@ -84,7 +88,8 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
               <Text style={styles.tableHeader} color={colors.std200}>
                 {t("profile:country")}:
               </Text>
-              <TouchableOpacity style={styles.tableColumnTO}
+              <TouchableOpacity
+                style={{...styles.tableColumnTO, display: "flex", flexDirection: "row", gap: 5}}
                 onPress={() => {
                   if (resolvedMccMnc.Country) {
                     Clipboard.setString(resolvedMccMnc.Country);
@@ -92,8 +97,12 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
                   }
                 }}
               >
+                <Flag
+                  width={20}
+                  height={20}
+                />
                 <Text style={styles.tableColumn} color={colors.std200}>
-                  {resolvedMccMnc.Emoji} {resolvedMccMnc.Country}
+                  {resolvedMccMnc.Country}
                 </Text>
               </TouchableOpacity>
             </View>

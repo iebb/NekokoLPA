@@ -18,9 +18,9 @@ export function ProfileStats() {
             const Flag = (Flags[mccData.ISO1] || Flags.UN).default;
             return (
               <View key={mcc}>
-                <View row gap-3>
+                <View row gap-10>
                   <Flag
-                    width={30}
+                    width={20}
                     height={20}
                   />
                   <View flexG>
