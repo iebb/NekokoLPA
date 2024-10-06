@@ -87,13 +87,6 @@ function ThemeProvider({ children = false, storage }: Props) {
 		};
 	}, [fullConfig]);
 
-	const navigationTheme = useMemo(() => {
-		return {
-			dark: variant === 'dark',
-			colors: fullConfig.navigationColors,
-		};
-	}, [variant, fullConfig.navigationColors]);
-
 	const theme = useMemo(() => {
 		return {
 			colors: fullConfig.colors,
@@ -111,8 +104,8 @@ function ThemeProvider({ children = false, storage }: Props) {
 	}, [theme]);
 
 	const value = useMemo(() => {
-		return { ...theme, components, navigationTheme, changeTheme };
-	}, [theme, components, navigationTheme, changeTheme]);
+		return { ...theme, components, changeTheme };
+	}, [theme, components, changeTheme]);
 
 	return (
 		<ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>

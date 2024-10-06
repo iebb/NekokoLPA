@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/theme';
 
 function SafeScreen({ children }: PropsWithChildren) {
-	const { colors, layout, variant, navigationTheme } = useTheme();
+	const { colors, layout, variant } = useTheme();
 	const insets = useSafeAreaInsets();
 
 	return (

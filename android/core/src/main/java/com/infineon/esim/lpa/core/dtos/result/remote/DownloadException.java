@@ -3,9 +3,6 @@ package com.infineon.esim.lpa.core.dtos.result.remote;
 import com.gsma.sgp.messages.rspdefinitions.ProfileInstallationResultData;
 import com.infineon.esim.lpa.core.dtos.ProfileDownloadSession;
 
-import java.util.List;
-import java.util.Map;
-
 
 
 public class DownloadException extends RuntimeException

@@ -1,7 +1,5 @@
 import { config } from '@/theme/_config';
 import generateConfig from '@/theme/ThemeProvider/generateConfig';
-
-import type { Theme as NavigationTheme } from '@react-navigation/native';
 import type { AllPartial } from './common';
 
 export type Variant = keyof typeof config.variants | 'default';
@@ -23,7 +21,6 @@ export type FulfilledThemeConfiguration = {
 		radius: readonly number[];
 		readonly colors: Record<string, string>;
 	};
-	readonly navigationColors: NavigationTheme['colors'];
 };
 
 export type VariantThemeConfiguration = {
@@ -35,7 +32,6 @@ export type VariantThemeConfiguration = {
 	borders: {
 		readonly colors: FulfilledThemeConfiguration['borders']['colors'];
 	};
-	readonly navigationColors: Partial<NavigationTheme['colors']>;
 };
 
 export type ThemeConfiguration = FulfilledThemeConfiguration & {

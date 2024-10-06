@@ -193,8 +193,4 @@ public class LocalProfileAssistantCoreImpl implements LocalProfileAssistantCore 
         return profileDownloadSession.getLastError();
     }
 
-
-    private boolean isEs9PlusInterfaceUnavailable() {
-        return es9PlusInterface == null;
-    }
  }
