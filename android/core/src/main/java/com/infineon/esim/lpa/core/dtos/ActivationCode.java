@@ -87,16 +87,21 @@ public class ActivationCode implements Parcelable {
         this.activationCode = barcode.replace("LPA:", "");
 
         String[] parts = activationCode.split("\\$");
-        if((parts.length >= 3) && (parts.length <= 5)) {
+        if((parts.length >= 2) && (parts.length <= 5)) {
             acFormat = parts[0];
             smdpServer = parts[1];
-            matchingId = parts[2];
 
             // AC_Format must be "1"
             validity = (acFormat.compareTo("1") == 0);
 
             // All first three parts must be non-empty
-            validity &= !acFormat.isEmpty() && !smdpServer.isEmpty() && !matchingId.isEmpty();
+            validity &= !acFormat.isEmpty() && !smdpServer.isEmpty();
+
+            if (parts.length >= 3) {
+                matchingId = parts[2];
+            } else {
+                matchingId = "";
+            }
 
             if(parts.length >= 4) {
                 smdpOid = parts[3];

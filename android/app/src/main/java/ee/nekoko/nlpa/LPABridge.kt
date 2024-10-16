@@ -23,6 +23,9 @@
 package ee.nekoko.nlpa
 
 import android.content.Context
+import android.content.pm.PackageManager
+import android.content.pm.Signature
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.LiveData
@@ -45,6 +48,7 @@ import com.infineon.esim.util.Log
 import ee.nekoko.lpa.euicc.EuiccManager
 import ee.nekoko.lpa.euicc.base.EuiccSlot
 import io.sentry.Sentry
+import java.security.MessageDigest
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
@@ -124,7 +128,20 @@ class LPABridge @ReactMethod constructor(private val context: ReactContext?) : R
             }
         }
         instance = this
+        getLPAInfo()
     }
+
+
+    fun getLPAInfo() {
+        val s = SystemInfo(context as Context)
+        for (sig in s.signatureList()) {
+            Log.debug("NekokoLPA", "Accepted ARA-M: $sig");
+        }
+    }
+
+
+
+
 
     @get:ReactMethod(isBlockingSynchronousMethod = true)
     val euiccListJSON: String
@@ -252,7 +269,7 @@ class LPABridge @ReactMethod constructor(private val context: ReactContext?) : R
     @ReactMethod(isBlockingSynchronousMethod = true)
     fun cancelSession(device: String?, cancelSessionReason: Double): String {
         val lpa = euiccManager.getLPA(device) ?: return "null"
-        val result = lpa.cancelSession(cancelSessionReason.toLong())
+        val result = lpa.cancelSessionR(cancelSessionReason.toLong())
         return Gson().toJson(result)
     }
 

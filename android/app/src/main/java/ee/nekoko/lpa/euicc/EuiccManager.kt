@@ -78,7 +78,7 @@ class EuiccManager(context: Context, private val statusAndEventHandler: StatusAn
 
     /* sync calls */
     fun refreshEuiccList() {
-        statusAndEventHandler.onStatusChange(ActionStatus.REFRESHING_EUICC_LIST_STARTED)
+        
         Log.debug(TAG, "Refreshing eUICC list from refreshEuiccList")
         euiccSlotMap.clear()
         try {
@@ -111,7 +111,7 @@ class EuiccManager(context: Context, private val statusAndEventHandler: StatusAn
         } catch (e: Exception) {
             statusAndEventHandler.onError(Error("Exception during refreshing eUICC list.", e.message, e))
         } finally {
-            statusAndEventHandler.onStatusChange(ActionStatus.REFRESHING_EUICC_LIST_FINISHED)
+            
         }
     }
 
@@ -132,7 +132,7 @@ class EuiccManager(context: Context, private val statusAndEventHandler: StatusAn
             return
         }
         // refreshing eUICCs
-        statusAndEventHandler.onStatusChange(ActionStatus.REFRESHING_EUICC_LIST_STARTED)
+        
         Log.debug(TAG, "Refreshing eUICC list.")
 
         while (retry > 0) {

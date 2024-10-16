@@ -30,11 +30,7 @@ import android.se.omapi.Session;
 import ee.nekoko.lpa.euicc.base.EuiccConnection;
 import ee.nekoko.lpa.euicc.base.generic.Definitions;
 import io.sentry.Sentry;
-import io.sentry.SentryEvent;
-import io.sentry.SentryLevel;
-import io.sentry.protocol.Message;
 
-import com.infineon.esim.lpa.lpa.task.DownloadTask;
 import com.infineon.esim.util.Bytes;
 import com.infineon.esim.util.Log;
 
@@ -88,8 +84,6 @@ public class SeEuiccConnection implements EuiccConnection {
             if (channel == null || !channel.isOpen()) {
                 Log.debug(TAG, "Opening a new logical channel...");
                 channel = session.openLogicalChannel(Bytes.decodeHexString(Definitions.ISDR_AID));
-                Log.debug(TAG, "Session: " + session.toString());
-                Log.debug(TAG, "Channel: " + channel.toString());
                 if (channel != null) {
                     byte[] response = channel.getSelectResponse();
                     Log.debug(TAG, "Opened logical channel: " + Bytes.encodeHexString(response));

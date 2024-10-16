@@ -1,23 +1,16 @@
-import React, {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet,} from 'react-native';
+import React, {useState} from 'react';
+import {StyleSheet,} from 'react-native';
 import {useTranslation} from 'react-i18next';
-import {SafeScreen} from '@/components/template';
 import {useTheme} from '@/theme';
-import type {RootScreenProps} from "@/navigators/navigation";
-import {Camera, useCameraDevice, useCameraPermission, useCodeScanner} from "react-native-vision-camera";
-import {Button, Checkbox, Colors, Text, TextField, View} from "react-native-ui-lib";
+import {Button, Colors, Text, TextField, View} from "react-native-ui-lib";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
-import {faArrowLeftLong, faCancel, faCheck, faCheckCircle, faDownload} from "@fortawesome/free-solid-svg-icons";
+import {faCancel, faDownload} from "@fortawesome/free-solid-svg-icons";
 import InfiLPA from "@/native/InfiLPA";
-import {shallowEqual, useDispatch, useSelector} from "react-redux";
-import {RootState, selectEuicc, setState} from "@/redux/reduxDataStore";
-import {ActionStatus, CancelSessionReasons} from "@/native/consts";
 import BlockingLoader from "@/components/common/BlockingLoader";
 import RemoteErrorView from "@/components/common/RemoteErrorView";
 import MetadataView from "@/components/common/MetadataView";
 import Title from "@/components/common/Title";
 import Container from "@/components/common/Container";
-import {ScannerInitial} from "@/components/Scanner/ScannerInitial";
 import {makeLoading} from "@/components/utils/loading";
 
 

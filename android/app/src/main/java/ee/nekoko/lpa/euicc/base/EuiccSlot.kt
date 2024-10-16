@@ -61,13 +61,13 @@ class EuiccSlot (
         try {
             if (connection != null) {
                 Log.error("EUICC_SLOT", "Refreshing")
-                val es10Interface = Es10Interface(connection)
+                val es10Interface = Es10Interface(connection, name)
                 eid = es10Interface.es10c_getEid().eidValue.toString()
                 euiccInfo2 = es10Interface.es10b_getEuiccInfo2()
                 available = true
                 parse()
                 if (lpa == null) {
-                    lpa = LocalProfileAssistant(connection, this)
+                    lpa = LocalProfileAssistant(connection, name,this)
                 }
                 profiles = lpa!!.refreshProfileList()
                 manager?.updateEuiccList()

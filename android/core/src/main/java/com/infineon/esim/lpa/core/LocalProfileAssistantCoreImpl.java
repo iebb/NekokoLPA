@@ -23,9 +23,18 @@
 
 package com.infineon.esim.lpa.core;
 
+import com.beanit.jasn1.ber.types.BerBoolean;
+import com.gsma.sgp.messages.rspdefinitions.DeleteProfileResponse;
+import com.gsma.sgp.messages.rspdefinitions.DisableProfileResponse;
 import com.gsma.sgp.messages.rspdefinitions.EUICCInfo1;
+import com.gsma.sgp.messages.rspdefinitions.EUICCInfo2;
+import com.gsma.sgp.messages.rspdefinitions.EnableProfileResponse;
+import com.gsma.sgp.messages.rspdefinitions.GetEuiccDataResponse;
+import com.gsma.sgp.messages.rspdefinitions.Iccid;
+import com.gsma.sgp.messages.rspdefinitions.ProfileInfo;
+import com.gsma.sgp.messages.rspdefinitions.ProfileInfoListResponse;
+import com.gsma.sgp.messages.rspdefinitions.SetNicknameResponse;
 import com.infineon.esim.lpa.core.dtos.ActivationCode;
-import com.infineon.esim.lpa.core.dtos.DeviceInformation;
 import com.infineon.esim.lpa.core.dtos.EuiccInfo;
 import com.infineon.esim.lpa.core.dtos.ProfileDownloadSession;
 import com.infineon.esim.lpa.core.dtos.profile.ProfileMetadata;
@@ -43,20 +52,14 @@ import com.infineon.esim.lpa.core.es10.Es10Interface;
 import com.infineon.esim.lpa.core.es10.EuiccChannel;
 import com.infineon.esim.lpa.core.es9plus.Es9PlusInterface;
 import com.infineon.esim.lpa.core.worker.local.ClearAllNotificationsWorker;
-import com.infineon.esim.lpa.core.worker.local.DeleteProfileWorker;
-import com.infineon.esim.lpa.core.worker.local.DisableProfileWorker;
-import com.infineon.esim.lpa.core.worker.local.EnableProfileWorker;
-import com.infineon.esim.lpa.core.worker.local.GetEidWorker;
-import com.infineon.esim.lpa.core.worker.local.GetEuiccInfo1Worker_M;
-import com.infineon.esim.lpa.core.worker.local.GetEuiccInfo2Worker;
-import com.infineon.esim.lpa.core.worker.local.ListProfilesWorker;
-import com.infineon.esim.lpa.core.worker.local.SetNicknameWorker;
 import com.infineon.esim.lpa.core.worker.remote.AuthenticateWorker;
 import com.infineon.esim.lpa.core.worker.remote.CancelSessionWorker;
 import com.infineon.esim.lpa.core.worker.remote.DownloadProfileWorker;
 import com.infineon.esim.lpa.core.worker.remote.HandleNotificationsWorker;
+import com.infineon.esim.util.Bytes;
 import com.infineon.esim.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LocalProfileAssistantCoreImpl implements LocalProfileAssistantCore {
@@ -68,75 +71,86 @@ public class LocalProfileAssistantCoreImpl implements LocalProfileAssistantCore 
     public Es9PlusInterface es9PlusInterface;
 
     public LocalProfileAssistantCoreImpl() {
-    }
-
-    public void setEuiccChannel(EuiccChannel euiccChannel) {
-        this.es10Interface = new Es10Interface(euiccChannel);
-    }
-
-    public void enableEs9PlusInterface() {
         this.es9PlusInterface = new Es9PlusInterface();
     }
 
-    public void disableEs9PlusInterface() {
-        this.es9PlusInterface = null;
+    public void setEuiccChannel(EuiccChannel euiccChannel, String name) {
+        this.es10Interface = new Es10Interface(euiccChannel, name);
     }
 
     // Local functions
 
     @Override
-    public EnableResult enableProfile(String iccid, boolean refreshFlag) throws Exception {
-        int result = new EnableProfileWorker(es10Interface).enable(iccid, refreshFlag);
-        if (refreshFlag && result > 0) {
-            result = new EnableProfileWorker(es10Interface).enable(iccid, false);
+    public EnableResult enableProfile(String iccidString, boolean refreshFlag) throws Exception {
+        Iccid iccid = new Iccid(Bytes.decodeHexString(iccidString));
+        EnableProfileResponse enableProfileResponse = es10Interface.es10c_enableProfileByIccid(iccid, new BerBoolean(refreshFlag));
+        int result = enableProfileResponse.getEnableResult().intValue();
+        if (refreshFlag && result > 0) { // retry?
+            enableProfileResponse = es10Interface.es10c_enableProfileByIccid(iccid, new BerBoolean(false));
+            result = enableProfileResponse.getEnableResult().intValue();
         }
         return new EnableResult(result);
     }
 
     @Override
-    public DisableResult disableProfile(String iccid) throws Exception {
-        int result = new DisableProfileWorker(es10Interface).disable(iccid);
-
-        return new DisableResult(result);
+    public DisableResult disableProfile(String iccidString) throws Exception {
+        Iccid iccid = new Iccid(Bytes.decodeHexString(iccidString));
+        BerBoolean refreshFlag = new BerBoolean(true);
+        DisableProfileResponse disableProfileResponse = es10Interface.es10c_disableProfileByIccid(iccid,refreshFlag);
+        return new DisableResult(disableProfileResponse.getDisableResult().intValue());
     }
 
     @Override
-    public DeleteResult deleteProfile(String iccid) throws Exception {
-        int result = new DeleteProfileWorker(es10Interface).delete(iccid);
-
-        return new DeleteResult(result);
+    public DeleteResult deleteProfile(String iccidString) throws Exception {
+        Iccid iccid = new Iccid(Bytes.decodeHexString(iccidString));
+        DeleteProfileResponse deleteProfileResponse = es10Interface.es10c_deleteProfileByIccid(iccid);
+        return new DeleteResult(deleteProfileResponse.getDeleteResult().intValue());
     }
 
     @Override
-    public SetNicknameResult setNickname(String iccid, String nicknameNew) throws Exception {
-        int result = new SetNicknameWorker(es10Interface).setNickname(iccid,nicknameNew);
-
-        return new SetNicknameResult(result);
+    public SetNicknameResult setNickname(String iccidString, String nicknameNew) throws Exception {
+        Iccid iccid = new Iccid(Bytes.decodeHexString(iccidString));
+        SetNicknameResponse setNicknameResponse = es10Interface.es10c_setNickname(iccid, nicknameNew);
+        return new SetNicknameResult(setNicknameResponse.getSetNicknameResult().intValue());
     }
 
     @Override
     public List<ProfileMetadata> getProfiles() throws Exception {
-        return new ListProfilesWorker(es10Interface).listProfiles();
+
+        ProfileInfoListResponse profileInfoListResponse = es10Interface.es10c_getProfilesInfoAll();
+
+        List<ProfileMetadata> profileMetadataList = new ArrayList<>();
+
+        for (ProfileInfo profileInfo : profileInfoListResponse.getProfileInfoListOk().getProfileInfo()) {
+            if(profileInfo.getIccid() != null) {
+                profileMetadataList.add(new ProfileMetadata(profileInfo));
+            }
+        }
+
+        return profileMetadataList;
     }
 
     @Override
     public String getEID() throws Exception {
-        return new GetEidWorker(es10Interface).getEid();
+        GetEuiccDataResponse getEuiccDataResponse = es10Interface.es10c_getEid();
+        return getEuiccDataResponse.getEidValue().toString();
     }
 
     @Override
     public EuiccInfo getEuiccInfo2() throws Exception {
-        return new GetEuiccInfo2Worker(es10Interface).getEuiccInfo2();
+        EUICCInfo2 euiccInfo2 = es10Interface.es10b_getEuiccInfo2();
+        return new EuiccInfo(euiccInfo2);
     }
 
     public EUICCInfo1 getEuiccInfo1() throws Exception {
-        return new GetEuiccInfo1Worker_M(es10Interface).getEuiccInfo1();
+        return es10Interface.es10b_getEuiccInfo1();
     }
 
     // Remote functions
 
     @Override
     public AuthenticateResult authenticate(ActivationCode activationCode) throws Exception {
+        Log.debug("AUTHENTICATE", activationCode.toString());
         profileDownloadSession = new ProfileDownloadSession(activationCode, es10Interface, es9PlusInterface);
 
         boolean success = new AuthenticateWorker(profileDownloadSession).authenticate();

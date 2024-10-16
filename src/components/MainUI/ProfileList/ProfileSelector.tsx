@@ -195,8 +195,6 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
                       style={{
                         paddingVertical: 5,
                         gap: 5,
-                        borderBottomColor: `hsl(${hueICCID}, 80%, 55%)`,
-                        borderBottomWidth: 2,
                       }}
                       paddingH-15
                       margin-0

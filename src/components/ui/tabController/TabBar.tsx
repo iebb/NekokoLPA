@@ -311,7 +311,7 @@ const TabBar = (props: Props) => {
         onLayout={onLayout}
       >
         <View style={tabBarContainerStyle}>{tabBarItems}</View>
-        {itemsCount > 1 && (
+        {itemsCount >= 1 && (
           <Reanimated.View style={[styles.selectedIndicator, indicatorStyle, _indicatorTransitionStyle]}/>
         )}
       </FadedScrollView>

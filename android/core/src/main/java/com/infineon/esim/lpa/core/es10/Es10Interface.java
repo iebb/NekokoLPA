@@ -87,9 +87,16 @@ public class Es10Interface {
     private static final String TAG = Es10Interface.class.getName();
 
     private final EuiccChannel euiccChannel;
+    private final String iface;
 
     public Es10Interface(EuiccChannel euiccChannel) {
         this.euiccChannel = euiccChannel;
+        this.iface = "UNKNOWN";
+    }
+
+    public Es10Interface(EuiccChannel euiccChannel, String iface) {
+        this.euiccChannel = euiccChannel;
+        this.iface = iface;
     }
 
     // ES10a

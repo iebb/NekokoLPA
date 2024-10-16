@@ -1,10 +1,8 @@
-import {createStackNavigator} from '@react-navigation/stack';
+import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import {NavigationContainer, NavigationContainerRef} from '@react-navigation/native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-
 import {NekokoLPA, Profile, Scanner, Stats} from '@/screens';
 import {useTheme} from '@/theme';
-
 import type {RootStackParamList} from '@/navigators/navigation';
 import ErrorToast from "@/components/common/ErrorToast";
 import React, {useEffect} from "react";
@@ -23,7 +21,6 @@ function ApplicationNavigator() {
 
 	const processUrl = (url: string) => {
 		if (url) {
-			console.log("App Link: URL", url);
 			const match = url.match(LPACode);
 			if (match && match[0].length) {
 				console.log("App Link Matched: URL", url);
@@ -56,10 +53,25 @@ function ApplicationNavigator() {
 					key={variant}
 					screenOptions={{ headerShown: false }}
 				>
-					<Stack.Screen name="NekokoLPA" component={NekokoLPA} />
-					<Stack.Screen name="Scanner" component={Scanner} />
-					<Stack.Screen name="Profile" component={Profile} />
-					<Stack.Screen name="Stats" component={Stats} />
+					<Stack.Screen
+						name="NekokoLPA"
+						component={NekokoLPA}
+					/>
+					<Stack.Screen
+						name="Scanner"
+						component={Scanner}
+						options={TransitionPresets.SlideFromRightIOS}
+					/>
+					<Stack.Screen
+						name="Profile"
+						component={Profile}
+						options={TransitionPresets.SlideFromRightIOS}
+					/>
+					<Stack.Screen
+						name="Stats"
+						component={Stats}
+						options={TransitionPresets.SlideFromRightIOS}
+					/>
 				</Stack.Navigator>
 				<ErrorToast eUICC={currentEuicc} />
 			</NavigationContainer>

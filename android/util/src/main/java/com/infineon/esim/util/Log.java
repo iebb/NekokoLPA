@@ -43,8 +43,8 @@ final public class Log {
     }
 
     public static void verbose(final String tag, final String msg) {
-        logs += new java.util.Date().toString() + " [V][" + tag + "] " + msg + "\n";
-        android.util.Log.v(tag, msg);
+        // logs += new java.util.Date().toString() + " [V][" + tag + "] " + msg + "\n";
+        // android.util.Log.v(tag, msg);
     }
 
     public static void debug(final String tag, final String msg) {
