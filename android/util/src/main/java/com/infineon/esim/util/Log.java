@@ -48,22 +48,22 @@ final public class Log {
     }
 
     public static void debug(final String tag, final String msg) {
-        logs += new java.util.Date().toString() + " [D][" + tag + "] " + msg + "\n";
-        android.util.Log.d(tag, msg);
+        logs += new java.util.Date() + " [D][" + tag + "] " + msg + "\n";
+        android.util.Log.i(tag, msg);
     }
 
     public static void info(final String tag, final String msg) {
-        logs += new java.util.Date().toString() + " [I][" + tag + "] " + msg + "\n";
+        logs += new java.util.Date() + " [I][" + tag + "] " + msg + "\n";
         android.util.Log.i(tag, msg);
     }
 
     public static void warn(final String tag, final String msg) {
-        logs += new java.util.Date().toString() + " [W][" + tag + "] " + msg + "\n";
+        logs += new java.util.Date() + " [W][" + tag + "] " + msg + "\n";
         android.util.Log.w(tag, msg);
     }
 
     public static void warn(final String tag, final String msg, final Throwable error) {
-        logs += new java.util.Date().toString() + " [W][" + tag + "] " + msg + "\n";
+        logs += new java.util.Date() + " [W][" + tag + "] " + msg + "\n";
         logs += " >> [Error] " + error.getMessage() + "\n";
         StringWriter sw = new StringWriter();
         error.printStackTrace(new PrintWriter(sw));
@@ -77,12 +77,12 @@ final public class Log {
     }
 
     public static void error(final String tag, final String msg) {
-        logs += new java.util.Date().toString() + " [E][" + tag + "] " + msg + "\n";
+        logs += new java.util.Date() + " [E][" + tag + "] " + msg + "\n";
         android.util.Log.e(tag, msg);
     }
 
     public static void error(final String tag, final String msg, final Throwable error) {
-        logs += new java.util.Date().toString() + " [E][" + tag + "] " + msg + "\n";
+        logs += new java.util.Date() + " [E][" + tag + "] " + msg + "\n";
         logs += " >> [Error] " + error.getMessage() + "\n";
         StringWriter sw = new StringWriter();
         error.printStackTrace(new PrintWriter(sw));

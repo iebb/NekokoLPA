@@ -27,16 +27,15 @@ import android.se.omapi.Channel;
 import android.se.omapi.Reader;
 import android.se.omapi.Session;
 
-import ee.nekoko.lpa.euicc.base.EuiccConnection;
-import ee.nekoko.lpa.euicc.base.generic.Definitions;
-import io.sentry.Sentry;
-
 import com.infineon.esim.util.Bytes;
 import com.infineon.esim.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import ee.nekoko.lpa.euicc.base.EuiccConnection;
+import ee.nekoko.lpa.euicc.base.generic.Definitions;
 
 public class SeEuiccConnection implements EuiccConnection {
     private static final String TAG = SeEuiccConnection.class.getName();
@@ -58,10 +57,10 @@ public class SeEuiccConnection implements EuiccConnection {
     @Override
     public boolean resetEuicc() throws Exception {
         Log.debug(TAG, "Resetting the eUICC.");
-        for (var i = 0;i < 6; i++) {
+        for (var i = 0; i < 5; i++) {
             try {
                 close();
-                Thread.sleep(1000);
+                Thread.sleep(i * 300);
                 if (open()) {
                     return true;
                 }
@@ -121,13 +120,11 @@ public class SeEuiccConnection implements EuiccConnection {
                     return true;
                 }
             } catch (IOException e) {
-                Sentry.captureException(e);
                 // Log.error(Log.getFileLineNumber() + " " + e.getMessage());
             } catch (java.security.AccessControlException e) {
                 Log.error(Log.getFileLineNumber() + " " + e.getMessage());
                 break;
             } catch (Exception e) {
-                Sentry.captureException(e);
                 Log.error(Log.getFileLineNumber() + " " + e.getMessage());
             }
             Thread.sleep(500);

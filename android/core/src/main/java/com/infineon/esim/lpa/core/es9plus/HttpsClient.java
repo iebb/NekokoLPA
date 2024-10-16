@@ -75,8 +75,6 @@ public class HttpsClient {
             BufferedWriter bufferedWriter;
             OutputStream outputStream;
 
-            TlsUtil.trustRootCas();
-
             httpsURLConnection = (HttpsURLConnection) urlResource.openConnection();
             httpsURLConnection.setDoInput(true);
             httpsURLConnection.setDoOutput(true);
@@ -89,8 +87,6 @@ public class HttpsClient {
 
             // Explicitly call connect to be able to log the TLS features
             httpsURLConnection.connect();
-
-            TlsUtil.logTlsFeatures(httpsURLConnection);
 
             outputStream = httpsURLConnection.getOutputStream();
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
