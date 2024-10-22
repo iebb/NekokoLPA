@@ -23,7 +23,7 @@
 
 package com.infineon.esim.lpa.core.worker.remote;
 
-import com.beanit.jasn1.ber.types.string.BerUTF8String;
+import com.beanit.asn1bean.ber.types.string.BerUTF8String;
 import com.gsma.sgp.messages.rspdefinitions.ListNotificationResponse;
 import com.gsma.sgp.messages.rspdefinitions.NotificationMetadata;
 import com.gsma.sgp.messages.rspdefinitions.NotificationSentResponse;

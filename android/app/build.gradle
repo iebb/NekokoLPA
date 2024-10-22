@@ -3,7 +3,6 @@ import groovy.json.JsonSlurper
 
 plugins {
     id "com.android.application"
-    id 'io.sentry.android.gradle' version '4.11.0'
 }
 
 apply plugin: "org.jetbrains.kotlin.android"
@@ -200,7 +199,7 @@ dependencies {
 
 
     // ASN1/BER codec
-    implementation 'com.beanit:jasn1:1.11.3'
+    implementation 'com.beanit:asn1bean:1.14.0'
 
     // ---------------------------------------------------------------------------------------------
     // Lifecycle management
@@ -255,13 +254,4 @@ dependencies {
         }
     }
 
-}
-
-sentry {
-    org = "kosmoneko-ou-ud"
-    projectName = "android"
-
-    // this will upload your source code to Sentry to show it as part of the stack traces
-    // disable if you don't want to expose your sources
-    includeSourceContext = true
 }

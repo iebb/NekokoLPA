@@ -23,11 +23,11 @@
 
 package com.infineon.esim.messages;
 
-import com.beanit.jasn1.ber.BerLength;
-import com.beanit.jasn1.ber.BerTag;
-import com.beanit.jasn1.ber.ReverseByteArrayOutputStream;
-import com.beanit.jasn1.ber.types.BerOctetString;
-import com.beanit.jasn1.ber.types.BerType;
+import com.beanit.asn1bean.ber.BerLength;
+import com.beanit.asn1bean.ber.BerTag;
+import com.beanit.asn1bean.ber.ReverseByteArrayOutputStream;
+import com.beanit.asn1bean.ber.types.BerOctetString;
+import com.beanit.asn1bean.ber.types.BerType;
 import com.infineon.esim.util.Bytes;
 import com.infineon.esim.util.Log;
 

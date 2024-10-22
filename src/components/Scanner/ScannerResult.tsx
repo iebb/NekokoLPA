@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {StyleSheet,} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {useTheme} from '@/theme';
-import {Button, Colors, Text, TextField, View} from "react-native-ui-lib";
+import {Button, Colors, Text, View} from "react-native-ui-lib";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faArrowLeftLong, faCancel, faCheck, faCheckCircle} from "@fortawesome/free-solid-svg-icons";
 import InfiLPA from "@/native/InfiLPA";
@@ -20,14 +20,12 @@ export function ScannerResult(
     downloadResult,
     eUICC,
     goBack,
-    initialConfirmationCode
   }: any
 ) {
   const device = eUICC.name;
   const { t } = useTranslation(['profile']);
   const { colors, gutters} = useTheme();
   const [loading, setLoading] = useState(false);
-  const [confirmationCode, setConfirmationCode] = useState(initialConfirmationCode);
 
   return (
     <View>
@@ -48,30 +46,6 @@ export function ScannerResult(
                 {t('profile:download_success')}
               </Text>
               <MetadataView metadata={authenticateResult.profileMetadata.profileMetadataMap} />
-              <View left style={{
-                marginTop: 50,
-                flexDirection: "column", display: "flex",
-                justifyContent: "space-between", gap: 10
-              }}>
-                {
-                  (authenticateResult.isCcRequired) && (
-                    <View style={styles.tableRow}>
-                      <Text style={styles.tableHeader} color={colors.std200}>
-                        {t('profile:conf_code')}:
-                      </Text>
-                      <TextField
-                        placeholder={'Activation Code'}
-                        value={confirmationCode}
-                        onChangeText={c => setConfirmationCode(c)}
-                        enableErrors
-                        validate={['required']}
-                        validationMessage={['Field is required']}
-                        style={{...styles.tableColumn, borderBottomWidth: 1, marginBottom: -10, flexGrow: 1, marginTop: -5 }}
-                      />
-                    </View>
-                  )
-                }
-              </View>
               <View flex>
                 <View flex style={{ flexDirection: "row", gap: 10 }}>
                   <Button

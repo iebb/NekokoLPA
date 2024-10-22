@@ -23,7 +23,7 @@
 
 package com.infineon.esim.lpa.core;
 
-import com.beanit.jasn1.ber.types.BerBoolean;
+import com.beanit.asn1bean.ber.types.BerBoolean;
 import com.gsma.sgp.messages.rspdefinitions.DeleteProfileResponse;
 import com.gsma.sgp.messages.rspdefinitions.DisableProfileResponse;
 import com.gsma.sgp.messages.rspdefinitions.EUICCInfo1;

@@ -25,11 +25,11 @@ package com.infineon.esim.lpa.core.es10;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.beanit.jasn1.ber.types.BerBitString;
-import com.beanit.jasn1.ber.types.BerBoolean;
-import com.beanit.jasn1.ber.types.BerInteger;
-import com.beanit.jasn1.ber.types.BerOctetString;
-import com.beanit.jasn1.ber.types.string.BerUTF8String;
+import com.beanit.asn1bean.ber.types.BerBitString;
+import com.beanit.asn1bean.ber.types.BerBoolean;
+import com.beanit.asn1bean.ber.types.BerInteger;
+import com.beanit.asn1bean.ber.types.BerOctetString;
+import com.beanit.asn1bean.ber.types.string.BerUTF8String;
 import com.gsma.sgp.messages.pedefinitions.UICCCapability;
 import com.gsma.sgp.messages.pkix1explicit88.Certificate;
 import com.gsma.sgp.messages.pkix1implicit88.SubjectKeyIdentifier;

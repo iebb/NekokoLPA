@@ -55,5 +55,5 @@ dependencies {
     implementation project(path: ':util')
 
     // ASN1/BER codec
-    implementation 'com.beanit:jasn1:1.11.3'
+    implementation 'com.beanit:asn1bean:1.14.0'
 }

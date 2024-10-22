@@ -23,7 +23,7 @@
 
 package com.infineon.esim.lpa.core.es10.base;
 
-import com.beanit.jasn1.ber.types.BerType;
+import com.beanit.asn1bean.ber.types.BerType;
 import com.infineon.esim.messages.Ber;
 import com.infineon.esim.util.Bytes;
 import com.infineon.esim.util.Strings;
@@ -39,7 +39,7 @@ public class TransportCommand {
     private static final String P1_11 = "11";
     private static final String P1_91 = "91";
 
-    private static final int MAX_DATA_LENGTH_BYTE = 240;
+    private static final int MAX_DATA_LENGTH_BYTE = 60;
 
     /*
     See GSMA SGP.21 chapter 5.7.2 Transport Command for more details

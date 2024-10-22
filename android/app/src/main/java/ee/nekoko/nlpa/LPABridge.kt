@@ -23,9 +23,6 @@
 package ee.nekoko.nlpa
 
 import android.content.Context
-import android.content.pm.PackageManager
-import android.content.pm.Signature
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.LiveData
@@ -47,8 +44,6 @@ import com.infineon.esim.lpa.util.android.OneTimeEvent
 import com.infineon.esim.util.Log
 import ee.nekoko.lpa.euicc.EuiccManager
 import ee.nekoko.lpa.euicc.base.EuiccSlot
-import io.sentry.Sentry
-import java.security.MessageDigest
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
@@ -93,7 +88,7 @@ class LPABridge @ReactMethod constructor(private val context: ReactContext?) : R
         if (e != null) {
             val exc = e.exception
             if (exc != null) {
-                Log.debug(TAG, "SentryId2: " + Sentry.captureException(exc))
+                // TODO: sentry removed
             }
             val errHeader = e.header
 
