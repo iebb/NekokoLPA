@@ -39,7 +39,7 @@ public class TransportCommand {
     private static final String P1_11 = "11";
     private static final String P1_91 = "91";
 
-    private static final int MAX_DATA_LENGTH_BYTE = 60;
+    private static final int MAX_DATA_LENGTH_BYTE = 240;
 
     /*
     See GSMA SGP.21 chapter 5.7.2 Transport Command for more details
