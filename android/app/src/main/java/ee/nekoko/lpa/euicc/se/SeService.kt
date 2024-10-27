@@ -30,6 +30,7 @@ import ee.nekoko.lpa.euicc.base.EuiccConnection
 import ee.nekoko.lpa.euicc.base.EuiccInterfaceStatusChangeHandler
 import ee.nekoko.lpa.euicc.base.EuiccService
 import ee.nekoko.lpa.euicc.base.EuiccSlot
+import io.sentry.Sentry
 import java.util.Date
 import java.util.Timer
 import java.util.TimerTask
@@ -137,6 +138,7 @@ class SeService(private val context: Context, private val handler: EuiccInterfac
                     Log.error(TAG, "OK")
                 }
             } catch (e: InterruptedException) {
+                Sentry.captureException(e)
                 Log.error(TAG, "SE service could not be waited for.", e)
             }
         }

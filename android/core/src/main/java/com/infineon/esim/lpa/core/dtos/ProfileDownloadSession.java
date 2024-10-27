@@ -41,9 +41,9 @@ import static com.infineon.esim.lpa.core.dtos.ProfileDownloadSession.ProfileDown
 import static com.infineon.esim.lpa.core.dtos.ProfileDownloadSession.ProfileDownloadSessionState.SESSION_CANCELLED_FAILED;
 import static com.infineon.esim.lpa.core.dtos.ProfileDownloadSession.ProfileDownloadSessionState.SESSION_CANCELLED_SUCCESS;
 
-import com.beanit.asn1bean.ber.types.BerInteger;
-import com.beanit.asn1bean.ber.types.BerOctetString;
-import com.beanit.asn1bean.ber.types.string.BerUTF8String;
+import com.beanit.jasn1.ber.types.BerInteger;
+import com.beanit.jasn1.ber.types.BerOctetString;
+import com.beanit.jasn1.ber.types.string.BerUTF8String;
 import com.gsma.sgp.messages.pkix1explicit88.Certificate;
 import com.gsma.sgp.messages.pkix1implicit88.SubjectKeyIdentifier;
 import com.gsma.sgp.messages.rspdefinitions.AuthenticateClientOk;

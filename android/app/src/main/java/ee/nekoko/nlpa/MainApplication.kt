@@ -7,6 +7,8 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.hardware.usb.UsbManager
 import android.net.ConnectivityManager
+import android.net.wifi.WifiManager
+import com.infineon.esim.util.Log
 import androidx.preference.PreferenceManager
 import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
@@ -17,17 +19,9 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.load
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.soloader.SoLoader
+import com.infineon.esim.lpa.core.es9plus.TlsUtil
+import com.infineon.esim.lpa.util.android.IO
 import com.infineon.esim.lpa.util.android.NetworkStatus
-import com.infineon.esim.util.Log
-import java.security.KeyManagementException
-import java.security.NoSuchAlgorithmException
-import java.security.SecureRandom
-import java.security.cert.CertificateException
-import java.security.cert.X509Certificate
-import javax.net.ssl.HttpsURLConnection
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManager
-import javax.net.ssl.X509TrustManager
 
 
 class MainApplication : Application(), ReactApplication {
@@ -86,46 +80,53 @@ class MainApplication : Application(), ReactApplication {
         }
     }
 
-    private fun disableSSLCertificateChecking() {
-        val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
-            override fun getAcceptedIssuers(): Array<X509Certificate>? {
-                return null
-            }
-
-            @Throws(CertificateException::class)
-            override fun checkClientTrusted(arg0: Array<X509Certificate?>?, arg1: String?) {
-                // Not implemented
-            }
-
-            @Throws(CertificateException::class)
-            override fun checkServerTrusted(arg0: Array<X509Certificate?>?, arg1: String?) {
-                // Not implemented
-            }
-        })
-
-        try {
-            val sc = SSLContext.getInstance("TLS")
-
-            sc.init(null, trustAllCerts, SecureRandom())
-
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.socketFactory)
-        } catch (e: KeyManagementException) {
-            e.printStackTrace()
-        } catch (e: NoSuchAlgorithmException) {
-            e.printStackTrace()
-        }
-    }
     override fun onCreate() {
         super.onCreate()
         Log.debug("nekoko.nlpa", "Initializing application.")
         NetworkStatus.registerNetworkCallback()
+        initializeTrustedRootCas()
         SoLoader.init(this, false)
         if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
             // If you opted-in for the New Architecture, we load the native entry point for this app.
             load()
         }
         Log.debug("nekoko.nlpa", "Initialized.")
-        disableSSLCertificateChecking()
     }
+
+    fun initializeTrustedRootCas() {
+        val liveCertificates: MutableList<java.security.cert.Certificate> =
+            ArrayList()
+        liveCertificates.add(
+            IO.readCertificateFromResource(
+                resources,
+                R.raw.symantec_gsma_rspv2_root_ci1_pem
+            )
+        )
+
+        val testCertificates: MutableList<java.security.cert.Certificate> =
+            ArrayList()
+        testCertificates.add(
+            IO.readCertificateFromResource(
+                resources,
+                R.raw.gsma_test_root_ca_cert_pem
+            )
+        )
+        testCertificates.add(
+            IO.readCertificateFromResource(
+                resources,
+                R.raw.gsma_root_ci_test_1_2_pem
+            )
+        )
+        testCertificates.add(
+            IO.readCertificateFromResource(
+                resources,
+                R.raw.gsma_root_ci_test_1_5_pem
+            )
+        )
+        TlsUtil.initializeCertificates(liveCertificates, testCertificates)
+
+        TlsUtil.setTrustLevel(true) // true => trust test CI
+    }
+
 
 }

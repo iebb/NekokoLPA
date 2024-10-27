@@ -120,7 +120,7 @@ export default function SIMSelector() {
         flexS-0
       >
         {
-          width > 1 && (
+          width > 0 && (
             <TabController
               items={
                 euiccList.map((eUICC, _idx) => ({

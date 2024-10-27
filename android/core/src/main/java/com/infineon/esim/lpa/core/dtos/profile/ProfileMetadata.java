@@ -29,9 +29,9 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.beanit.asn1bean.ber.types.BerInteger;
-import com.beanit.asn1bean.ber.types.BerOctetString;
-import com.beanit.asn1bean.ber.types.string.BerUTF8String;
+import com.beanit.jasn1.ber.types.BerInteger;
+import com.beanit.jasn1.ber.types.BerOctetString;
+import com.beanit.jasn1.ber.types.string.BerUTF8String;
 import com.gsma.sgp.messages.rspdefinitions.Iccid;
 import com.gsma.sgp.messages.rspdefinitions.ProfileInfo;
 import com.gsma.sgp.messages.rspdefinitions.ProfileState;

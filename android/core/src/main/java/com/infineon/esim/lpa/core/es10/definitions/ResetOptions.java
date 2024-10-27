@@ -23,7 +23,7 @@
 
 package com.infineon.esim.lpa.core.es10.definitions;
 
-import com.beanit.asn1bean.ber.types.BerBitString;
+import com.beanit.jasn1.ber.types.BerBitString;
 
 public class ResetOptions {
     public static BerBitString getResetOptions(boolean deleteOperationalProfiles,

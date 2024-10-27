@@ -62,14 +62,14 @@ dependencies {
     implementation project(path: ':util')
 
     // JSON parser
-    implementation 'com.google.code.gson:gson:2.11.0'
+    implementation 'com.google.code.gson:gson:2.10'
 
     // ASN1/BER codec
-    implementation 'com.beanit:asn1bean:1.14.0'
+    implementation 'com.beanit:jasn1:1.11.3'
 
     // Needed for @NonNull and @Nullable annotations
-    implementation 'androidx.appcompat:appcompat:1.7.0'
-    implementation 'com.facebook.fresco:fbcore:3.2.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.facebook.fresco:fbcore:3.1.3'
 
     // Testing
     testImplementation 'org.junit.jupiter:junit-jupiter'
