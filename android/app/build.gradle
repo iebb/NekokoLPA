@@ -199,7 +199,7 @@ dependencies {
 
 
     // ASN1/BER codec
-    implementation 'com.beanit:asn1bean:1.14.0'
+    implementation 'com.beanit:jasn1:1.11.3'
 
     // ---------------------------------------------------------------------------------------------
     // Lifecycle management

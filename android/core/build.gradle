@@ -65,7 +65,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.11.0'
 
     // ASN1/BER codec
-    implementation 'com.beanit:asn1bean:1.14.0'
+    implementation 'com.beanit:jasn1:1.11.3'
 
     // Needed for @NonNull and @Nullable annotations
     implementation 'androidx.appcompat:appcompat:1.7.0'

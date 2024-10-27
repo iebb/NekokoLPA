@@ -62,9 +62,6 @@ public class HttpsClient {
         Log.debug(TAG,"Server path:   " + path);
 
         StringBuilder endpoint = new StringBuilder(domain);
-        if (Strings.isNotBlankOrEmpty(path)) {
-            endpoint.append(path);
-        }
 
         try {
             Log.debug(TAG,"Invoking endpoint: " + endpoint);

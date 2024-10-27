@@ -52,12 +52,4 @@ public class Strings {
             return input;
         }
     }
-
-    public static boolean isNotBlankOrEmpty(String input) {
-        if(input != null) {
-            return !input.trim().isEmpty();
-        } else {
-            return false;
-        }
-    }
 }

@@ -56,7 +56,7 @@ export function parseMetadata(metadata: ProfileMetadataMap, colors: any, t: TFun
         const century = year - twoDigitYear;
         const inputYear = Number(eDate[2]);
         const resultYear = (eDate[1] ? Number(eDate[1]) * 100 : century) + inputYear;
-        const d = new Date(`${resultYear}-${eDate[3]}-${eDate[4]}`);
+        const d = new Date((+new Date(`${resultYear}-${eDate[3]}-${eDate[4]}`)) + new Date().getTimezoneOffset() * 60);
 
         const days = Math.floor((+d - (+new Date())) / 86400000);
         const date8 = d.toISOString().split('T')[0].replace(/-/g,"");

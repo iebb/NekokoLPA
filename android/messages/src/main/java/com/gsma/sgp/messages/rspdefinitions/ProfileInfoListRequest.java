@@ -24,7 +24,6 @@ import com.gsma.sgp.messages.pkix1explicit88.Certificate;
 import com.gsma.sgp.messages.pkix1explicit88.CertificateList;
 import com.gsma.sgp.messages.pkix1explicit88.Time;
 import com.gsma.sgp.messages.pkix1implicit88.SubjectKeyIdentifier;
-import com.infineon.esim.util.Log;
 
 public class ProfileInfoListRequest implements BerType, Serializable {
 
@@ -216,7 +215,6 @@ public class ProfileInfoListRequest implements BerType, Serializable {
 			for (int i = code.length - 1; i >= 0; i--) {
 				reverseOS.write(code[i]);
 			}
-			Log.debug("PILR", HexConverter.toHexString(code));
 			if (withTag) {
 				return tag.encode(reverseOS) + code.length;
 			}
@@ -227,7 +225,6 @@ public class ProfileInfoListRequest implements BerType, Serializable {
 		int sublength;
 
 		if (tagList != null) {
-			Log.debug("PILR TagList", tagList.toString());
 			codeLength += tagList.encode(reverseOS, false);
 			// write tag: APPLICATION_CLASS, PRIMITIVE, 28
 			reverseOS.write(0x5C);
@@ -235,7 +232,6 @@ public class ProfileInfoListRequest implements BerType, Serializable {
 		}
 		
 		if (searchCriteria != null) {
-			Log.debug("PILR SearchCriteria", searchCriteria.toString());
 			sublength = searchCriteria.encode(reverseOS);
 			codeLength += sublength;
 			codeLength += BerLength.encodeLength(reverseOS, sublength);
@@ -247,7 +243,6 @@ public class ProfileInfoListRequest implements BerType, Serializable {
 		codeLength += BerLength.encodeLength(reverseOS, codeLength);
 
 		if (withTag) {
-			Log.debug("PILR tag", tag.toString());
 			codeLength += tag.encode(reverseOS);
 		}
 
