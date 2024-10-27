@@ -25,7 +25,7 @@ package com.infineon.esim.lpa.core.es9plus.messages.response;
 
 import androidx.annotation.NonNull;
 
-import com.beanit.asn1bean.ber.types.BerOctetString;
+import com.beanit.jasn1.ber.types.BerOctetString;
 import com.gsma.sgp.messages.pkix1explicit88.Certificate;
 import com.gsma.sgp.messages.pkix1implicit88.SubjectKeyIdentifier;
 import com.gsma.sgp.messages.rspdefinitions.InitiateAuthenticationOkEs9;

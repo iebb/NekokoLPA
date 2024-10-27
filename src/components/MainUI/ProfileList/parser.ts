@@ -61,34 +61,32 @@ export function parseMetadata(metadata: ProfileMetadataMap, colors: any, t: TFun
         const days = Math.floor((+d - (+new Date())) / 86400000);
         const date8 = d.toISOString().split('T')[0].replace(/-/g,"");
         const date6 = date8.substring(2);
-        if (days) {
-          if (days < 0) {
-            tags.push({
-              tag: 'date',
-              // @ts-ignore
-              value: t('profile:date_past', {
-                date: date8,
-                remaining: -days,
-              }) as string,
-              rawValue: `d:${date6}`,
-              color: colors.red700,
-              backgroundColor: colors.red100,
-            })
-          } else {
-            tags.push({
-              tag: 'date',
-              // @ts-ignore
-              value: t('profile:date_remaining', {
-                date: date8,
-                remaining: days,
-              }) as string,
-              rawValue: `d:${date6}`,
-              color: days < 7 ? colors.orange700 : colors.green700,
-              backgroundColor: days < 7 ? colors.orange100 : colors.green100,
-            })
-          }
-          nickname = nickname.replace(eDate[0], '').trim();
+        if (days < 0) {
+          tags.push({
+            tag: 'date',
+            // @ts-ignore
+            value: t('profile:date_past', {
+              date: date8,
+              remaining: -days,
+            }) as string,
+            rawValue: `d:${date6}`,
+            color: colors.red700,
+            backgroundColor: colors.red100,
+          })
+        } else {
+          tags.push({
+            tag: 'date',
+            // @ts-ignore
+            value: t('profile:date_remaining', {
+              date: date8,
+              remaining: days,
+            }) as string,
+            rawValue: `d:${date6}`,
+            color: days < 7 ? colors.orange700 : colors.green700,
+            backgroundColor: days < 7 ? colors.orange100 : colors.green100,
+          })
         }
+        nickname = nickname.replace(eDate[0], '').trim();
       }
     }
   }

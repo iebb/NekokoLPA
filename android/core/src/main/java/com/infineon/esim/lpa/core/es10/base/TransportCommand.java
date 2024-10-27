@@ -23,7 +23,7 @@
 
 package com.infineon.esim.lpa.core.es10.base;
 
-import com.beanit.asn1bean.ber.types.BerType;
+import com.beanit.jasn1.ber.types.BerType;
 import com.infineon.esim.messages.Ber;
 import com.infineon.esim.util.Bytes;
 import com.infineon.esim.util.Strings;

@@ -25,7 +25,7 @@ package com.infineon.esim.lpa.core.es9plus.messages.request;
 
 import androidx.annotation.NonNull;
 
-import com.beanit.asn1bean.ber.types.string.BerUTF8String;
+import com.beanit.jasn1.ber.types.string.BerUTF8String;
 import com.gsma.sgp.messages.rspdefinitions.EUICCInfo1;
 import com.gsma.sgp.messages.rspdefinitions.InitiateAuthenticationRequest;
 import com.gsma.sgp.messages.rspdefinitions.Octet16;

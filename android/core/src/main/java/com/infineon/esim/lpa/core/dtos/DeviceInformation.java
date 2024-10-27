@@ -23,8 +23,8 @@
 
 package com.infineon.esim.lpa.core.dtos;
 
-import com.beanit.asn1bean.ber.types.BerNull;
-import com.beanit.asn1bean.ber.types.string.BerUTF8String;
+import com.beanit.jasn1.ber.types.BerNull;
+import com.beanit.jasn1.ber.types.string.BerUTF8String;
 import com.gsma.sgp.messages.rspdefinitions.DeviceCapabilities;
 import com.gsma.sgp.messages.rspdefinitions.DeviceInfo;
 import com.gsma.sgp.messages.rspdefinitions.EUICCInfo1;

@@ -1,5 +1,6 @@
 package ee.nekoko.lpa.euicc.base
 
+import com.infineon.esim.util.Log
 import com.gsma.sgp.messages.rspdefinitions.EUICCInfo2
 import com.infineon.esim.lpa.core.dtos.profile.ProfileList
 import com.infineon.esim.lpa.core.es10.Es10Interface
@@ -7,8 +8,8 @@ import com.infineon.esim.lpa.data.ActionStatus
 import com.infineon.esim.lpa.data.Error
 import com.infineon.esim.lpa.data.StatusAndEventHandler
 import com.infineon.esim.lpa.lpa.LocalProfileAssistant
-import com.infineon.esim.util.Log
 import ee.nekoko.lpa.euicc.EuiccManager
+import io.sentry.Sentry
 
 class EuiccSlot (
     val name: String,
@@ -74,7 +75,7 @@ class EuiccSlot (
                 Log.error("EUICC_SLOT", "No connection!")
             }
         } catch (e: Exception) {
-            // TODO: sentry removed
+            Sentry.captureException(e)
         }
     }
 

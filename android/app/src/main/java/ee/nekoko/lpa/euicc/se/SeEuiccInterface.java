@@ -124,9 +124,24 @@ final public class SeEuiccInterface implements EuiccInterface {
 
     @Override
     public EuiccConnection getEuiccConnection(String euiccName) throws Exception {
-        if(euiccConnection == null) {
+
+        if(isNotYetOpen(euiccName)) {
+            // Close the Fold eUICC connection if it is with another eUICC
+            if(euiccConnection != null) {
+                euiccConnection.close();
+            }
+            // Open new eUICC connection
             euiccConnection = seService.openEuiccConnection(euiccName);
         }
+
         return euiccConnection;
+    }
+
+    private boolean isNotYetOpen(String euiccName) {
+        if(euiccConnection == null) {
+            return true;
+        } else {
+            return !euiccConnection.getEuiccName().equals(euiccName);
+        }
     }
 }

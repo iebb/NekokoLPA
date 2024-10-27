@@ -25,7 +25,7 @@ package com.infineon.esim.lpa.core.es10.base;
 
 import androidx.annotation.NonNull;
 
-import com.beanit.asn1bean.ber.types.BerOctetString;
+import com.beanit.jasn1.ber.types.BerOctetString;
 import com.gsma.sgp.messages.rspdefinitions.BoundProfilePackage;
 import com.gsma.sgp.messages.rspdefinitions.InitialiseSecureChannelRequest;
 import com.infineon.esim.messages.Ber;

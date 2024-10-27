@@ -49,7 +49,7 @@ final public class Log {
 
     public static void debug(final String tag, final String msg) {
         logs += new java.util.Date().toString() + " [D][" + tag + "] " + msg + "\n";
-        android.util.Log.i(tag, msg);
+        android.util.Log.d(tag, msg);
     }
 
     public static void info(final String tag, final String msg) {

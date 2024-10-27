@@ -23,12 +23,12 @@
 
 package com.infineon.esim.lpa.core.es10;
 
-import com.beanit.asn1bean.ber.types.BerBitString;
-import com.beanit.asn1bean.ber.types.BerBoolean;
-import com.beanit.asn1bean.ber.types.BerInteger;
-import com.beanit.asn1bean.ber.types.BerOctetString;
-import com.beanit.asn1bean.ber.types.BerType;
-import com.beanit.asn1bean.ber.types.string.BerUTF8String;
+import com.beanit.jasn1.ber.types.BerBitString;
+import com.beanit.jasn1.ber.types.BerBoolean;
+import com.beanit.jasn1.ber.types.BerInteger;
+import com.beanit.jasn1.ber.types.BerOctetString;
+import com.beanit.jasn1.ber.types.BerType;
+import com.beanit.jasn1.ber.types.string.BerUTF8String;
 import com.gsma.sgp.messages.rspdefinitions.AuthenticateServerRequest;
 import com.gsma.sgp.messages.rspdefinitions.AuthenticateServerResponse;
 import com.gsma.sgp.messages.rspdefinitions.CancelSessionRequest;
