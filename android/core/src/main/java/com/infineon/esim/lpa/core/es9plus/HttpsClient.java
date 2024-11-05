@@ -29,6 +29,7 @@ import com.infineon.esim.util.Log;
 import com.infineon.esim.util.Strings;
 
 import java.io.BufferedWriter;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.ConnectException;
@@ -62,7 +63,9 @@ public class HttpsClient {
         Log.debug(TAG,"Server path:   " + path);
 
         StringBuilder endpoint = new StringBuilder(domain);
+        endpoint.append(path);
 
+        HttpsTrustManager.disableSSLCertificateChecking();
         try {
             Log.debug(TAG,"Invoking endpoint: " + endpoint);
             URL urlResource = new URL("https://" + endpoint);
@@ -90,8 +93,26 @@ public class HttpsClient {
             bufferedWriter.write(body);
             bufferedWriter.flush();
 
-            httpResponse.setStatusCode(httpsURLConnection.getResponseCode());
-            httpResponse.setContent(IO.readStringFormInputStream(httpsURLConnection.getInputStream(), StandardCharsets.UTF_8));
+            int responseCode = httpsURLConnection.getResponseCode();
+
+            httpResponse.setStatusCode(responseCode);
+            Log.debug("HTTP", "RESPONSE CODE: " + httpsURLConnection.getResponseCode());
+
+            // Check the response code first
+
+            InputStream inputStream;
+            if (responseCode >= HttpsURLConnection.HTTP_BAD_REQUEST) {
+                // Use getErrorStream() for 4xx/5xx errors
+                inputStream = httpsURLConnection.getErrorStream();
+                System.out.println("Error response code: " + responseCode);
+            } else {
+                // Use getInputStream() for successful responses (2xx)
+                inputStream = httpsURLConnection.getInputStream();
+                System.out.println("OK response code: " + responseCode);
+            }
+
+            String content = IO.readStringFormInputStream(inputStream, StandardCharsets.UTF_8);
+            httpResponse.setContent(content);
 
             TlsUtil.logHttpRes(httpsURLConnection, httpResponse);
 
