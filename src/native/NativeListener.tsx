@@ -1,4 +1,4 @@
-import {NativeEventEmitter} from "react-native";
+import {NativeEventEmitter, NativeModules, Platform} from "react-native";
 import {useEffect, useState} from "react";
 import {setGlobalState, setState} from "@/redux/reduxDataStore";
 import {useDispatch} from "react-redux";
@@ -15,20 +15,22 @@ export function NativeListener({ children }: { children?: React.ReactNode }) {
       }
     };
 
-    // replace `LiveDataExample` with the name of your native module
-    const eventEmitter = new NativeEventEmitter(
-      // NativeModules.LPABridge
-      // only required on iOS but it's android-only
-    );
-    // replace the `onDataUpdate` with your event name
-    const eventListener = eventEmitter.addListener(
-      'onDataUpdate',
-      listener
-    );
-    return () => {
-      eventListener.remove();
-    };
+    if (Platform.OS === 'android') {
+      // replace `LiveDataExample` with the name of your native module
+      const eventEmitter = new NativeEventEmitter(); // NativeModules.LPABridge
+      // replace the `onDataUpdate` with your event name
+      const eventListener = eventEmitter.addListener(
+        'onDataUpdate',
+        listener
+      );
+      return () => {
+        eventListener.remove();
+      };
+    }
+
   }, []);
+
+
   return (
     <>
       {children}

@@ -5,23 +5,18 @@ const { assetExts, sourceExts } = defaultConfig.resolver;
 
 /**
  * Metro configuration
- * https://facebook.github.io/metro/docs/configuration
+ * https://reactnative.dev/docs/metro
  *
  * @type {import('metro-config').MetroConfig}
  */
 const config = {
   transformer: {
     babelTransformerPath: require.resolve('react-native-svg-transformer'),
-    getTransformOptions: async () => ({
-      transform: {
-        experimentalImportSupport: false,
-        inlineRequires: true,
-      },
-    }),
+    unstable_allowRequireContext: true,
   },
   resolver: {
+    sourceExts: [...sourceExts, 'svg'],
     assetExts: assetExts.filter((ext) => ext !== 'svg'),
-    sourceExts: [...sourceExts, 'svg', 'js', 'jsx', 'ts', 'tsx', 'cjs', 'mjs', 'json'],
   },
 };
 

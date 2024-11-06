@@ -7,9 +7,13 @@ import ErrorToast from "@/components/common/ErrorToast";
 import React, {useEffect} from "react";
 import {useSelector} from "react-redux";
 import {RootState} from "@/redux/reduxDataStore";
-import {Linking} from "react-native";
+import {Linking, ScrollView} from "react-native";
 import {LPACode} from "@/components/utils/lpaRegex";
-import {NekokoLPA, Profile, Scanner, Stats} from '@/screens';
+import {Main, Profile, Scanner, Stats} from '@/screens';
+import Title from "@/components/common/Title";
+import Container from "@/components/common/Container";
+import {ProfileStats} from "@/components/stats/ProfileStats";
+import {SafeScreen} from "@/components/template";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -48,14 +52,21 @@ function ApplicationNavigator() {
 
 	return (
 		<SafeAreaProvider style={{ backgroundColor: "transparent" }}>
+			{/*<SafeScreen>*/}
+			{/*	<Container>*/}
+			{/*		<ScrollView>*/}
+			{/*			<ProfileStats />*/}
+			{/*		</ScrollView>*/}
+			{/*	</Container>*/}
+			{/*</SafeScreen>*/}
 			<NavigationContainer ref={navigationRef}>
 				<Stack.Navigator
 					key={variant}
 					screenOptions={{ headerShown: false }}
 				>
 					<Stack.Screen
-						name="NekokoLPA"
-						component={NekokoLPA}
+						name="Main"
+						component={Main}
 					/>
 					<Stack.Screen
 						name="Scanner"

@@ -3,44 +3,30 @@ import i18next from 'i18next';
 import {useTranslation} from 'react-i18next';
 import {SafeScreen} from '@/components/template';
 import {useTheme} from '@/theme';
-
-import {isImageSourcePropType} from '@/types/guards/image';
-
-import SendImage from '@/theme/assets/images/send.png';
 import CatImage from '@/theme/assets/images/shiroya.png';
-import ColorsWatchImage from '@/theme/assets/images/colorswatch.png';
-import TranslateImage from '@/theme/assets/images/translate.png';
-import {Text, View} from "react-native-ui-lib";
+import {Button, Text, View} from "react-native-ui-lib";
 import SIMSelector from "@/components/MainUI/SIMSelector";
 import type {RootScreenProps} from "@/navigators/navigation";
 import {Alert, Image, Linking, Platform, TouchableOpacity} from "react-native";
 import {version} from '@/../package.json';
 import {useDispatch, useSelector} from "react-redux";
-import {selectAppConfig, selectState} from "@/redux/reduxDataStore";
+import {nextValue, selectAppConfig, selectState} from "@/redux/reduxDataStore";
 import type {Variant} from "@/types/theme/config";
 import InfiLPA from "@/native/InfiLPA";
+import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
+import {faFlag, faLanguage, faMoon} from "@fortawesome/free-solid-svg-icons";
 
 const DEBUG_REPORTING_URL = "https://nlpa-data.nekoko.ee/api/debug/log";
 
-function NekokoLPA({ navigation }: RootScreenProps<'NekokoLPA'>) {
+function Main({ navigation }: RootScreenProps<'Main'>) {
 	const { t } = useTranslation(['welcome']);
 
 	const {
 		colors,
-		variant,
 		changeTheme,
 		gutters,
 		fonts,
 	} = useTheme();
-
-	if (
-		!isImageSourcePropType(SendImage) ||
-		!isImageSourcePropType(ColorsWatchImage) ||
-		!isImageSourcePropType(TranslateImage)
-	) {
-		throw new Error('Image source is not valid');
-	}
-
 
 	const dispatch = useDispatch();
 	const { language, theme } = useSelector(selectAppConfig);
@@ -152,51 +138,51 @@ function NekokoLPA({ navigation }: RootScreenProps<'NekokoLPA'>) {
 								}
 							</View>
 						</View>
-						{/*<View row gap-10>*/}
-						{/*	<Button*/}
-						{/*		size={'small'}*/}
-						{/*		style={{ padding: 10 }}*/}
-						{/*		iconSource={*/}
-						{/*			style => <FontAwesomeIcon icon={faFlag} style={{ color: colors.std200, ...style }} />*/}
-						{/*		}*/}
-						{/*		backgroundColor={colors.cardBackground}*/}
-						{/*		onPress={() => {*/}
-						{/*			navigation.navigate('Stats', {*/}
-						{/*			});*/}
-						{/*		}}*/}
-						{/*		iconOnRight*/}
-						{/*		animateLayout*/}
-						{/*		animateTo={'left'}*/}
-						{/*	/>*/}
-						{/*	<Button*/}
-						{/*		size={'small'}*/}
-						{/*		style={{ padding: 10 }}*/}
-						{/*		iconSource={*/}
-						{/*			style => <FontAwesomeIcon icon={faLanguage} style={{ color: colors.std200, ...style }} />*/}
-						{/*		}*/}
-						{/*		backgroundColor={colors.cardBackground}*/}
-						{/*		onPress={() => {*/}
-						{/*			dispatch(nextValue('language'))*/}
-						{/*		}}*/}
-						{/*		iconOnRight*/}
-						{/*		animateLayout*/}
-						{/*		animateTo={'left'}*/}
-						{/*	/>*/}
-						{/*	<Button*/}
-						{/*		size={'small'}*/}
-						{/*		style={{ padding: 10 }}*/}
-						{/*		iconSource={*/}
-						{/*			style => <FontAwesomeIcon icon={faMoon} style={{ color: colors.std200, ...style }} />*/}
-						{/*		}*/}
-						{/*		backgroundColor={colors.cardBackground}*/}
-						{/*		onPress={() => {*/}
-						{/*			dispatch(nextValue('theme'))*/}
-						{/*		}}*/}
-						{/*		iconOnRight*/}
-						{/*		animateLayout*/}
-						{/*		animateTo={'left'}*/}
-						{/*	/>*/}
-						{/*</View>*/}
+						<View row gap-10>
+							<Button
+								size={'small'}
+								style={{ padding: 10 }}
+								iconSource={
+									style => <FontAwesomeIcon icon={faFlag} color={colors.std200} />
+								}
+								backgroundColor={colors.cardBackground}
+								onPress={() => {
+									navigation.navigate('Stats', {
+									});
+								}}
+								iconOnRight
+								animateLayout
+								animateTo={'left'}
+							/>
+							<Button
+								size={'small'}
+								style={{ padding: 10 }}
+								iconSource={
+									style => <FontAwesomeIcon icon={faLanguage} color={colors.std200} />
+								}
+								backgroundColor={colors.cardBackground}
+								onPress={() => {
+									dispatch(nextValue('language'))
+								}}
+								iconOnRight
+								animateLayout
+								animateTo={'left'}
+							/>
+							<Button
+								size={'small'}
+								style={{ padding: 10 }}
+								iconSource={
+									style => <FontAwesomeIcon icon={faMoon} color={colors.std200} />
+								}
+								backgroundColor={colors.cardBackground}
+								onPress={() => {
+									dispatch(nextValue('theme'))
+								}}
+								iconOnRight
+								animateLayout
+								animateTo={'left'}
+							/>
+						</View>
 					</View>
 					<SIMSelector />
 				</View>
@@ -205,4 +191,4 @@ function NekokoLPA({ navigation }: RootScreenProps<'NekokoLPA'>) {
 	);
 }
 
-export default NekokoLPA;
+export default Main;
