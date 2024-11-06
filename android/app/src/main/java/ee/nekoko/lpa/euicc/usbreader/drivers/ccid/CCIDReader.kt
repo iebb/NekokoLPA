@@ -30,11 +30,16 @@ data class CCIDReader (
         for (i in 0 until usbInterface.endpointCount) {
             val endpoint = usbInterface.getEndpoint(i)
             if (endpoint.type == UsbConstants.USB_ENDPOINT_XFER_BULK) {
+                Log.info("CCID", "Endpoint #$i: Direction: ${endpoint.direction}")
                 if (endpoint.direction == UsbConstants.USB_DIR_IN) {
+                    Log.info("CCID", "Endpoint #$i: Direction In: ${endpoint.direction == UsbConstants.USB_DIR_IN}")
                     bulkIn = endpoint
                 } else {
+                    Log.info("CCID", "Endpoint #$i: Direction Out: ${endpoint.direction == UsbConstants.USB_DIR_OUT}")
                     bulkOut = endpoint
                 }
+            } else {
+                Log.info("CCID", "Endpoint #$i: Type: ${endpoint.type} Direction: ${endpoint.direction}")
             }
         }
         if (bulkIn == null || bulkOut == null) {
@@ -66,14 +71,18 @@ data class CCIDReader (
             return null
         }
         for(i in 0 until 4) {
+            Log.error(TAG, "Trying Voltage $i")
             // AUTO, 5V, 3V, 1.8V
             if ((descriptor.voltage and (1 shl i)) > 0) {
                 try {
                     Log.debug(TAG, "Trying Supported Voltage #$i")
+                    Log.debug(TAG, "TO Byte?")
                     val atr = _ccid.iccPowerOn(i.toByte())
                     Log.debug(TAG, "ATR: ${atr.toHexString()}")
                     return _ccid
                 } catch (ex: Exception) {
+                    Log.debug(TAG, ex.stackTraceToString())
+                    Log.debug(TAG, ex.toString())
                     Log.debug(TAG, "Voltage #$i Failed")
                 }
             }

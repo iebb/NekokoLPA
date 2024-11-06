@@ -3,7 +3,7 @@ import {ProfileMetadataMap} from "@/native/types";
 import {EuiccList} from "@/redux/reduxDataStore";
 
 export type RootStackParamList = {
-	NekokoLPA: undefined;
+	NekokoLPA: {};
 	Stats: {};
 	Scanner: {
 		appLink?: string,

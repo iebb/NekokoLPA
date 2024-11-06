@@ -11,7 +11,6 @@ import {store} from "@/redux/reduxDataStore";
 import {Provider} from "react-redux";
 
 export const queryClient = new QueryClient();
-
 export const storage = new MMKV();
 
 function App() {

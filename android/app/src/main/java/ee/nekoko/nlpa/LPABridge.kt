@@ -148,11 +148,9 @@ class LPABridge @ReactMethod constructor(private val context: ReactContext?) : R
         return Gson().toJson(lpa!!.profileListLiveData.value)
     }
 
-    @get:ReactMethod
     val asyncActionStatusLiveData: LiveData<AsyncActionStatus>
         get() = actionStatusLiveData
 
-    @ReactMethod
     fun getErrorEventLiveData(): LiveData<OneTimeEvent<Error>> {
         return errorEventLiveData
     }

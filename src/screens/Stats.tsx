@@ -7,7 +7,6 @@ import Title from "@/components/common/Title";
 import Container from "@/components/common/Container";
 import {ProfileStats} from "@/components/stats/ProfileStats";
 
-
 function Stats({ route,  navigation }: RootScreenProps<'Stats'>) {
 
 	const { t } = useTranslation(['profile']);

@@ -165,10 +165,12 @@ public class SeEuiccConnection implements EuiccConnection {
         List<String> responses = new ArrayList<>();
 
         for(String apdu : apdus) {
+            Log.info("APDU >>", apdu);
             byte[] command = Bytes.decodeHexString(apdu);
 
             byte[] response = channel.transmit(command);
             responses.add(Bytes.encodeHexString(response));
+            Log.info("APDU <<", Bytes.encodeHexString(response));
         }
 
         return responses;

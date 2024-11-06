@@ -1,7 +1,6 @@
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import {NavigationContainer, NavigationContainerRef} from '@react-navigation/native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {NekokoLPA, Profile, Scanner, Stats} from '@/screens';
 import {useTheme} from '@/theme';
 import type {RootStackParamList} from '@/navigators/navigation';
 import ErrorToast from "@/components/common/ErrorToast";
@@ -10,6 +9,7 @@ import {useSelector} from "react-redux";
 import {RootState} from "@/redux/reduxDataStore";
 import {Linking} from "react-native";
 import {LPACode} from "@/components/utils/lpaRegex";
+import {NekokoLPA, Profile, Scanner, Stats} from '@/screens';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
