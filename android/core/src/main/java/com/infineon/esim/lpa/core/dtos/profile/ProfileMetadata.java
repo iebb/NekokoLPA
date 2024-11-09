@@ -45,20 +45,21 @@ import java.util.Map;
 final public class ProfileMetadata implements Parcelable {
     private static final String TAG = ProfileMetadata.class.getName();
 
-    public static final String STATE_ENABLED = "Enabled";
-    public static final String STATE_DISABLED = "Disabled";
+    public static final String STATE_ENABLED = "1";
+    public static final String STATE_DISABLED = "0";
 
     private static final String ICCID = "ICCID";
-    private static final String uICCID = "uICCID";
-    private static final String STATE = "STATE";
-    private static final String NAME = "NAME";
-    private static final String PROVIDER_NAME = "PROVIDER_NAME";
-    private static final String NICKNAME = "NICKNAME";
-    private static final String ICON = "ICON";
+    private static final String uICCID = "iccid";
+    private static final String STATE = "profileState";
+    private static final String NAME = "profileName";
+    private static final String PROVIDER_NAME = "serviceProviderName";
+    private static final String NICKNAME = "profileNickname";
+    private static final String ICON = "icon";
     private static final String MCC_MNC = "MCC_MNC";
     private static final String PROFILE_SIZE = "PROFILE_SIZE";
+    private static final String profileOwnerMccMnc = "profileOwnerMccMnc";
 
-    private final Map<String, String> profileMetadataMap;
+    public final Map<String, String> profileMetadataMap;
 
     static public String formatIccidUserString(@Nullable String iccidRawString) {
         // swap the odd/even characters to form a new string
@@ -154,7 +155,7 @@ final public class ProfileMetadata implements Parcelable {
         if (owner != null) {
             String mccMnc = owner.getMccMnc().toString();
             profileMetadataMap.put(MCC_MNC, mccMnc);
-            profileMetadataMap.put("u" + MCC_MNC, formatMccMncUserString(mccMnc));
+            profileMetadataMap.put(profileOwnerMccMnc, formatMccMncUserString(mccMnc));
         }
     }
 
@@ -172,7 +173,7 @@ final public class ProfileMetadata implements Parcelable {
         if (owner != null) {
             String mccMnc = owner.getMccMnc().toString();
             profileMetadataMap.put(MCC_MNC, mccMnc);
-            profileMetadataMap.put("u" + MCC_MNC, formatMccMncUserString(mccMnc));
+            profileMetadataMap.put(profileOwnerMccMnc, formatMccMncUserString(mccMnc));
         }
     }
 
@@ -189,12 +190,12 @@ final public class ProfileMetadata implements Parcelable {
 
         profileMetadataMap.put(NAME, name);
         profileMetadataMap.put(ICCID, iccid);
-        profileMetadataMap.put("u" + ICCID, formatIccidUserString(iccid));
+        profileMetadataMap.put(uICCID, formatIccidUserString(iccid));
         profileMetadataMap.put(STATE, state);
         profileMetadataMap.put(PROVIDER_NAME, provider);
         profileMetadataMap.put(MCC_MNC, mcc_mnc);
         profileMetadataMap.put(PROFILE_SIZE, profileSize != null ? profileSize.toString() : "0");
-        profileMetadataMap.put("u" + MCC_MNC, formatMccMncUserString(mcc_mnc));
+        profileMetadataMap.put(profileOwnerMccMnc, formatMccMncUserString(mcc_mnc));
 
         if(nickname != null) {
             profileMetadataMap.put(NICKNAME, nickname);
@@ -287,13 +288,13 @@ final public class ProfileMetadata implements Parcelable {
         profileMetadataMap = new HashMap<>();
         profileMetadataMap.put(NAME, in.readString());
         profileMetadataMap.put(ICCID, in.readString());
-        profileMetadataMap.put("u" + ICCID,  formatIccidUserString(profileMetadataMap.get(ICCID)));
+        profileMetadataMap.put(uICCID,  formatIccidUserString(profileMetadataMap.get(ICCID)));
         profileMetadataMap.put(STATE, in.readString());
         profileMetadataMap.put(PROVIDER_NAME, in.readString());
         profileMetadataMap.put(NICKNAME, in.readString());
         profileMetadataMap.put(ICON, in.readString());
         profileMetadataMap.put(MCC_MNC, in.readString());
-        profileMetadataMap.put("u" + MCC_MNC,  formatMccMncUserString(profileMetadataMap.get(MCC_MNC)));
+        profileMetadataMap.put(profileOwnerMccMnc,  formatMccMncUserString(profileMetadataMap.get(MCC_MNC)));
         // profileMetadataMap.put(PROFILE_SIZE, in.readString());
     }
 

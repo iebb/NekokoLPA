@@ -25,14 +25,16 @@ package com.infineon.esim.lpa.core.dtos.result.remote;
 
 import com.infineon.esim.lpa.core.dtos.profile.ProfileMetadata;
 
+import java.util.Map;
+
 public class AuthenticateResult extends RemoteOperationResult {
     private final Boolean isCcRequired;
-    private final ProfileMetadata profileMetadata;
+    private final Map<String, String> profileMetadata;
 
     public AuthenticateResult(Boolean isCcRequired, ProfileMetadata profileMetadata) {
         super();
         this.isCcRequired = isCcRequired;
-        this.profileMetadata = profileMetadata;
+        this.profileMetadata = profileMetadata.profileMetadataMap;
     }
 
     public AuthenticateResult(RemoteError remoteError) {
@@ -45,7 +47,7 @@ public class AuthenticateResult extends RemoteOperationResult {
         return isCcRequired;
     }
 
-    public ProfileMetadata getProfileMetadata() {
+    public Map<String, String> getProfileMetadata() {
         return profileMetadata;
     }
 }

@@ -29,6 +29,8 @@ export function ScannerAuthentication(
   const [loading, setLoading] = useState(false);
   const [confirmationCode, setConfirmationCode] = useState(initialConfirmationCode);
 
+  console.log(authenticateResult);
+
   return (
     <View>
       <Title>{t('profile:title_confirm_profile')}</Title>
@@ -40,7 +42,7 @@ export function ScannerAuthentication(
       {
         (authenticateResult?.success) ? (
           <Container>
-            <MetadataView metadata={authenticateResult.profileMetadata.profileMetadataMap} />
+            <MetadataView metadata={authenticateResult.profileMetadata} />
             <View left style={{
               flexDirection: "column", display: "flex",
               justifyContent: "space-between", gap: 10

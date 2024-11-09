@@ -1,6 +1,4 @@
 import {NativeModules, Platform} from 'react-native';
-import {Profiles} from "@/native/types";
-import {CancelSessionReasons} from "@/native/consts";
 
 
 const {
@@ -59,7 +57,7 @@ class InfiLPA {
         return JSON.parse(LPABridge.downloadProfile(device, code));
     }
     static cancelSession(device: string) {
-        return JSON.parse(LPABridge.cancelSession(device, CancelSessionReasons.END_USER_REJECTION));
+        return JSON.parse(LPABridge.cancelSession(device, 0));
     }
     static getLogs() {
         return LPABridge.getLogs();

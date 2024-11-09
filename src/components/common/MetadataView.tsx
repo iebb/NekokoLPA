@@ -2,7 +2,7 @@ import {Text, View} from "react-native-ui-lib";
 import React, {useEffect, useState} from "react";
 import {useTheme} from "@/theme";
 import {ProfileMetadataMap} from "@/native/types";
-import {StyleSheet, ToastAndroid, TouchableOpacity} from "react-native";
+import {Image, StyleSheet, ToastAndroid, TouchableOpacity} from "react-native";
 import {resolveMccMnc, T_PLMN} from "@/data/mccMncResolver";
 import {parseMetadata} from "@/components/MainUI/ProfileList/parser";
 import {useTranslation} from "react-i18next";
@@ -15,15 +15,13 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
 
   const [resolvedMccMnc, setResolvedMccMnc] = useState<T_PLMN | undefined>();
   useEffect(() => {
-    if (metadata?.uMCC_MNC) {
-      setResolvedMccMnc(resolveMccMnc(metadata?.uMCC_MNC));
+    if (metadata?.profileOwnerMccMnc) {
+      setResolvedMccMnc(resolveMccMnc(metadata?.profileOwnerMccMnc));
     }
-  }, [metadata, metadata?.NICKNAME]);
+  }, [metadata, metadata?.profileNickname]);
 
   if (!metadata) return null;
-  const readableMccMnc = metadata.uMCC_MNC.replaceAll("F", " ");
-
-  const Flag = (Flags[resolvedMccMnc?.ISO1 || "UN"] || Flags.UN).default;
+  const readableMccMnc = metadata.profileOwnerMccMnc.replaceAll("F", " ");
 
   return (
     <View left style={{
@@ -36,14 +34,14 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
         </Text>
         <TouchableOpacity style={styles.tableColumnTO}
           onPress={() => {
-            if (metadata.NAME) {
-              Clipboard.setString(metadata.NAME);
+            if (metadata.profileName) {
+              Clipboard.setString(metadata.profileName);
               ToastAndroid.show('Copied', ToastAndroid.SHORT);
             }
           }}
         >
           <Text style={styles.tableColumn} color={colors.std200}>
-            {metadata.NAME}
+            {metadata.profileName}
           </Text>
         </TouchableOpacity>
       </View>
@@ -53,14 +51,14 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
         </Text>
         <TouchableOpacity style={styles.tableColumnTO}
           onPress={() => {
-            if (metadata.PROVIDER_NAME) {
-              Clipboard.setString(metadata.PROVIDER_NAME);
+            if (metadata.serviceProviderName) {
+              Clipboard.setString(metadata.serviceProviderName);
               ToastAndroid.show('Copied', ToastAndroid.SHORT);
             }
           }}
         >
           <Text style={styles.tableColumn} color={colors.std200}>
-            {metadata.PROVIDER_NAME}
+            {metadata.serviceProviderName}
           </Text>
         </TouchableOpacity>
       </View>
@@ -97,9 +95,9 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
                   }
                 }}
               >
-                <Flag
-                  width={20}
-                  height={20}
+                <Image
+                  style={{width: 20, height: 20}}
+                  source={Flags[resolvedMccMnc?.ISO1 || "UN"] || Flags.UN}
                 />
                 <Text style={styles.tableColumn} color={colors.std200}>
                   {resolvedMccMnc.Country}
@@ -158,13 +156,13 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
         <TouchableOpacity style={styles.tableColumnTO}
           onPress={() => {
             if (metadata.ICCID) {
-              Clipboard.setString(metadata.uICCID);
+              Clipboard.setString(metadata.iccid);
               ToastAndroid.show('Copied', ToastAndroid.SHORT);
             }
           }}
         >
           <Text style={styles.tableColumn} color={colors.std200} adjustsFontSizeToFit>
-            {metadata.uICCID}
+            {metadata.iccid}
           </Text>
         </TouchableOpacity>
       </View>

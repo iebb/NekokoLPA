@@ -45,7 +45,7 @@ export function dateToDate6(d: Date): string {
 
 export function parseMetadata(metadata: ProfileMetadataMap, colors: any, t: TFunction) {
   const tags = [];
-  let nickname = metadata.NICKNAME ?? metadata.PROVIDER_NAME ?? metadata.NAME;
+  let nickname = metadata.profileNickname ?? metadata.serviceProviderName ?? metadata.profileName;
   if (nickname) {
 
     const eDates = nickname.matchAll(/\s*d:(2[012])?(\d\d)(\d\d)(\d\d)/g);
@@ -104,19 +104,19 @@ export function parseMetadata(metadata: ProfileMetadataMap, colors: any, t: TFun
     nickname = nickname.replace(match[0], '').trim();
   }
 
-  let mccMncInfo = resolveMccMnc(metadata.uMCC_MNC);
+  let mccMncInfo = resolveMccMnc(metadata.profileOwnerMccMnc);
 
   let lastValue: {[key: string]: string} = {};
   try {
     if (mccMncInfo.MCC) {
       lastValue = JSON.parse(countryList.getString(mccMncInfo.MCC) || '{}') as {[key: string]: string};
-      lastValue[metadata.uMCC_MNC] = mccMncInfo.Operator || metadata.PROVIDER_NAME || metadata.uMCC_MNC;
+      lastValue[metadata.profileOwnerMccMnc] = mccMncInfo.Operator || metadata.serviceProviderName || metadata.profileOwnerMccMnc;
       countryList.set(mccMncInfo.MCC, JSON.stringify(lastValue));
     }
   } finally {
   }
 
-  let countryEmoji = mccMncInfo.ISO1 ?? predictCountryForICCID(metadata.uICCID).code;
+  let countryEmoji = mccMncInfo.ISO1 ?? predictCountryForICCID(metadata.iccid).code;
   let countryMatch = nickname.match(/[🇦-🇿]{2}/u);
   if (countryMatch) {
     countryEmoji = emojiToCountryCode(countryMatch[0]);

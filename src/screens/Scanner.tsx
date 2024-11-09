@@ -59,15 +59,15 @@ function Scanner({ route,  navigation }: RootScreenProps<'Scanner'>) {
 							}}
 							confirmDownload={({ downloadResult }: any) => {
 								// @ts-ignore
-								const m = authenticateResult.profileMetadata.profileMetadataMap;
+								const m = authenticateResult.profileMetadata;
 								const v = {
 									eid: eUICC?.eid,
 									eum: eUICC?.eid?.substring(0, 8),
 									eUICCVersion: eUICC?.version,
 									...downloadResult,
-									profileProvider: m.PROVIDER_NAME,
-									profileName: m.NAME,
-									profileMccMnc: m.uMCC_MNC,
+									profileProvider: m.serviceProviderName,
+									profileName: m.profileName,
+									profileMccMnc: m.profileOwnerMccMnc,
 									version: version,
 								};
 								fetch(REPORTING_URL, {
@@ -80,7 +80,7 @@ function Scanner({ route,  navigation }: RootScreenProps<'Scanner'>) {
 								}).then((d) => d.json()).then((data: any) => console.log("reported", data));
 
 								if (downloadResult?.deltaSpace) {
-									sizeStats.set(m.uICCID, downloadResult.deltaSpace);
+									sizeStats.set(m.iccid, downloadResult.deltaSpace);
 								}
 
 								setDownloadResult(downloadResult);

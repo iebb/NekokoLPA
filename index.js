@@ -9,4 +9,4 @@ if (__DEV__) {
 	import('@/reactotron.config');
 }
 
-AppRegistry.registerComponent("Main", () => App);
+AppRegistry.registerComponent("NekokoLPA", () => App);

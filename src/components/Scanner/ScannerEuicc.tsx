@@ -109,7 +109,7 @@ export function ScannerEuicc({ appLink, eUICC, setEUICC, finishAuthenticate }: a
                 {row.name}
               </Text>
               <Text text70 style={{marginTop: 2}} color={colors.std200}>
-                {row.profiles?.profiles.length} Profiles
+                {row.profiles.length} Profiles
               </Text>
             </ListItem.Part>
             <ListItem.Part containerStyle={{marginBottom: 5}}>

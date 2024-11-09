@@ -47,7 +47,7 @@ export function ScannerResult(
               <Text center text60 color={colors.std200}>
                 {t('profile:download_success')}
               </Text>
-              <MetadataView metadata={authenticateResult.profileMetadata.profileMetadataMap} />
+              <MetadataView metadata={authenticateResult.profileMetadata} />
               <View left style={{
                 marginTop: 50,
                 flexDirection: "column", display: "flex",
@@ -96,7 +96,7 @@ export function ScannerResult(
                       makeLoading(
                         setLoading,
                         () => {
-                          InfiLPA.enableProfileByIccId(device, authenticateResult.profileMetadata.profileMetadataMap.ICCID);
+                          InfiLPA.enableProfileByIccId(device, authenticateResult.profileMetadata.ICCID);
                           goBack();
                         }
                       )

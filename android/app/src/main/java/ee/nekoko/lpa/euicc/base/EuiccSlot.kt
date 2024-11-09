@@ -18,12 +18,11 @@ class EuiccSlot (
     var available: Boolean = false
     var eid: String? = null
     @Transient var euiccInfo2: EUICCInfo2? = null
-    var installedApplications = 0
     var bytesFree = 0
     var volatileFree = 0
     var version = ""
     // var svn = ""
-    var profiles: ProfileList? = null
+    var profiles: List<Map<String, String>>? = null
     var status: String? = null
     @Transient var lpa: LocalProfileAssistant? = null
     @Transient var manager: EuiccManager? = null
@@ -50,7 +49,6 @@ class EuiccSlot (
                 }
                 data.add(v)
             }
-            installedApplications = data[0]
             bytesFree = data[1]
             volatileFree = data[2]
         }
@@ -68,7 +66,7 @@ class EuiccSlot (
                 if (lpa == null) {
                     lpa = LocalProfileAssistant(connection, name,this)
                 }
-                profiles = lpa!!.refreshProfileList()
+                profiles = lpa!!.refreshProfileList().profiles.map { m -> m.profileMetadataMap }
                 manager?.updateEuiccList()
             } else {
                 Log.error("EUICC_SLOT", "No connection!")

@@ -30,6 +30,6 @@ public class ProfileStates {
     public static final ProfileState DISABLED = new ProfileState(0);
 
     public static String getString(ProfileState profileState) {
-        return ProfileStates.DISABLED.toString().equals(profileState.toString()) ? "Disabled" : "Enabled";
+        return ProfileStates.DISABLED.toString().equals(profileState.toString()) ? "0" : "1";
     }
 }

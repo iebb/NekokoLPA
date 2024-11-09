@@ -11,6 +11,8 @@ export function NativeListener({ children }: { children?: React.ReactNode }) {
     const listener = (props: any) => {
       for(const key of Object.keys(props)) {
         const value = JSON.parse(props[key]);
+        console.log("Received", key, value);
+        console.log("Received", key, props[key]);
         dispatch(setGlobalState({[key]: value}))
       }
     };

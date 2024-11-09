@@ -7,13 +7,14 @@ import ErrorToast from "@/components/common/ErrorToast";
 import React, {useEffect} from "react";
 import {useSelector} from "react-redux";
 import {RootState} from "@/redux/reduxDataStore";
-import {Linking, ScrollView} from "react-native";
+import {Linking, Platform} from "react-native";
 import {LPACode} from "@/components/utils/lpaRegex";
-import {Main, Profile, Scanner, Stats} from '@/screens';
-import Title from "@/components/common/Title";
-import Container from "@/components/common/Container";
-import {ProfileStats} from "@/components/stats/ProfileStats";
-import {SafeScreen} from "@/components/template";
+import Main from '@/screens/Main';
+import Profile from '@/screens/Profile';
+import Scanner from '@/screens/Scanner';
+import Stats from '@/screens/Stats';
+import {playNative} from "@/native/Hybrid";
+import InfiLPA from "@/native/InfiLPA";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -22,6 +23,11 @@ function ApplicationNavigator() {
 	const { variant } = useTheme();
 	const {currentEuicc} = useSelector((state: RootState) => state.LPA);
 	const navigationRef = React.createRef<NavigationContainerRef<RootStackParamList>>();
+
+
+	useEffect(() => {
+		playNative();
+	}, []);
 
 	const processUrl = (url: string) => {
 		if (url) {
@@ -52,13 +58,6 @@ function ApplicationNavigator() {
 
 	return (
 		<SafeAreaProvider style={{ backgroundColor: "transparent" }}>
-			{/*<SafeScreen>*/}
-			{/*	<Container>*/}
-			{/*		<ScrollView>*/}
-			{/*			<ProfileStats />*/}
-			{/*		</ScrollView>*/}
-			{/*	</Container>*/}
-			{/*</SafeScreen>*/}
 			<NavigationContainer ref={navigationRef}>
 				<Stack.Navigator
 					key={variant}

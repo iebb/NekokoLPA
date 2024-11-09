@@ -8,6 +8,7 @@ import {useTheme} from "@/theme";
 
 export function EUICCPage({ eUICC } : { eUICC: EuiccList }) {
   const { colors } = useTheme();
+  if (!eUICC) return null;
   const {euiccList} = useSelector((state: RootState) => state.LPA);
 
   if (!euiccList) {

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, ScrollView, ToastAndroid, TouchableOpacity,} from 'react-native';
+import {Alert, Image, ScrollView, ToastAndroid, TouchableOpacity,} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {SafeScreen} from '@/components/template';
 import {useTheme} from '@/theme';
@@ -39,7 +39,7 @@ function getUTF8Length(s: string) {
 
 function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 	const { t } = useTranslation(['profile', 'welcome']);
-	const { colors, gutters, fonts } = useTheme();
+	const { colors } = useTheme();
 	const { eUICC, ICCID } = route.params;
 
 
@@ -70,9 +70,9 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 		if (euiccList) {
 			for(const eU of euiccList) {
 				if (eU.eid == eUICC.eid) {
-					for (const p of eU.profiles?.profiles || []) {
-						if (p.profileMetadataMap.ICCID === ICCID) {
-							setMetadata(p.profileMetadataMap);
+					for (const p of eU.profiles) {
+						if (p.ICCID === ICCID) {
+							setMetadata(p);
 						}
 					}
 				}
@@ -82,8 +82,6 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 
 
 	const tagChars = tags.length ? " " + (tags.map(t => t.rawValue)).join(" ") : "";
-
-	const Flag = (Flags[country] || Flags.UN).default;
 
 	const updateNickname = (n: string) => {
 		makeLoading(setLoading, () => {
@@ -184,9 +182,9 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 			<Container>
 				<ScrollView>
 					<View marginB-10 row gap-5>
-						<Flag
-							width={24}
-							height={24}
+						<Image
+							style={{width: 20, height: 20}}
+							source={Flags[country] || Flags.UN}
 						/>
 						<TouchableOpacity
 							style={{ flex: 1, marginLeft: 5 }}
@@ -307,7 +305,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 						<MetadataView metadata={metadata} />
 					</View>
 					{
-						metadata.STATE === "Disabled" && (
+						metadata.profileState === "0" && (
 
 							<View flex row marginT-40>
 								<Button

@@ -3,9 +3,9 @@ import {useDispatch, useSelector} from "react-redux";
 import {EuiccList, selectAppConfig, setState, storage} from "@/redux/reduxDataStore";
 import {Profile} from "@/native/types";
 import InfiLPA from "@/native/InfiLPA";
-import {Alert, RefreshControl, ScrollView, TouchableOpacity} from "react-native";
+import {Alert, Image, RefreshControl, ScrollView, TouchableOpacity} from "react-native";
 import {parseMetadata} from "@/components/MainUI/ProfileList/parser";
-import {useCallback, useState} from "react";
+import React, {useCallback, useState} from "react";
 import {useTheme} from "@/theme";
 import {useNavigation} from "@react-navigation/native";
 import {useTranslation} from "react-i18next";
@@ -24,6 +24,7 @@ interface ProfileExt extends Profile {
 }
 
 export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
+
   const device = eUICC.name;
 
   const { colors} = useTheme();
@@ -45,8 +46,8 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
 
   const profileList = eUICC.profiles;
 
-  const profiles = profileList?.profiles?.map(
-    (profile: Profile) => ({...profile, selected: profile.profileMetadataMap.STATE === "Enabled"})
+  const profiles = profileList?.map(
+    (profile: Profile) => ({...profile, selected: profile.profileState === "1"})
   ) || []
 
   const isLoading = loading; // (status !== undefined && loadingStates.includes(status)) || ;
@@ -76,8 +77,8 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
         <View gap-10>
           {
             profiles.map((profile: ProfileExt, i: number) => {
-              const metadata = profile.profileMetadataMap;
-              const numICCID = metadata.uICCID.replaceAll(/\D/g, '');
+              const metadata = profile;
+              const numICCID = metadata.iccid.replaceAll(/\D/g, '');
               const hueICCID = (parseInt(numICCID.substring(numICCID.length - 7), 10) * 17.84) % 360;
               const { tags, name, country } = parseMetadata(metadata, colors, t);
 
@@ -100,15 +101,11 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
                 }
               }
 
-              const Flag = (Flags[country] || Flags.UN).default;
               let Size = 0;
-              if (metadata?.uICCID) {
-                Size = storage.getNumber(metadata?.uICCID) || 0;
-                if (Size > 0) {
-                  sizeStats.set(metadata?.uICCID, Size);
-                  storage.delete(metadata?.uICCID);
-                }
-              }
+              // if (metadata?.iccid) {
+              //   Size = sizeStats.getNumber(metadata?.iccid) || 0;
+              // }
+
 
               return (
                 <Drawer
@@ -156,14 +153,7 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
                           }
                         },
                       ])
-                  }/*, {
-                    customElement: (
-                      <FontAwesomeIcon icon={faTrash} style={{ color: colors.cardBackground, }} />
-                    ),
-                    background: Colors.yellow30,
-                    width: 60,
-                    onPress: () => console.log('read pressed')
-                  }*/]}
+                  }]}
                   leftItem={{
                     customElement: (
                       <FontAwesomeIcon icon={faPencil} style={{ color: colors.cardBackground, }} />
@@ -180,17 +170,7 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
                     }
                   }}
                 >
-                  <Card
-                    flex
-                    style={{
-                      borderRadius: 10,
-                      overflow: "hidden",
-                    }}
-                    left
-                    padding={false}
-                    backgroundColor={colors.cardBackground}
-                    enableShadow
-                  >
+                  <Card backgroundColor={colors.cardBackground} >
                     <View
                       style={{
                         paddingVertical: 5,
@@ -212,21 +192,21 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
                           }}
                         >
                           <View row>
-                            <Flag
-                              width={20}
-                              height={20}
+                            <Image
+                              style={{width: 20, height: 20}}
+                              source={Flags[country] || Flags.UN}
                             />
                             <Text color={colors.std200} marginL-5 style={{ fontSize: 16, marginTop: -2 }}>
                               {
                                 (stealthMode === 'none' || stealthMode === 'medium') ? replacedName : (
-                                  metadata?.PROVIDER_NAME
+                                  metadata?.serviceProviderName
                                 )
                               }
                             </Text>
                           </View>
                           <View row>
                             <Text text90L color={colors.std200}>
-                              {metadata?.PROVIDER_NAME} / {metadata?.NAME}
+                              {metadata?.serviceProviderName} / {metadata?.profileName}
                             </Text>
                           </View>
                         </TouchableOpacity>

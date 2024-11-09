@@ -34,7 +34,7 @@ import java.util.Locale;
 final public class ProfileList {
     private static final String TAG = ProfileList.class.getName();
 
-    private final List<ProfileMetadata> profiles;
+    public final List<ProfileMetadata> profiles;
 
 
     public ProfileList(List<ProfileMetadata> profileMetadataList) {
