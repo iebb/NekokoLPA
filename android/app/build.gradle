@@ -176,30 +176,16 @@ dependencies {
         implementation jscFlavor
     }
 
-
-    // ---------------------------------------------------------------------------------------------
-    // Module dependencies
-    // ---------------------------------------------------------------------------------------------
-    implementation project(path: ':messages')
-    implementation project(path: ':util')
-    implementation project(path: ':core')
-
     // ---------------------------------------------------------------------------------------------
     // Identiv reader library
     // ---------------------------------------------------------------------------------------------
 
-    // ConstraintLayout for profile list
-    implementation "androidx.constraintlayout:constraintlayout:2.1.4"
     // SwiperefreshLayout for profile list
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
     // Preference
     implementation "androidx.preference:preference:1.2.1"
     // WorkManager
     implementation "androidx.work:work-runtime:2.9.1"
-
-
-    // ASN1/BER codec
-    implementation 'com.beanit:jasn1:1.11.3'
 
     // ---------------------------------------------------------------------------------------------
     // Lifecycle management
@@ -214,18 +200,8 @@ dependencies {
     // Saved state module for ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.6"
     // Annotation processor
-    // annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
-    // alternately - if using Java8, use the following instead of lifecycle-compiler
-    implementation "androidx.lifecycle:lifecycle-common-java8:2.8.6"
-    // optional - helpers for implementing LifecycleOwner in a Service
-    implementation "androidx.lifecycle:lifecycle-service:2.8.6"
-    // optional - ProcessLifecycleOwner provides a lifecycle for the whole application process
-    implementation "androidx.lifecycle:lifecycle-process:2.8.6"
-    // optional - ReactiveStreams support for LiveData
-    implementation "androidx.lifecycle:lifecycle-reactivestreams:2.8.6"
     implementation 'com.google.code.gson:gson:2.11.0'
     implementation 'com.google.android.datatransport:transport-api:3.2.0'
-    implementation 'com.google.android.apps.common.testing.accessibility.framework:accessibility-test-framework:3.1.2'
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Testing

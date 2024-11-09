@@ -47,8 +47,4 @@ class SystemInfo(val context: Context) {
             }
         }
     }
-
-    fun checkSIMSlotCompatibility() {
-
-    }
 }

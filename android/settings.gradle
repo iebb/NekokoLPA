@@ -4,8 +4,5 @@ extensions.configure(com.facebook.react.ReactSettingsExtension){ ex -> ex.autoli
 
 rootProject.name = 'NekokoLPA'
 include ':app'
-include ':messages'
-include ':core'
-include ':util'
 includeBuild('../node_modules/@react-native/gradle-plugin')
 enableFeaturePreview "STABLE_CONFIGURATION_CACHE"
