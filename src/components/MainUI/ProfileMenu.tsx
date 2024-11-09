@@ -1,7 +1,7 @@
 import {Button, Card, Text, View} from "react-native-ui-lib";
-import {useEffect, useState} from "react";
-import {shallowEqual, useDispatch, useSelector} from "react-redux";
-import {EuiccList, selectEuicc, setState} from "@/redux/reduxDataStore";
+import {useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {EuiccList} from "@/redux/stateStore";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faPlus} from '@fortawesome/free-solid-svg-icons'
 import {useTheme} from "@/theme";
@@ -9,7 +9,7 @@ import {useNavigation} from "@react-navigation/native";
 import {useTranslation} from "react-i18next";
 import Clipboard from '@react-native-clipboard/clipboard';
 import {ToastAndroid} from "react-native";
-import {nextValue, selectAppConfig} from "@/redux/reduxDataStore";
+import {nextValue, selectAppConfig} from "@/redux/configStore";
 
 
 export default function ProfileMenu({ eUICC } : { eUICC: EuiccList }) {
@@ -55,7 +55,7 @@ export default function ProfileMenu({ eUICC } : { eUICC: EuiccList }) {
             <Text text100L color={colors.std50}>
               {t('main:available_space', {
                 bytes: eUICC.bytesFree !== null ? Intl.NumberFormat().format(eUICC.bytesFree || 0) : "??"
-              })} / SGP.22 v{eUICC.version}
+              })}
             </Text>
             <Text text100L color={colors.std50}>
               {
@@ -64,26 +64,26 @@ export default function ProfileMenu({ eUICC } : { eUICC: EuiccList }) {
             </Text>
           </View>
         </View>
-        <View
-          style={{ width: 40, flexBasis: 40 }}
-        >
-          <Button
-            borderRadius={0}
-            fullWidth
-            round
-            style={{ flex: 1, width: 40 }}
-            size="small"
-            onPress={() => {
-              dispatch(setState([{authenticateResult: null, downloadResult: null}, eUICC.name]));
-              // @ts-ignore
-              navigation.navigate('Scanner', {
-                eUICC: eUICC,
-              });
-            }}
-          >
-            <FontAwesomeIcon icon={faPlus} style={{ color: colors.cardBackground, }} />
-          </Button>
-        </View>
+        {/*<View*/}
+        {/*  style={{ width: 40, flexBasis: 40 }}*/}
+        {/*>*/}
+        {/*  <Button*/}
+        {/*    borderRadius={0}*/}
+        {/*    fullWidth*/}
+        {/*    round*/}
+        {/*    style={{ flex: 1, width: 40 }}*/}
+        {/*    size="small"*/}
+        {/*    onPress={() => {*/}
+        {/*      // TODO: dispatch(setState([{authenticateResult: null, downloadResult: null}, eUICC.name]));*/}
+        {/*      // @ts-ignore*/}
+        {/*      navigation.navigate('Scanner', {*/}
+        {/*        eUICC: eUICC,*/}
+        {/*      });*/}
+        {/*    }}*/}
+        {/*  >*/}
+        {/*    <FontAwesomeIcon icon={faPlus} style={{ color: colors.cardBackground, }} />*/}
+        {/*  </Button>*/}
+        {/*</View>*/}
       </Card>
     </View>
   )

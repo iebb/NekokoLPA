@@ -31,6 +31,8 @@ import Container from "@/components/common/Container";
 import {Flags} from "@/assets/flags";
 import {Colors} from "react-native-ui-lib/src/style";
 import {makeLoading} from "@/components/utils/loading";
+import {Adapters} from "@/native/adapters/registry";
+import {selectDeviceState} from "@/redux/stateStore";
 
 
 function getUTF8Length(s: string) {
@@ -40,15 +42,13 @@ function getUTF8Length(s: string) {
 function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 	const { t } = useTranslation(['profile', 'welcome']);
 	const { colors } = useTheme();
-	const { eUICC, ICCID } = route.params;
+	const { deviceId, iccid } = route.params;
 
 
-	const device = eUICC.name;
+	const adapter = Adapters[deviceId];
 
 	const [tags, setTags] = useState<Tag[]>([]);
 	const [loading, setLoading] = useState(false);
-
-	const [metadata, setMetadata] = useState(route.params.metadata);
 	const [nickname, setNickname] = useState('');
 	const [country, setCountry] = useState('');
 
@@ -57,7 +57,8 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 	const [newTagType, setNewTagType] = useState('date');
 	const [tagValue, setTagValue] = useState('');
 
-	const { euiccList } = useSelector(selectState, shallowEqual);
+	const DeviceState = useSelector(selectDeviceState(deviceId));
+	const metadata = DeviceState.profiles.find(m => m.iccid === iccid)!;
 
 	useEffect(() => {
 		const { tags, name, country } = parseMetadata(metadata, colors, t);
@@ -66,26 +67,11 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 		setCountry(country);
 	}, [metadata]);
 
-	useEffect(() => {
-		if (euiccList) {
-			for(const eU of euiccList) {
-				if (eU.eid == eUICC.eid) {
-					for (const p of eU.profiles) {
-						if (p.ICCID === ICCID) {
-							setMetadata(p);
-						}
-					}
-				}
-			}
-		}
-	}, [euiccList]);
-
-
 	const tagChars = tags.length ? " " + (tags.map(t => t.rawValue)).join(" ") : "";
 
 	const updateNickname = (n: string) => {
-		makeLoading(setLoading, () => {
-			InfiLPA.setNicknameByIccId(device, ICCID, n);
+		makeLoading(setLoading, async () => {
+			await adapter.setNicknameByIccId(iccid, n);
 		});
 	}
 
@@ -305,7 +291,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 						<MetadataView metadata={metadata} />
 					</View>
 					{
-						metadata.profileState === "0" && (
+						(metadata.profileState === 0) && (
 
 							<View flex row marginT-40>
 								<Button
@@ -331,8 +317,11 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 																text: t('profile:delete_tag_ok'),
 																style: 'destructive',
 																onPress: () => {
-																	makeLoading(setLoading, () => {
-																		InfiLPA.deleteProfileByIccId(device, ICCID);
+																	makeLoading(() => {
+																		setLoading(false);
+																		navigation.goBack();
+																	}, async () => {
+																		await adapter.deleteProfileByIccId(iccid);
 																	});
 																}
 															},

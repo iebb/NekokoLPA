@@ -10,11 +10,12 @@ import type {RootScreenProps} from "@/navigators/navigation";
 import {Image, Linking, Platform, TouchableOpacity} from "react-native";
 import {version} from '@/../package.json';
 import {useDispatch, useSelector} from "react-redux";
-import {nextValue, selectAppConfig, selectState} from "@/redux/reduxDataStore";
+import {selectState} from "@/redux/reduxDataStore";
+import {nextValue, selectAppConfig} from "@/redux/configStore";
 import type {Variant} from "@/types/theme/config";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faFlag, faLanguage, faMoon} from "@fortawesome/free-solid-svg-icons";
-import {playNative} from "@/native/Hybrid";
+import {setupNative} from "@/native/Hybrid";
 
 const DEBUG_REPORTING_URL = "https://nlpa-data.nekoko.ee/api/debug/log";
 
@@ -34,8 +35,6 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 	const [release, setRelease] = useState({
 		tag_name: `v${version}`,
 	});
-
-	const [tapCount, setTapCount] = useState(0);
 
 	useEffect(() => {
 		void i18next.changeLanguage(language);
@@ -73,10 +72,7 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 				<View style={{flexDirection: 'column', display: 'flex', height: '100%', gap: 10}}>
 					<View row>
 						<View row gap-5 flexG>
-							<TouchableOpacity onPress={() => {
-
-								playNative();
-							}}>
+							<TouchableOpacity>
 								<Image
 									source={CatImage}
 									style={{ width: 40, height: 40 }}

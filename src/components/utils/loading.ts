@@ -1,7 +1,6 @@
-export const makeLoading = (setLoading: (v: boolean) => void, exec: () => void) => {
+export const makeLoading = (setLoading: (v: boolean) => void, exec: () => Promise<void>) => {
   setLoading(true);
   setTimeout(() => {
-    exec();
-    setLoading(false);
+    exec().then(p => setLoading(false))
   }, 100);
 }

@@ -24,9 +24,9 @@ class InfiLPA {
         return JSON.parse(LPABridge.getEuiccListJSON()) as string[];
     }
 
-    static selectEUICC(device: string) {
+    static selectDeviceState(device: string) {
         this.currentEuicc = device;
-        // LPABridge.selectEuicc(device);
+        // LPABridge.selectDeviceState(device);
     }
 
     static refreshProfileList(device?: string) {

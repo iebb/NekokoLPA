@@ -146,16 +146,16 @@ android {
                     appIcon: "@mipmap/ic_launcher_multi"
             ]
         }
-        esim9 {
-            applicationIdSuffix ".esim9"
-            dimension "version"
-            versionNameSuffix "-9e"
-            signingConfig signingConfigs.esim9
-            manifestPlaceholders = [
-                    appLabel: '9eSIM',
-                    appIcon: "@mipmap/ic_launcher_9esim"
-            ]
-        }
+//        esim9 {
+//            applicationIdSuffix ".esim9"
+//            dimension "version"
+//            versionNameSuffix "-9e"
+//            signingConfig signingConfigs.esim9
+//            manifestPlaceholders = [
+//                    appLabel: '9eSIM',
+//                    appIcon: "@mipmap/ic_launcher_9esim"
+//            ]
+//        }
         store {
             dimension "version"
             manifestPlaceholders = [
@@ -215,19 +215,5 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-contrib:3.6.1"
     androidTestImplementation "androidx.test.espresso:espresso-core:3.6.1"
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    // Compatibility
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // Fixing Duplicate class kotlin.... issue
-    // See: https://stackoverflow.com/questions/75263047/duplicate-class-in-kotlin-android
-    constraints {
-        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {
-            because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")
-        }
-        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0") {
-            because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
-        }
-    }
 
 }

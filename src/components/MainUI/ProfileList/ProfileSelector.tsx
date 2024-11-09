@@ -1,9 +1,9 @@
 import {Card, Colors, Drawer, Switch, Text, View} from "react-native-ui-lib";
 import {useDispatch, useSelector} from "react-redux";
-import {EuiccList, selectAppConfig, setState, storage} from "@/redux/reduxDataStore";
+import {selectAppConfig} from "@/redux/configStore";
 import {Profile} from "@/native/types";
 import InfiLPA from "@/native/InfiLPA";
-import {Alert, Image, RefreshControl, ScrollView, TouchableOpacity} from "react-native";
+import {Alert, Dimensions, Image, ImageBackground, RefreshControl, ScrollView, TouchableOpacity} from "react-native";
 import {parseMetadata} from "@/components/MainUI/ProfileList/parser";
 import React, {useCallback, useState} from "react";
 import {useTheme} from "@/theme";
@@ -16,41 +16,36 @@ import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faPencil, faPlus, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {sizeStats} from "@/storage/mmkv";
 import {makeLoading} from "@/components/utils/loading";
-import {size} from "lodash";
+import _, {size} from "lodash";
+import {Adapters} from "@/native/adapters/registry";
+import {selectDeviceState} from "@/redux/stateStore";
 
 
 interface ProfileExt extends Profile {
   selected: boolean;
 }
 
-export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
+export default function ProfileSelector({ deviceId } : { deviceId: string }) {
 
-  const device = eUICC.name;
+  const DeviceState = useSelector(selectDeviceState(deviceId));
 
   const { colors} = useTheme();
   const { t } = useTranslation(['profile']);
   const navigation = useNavigation();
-  const dispatch = useDispatch();
   const { stealthMode } = useSelector(selectAppConfig);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const onRefresh = useCallback(() => {
-    dispatch(setState([{profileList: {
-        profiles: [],
-      }}, eUICC.name]));
-    makeLoading(setRefreshing, () => {
-      InfiLPA.refreshProfileList();
-    })
-  }, []);
-
-  const profileList = eUICC.profiles;
+  const profileList = DeviceState.profiles;
 
   const profiles = profileList?.map(
-    (profile: Profile) => ({...profile, selected: profile.profileState === "1"})
+    (profile: Profile) => ({...profile, selected: profile.profileState === 1})
   ) || []
 
   const isLoading = loading; // (status !== undefined && loadingStates.includes(status)) || ;
+  
+  const adapter = Adapters[deviceId];
+  const screenWidth = Dimensions.get('window').width;
 
   return (
     <View
@@ -71,7 +66,9 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
         alwaysBounceVertical
         overScrollMode="always"
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          <RefreshControl refreshing={refreshing} onRefresh={() => {
+            adapter.initialize();
+          }} />
         }
       >
         <View gap-10>
@@ -109,7 +106,7 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
 
               return (
                 <Drawer
-                  key={`${metadata.ICCID}_${i}`}
+                  key={`${metadata.iccid}_${i}`}
                   style={{
                     borderRadius: 15,
                     overflow: "hidden",
@@ -139,9 +136,9 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
                                   text: t('profile:delete_tag_ok'),
                                   style: 'destructive',
                                   onPress: () => {
-                                    makeLoading(setLoading, () => {
-                                      InfiLPA.deleteProfileByIccId(device, metadata.ICCID);
-                                    })
+                                    // makeLoading(setLoading, () => {
+                                    //   adapter.deleteProfileByIccId(device, metadata.iccid);
+                                    // })
                                   }
                                 },
                                 {
@@ -163,21 +160,21 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
                     onPress: () => {
                       // @ts-ignore
                       navigation.navigate('Profile', {
-                        ICCID: metadata.ICCID,
+                        iccid: metadata.iccid,
                         metadata: metadata,
-                        eUICC: eUICC,
+                        deviceId: deviceId,
                       });
                     }
                   }}
                 >
-                  <Card backgroundColor={colors.cardBackground} >
+                  <Card
+                    backgroundColor={colors.cardBackground}
+                  >
                     <View
-                      style={{
-                        paddingVertical: 5,
-                        gap: 5,
-                      }}
+                      paddingT-5
                       paddingH-15
                       margin-0
+                      gap-5
                     >
                       <View row flex width="100%">
                         <TouchableOpacity
@@ -185,9 +182,9 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
                           onPress={() => {
                             // @ts-ignore
                             navigation.navigate('Profile', {
-                              ICCID: metadata.ICCID,
+                              iccid: metadata.iccid,
                               metadata: metadata,
-                              eUICC: eUICC,
+                              deviceId: deviceId,
                             });
                           }}
                         >
@@ -221,11 +218,11 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
                             disabled={isLoading}
                             padding-5
                             onValueChange={async (value2: boolean) => {
-                              makeLoading(setLoading, () => {
+                              makeLoading(setLoading, async () => {
                                 if (profile.selected) {
-                                  InfiLPA.disableProfileByIccId(device, metadata.ICCID);
+                                  await adapter.disableProfileByIccId(metadata.iccid);
                                 } else {
-                                  InfiLPA.enableProfileByIccId(device, metadata.ICCID);
+                                  await adapter.enableProfileByIccId(metadata.iccid);
                                 }
                               })
                             }}
@@ -253,6 +250,24 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
                         }
                       </View>
                     </View>
+                    <View
+                      style={{ height: 2, backgroundColor: `hsl(${hueICCID}, 50%, 50%)`}}
+                    />
+                    {/*<View*/}
+                    {/*  style={{ height: 2, overflow: "hidden" }}*/}
+                    {/*  row*/}
+                    {/*>*/}
+                    {/*  {*/}
+                    {/*    _.range(screenWidth / 25 + 2).map(i => (*/}
+                    {/*      <Image*/}
+                    {/*        key={i}*/}
+                    {/*        source={Flags[country] || Flags.UN}*/}
+                    {/*        resizeMode="contain"*/}
+                    {/*        style={{ height: 25, width: 25, marginTop: -10, marginLeft: -2, transform: [{rotate: '45deg'}] }}*/}
+                    {/*      />*/}
+                    {/*    ))*/}
+                    {/*  }*/}
+                    {/*</View>*/}
                   </Card>
                 </Drawer>
               )

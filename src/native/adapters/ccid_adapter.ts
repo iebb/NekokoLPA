@@ -1,15 +1,19 @@
 import {NativeModules} from "react-native";
 import {setupDevice} from "@/native/jsnative/setup";
+import {Device} from "@/native/adapters/adapter";
 
 const { CCIDPlugin } = NativeModules;
 
 
 export class CCIDDevice implements Device {
+  type = "ccid";
   deviceName = "";
+  deviceId = "";
   explicitConnectionRequired = true;
 
   constructor(deviceName: string) {
     this.deviceName = deviceName;
+    this.deviceId = "ccid:" + deviceName;
   }
 
   async connect(): Promise<boolean> {
@@ -31,10 +35,5 @@ export class CCIDDevice implements Device {
     const r = await CCIDPlugin.transceive(this.deviceName, s);
     console.log("Ret:", r);
     return r;
-  }
-
-  async execute(s: string, args: any[]): Promise<any> {
-    const exec = await setupDevice(this);
-    return exec(s, args);
   }
 }

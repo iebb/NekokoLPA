@@ -8,17 +8,16 @@ export interface Profile extends ProfileMetadataMap {
 
 
 export interface ProfileMetadataMap {
-  ICCID: string;
-  profileState: string;
-  ICON?: string;
-  CLASS?: string;
+  iccid: string;
+  profileState: number;
   profileName: string;
   profileNickname?: string;
   serviceProviderName: string;
-  iccid: string;
   profileOwnerMccMnc: string;
-  MCC_MNC?: string;
-  PROFILE_SIZE?: string;
+  // ICON?: string;
+  // CLASS?: string;
+  // MCC_MNC?: string;
+  // PROFILE_SIZE?: string;
 }
 
 export interface RemoteError {

@@ -2,7 +2,7 @@ package im.nfc.ccid
 
 import android.hardware.usb.UsbDeviceConnection
 import android.hardware.usb.UsbEndpoint
-import com.infineon.esim.util.Log
+import android.util.Log
 
 class Ccid(
     val usbDeviceConnection: UsbDeviceConnection, val bulkIn: UsbEndpoint, val bulkOut: UsbEndpoint
@@ -10,7 +10,7 @@ class Ccid(
     private var currentSeq = 0.toByte()
 
     fun iccPowerOn(voltage: Byte = 0): ByteArray {
-        Log.debug("CCID", "sending power on");
+        Log.d("CCID", "sending power on");
         val seq = currentSeq++
         val command = byteArrayOf(
             MESSAGE_TYPE_PC_TO_RDR_ICCPOWERON,
@@ -22,8 +22,8 @@ class Ccid(
         )
         sendCcidPcToRdrMessage(command)
         val response = receiveCcidRdrToPcMessage(seq)
-        Log.debug("CCID", "sending power on result");
-        Log.debug("CCID", response.data.toString());
+        Log.d("CCID", "sending power on result");
+        Log.d("CCID", response.data.toString());
         return response.data
     }
 
@@ -120,7 +120,7 @@ class Ccid(
 
     @OptIn(ExperimentalStdlibApi::class)
     private fun sendCcidPcToRdrMessage(message: ByteArray) {
-        Log.debug("CCID PC TO RDR", message.toHexString())
+        Log.d("CCID PC TO RDR", message.toHexString())
         val transmitted = usbDeviceConnection.bulkTransfer(bulkOut, message, message.size, 4000)
         if (transmitted != message.size) {
             throw CcidException("Failed to transmit data ($transmitted / ${message.size})")

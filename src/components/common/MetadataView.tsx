@@ -155,7 +155,7 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
         </Text>
         <TouchableOpacity style={styles.tableColumnTO}
           onPress={() => {
-            if (metadata.ICCID) {
+            if (metadata.iccid) {
               Clipboard.setString(metadata.iccid);
               ToastAndroid.show('Copied', ToastAndroid.SHORT);
             }

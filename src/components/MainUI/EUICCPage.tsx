@@ -3,15 +3,15 @@ import ProfileSelector from "@/components/MainUI/ProfileList/ProfileSelector";
 import {LoaderScreen, View} from "react-native-ui-lib";
 import React from "react";
 import {useSelector} from "react-redux";
-import {EuiccList, RootState} from "@/redux/reduxDataStore";
 import {useTheme} from "@/theme";
+import {selectDeviceState} from "@/redux/stateStore";
 
-export function EUICCPage({ eUICC } : { eUICC: EuiccList }) {
+export function EUICCPage({ deviceId } : { deviceId: string }) {
   const { colors } = useTheme();
-  if (!eUICC) return null;
-  const {euiccList} = useSelector((state: RootState) => state.LPA);
+  if (!deviceId) return null;
+  const DeviceState = useSelector(selectDeviceState(deviceId));
 
-  if (!euiccList) {
+  if (!DeviceState) {
     return (
       <LoaderScreen
         color={colors.blue500}
@@ -23,8 +23,8 @@ export function EUICCPage({ eUICC } : { eUICC: EuiccList }) {
 
   return (
     <View flex flexG style={{ gap: 10 }}>
-      <ProfileMenu eUICC={eUICC} />
-      <ProfileSelector eUICC={eUICC} />
+      <ProfileMenu eUICC={DeviceState} />
+      <ProfileSelector deviceId={deviceId} />
     </View>
   )
 }

@@ -96,7 +96,7 @@ export function ScannerResult(
                       makeLoading(
                         setLoading,
                         () => {
-                          InfiLPA.enableProfileByIccId(device, authenticateResult.profileMetadata.ICCID);
+                          InfiLPA.enableProfileByIccId(device, authenticateResult.profileMetadata.iccid);
                           goBack();
                         }
                       )

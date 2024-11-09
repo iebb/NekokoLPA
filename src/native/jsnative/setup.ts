@@ -1,28 +1,49 @@
-import {NativeModules} from "react-native";
+import {NativeModules, Platform} from "react-native";
+import {Adapter, Device} from "@/native/adapters/adapter";
 const { CustomHttp } = NativeModules;
 
-export async function setupDevice(d: Device): Promise<(s: string, args: any[]) => Promise<any>> {
-  const module = await (require("../../lpaj/web.out"))();
+export async function setupDevice(a: Adapter): Promise<(s: string, args: any[]) => Promise<(fn: string, args: any[]) => Promise<any>>> {
+  const module = await (require("./web.out"))();
   module.jsSendApdu = async (x: string) => {
     console.log("TX >> ", x);
-    const result = await d.transmit(`81${x.substring(2)}`);
+    const result = await a.device.transmit(`81${x.substring(2)}`);
     console.log("RX >> ", result);
     return result;
   }
 
-  module.jsFetch = async (urlString: string, body: string) => {
-    console.log("URL: ", urlString);
-    console.log("Request:", body);
-    try {
-      const response = await CustomHttp.sendHttpRequest(urlString, body);
-      console.log("Response:", response);
-      return [true, 200, response];
-    } catch (error) {
-      return [false, 500, ""];
-    }
-  };
+  if (Platform.OS === 'android') {
+    module.jsFetch = async (urlString: string, body: string) => {
+      console.log("URL: ", urlString);
+      console.log("Request:", body);
+      const response = await fetch(urlString, {
+        method: 'POST',
+        headers: {
+          'User-Agent': 'gsma-rsp-lpad',
+          'X-Admin-Protocol': 'gsma/rsp/v2.2.0',
+          'Content-Type': 'application/json',
+        },
+        body: body,
+      });
+      var resp = await response.text();
+      console.log("Response: ", resp);
+      return [response.ok, response.status, resp];
+    };
 
-  d.execute = async (fn: string, args: any[]) => {
+  } else if (Platform.OS === 'ios') {
+    module.jsFetch = async (urlString: string, body: string) => {
+      console.log("URL: ", urlString);
+      console.log("Request:", body);
+      try {
+        const response = await CustomHttp.sendHttpRequest(urlString, body);
+        console.log("Response:", response);
+        return [true, 200, response];
+      } catch (error) {
+        return [false, 500, ""];
+      }
+    };
+  }
+
+  a._execute = async (fn: string, args: any[]) => {
     const argTypes = [];
     const argPtrs = [];
     for (var i = 0; i < args.length; i++) {
@@ -43,10 +64,10 @@ export async function setupDevice(d: Device): Promise<(s: string, args: any[]) =
     if (resultPtr) {
       let result = module.UTF8ToString(resultPtr);
       module._free(resultPtr);
-      return result;
+      return JSON.parse(result);
     }
-    return "";
+    return {};
   }
 
-  return d.execute;
+  return a._execute;
 }

@@ -1,6 +1,7 @@
 package ee.nekoko.nlpa
 
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.util.Log
 import com.facebook.react.PackageList
@@ -56,11 +57,13 @@ class MainApplication : Application(), ReactApplication {
                 return null
             }
 
+            @SuppressLint("TrustAllX509TrustManager")
             @Throws(CertificateException::class)
             override fun checkClientTrusted(arg0: Array<X509Certificate?>?, arg1: String?) {
                 // Not implemented
             }
 
+            @SuppressLint("TrustAllX509TrustManager")
             @Throws(CertificateException::class)
             override fun checkServerTrusted(arg0: Array<X509Certificate?>?, arg1: String?) {
                 // Not implemented

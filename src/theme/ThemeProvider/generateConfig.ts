@@ -54,6 +54,7 @@ export default (variant: Variant) => {
 			radius: defaultConfig.borders.radius,
 			colors: borderColors,
 		},
+		// @ts-ignore
 		navigationColors,
 	} as const satisfies FulfilledThemeConfiguration;
 };
