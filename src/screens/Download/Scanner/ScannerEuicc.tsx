@@ -2,7 +2,6 @@ import Title from "@/components/common/Title";
 import Container from "@/components/common/Container";
 import {BorderRadiuses, Checkbox, ListItem, Text, TextField, View} from "react-native-ui-lib";
 import {useCameraPermission} from "react-native-vision-camera";
-import InfiLPA from "@/native/InfiLPA";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faDownload, faSimCard} from "@fortawesome/free-solid-svg-icons";
 import React, {useEffect, useState} from "react";
@@ -76,16 +75,16 @@ export function ScannerEuicc({ appLink, eUICC, setEUICC, finishAuthenticate }: a
           onPress={() => {
             makeLoading(
               setLoading,
-              () => {
+              async () => {
                 setEUICC(row);
-                const authenticateResult = InfiLPA.authenticateWithCode(
-                  row.name,
-                  `LPA:1$${smdp}$${acToken}${(oid || confirmationCodeReq) ? "$" + oid : ""}${confirmationCodeReq ? "$1" : ""}`
-                );
-                finishAuthenticate({
-                  authenticateResult,
-                  confirmationCode
-                });
+                // const authenticateResult = InfiLPA.authenticateWithCode(
+                //   row.name,
+                //   `LPA:1$${smdp}$${acToken}${(oid || confirmationCodeReq) ? "$" + oid : ""}${confirmationCodeReq ? "$1" : ""}`
+                // );
+                // finishAuthenticate({
+                //   authenticateResult,
+                //   confirmationCode
+                // });
               }
             )
           }}

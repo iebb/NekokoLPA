@@ -5,7 +5,6 @@ import {useTheme} from '@/theme';
 import {Button, Colors, Text, TextField, View} from "react-native-ui-lib";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faCancel, faDownload} from "@fortawesome/free-solid-svg-icons";
-import InfiLPA from "@/native/InfiLPA";
 import BlockingLoader from "@/components/common/BlockingLoader";
 import RemoteErrorView from "@/components/common/RemoteErrorView";
 import MetadataView from "@/components/common/MetadataView";
@@ -107,6 +106,7 @@ export function ScannerAuthentication(
                       setLoading,
                       async () => {
                         const downloadResult = await adapter.downloadProfile(authenticateResult._internal, confirmationCode);
+                        await adapter.processNotifications(authenticateResult.profile.iccid);
                         console.log(downloadResult);
                         // InfiLPA.refreshProfileList(device);
                         confirmDownload({
@@ -133,7 +133,7 @@ export function ScannerAuthentication(
               <Text center text60 color={colors.std200}>
                 {t('profile:download_failure')}
               </Text>
-              <RemoteErrorView remoteError={authenticateResult?.remoteError} />
+              <RemoteErrorView remoteError={authenticateResult} />
               <View flex>
                 <View flex style={{ flexDirection: "row", gap: 10 }}>
                   <Button

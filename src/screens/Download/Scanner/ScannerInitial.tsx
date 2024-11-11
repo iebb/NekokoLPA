@@ -2,7 +2,6 @@ import Title from "@/components/common/Title";
 import Container from "@/components/common/Container";
 import {Button, Checkbox, Colors, Text, TextField, View} from "react-native-ui-lib";
 import {Camera, useCameraDevice, useCameraPermission, useCodeScanner} from "react-native-vision-camera";
-import InfiLPA from "@/native/InfiLPA";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faDownload, faPhotoFilm} from "@fortawesome/free-solid-svg-icons";
 import React, {useEffect, useState} from "react";

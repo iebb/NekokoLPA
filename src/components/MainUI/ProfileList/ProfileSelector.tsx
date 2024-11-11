@@ -1,11 +1,10 @@
 import {Card, Colors, Drawer, Switch, Text, View} from "react-native-ui-lib";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {selectAppConfig} from "@/redux/configStore";
 import {Profile} from "@/native/types";
-import InfiLPA from "@/native/InfiLPA";
-import {Alert, Dimensions, Image, ImageBackground, RefreshControl, ScrollView, TouchableOpacity} from "react-native";
+import {Alert, Dimensions, Image, RefreshControl, ScrollView, TouchableOpacity} from "react-native";
 import {parseMetadata} from "@/components/MainUI/ProfileList/parser";
-import React, {useCallback, useState} from "react";
+import React, {useState} from "react";
 import {useTheme} from "@/theme";
 import {useNavigation} from "@react-navigation/native";
 import {useTranslation} from "react-i18next";
@@ -13,10 +12,8 @@ import BlockingLoader from "@/components/common/BlockingLoader";
 import {findPhoneNumbersInText} from "libphonenumber-js/min";
 import {Flags} from "@/assets/flags";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
-import {faPencil, faPlus, faTrash} from "@fortawesome/free-solid-svg-icons";
-import {sizeStats} from "@/storage/mmkv";
+import {faPencil, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {makeLoading} from "@/components/utils/loading";
-import _, {size} from "lodash";
 import {Adapters} from "@/native/adapters/registry";
 import {selectDeviceState} from "@/redux/stateStore";
 

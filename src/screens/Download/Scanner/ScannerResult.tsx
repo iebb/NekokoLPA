@@ -5,7 +5,6 @@ import {useTheme} from '@/theme';
 import {Button, Colors, Text, TextField, View} from "react-native-ui-lib";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faArrowLeftLong, faCancel, faCheck, faCheckCircle} from "@fortawesome/free-solid-svg-icons";
-import InfiLPA from "@/native/InfiLPA";
 import RemoteErrorView from "@/components/common/RemoteErrorView";
 import MetadataView from "@/components/common/MetadataView";
 import Title from "@/components/common/Title";
@@ -120,7 +119,7 @@ export function ScannerResult(
                 <Text center text60 color={colors.std200}>
                   {t('profile:download_failure')}
                 </Text>
-                <RemoteErrorView remoteError={downloadResult?.remoteError} />
+                <RemoteErrorView remoteError={downloadResult} />
                 <View flex>
                   <View flex style={{ flexDirection: "row", gap: 10 }}>
                     <Button

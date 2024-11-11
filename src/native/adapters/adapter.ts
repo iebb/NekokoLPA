@@ -161,4 +161,10 @@ export class Adapter {
     return await this.execute('download_profile', [internal_state, confirmation_code]);
   }
 
+  async processNotifications(iccid: string) {
+    await this.execute("process_notifications", [iccid, 0x90, 0]);
+    await this.execute("process_notifications", [iccid, 0x60, 1]);
+    return
+  }
+
 }

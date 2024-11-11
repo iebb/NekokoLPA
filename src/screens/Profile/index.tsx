@@ -16,11 +16,9 @@ import {
 	TextField,
 	View
 } from "react-native-ui-lib";
-import {shallowEqual, useSelector} from "react-redux";
-import {selectState} from "@/redux/reduxDataStore";
+import {useSelector} from "react-redux";
 import BlockingLoader from "@/components/common/BlockingLoader";
 import MetadataView from "@/components/common/MetadataView";
-import InfiLPA from "@/native/InfiLPA";
 import Title from "@/components/common/Title";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faSave} from "@fortawesome/free-solid-svg-icons";
@@ -29,7 +27,6 @@ import {dateToDate6, parseMetadata, Tag} from "@/components/MainUI/ProfileList/p
 import {Spacings} from "react-native-ui-lib/src/components/../style";
 import Container from "@/components/common/Container";
 import {Flags} from "@/assets/flags";
-import {Colors} from "react-native-ui-lib/src/style";
 import {makeLoading} from "@/components/utils/loading";
 import {Adapters} from "@/native/adapters/registry";
 import {selectDeviceState} from "@/redux/stateStore";
@@ -322,6 +319,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 																		navigation.goBack();
 																	}, async () => {
 																		await adapter.deleteProfileByIccId(iccid);
+																		await adapter.processNotifications(iccid);
 																	});
 																}
 															},

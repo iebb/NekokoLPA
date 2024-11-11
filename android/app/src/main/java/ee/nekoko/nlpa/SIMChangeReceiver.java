@@ -12,7 +12,5 @@ public class SIMChangeReceiver extends BroadcastReceiver {
 
         Log.d("SimChangedReceiver", "--> SIM state changed <--");
         Log.d("SimChangedReceiver", "--> Refreshing eUICCs <--");
-//        var model = LPABridge.getInstance();
-//        model.refreshEuiccs();
     }
 }
