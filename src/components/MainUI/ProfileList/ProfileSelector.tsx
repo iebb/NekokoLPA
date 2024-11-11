@@ -38,7 +38,7 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
 
   const profileList = DeviceState.profiles;
 
-  const profiles = profileList?.map(
+  const profiles: any = (profileList || []).map(
     (profile: Profile) => ({...profile, selected: profile.profileState === 1})
   ) || []
 

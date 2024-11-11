@@ -25,7 +25,12 @@ export class CCIDDevice implements Device {
   }
 
   async disconnect(): Promise<boolean> {
-    await this.transmit("007080FF00");
+    try {
+      await this.transmit("007080FF00");
+    } catch (error) {
+      console.log("cannot close channel");
+    }
+    console.log("disconnecting from ccid");
     await CCIDPlugin.disconnect(this.deviceName);
     return true;
   }

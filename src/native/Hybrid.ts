@@ -7,9 +7,10 @@ const { CCIDPlugin, OMAPIBridge, CustomHttp } = NativeModules;
 
 
 export async function setupInternalDevices(): Promise<Device[]> {
+  console.log("refreshing");
   if (Platform.OS === 'android') {
     const devices = JSON.parse(await OMAPIBridge.listDevices());
-    return devices.map((d: any) => {
+    return devices.filter((d: any) => d.available === 'true').map((d: any) => {
       if (d.available === 'true') {
         return new OMAPIDevice(d.name);
       } else {
@@ -26,22 +27,3 @@ export async function setupInternalDevices(): Promise<Device[]> {
   return [];
 }
 
-
-export async function setupNative() {
-  // if (Platform.OS === 'android') {
-  //   const devices = JSON.parse(await OMAPIBridge.listDevices());
-  //   const available_devices = devices.filter((d: any) => d.available === 'true');
-  //   if (available_devices.length > 0) {
-  //     const device = new OMAPIDevice(available_devices[0].name);
-  //     const adapter = new Adapter(device);
-  //     await adapter.connect();
-  //
-  //     console.log("eid2", await adapter.get_eid());
-  //     console.log("get_profiles", await adapter.get_profiles());
-  //
-  //     await adapter.disconnect();
-  //   }
-  // }
-  //
-
-}

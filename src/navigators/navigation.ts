@@ -1,13 +1,12 @@
-import type { StackScreenProps } from '@react-navigation/stack';
+import type {StackScreenProps} from '@react-navigation/stack';
 import {ProfileMetadataMap} from "@/native/types";
-import {EuiccList} from "@/redux/stateStore";
 
 export type RootStackParamList = {
 	Main: {};
 	Stats: {};
 	Scanner: {
 		appLink?: string,
-		eUICC?: EuiccList,
+		deviceId?: string,
 	};
 	Profile: {
 		iccid: string;

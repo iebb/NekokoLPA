@@ -3,6 +3,7 @@
  */
 
 import { AppRegistry, Text, TextInput } from 'react-native';
+import { TextField } from 'react-native-ui-lib';
 import App from './src/App';
 
 if (__DEV__) {

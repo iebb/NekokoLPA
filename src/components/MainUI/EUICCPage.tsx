@@ -23,7 +23,7 @@ export function EUICCPage({ deviceId } : { deviceId: string }) {
 
   return (
     <View flex flexG style={{ gap: 10 }}>
-      <ProfileMenu eUICC={DeviceState} />
+      <ProfileMenu deviceId={deviceId} eUICC={DeviceState} />
       <ProfileSelector deviceId={deviceId} />
     </View>
   )

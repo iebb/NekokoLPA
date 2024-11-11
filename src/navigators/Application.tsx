@@ -21,9 +21,9 @@ function ApplicationNavigator() {
 			const match = url.match(LPACode);
 			if (match && match[0].length) {
 				console.log("App Link Matched: URL", url);
-				navigationRef.current?.navigate('Scanner', {
-					appLink: url,
-				});
+				// navigationRef.current?.navigate('Scanner', {
+				// 	appLink: url,
+				// });
 			}
 		}
 	}

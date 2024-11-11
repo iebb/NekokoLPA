@@ -1,32 +1,19 @@
 import {SegmentedControl, Text, View} from "react-native-ui-lib";
-import React, {useCallback, useState} from "react";
-import InfiLPA from "@/native/InfiLPA";
-import {useDispatch, useSelector} from "react-redux";
+import React, {useState} from "react";
+import {useSelector} from "react-redux";
 import {RootState} from "@/redux/reduxDataStore";
 import {selectAppConfig} from "@/redux/configStore";
 import {useTheme} from "@/theme";
 import {EUICCPage} from "@/components/MainUI/EUICCPage";
 import {useTranslation} from "react-i18next";
-import {RefreshControl, ScrollView} from "react-native";
-import {makeLoading} from "@/components/utils/loading";
-import {EuiccList, selectDeviceState, selectDeviceStates} from "@/redux/stateStore";
+import {ScrollView} from "react-native";
 import {Adapters} from "@/native/adapters/registry";
 
 export default function SIMSelector() {
   const { colors } = useTheme();
-  const dispatch = useDispatch();
   const { internalList } = useSelector((state: RootState) => state.LPA);
-  const deviceStates = useSelector(selectDeviceStates);
   const { nicknames } = useSelector(selectAppConfig);
   const { t } = useTranslation(['main']);
-  const [refreshing, setRefreshing] = useState(false);
-  const [euiccMenu, setEuiccMenu] = useState<EuiccList | null>(null);
-
-  const onRefresh = useCallback(() => {
-    // makeLoading(setRefreshing, () => {
-    //   InfiLPA.refreshEUICC();
-    // })
-  }, []);
   const [index, setIndex] = useState(0);
   const [layoutWidth, setLayoutWidth] = useState(0);
   const selected = index < internalList.length ? internalList[index] : null;
@@ -37,9 +24,6 @@ export default function SIMSelector() {
         bounces
         alwaysBounceVertical
         overScrollMode="always"
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
       >
         <View flex paddingT-20 gap-20>
           <Text color={colors.std200} center text70L>
@@ -62,54 +46,7 @@ export default function SIMSelector() {
         adapter.device.deviceName
       ),
     };
-  }), {
-    label: '+',
-  }];
-
-  console.log(segments);
-
-  /*
-  {
-        euiccMenu !== null && (
-          <ActionSheet
-            title={`EID: ${euiccMenu?.eid}`}
-            cancelButtonIndex={2}
-            destructiveButtonIndex={1}
-            options={[
-              {
-                label: t('main:set_nickname'),
-                onPress: () => {
-                  prompt(
-                    t('main:set_nickname'),
-                    t('main:set_nickname_prompt'),
-                    [
-                      {text: 'Cancel', onPress: () => {}, style: 'cancel'},
-                      {text: 'OK', onPress: nickname => {
-                        // @ts-ignore
-                          dispatch(setNickname({ [euiccMenu?.eid] : nickname}));
-                        }},
-                    ],
-                    {
-                      cancelable: true,
-                      defaultValue: nicknames[euiccMenu.eid!],
-                      placeholder: 'placeholder'
-                    }
-                  );
-                }},
-              {
-                label: 'Cancel',
-                //iconSource: () => <FontAwesomeIcon icon={faDownload} />,
-                onPress: () => setEuiccMenu(null)
-              }
-            ]}
-            visible={euiccMenu != null}
-            useNativeIOS
-            onDismiss={() => setEuiccMenu(null)}
-          />
-        )
-      }
-   */
-
+  })];
 
   return (
     <View
@@ -128,8 +65,8 @@ export default function SIMSelector() {
             <SegmentedControl
               activeColor={colors.purple300}
               outlineColor={colors.purple300}
-              backgroundColor={colors.std800}
-              activeBackgroundColor={colors.std800}
+              backgroundColor={colors.std900}
+              activeBackgroundColor={colors.std900}
               inactiveColor={colors.std200}
               preset={SegmentedControl.presets.DEFAULT}
               initialIndex={index}

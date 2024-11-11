@@ -16,6 +16,7 @@ export interface Device {
 }
 
 export class Adapter {
+  obsolete: boolean = false;
   connected: boolean = false;
   eid: string = '';
   deviceId: string = '';
@@ -31,10 +32,12 @@ export class Adapter {
 
 
   constructor(device: Device, dispatcher: Dispatch) {
+    this.obsolete = false;
     this.device = device;
     this.dispatch = dispatcher;
     this.deviceId = device.deviceId;
     if (Adapters[device.deviceId]) {
+      Adapters[device.deviceId].obsolete = false;
       return Adapters[device.deviceId];
     }
     Adapters[device.deviceId] = this;
@@ -58,7 +61,6 @@ export class Adapter {
 
   async initialize() {
     await this.connect();
-    // const eid = await this.get_eid();
     const profiles = await this.get_profiles();
     this.setState({
       profiles,
@@ -80,7 +82,12 @@ export class Adapter {
       return Promise.reject(new Error("Function is currently locked and cannot be executed simultaneously"));
     }
     this.isLocked = true;
-    const result = await this._execute(s, args);
+    let result;
+    try {
+      result = await this._execute(s, args);
+    } catch (e) {
+      result = (await setupDevice(this))(s, args);
+    }
     this.isLocked = false;
     return result;
   }
@@ -140,6 +147,18 @@ export class Adapter {
     }
     await this.get_profiles();
     return result;
+  }
+
+  async authenticateProfile(smdp: string, matchingId: string, imei: string = "") {
+    return await this.execute('authenticate_profile', [smdp, matchingId, imei]);
+  }
+
+  async cancelSession(internal_state: string) {
+    return await this.execute('cancel_download', [internal_state]);
+  }
+
+  async downloadProfile(internal_state: string, confirmation_code: string = "") {
+    return await this.execute('download_profile', [internal_state, confirmation_code]);
   }
 
 }

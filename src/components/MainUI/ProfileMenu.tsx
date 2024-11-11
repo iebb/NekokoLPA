@@ -12,7 +12,7 @@ import {ToastAndroid} from "react-native";
 import {nextValue, selectAppConfig} from "@/redux/configStore";
 
 
-export default function ProfileMenu({ eUICC } : { eUICC: EuiccList }) {
+export default function ProfileMenu({ eUICC, deviceId } : { eUICC: EuiccList, deviceId: string }) {
   const { colors } = useTheme();
   const { t } = useTranslation(['main']);
   const navigation = useNavigation();
@@ -64,26 +64,25 @@ export default function ProfileMenu({ eUICC } : { eUICC: EuiccList }) {
             </Text>
           </View>
         </View>
-        {/*<View*/}
-        {/*  style={{ width: 40, flexBasis: 40 }}*/}
-        {/*>*/}
-        {/*  <Button*/}
-        {/*    borderRadius={0}*/}
-        {/*    fullWidth*/}
-        {/*    round*/}
-        {/*    style={{ flex: 1, width: 40 }}*/}
-        {/*    size="small"*/}
-        {/*    onPress={() => {*/}
-        {/*      // TODO: dispatch(setState([{authenticateResult: null, downloadResult: null}, eUICC.name]));*/}
-        {/*      // @ts-ignore*/}
-        {/*      navigation.navigate('Scanner', {*/}
-        {/*        eUICC: eUICC,*/}
-        {/*      });*/}
-        {/*    }}*/}
-        {/*  >*/}
-        {/*    <FontAwesomeIcon icon={faPlus} style={{ color: colors.cardBackground, }} />*/}
-        {/*  </Button>*/}
-        {/*</View>*/}
+        <View
+          style={{ width: 40, flexBasis: 40 }}
+        >
+          <Button
+            borderRadius={0}
+            fullWidth
+            round
+            style={{ flex: 1, width: 40 }}
+            size="small"
+            onPress={() => {
+              // @ts-ignore
+              navigation.navigate('Scanner', {
+                deviceId: deviceId,
+              });
+            }}
+          >
+            <FontAwesomeIcon icon={faPlus} style={{ color: colors.cardBackground, }} />
+          </Button>
+        </View>
       </Card>
     </View>
   )

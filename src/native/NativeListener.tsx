@@ -4,6 +4,7 @@ import {useDispatch} from "react-redux";
 import {setupInternalDevices} from "@/native/Hybrid";
 import {setInternalDevices} from "@/redux/stateStore";
 import {Adapter} from "@/native/adapters/adapter";
+import {Adapters} from "@/native/adapters/registry";
 
 
 export function NativeListener({ children }: { children?: React.ReactNode }) {
@@ -36,10 +37,12 @@ export function NativeListener({ children }: { children?: React.ReactNode }) {
 
   useEffect(() => {
     setupInternalDevices().then(internalList => {
-      for(const d of internalList) {
-        new Adapter(d, dispatch).initialize();
+      for(const f of Object.keys(Adapters)) Adapters[f].obsolete = true;
+      for(const d of internalList) (new Adapter(d, dispatch)).initialize();
+      for(const f of Object.keys(Adapters)) if (Adapters[f].obsolete) {
+        Adapters[f].device.disconnect();
+        delete Adapters[f];
       }
-      console.log(internalList.map(d => d.deviceId));
       dispatch(setInternalDevices(internalList.map(d => d.deviceId)));
     });
   }, []);

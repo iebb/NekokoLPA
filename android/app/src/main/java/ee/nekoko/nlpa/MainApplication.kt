@@ -1,7 +1,6 @@
 package ee.nekoko.nlpa
 
 
-import android.annotation.SuppressLint
 import android.app.Application
 import android.util.Log
 import com.facebook.react.PackageList
@@ -14,15 +13,6 @@ import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.react.soloader.OpenSourceMergedSoMapping
 import com.facebook.soloader.SoLoader
-import java.security.KeyManagementException
-import java.security.NoSuchAlgorithmException
-import java.security.SecureRandom
-import java.security.cert.CertificateException
-import java.security.cert.X509Certificate
-import javax.net.ssl.HttpsURLConnection
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManager
-import javax.net.ssl.X509TrustManager
 
 
 class MainApplication : Application(), ReactApplication {
@@ -51,35 +41,6 @@ class MainApplication : Application(), ReactApplication {
         private var instance: MainApplication? = null
     }
 
-    private fun disableSSLCertificateChecking() {
-        val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
-            override fun getAcceptedIssuers(): Array<X509Certificate>? {
-                return null
-            }
-
-            @SuppressLint("TrustAllX509TrustManager")
-            @Throws(CertificateException::class)
-            override fun checkClientTrusted(arg0: Array<X509Certificate?>?, arg1: String?) {
-                // Not implemented
-            }
-
-            @SuppressLint("TrustAllX509TrustManager")
-            @Throws(CertificateException::class)
-            override fun checkServerTrusted(arg0: Array<X509Certificate?>?, arg1: String?) {
-                // Not implemented
-            }
-        })
-
-        try {
-            val sc = SSLContext.getInstance("TLS")
-            sc.init(null, trustAllCerts, SecureRandom())
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.socketFactory)
-        } catch (e: KeyManagementException) {
-            e.printStackTrace()
-        } catch (e: NoSuchAlgorithmException) {
-            e.printStackTrace()
-        }
-    }
     override fun onCreate() {
         super.onCreate()
         Log.d("nekoko.nlpa", "Initializing application.")
@@ -89,7 +50,6 @@ class MainApplication : Application(), ReactApplication {
             load()
         }
         Log.d("nekoko.nlpa", "Initialized.")
-        disableSSLCertificateChecking()
     }
 
 }

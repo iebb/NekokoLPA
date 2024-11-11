@@ -73,6 +73,7 @@ extension Data {
     card?.beginSession { (success, error) in
         if !success {
             reject("0", "BEGIN_SESSION_ERROR", nil)
+            return
         }
         card?.transmit(capduData) { (rapdu, error) in
             if let rapdu = rapdu {
@@ -94,3 +95,4 @@ extension Data {
     resolve(nil)
   }
 }
+
