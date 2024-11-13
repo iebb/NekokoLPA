@@ -1,21 +1,23 @@
 export interface Profiles {
-  profiles: Profile[];
+  profiles: ProfileMetadataMap[];
 }
 
-export interface Profile {
-  profileMetadataMap: ProfileMetadataMap;
+export interface Profile extends ProfileMetadataMap {
 }
+
+
 
 export interface ProfileMetadataMap {
-  ICCID: string;
-  STATE: string;
-  ICON?: string;
-  CLASS: string;
-  NAME: string;
-  NICKNAME: string;
-  PROVIDER_NAME: string;
-  uICCID: string;
-  uMCC_MNC: string;
+  iccid: string;
+  profileState: number;
+  profileName: string;
+  profileNickname?: string;
+  serviceProviderName: string;
+  profileOwnerMccMnc: string;
+  // ICON?: string;
+  // CLASS?: string;
+  // MCC_MNC?: string;
+  // PROFILE_SIZE?: string;
 }
 
 export interface RemoteError {
@@ -28,7 +30,7 @@ export interface RemoteError {
 export interface AuthenticateResult {
   remoteError: RemoteError;
   isCcRequired:    boolean;
-  profileMetadata: Profile;
+  profileMetadata: ProfileMetadataMap;
   success:         boolean;
 }
 

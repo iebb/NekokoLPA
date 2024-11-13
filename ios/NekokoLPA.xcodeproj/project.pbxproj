@@ -13,7 +13,10 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7699B88040F8A987B510C191 /* libPods-NekokoLPA-NekokoLPATests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-NekokoLPA-NekokoLPATests.a */; };
-		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		8CC7D2CF2CDBE2C900EE91E7 /* CCIDPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC7D2CE2CDBE2C900EE91E7 /* CCIDPlugin.swift */; };
+		8CC7D2D12CDBE3EB00EE91E7 /* CCIDPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC7D2D02CDBE3EB00EE91E7 /* CCIDPlugin.m */; };
+		8CC7D2DA2CDC9D5A00EE91E7 /* CustomHttp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC7D2D92CDC9D5A00EE91E7 /* CustomHttp.swift */; };
+		8CC7D2DC2CDC9D7600EE91E7 /* CustomHttp.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC7D2DB2CDC9D7600EE91E7 /* CustomHttp.m */; };
 		F571B3882BD7A3F80014213C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F571B3872BD7A3F80014213C /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
@@ -42,8 +45,12 @@
 		5709B34CF0A7D63546082F79 /* Pods-NekokoLPA.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NekokoLPA.release.xcconfig"; path = "Target Support Files/Pods-NekokoLPA/Pods-NekokoLPA.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-NekokoLPA-NekokoLPATests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NekokoLPA-NekokoLPATests.debug.xcconfig"; path = "Target Support Files/Pods-NekokoLPA-NekokoLPATests/Pods-NekokoLPA-NekokoLPATests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-NekokoLPA.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NekokoLPA.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = NekokoLPA/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-NekokoLPA-NekokoLPATests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NekokoLPA-NekokoLPATests.release.xcconfig"; path = "Target Support Files/Pods-NekokoLPA-NekokoLPATests/Pods-NekokoLPA-NekokoLPATests.release.xcconfig"; sourceTree = "<group>"; };
+		8CC7D2CD2CDBE2C900EE91E7 /* NekokoLPA-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NekokoLPA-Bridging-Header.h"; sourceTree = "<group>"; };
+		8CC7D2CE2CDBE2C900EE91E7 /* CCIDPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CCIDPlugin.swift; sourceTree = "<group>"; };
+		8CC7D2D02CDBE3EB00EE91E7 /* CCIDPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CCIDPlugin.m; sourceTree = "<group>"; };
+		8CC7D2D92CDC9D5A00EE91E7 /* CustomHttp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHttp.swift; sourceTree = "<group>"; };
+		8CC7D2DB2CDC9D7600EE91E7 /* CustomHttp.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CustomHttp.m; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F571B3872BD7A3F80014213C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -88,13 +95,17 @@
 		13B07FAE1A68108700A75B9A /* NekokoLPA */ = {
 			isa = PBXGroup;
 			children = (
+				8CC7D2D92CDC9D5A00EE91E7 /* CustomHttp.swift */,
+				8CC7D2DB2CDC9D7600EE91E7 /* CustomHttp.m */,
 				F571B3872BD7A3F80014213C /* PrivacyInfo.xcprivacy */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
-				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				8CC7D2CE2CDBE2C900EE91E7 /* CCIDPlugin.swift */,
+				8CC7D2D02CDBE3EB00EE91E7 /* CCIDPlugin.m */,
+				8CC7D2CD2CDBE2C900EE91E7 /* NekokoLPA-Bridging-Header.h */,
 			);
 			name = NekokoLPA;
 			sourceTree = "<group>";
@@ -170,8 +181,8 @@
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				C59DA0FBD6956966B86A3779 /* [CP] Embed Pods Frameworks */,
 				F6A41C54EA430FDDC6A6ED99 /* [CP] Copy Pods Resources */,
+				A7E06F127B4E7D458B1425FF /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -193,8 +204,8 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */,
 				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
+				912A59699B4F1100BAFEDF66 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -219,7 +230,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1610;
 					};
 				};
 			};
@@ -255,7 +266,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F571B3882BD7A3F80014213C /* PrivacyInfo.xcprivacy in Resources */,
-				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -279,7 +289,7 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
 		};
-		00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */ = {
+		912A59699B4F1100BAFEDF66 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -318,6 +328,23 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		A7E06F127B4E7D458B1425FF /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-NekokoLPA-NekokoLPATests/Pods-NekokoLPA-NekokoLPATests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-NekokoLPA-NekokoLPATests/Pods-NekokoLPA-NekokoLPATests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-NekokoLPA-NekokoLPATests/Pods-NekokoLPA-NekokoLPATests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -338,23 +365,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		C59DA0FBD6956966B86A3779 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-NekokoLPA-NekokoLPATests/Pods-NekokoLPA-NekokoLPATests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-NekokoLPA-NekokoLPATests/Pods-NekokoLPA-NekokoLPATests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-NekokoLPA-NekokoLPATests/Pods-NekokoLPA-NekokoLPATests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		E235C05ADACE081382539298 /* [CP] Copy Pods Resources */ = {
@@ -425,8 +435,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8CC7D2DC2CDC9D7600EE91E7 /* CustomHttp.m in Sources */,
+				8CC7D2DA2CDC9D5A00EE91E7 /* CustomHttp.swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
+				8CC7D2D12CDBE3EB00EE91E7 /* CCIDPlugin.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				8CC7D2CF2CDBE2C900EE91E7 /* CCIDPlugin.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -502,17 +516,21 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 303;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 9733K94JUG;
 				ENABLE_BITCODE = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				EXCLUDED_ARCHS = "";
 				INFOPLIST_FILE = NekokoLPA/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = NekokoLPA;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.10.303;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -520,8 +538,12 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = ee.nekoko.nlpa;
 				PRODUCT_NAME = NekokoLPA;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "NekokoLPA-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -532,16 +554,20 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 303;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 9733K94JUG;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				EXCLUDED_ARCHS = "";
 				INFOPLIST_FILE = NekokoLPA/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = NekokoLPA;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.10.303;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -549,7 +575,11 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = ee.nekoko.nlpa;
 				PRODUCT_NAME = NekokoLPA;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "NekokoLPA-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

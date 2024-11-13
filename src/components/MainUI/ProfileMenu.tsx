@@ -1,18 +1,19 @@
 import {Button, Card, Text, View} from "react-native-ui-lib";
-import {useEffect, useState} from "react";
-import {shallowEqual, useDispatch, useSelector} from "react-redux";
-import {EuiccList, selectEuicc, setState} from "@/redux/reduxDataStore";
+import {useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {EuiccList} from "@/redux/stateStore";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faPlus} from '@fortawesome/free-solid-svg-icons'
 import {useTheme} from "@/theme";
 import {useNavigation} from "@react-navigation/native";
 import {useTranslation} from "react-i18next";
-import Clipboard from '@react-native-clipboard/clipboard';
+import {nextValue, selectAppConfig} from "@/redux/configStore";
+import {Adapters} from "@/native/adapters/registry";
 import {ToastAndroid} from "react-native";
-import {nextValue, selectAppConfig} from "@/redux/reduxDataStore";
+import Clipboard from "@react-native-clipboard/clipboard";
 
 
-export default function ProfileMenu({ eUICC } : { eUICC: EuiccList }) {
+export default function ProfileMenu({ eUICC, deviceId } : { eUICC: EuiccList, deviceId: string }) {
   const { colors } = useTheme();
   const { t } = useTranslation(['main']);
   const navigation = useNavigation();
@@ -22,6 +23,8 @@ export default function ProfileMenu({ eUICC } : { eUICC: EuiccList }) {
     width: 0,
     height: 0
   });
+
+  const adapter = Adapters[deviceId];
 
   return (
     <View
@@ -39,7 +42,7 @@ export default function ProfileMenu({ eUICC } : { eUICC: EuiccList }) {
         backgroundColor={colors.cardBackground}
         enableShadow
         onPress={
-          () => {
+          async () => {
             ToastAndroid.show('EID Copied', ToastAndroid.SHORT);
             Clipboard.setString(eUICC.eid!)
           }
@@ -55,7 +58,7 @@ export default function ProfileMenu({ eUICC } : { eUICC: EuiccList }) {
             <Text text100L color={colors.std50}>
               {t('main:available_space', {
                 bytes: eUICC.bytesFree !== null ? Intl.NumberFormat().format(eUICC.bytesFree || 0) : "??"
-              })} / SGP.22 v{eUICC.version}
+              })}
             </Text>
             <Text text100L color={colors.std50}>
               {
@@ -74,10 +77,9 @@ export default function ProfileMenu({ eUICC } : { eUICC: EuiccList }) {
             style={{ flex: 1, width: 40 }}
             size="small"
             onPress={() => {
-              dispatch(setState([{authenticateResult: null, downloadResult: null}, eUICC.name]));
               // @ts-ignore
               navigation.navigate('Scanner', {
-                eUICC: eUICC,
+                deviceId: deviceId,
               });
             }}
           >

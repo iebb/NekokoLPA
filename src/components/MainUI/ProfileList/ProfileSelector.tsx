@@ -1,11 +1,10 @@
 import {Card, Colors, Drawer, Switch, Text, View} from "react-native-ui-lib";
-import {useDispatch, useSelector} from "react-redux";
-import {EuiccList, selectAppConfig, setState, storage} from "@/redux/reduxDataStore";
+import {useSelector} from "react-redux";
+import {selectAppConfig} from "@/redux/configStore";
 import {Profile} from "@/native/types";
-import InfiLPA from "@/native/InfiLPA";
-import {Alert, RefreshControl, ScrollView, TouchableOpacity} from "react-native";
+import {Alert, Dimensions, Image, RefreshControl, ScrollView, TouchableOpacity} from "react-native";
 import {parseMetadata} from "@/components/MainUI/ProfileList/parser";
-import {useCallback, useState} from "react";
+import React, {useState} from "react";
 import {useTheme} from "@/theme";
 import {useNavigation} from "@react-navigation/native";
 import {useTranslation} from "react-i18next";
@@ -13,43 +12,37 @@ import BlockingLoader from "@/components/common/BlockingLoader";
 import {findPhoneNumbersInText} from "libphonenumber-js/min";
 import {Flags} from "@/assets/flags";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
-import {faPencil, faPlus, faTrash} from "@fortawesome/free-solid-svg-icons";
-import {sizeStats} from "@/storage/mmkv";
+import {faPencil, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {makeLoading} from "@/components/utils/loading";
-import {size} from "lodash";
+import {Adapters} from "@/native/adapters/registry";
+import {selectDeviceState} from "@/redux/stateStore";
+import {sizeStats} from "@/storage/mmkv";
 
 
 interface ProfileExt extends Profile {
   selected: boolean;
 }
 
-export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
-  const device = eUICC.name;
+export default function ProfileSelector({ deviceId } : { deviceId: string }) {
+
+  const DeviceState = useSelector(selectDeviceState(deviceId));
 
   const { colors} = useTheme();
   const { t } = useTranslation(['profile']);
   const navigation = useNavigation();
-  const dispatch = useDispatch();
   const { stealthMode } = useSelector(selectAppConfig);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const onRefresh = useCallback(() => {
-    dispatch(setState([{profileList: {
-        profiles: [],
-      }}, eUICC.name]));
-    makeLoading(setRefreshing, () => {
-      InfiLPA.refreshProfileList();
-    })
-  }, []);
+  const profileList = DeviceState.profiles;
 
-  const profileList = eUICC.profiles;
-
-  const profiles = profileList?.profiles?.map(
-    (profile: Profile) => ({...profile, selected: profile.profileMetadataMap.STATE === "Enabled"})
+  const profiles = ((profileList as any)?.map ? profileList : []).map(
+    (profile: Profile) => ({...profile, selected: profile.profileState === 1})
   ) || []
 
   const isLoading = loading; // (status !== undefined && loadingStates.includes(status)) || ;
+  
+  const adapter = Adapters[deviceId];
 
   return (
     <View
@@ -70,14 +63,16 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
         alwaysBounceVertical
         overScrollMode="always"
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          <RefreshControl refreshing={refreshing} onRefresh={() => {
+            adapter.initialize();
+          }} />
         }
       >
         <View gap-10>
           {
             profiles.map((profile: ProfileExt, i: number) => {
-              const metadata = profile.profileMetadataMap;
-              const numICCID = metadata.uICCID.replaceAll(/\D/g, '');
+              const metadata = profile;
+              const numICCID = metadata.iccid.replaceAll(/\D/g, '');
               const hueICCID = (parseInt(numICCID.substring(numICCID.length - 7), 10) * 17.84) % 360;
               const { tags, name, country } = parseMetadata(metadata, colors, t);
 
@@ -100,19 +95,15 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
                 }
               }
 
-              const Flag = (Flags[country] || Flags.UN).default;
               let Size = 0;
-              if (metadata?.uICCID) {
-                Size = storage.getNumber(metadata?.uICCID) || 0;
-                if (Size > 0) {
-                  sizeStats.set(metadata?.uICCID, Size);
-                  storage.delete(metadata?.uICCID);
-                }
+              if (metadata?.iccid) {
+                Size = sizeStats.getNumber(metadata?.iccid) || 0;
               }
+
 
               return (
                 <Drawer
-                  key={`${metadata.ICCID}_${i}`}
+                  key={`${metadata.iccid}_${i}`}
                   style={{
                     borderRadius: 15,
                     overflow: "hidden",
@@ -142,9 +133,9 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
                                   text: t('profile:delete_tag_ok'),
                                   style: 'destructive',
                                   onPress: () => {
-                                    makeLoading(setLoading, () => {
-                                      InfiLPA.deleteProfileByIccId(device, metadata.ICCID);
-                                    })
+                                    // makeLoading(setLoading, () => {
+                                    //   adapter.deleteProfileByIccId(device, metadata.iccid);
+                                    // })
                                   }
                                 },
                                 {
@@ -156,14 +147,7 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
                           }
                         },
                       ])
-                  }/*, {
-                    customElement: (
-                      <FontAwesomeIcon icon={faTrash} style={{ color: colors.cardBackground, }} />
-                    ),
-                    background: Colors.yellow30,
-                    width: 60,
-                    onPress: () => console.log('read pressed')
-                  }*/]}
+                  }]}
                   leftItem={{
                     customElement: (
                       <FontAwesomeIcon icon={faPencil} style={{ color: colors.cardBackground, }} />
@@ -173,31 +157,21 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
                     onPress: () => {
                       // @ts-ignore
                       navigation.navigate('Profile', {
-                        ICCID: metadata.ICCID,
+                        iccid: metadata.iccid,
                         metadata: metadata,
-                        eUICC: eUICC,
+                        deviceId: deviceId,
                       });
                     }
                   }}
                 >
                   <Card
-                    flex
-                    style={{
-                      borderRadius: 10,
-                      overflow: "hidden",
-                    }}
-                    left
-                    padding={false}
                     backgroundColor={colors.cardBackground}
-                    enableShadow
                   >
                     <View
-                      style={{
-                        paddingVertical: 5,
-                        gap: 5,
-                      }}
+                      paddingT-5
                       paddingH-15
                       margin-0
+                      gap-5
                     >
                       <View row flex width="100%">
                         <TouchableOpacity
@@ -205,28 +179,28 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
                           onPress={() => {
                             // @ts-ignore
                             navigation.navigate('Profile', {
-                              ICCID: metadata.ICCID,
+                              iccid: metadata.iccid,
                               metadata: metadata,
-                              eUICC: eUICC,
+                              deviceId: deviceId,
                             });
                           }}
                         >
                           <View row>
-                            <Flag
-                              width={20}
-                              height={20}
+                            <Image
+                              style={{width: 20, height: 20}}
+                              source={Flags[country] || Flags.UN}
                             />
                             <Text color={colors.std200} marginL-5 style={{ fontSize: 16, marginTop: -2 }}>
                               {
                                 (stealthMode === 'none' || stealthMode === 'medium') ? replacedName : (
-                                  metadata?.PROVIDER_NAME
+                                  metadata?.serviceProviderName
                                 )
                               }
                             </Text>
                           </View>
                           <View row>
                             <Text text90L color={colors.std200}>
-                              {metadata?.PROVIDER_NAME} / {metadata?.NAME}
+                              {metadata?.serviceProviderName} / {metadata?.profileName}
                             </Text>
                           </View>
                         </TouchableOpacity>
@@ -241,11 +215,11 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
                             disabled={isLoading}
                             padding-5
                             onValueChange={async (value2: boolean) => {
-                              makeLoading(setLoading, () => {
+                              makeLoading(setLoading, async () => {
                                 if (profile.selected) {
-                                  InfiLPA.disableProfileByIccId(device, metadata.ICCID);
+                                  await adapter.disableProfileByIccId(metadata.iccid);
                                 } else {
-                                  InfiLPA.enableProfileByIccId(device, metadata.ICCID);
+                                  await adapter.enableProfileByIccId(metadata.iccid);
                                 }
                               })
                             }}
@@ -273,6 +247,24 @@ export default function ProfileSelector({ eUICC } : { eUICC: EuiccList }) {
                         }
                       </View>
                     </View>
+                    <View
+                      style={{ height: 2, backgroundColor: `hsl(${hueICCID}, 50%, 50%)`}}
+                    />
+                    {/*<View*/}
+                    {/*  style={{ height: 2, overflow: "hidden" }}*/}
+                    {/*  row*/}
+                    {/*>*/}
+                    {/*  {*/}
+                    {/*    _.range(screenWidth / 25 + 2).map(i => (*/}
+                    {/*      <Image*/}
+                    {/*        key={i}*/}
+                    {/*        source={Flags[country] || Flags.UN}*/}
+                    {/*        resizeMode="contain"*/}
+                    {/*        style={{ height: 25, width: 25, marginTop: -10, marginLeft: -2, transform: [{rotate: '45deg'}] }}*/}
+                    {/*      />*/}
+                    {/*    ))*/}
+                    {/*  }*/}
+                    {/*</View>*/}
                   </Card>
                 </Drawer>
               )

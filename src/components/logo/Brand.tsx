@@ -1,11 +1,7 @@
-import { View, DimensionValue } from 'react-native';
+import {DimensionValue, Image, View} from 'react-native';
 
 import LogoLight from '@/theme/assets/images/shiroya.png';
-import LogoDark from '@/theme/assets/images/shiroya.png';
-
-import { ImageVariant } from '@/components/atoms';
-import { useTheme } from '@/theme';
-import { isImageSourcePropType } from '@/types/guards/image';
+import {useTheme} from '@/theme';
 
 type Props = {
 	height?: DimensionValue;
@@ -16,19 +12,11 @@ type Props = {
 export function Brand({ height = 200, width = 200, mode = 'contain' }: Props) {
 	const { layout } = useTheme();
 
-	if (!isImageSourcePropType(LogoLight) || !isImageSourcePropType(LogoDark)) {
-		throw new Error('Image source is not valid');
-	}
-
 	return (
 		<View testID="brand-img-wrapper" style={{ height, width }}>
-			<ImageVariant
-				testID="brand-img"
-				style={[layout.fullHeight, layout.fullWidth]}
-				source={LogoLight}
-				sourceDark={LogoDark}
-				resizeMode={mode}
-			/>
+			<Image testID="variant-image" source={LogoLight}
+						 resizeMode={mode}
+						 style={[layout.fullHeight, layout.fullWidth]} />
 		</View>
 	);
 }

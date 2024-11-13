@@ -4,6 +4,7 @@ import {useTheme} from "@/theme";
 import {countryList} from "@/storage/mmkv";
 import _MCC from "@/data/mcc.json";
 import {Flags} from "@/assets/flags";
+import {Image} from "react-native";
 
 export function ProfileStats() {
   const { colors, gutters, fonts } = useTheme();
@@ -15,13 +16,12 @@ export function ProfileStats() {
           countryList.getAllKeys().sort().map(mcc => {
             const mncs = JSON.parse(countryList.getString(mcc) as string);
             const mccData = (_MCC as any)[mcc];
-            const Flag = (Flags[mccData.ISO1] || Flags.UN).default;
             return (
               <View key={mcc}>
                 <View row gap-10>
-                  <Flag
-                    width={20}
-                    height={20}
+                  <Image
+                    style={{width: 20, height: 20}}
+                    source={Flags[mccData.ISO1] || Flags.UN}
                   />
                   <View flexG>
                     <Text text70M style={{ color: colors.std200, marginTop: -2 }} flexG>

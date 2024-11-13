@@ -16,6 +16,7 @@ class MainPackage : ReactPackage {
     override fun createNativeModules(
         reactContext: ReactApplicationContext
     ): MutableList<NativeModule> = listOf(
-        LPABridge(reactContext)
+        OMAPIBridge(reactContext),
+                CustomHttp(reactContext)
     ).toMutableList()
 }
