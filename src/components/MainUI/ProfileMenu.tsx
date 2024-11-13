@@ -7,9 +7,10 @@ import {faPlus} from '@fortawesome/free-solid-svg-icons'
 import {useTheme} from "@/theme";
 import {useNavigation} from "@react-navigation/native";
 import {useTranslation} from "react-i18next";
-import Clipboard from '@react-native-clipboard/clipboard';
-import {ToastAndroid} from "react-native";
 import {nextValue, selectAppConfig} from "@/redux/configStore";
+import {Adapters} from "@/native/adapters/registry";
+import {ToastAndroid} from "react-native";
+import Clipboard from "@react-native-clipboard/clipboard";
 
 
 export default function ProfileMenu({ eUICC, deviceId } : { eUICC: EuiccList, deviceId: string }) {
@@ -22,6 +23,8 @@ export default function ProfileMenu({ eUICC, deviceId } : { eUICC: EuiccList, de
     width: 0,
     height: 0
   });
+
+  const adapter = Adapters[deviceId];
 
   return (
     <View
@@ -39,7 +42,7 @@ export default function ProfileMenu({ eUICC, deviceId } : { eUICC: EuiccList, de
         backgroundColor={colors.cardBackground}
         enableShadow
         onPress={
-          () => {
+          async () => {
             ToastAndroid.show('EID Copied', ToastAndroid.SHORT);
             Clipboard.setString(eUICC.eid!)
           }

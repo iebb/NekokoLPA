@@ -28,8 +28,6 @@ export function ScannerEuicc({ appLink, eUICC, setEUICC, finishAuthenticate }: a
   const [confirmationCode, setConfirmationCode] = useState("");
   const [confirmationCodeReq, setConfirmationCodeReq] = useState(false);
 
-  const { euiccList, currentEuicc} = useSelector((state: RootState) => state.LPA);
-
 
 
   useEffect(() => {

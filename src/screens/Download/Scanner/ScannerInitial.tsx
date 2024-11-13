@@ -151,6 +151,7 @@ export function ScannerInitial({ appLink, eUICC, deviceId, finishAuthenticate }:
                   );
                   finishAuthenticate({
                     authenticateResult,
+                    smdp,
                     confirmationCode
                   });
                 }

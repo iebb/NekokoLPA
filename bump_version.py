@@ -14,3 +14,4 @@ package_json["iOSVersion"] = ios_version
 
 json.dump(package_json, open("package.json", "w+"), indent=2)
 
+os.system("bash sync_version_ios.sh")

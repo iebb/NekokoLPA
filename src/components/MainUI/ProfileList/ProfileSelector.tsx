@@ -16,6 +16,7 @@ import {faPencil, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {makeLoading} from "@/components/utils/loading";
 import {Adapters} from "@/native/adapters/registry";
 import {selectDeviceState} from "@/redux/stateStore";
+import {sizeStats} from "@/storage/mmkv";
 
 
 interface ProfileExt extends Profile {
@@ -35,14 +36,13 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
 
   const profileList = DeviceState.profiles;
 
-  const profiles: any = (profileList || []).map(
+  const profiles = ((profileList as any)?.map ? profileList : []).map(
     (profile: Profile) => ({...profile, selected: profile.profileState === 1})
   ) || []
 
   const isLoading = loading; // (status !== undefined && loadingStates.includes(status)) || ;
   
   const adapter = Adapters[deviceId];
-  const screenWidth = Dimensions.get('window').width;
 
   return (
     <View
@@ -96,9 +96,9 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
               }
 
               let Size = 0;
-              // if (metadata?.iccid) {
-              //   Size = sizeStats.getNumber(metadata?.iccid) || 0;
-              // }
+              if (metadata?.iccid) {
+                Size = sizeStats.getNumber(metadata?.iccid) || 0;
+              }
 
 
               return (

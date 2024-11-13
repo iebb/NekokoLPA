@@ -19,13 +19,13 @@ const REPORTING_URL = "https://nlpa-data.nekoko.ee/api/collection/v2";
 function Scanner({ route,  navigation }: RootScreenProps<'Scanner'>) {
 
 	const { deviceId, appLink } = route.params;
-	const { t } = useTranslation(['profile']);
 
 	const DeviceState = deviceId ? useSelector(selectDeviceState(deviceId)) : null;
 	const [scanState, setScanState] = useState(deviceId ? 0 : -1);
 	const [authenticateResult, setAuthenticateResult] = useState(null);
 	const [downloadResult, setDownloadResult] = useState(null);
 	const [confirmationCode, setConfirmationCode] = useState('');
+	const [smdpAddress, setSmdpAddress] = useState('');
 	const adapter = deviceId ? Adapters[deviceId] : null;
 
 
@@ -40,8 +40,9 @@ function Scanner({ route,  navigation }: RootScreenProps<'Scanner'>) {
 							<ScannerEuicc
 								appLink={appLink}
 								eUICC={DeviceState}
-								finishAuthenticate={({ authenticateResult, confirmationCode } : any) => {
+								finishAuthenticate={({ authenticateResult, smdp, confirmationCode } : any) => {
 									setAuthenticateResult(authenticateResult);
+									setSmdpAddress(smdp);
 									setConfirmationCode(confirmationCode);
 									setScanState(1);
 								}}
@@ -55,8 +56,9 @@ function Scanner({ route,  navigation }: RootScreenProps<'Scanner'>) {
 								adapter={adapter}
 								deviceId={deviceId}
 								eUICC={DeviceState}
-								finishAuthenticate={({ authenticateResult, confirmationCode } : any) => {
+								finishAuthenticate={({ authenticateResult, smdp, confirmationCode } : any) => {
 									setAuthenticateResult(authenticateResult);
+									setSmdpAddress(smdp);
 									setConfirmationCode(confirmationCode);
 									setScanState(1);
 								}}
@@ -75,8 +77,11 @@ function Scanner({ route,  navigation }: RootScreenProps<'Scanner'>) {
 									// @ts-ignore
 									const m = authenticateResult.profile;
 									const v = {
+										smdpAddress,
 										...downloadResult,
 										...(authenticateResult || {}),
+										appVersion: version,
+										appOS: Platform.OS,
 									};
 									delete v["_internal"];
 									fetch(REPORTING_URL, {
@@ -88,8 +93,8 @@ function Scanner({ route,  navigation }: RootScreenProps<'Scanner'>) {
 										body: JSON.stringify(v)
 									}).then((d) => d.json()).then((data: any) => console.log("reported", data));
 
-									if (downloadResult?.deltaSpace) {
-										sizeStats.set(m.iccid, downloadResult.deltaSpace);
+									if (downloadResult?.space_consumed) {
+										sizeStats.set(m.iccid, downloadResult.space_consumed);
 									}
 
 									setDownloadResult(downloadResult);
