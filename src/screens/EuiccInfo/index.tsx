@@ -9,48 +9,17 @@ import {BorderRadiuses, Colors, ListItem, Text, View} from "react-native-ui-lib"
 import {useSelector} from "react-redux";
 import {selectDeviceState} from "@/redux/stateStore";
 import Clipboard from "@react-native-clipboard/clipboard";
+import {useTheme} from "@/theme";
 
 export type EuiccInfoDataType = {
 	key: string;
 	rendered: any;
 }
 
-
-const renderRow = (row: EuiccInfoDataType, id: number, t: any) => {
-	// const statusColor = row.inventory.status === 'Paid' ? Colors.green30 : Colors.red30;
-	console.log("row", row);
-
-	return (
-		<ListItem
-			activeBackgroundColor={Colors.grey60}
-			activeOpacity={0.3}
-			onPress={() => {
-				ToastAndroid.show('Value Copied', ToastAndroid.SHORT);
-				Clipboard.setString(row.rendered)
-			}}
-			style={{ borderBottomWidth: 0.5, borderBottomColor: Colors.grey50 }}
-		>
-			<ListItem.Part left>
-				{/*<Image source={{uri: row.mediaUrl}} style={styles.image}/>*/}
-			</ListItem.Part>
-			<ListItem.Part middle column containerStyle={[styles.border]}>
-				<ListItem.Part containerStyle={{marginBottom: 3}}>
-					<Text grey10 text70BL style={{flex: 1, marginRight: 10}} numberOfLines={1}>
-						{t('euiccinfo:' + row.key)}
-					</Text>
-					<Text grey10 text70L style={{marginTop: 2}}>
-						{row.rendered}
-					</Text>
-				</ListItem.Part>
-			</ListItem.Part>
-		</ListItem>
-	);
-}
-
-
 function EuiccInfo({ route,  navigation }: RootScreenProps<'EuiccInfo'>) {
 	const { deviceId } = route.params;
 	const DeviceState = useSelector(selectDeviceState(deviceId!));
+	const { colors, variant } = useTheme();
 
 	const { t } = useTranslation(['euiccinfo']);
 
@@ -58,6 +27,33 @@ function EuiccInfo({ route,  navigation }: RootScreenProps<'EuiccInfo'>) {
 	const { eid, euiccAddress, euiccInfo2 } = DeviceState;
 
 
+	const renderRow = (row: EuiccInfoDataType, id: number, t: any) => {
+		return (
+			<ListItem
+				activeBackgroundColor={colors.std400}
+				activeOpacity={0.3}
+				onPress={() => {
+					ToastAndroid.show('Value Copied', ToastAndroid.SHORT);
+					Clipboard.setString(row.rendered)
+				}}
+				style={{ borderBottomWidth: 0.25, borderBottomColor: colors.std900 }}
+			>
+				<ListItem.Part left>
+					{/*<Image source={{uri: row.mediaUrl}} style={styles.image}/>*/}
+				</ListItem.Part>
+				<ListItem.Part middle column containerStyle={[styles.border]}>
+					<ListItem.Part containerStyle={{marginBottom: 3}}>
+						<Text color={colors.std200}  text70BL style={{flex: 1, marginRight: 10}} numberOfLines={1}>
+							{t('euiccinfo:' + row.key)}
+						</Text>
+						<Text color={colors.std200} text70L style={{marginTop: 2}}>
+							{row.rendered}
+						</Text>
+					</ListItem.Part>
+				</ListItem.Part>
+			</ListItem>
+		);
+	}
 	return (
 		<SafeScreen>
 			<Title>{t('euiccinfo:euiccinfo')}</Title>

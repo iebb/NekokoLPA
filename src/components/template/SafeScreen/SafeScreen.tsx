@@ -16,6 +16,7 @@ function SafeScreen({ children }: PropsWithChildren) {
 				paddingBottom: insets.bottom,
 				paddingLeft: insets.left,
 				paddingRight: insets.right,
+				flex: 1,
 			}}
 		>
 			<StatusBar

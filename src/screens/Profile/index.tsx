@@ -129,9 +129,10 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 										labelColor={colors.std200}
 										placeholderTextColor={colors.std200}
 										defaultValue={new Date().toISOString().split('T')[0]}
-										dateTimeFormatter={v => v.toISOString().split('T')[0]}
+										dateTimeFormatter={e => new Date(+e - new Date().getTimezoneOffset() * 60 * 1000).toISOString().split('T')[0]}
 										onChange={e => {
-											setTagValue(`d:${dateToDate6(e)}`)
+											const _nd = new Date(+e - new Date().getTimezoneOffset() * 60 * 1000);
+											setTagValue(`d:${dateToDate6(_nd)}`)
 										}}
 									/>
 								) : newTagType === 'text' ? (

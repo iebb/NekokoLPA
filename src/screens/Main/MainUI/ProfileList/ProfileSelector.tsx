@@ -203,6 +203,19 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
                               {metadata?.serviceProviderName} / {metadata?.profileName}
                             </Text>
                           </View>
+                          <View>
+                            <View row gap-5 marginV-2>
+                              {tags.map((t, i) => {
+                                return (
+                                  <View style={{ paddingHorizontal: 5, borderRadius: 5, backgroundColor: t.backgroundColor }} key={i}>
+                                    <Text color={colors.std200} style={{ color: t.color, fontSize: 10, fontWeight: 500}}>{
+                                      stealthMode === 'none' ? t.value : stealthMode === 'medium' ? t.value : '***'
+                                    }</Text>
+                                  </View>
+                                )
+                              })}
+                            </View>
+                          </View>
                         </TouchableOpacity>
                         <View
                           style={{
@@ -224,27 +237,14 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
                               })
                             }}
                           />
-                        </View>
-                      </View>
-                      <View>
-                        <View row style={{ gap : 5 }}>
-                          {tags.map((t, i) => {
-                            return (
-                              <View style={{ paddingHorizontal: 5, borderRadius: 5, backgroundColor: t.backgroundColor }} key={i}>
-                                <Text color={colors.std200} style={{ color: t.color, fontSize: 10, fontWeight: 500}}>{
-                                  stealthMode === 'none' ? t.value : stealthMode === 'medium' ? t.value : '***'
-                                }</Text>
-                              </View>
+                          {
+                            Size > 1000 && (
+                              <Text text100L $textDefault color={colors.std200} style={{ position: "absolute", right: 5, bottom: -3 }}>
+                                ~{(Size / 1024).toFixed(1)}kB
+                              </Text>
                             )
-                          })}
+                          }
                         </View>
-                        {
-                          Size > 0 && (
-                            <Text text90L $textDefault color={colors.std200} style={{ position: "absolute", right: 5, bottom: -5 }}>
-                              ~{(Size / 1024).toFixed(1)}kB
-                            </Text>
-                          )
-                        }
                       </View>
                     </View>
                     <View

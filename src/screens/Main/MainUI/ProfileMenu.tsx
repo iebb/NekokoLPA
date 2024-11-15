@@ -30,9 +30,16 @@ export default function ProfileMenu({ deviceId } : { deviceId: string }) {
       <ActionSheet
         title={`EID: ${DeviceState?.eid}`}
         cancelButtonIndex={5}
+        containerStyle={{
+          backgroundColor: colors.std800,
+        }}
+
         options={[
           {
             label: 'Copy EID',
+            labelStyle: {
+              color: colors.std200,
+            },
             onPress: () => {
               ToastAndroid.show('EID Copied', ToastAndroid.SHORT);
               Clipboard.setString(DeviceState.eid!)
@@ -40,6 +47,9 @@ export default function ProfileMenu({ deviceId } : { deviceId: string }) {
           },
           {
             label: 'EUICC Info',
+            labelStyle: {
+              color: colors.std200,
+            },
             onPress: () => {
               // @ts-ignore
               navigation.navigate('EuiccInfo', { deviceId: deviceId });
@@ -47,6 +57,9 @@ export default function ProfileMenu({ deviceId } : { deviceId: string }) {
           },
           {
             label: 'Download Profile',
+            labelStyle: {
+              color: colors.std200,
+            },
             onPress: () => {
               // @ts-ignore
               navigation.navigate('Scanner', { deviceId: deviceId });
@@ -54,6 +67,9 @@ export default function ProfileMenu({ deviceId } : { deviceId: string }) {
           },
           {
             label: t('main:set_nickname'),
+            labelStyle: {
+              color: colors.std200,
+            },
             onPress: () => {
               prompt(
                 t('main:set_nickname'),
@@ -82,6 +98,9 @@ export default function ProfileMenu({ deviceId } : { deviceId: string }) {
           // },
           {
             label: 'Cancel',
+            labelStyle: {
+              color: colors.std200,
+            },
             onPress: () => setEuiccMenu(false)
           }
         ]}

@@ -45,7 +45,7 @@ function ApplicationNavigator() {
 	}, [navigationRef]);
 
 	return (
-		<SafeAreaProvider style={{ backgroundColor: "transparent" }}>
+		<SafeAreaProvider>
 			<NavigationContainer ref={navigationRef}>
 				<Stack.Navigator
 					key={variant}
