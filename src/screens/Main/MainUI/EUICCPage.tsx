@@ -1,5 +1,5 @@
-import ProfileMenu from "@/components/MainUI/ProfileMenu";
-import ProfileSelector from "@/components/MainUI/ProfileList/ProfileSelector";
+import ProfileMenu from "@/screens/Main/MainUI/ProfileMenu";
+import ProfileSelector from "@/screens/Main/MainUI/ProfileList/ProfileSelector";
 import {LoaderScreen, View} from "react-native-ui-lib";
 import React from "react";
 import {useSelector} from "react-redux";
@@ -23,7 +23,7 @@ export function EUICCPage({ deviceId } : { deviceId: string }) {
 
   return (
     <View flex flexG style={{ gap: 10 }}>
-      <ProfileMenu deviceId={deviceId} eUICC={DeviceState} />
+      <ProfileMenu deviceId={deviceId} />
       <ProfileSelector deviceId={deviceId} />
     </View>
   )

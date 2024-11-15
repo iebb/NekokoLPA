@@ -4,7 +4,7 @@ import {useTheme} from "@/theme";
 import {ProfileMetadataMap} from "@/native/types";
 import {Image, StyleSheet, ToastAndroid, TouchableOpacity} from "react-native";
 import {resolveMccMnc, T_PLMN} from "@/data/mccMncResolver";
-import {parseMetadata} from "@/components/MainUI/ProfileList/parser";
+import {parseMetadata} from "@/screens/Main/MainUI/ProfileList/parser";
 import {useTranslation} from "react-i18next";
 import Clipboard from "@react-native-clipboard/clipboard";
 import {Flags} from "@/assets/flags";

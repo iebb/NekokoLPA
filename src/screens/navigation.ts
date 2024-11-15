@@ -4,6 +4,10 @@ import {ProfileMetadataMap} from "@/native/types";
 export type RootStackParamList = {
 	Main: {};
 	Stats: {};
+	Settings: {};
+	EuiccInfo: {
+		deviceId?: string,
+	};
 	Scanner: {
 		appLink?: string,
 		deviceId?: string,

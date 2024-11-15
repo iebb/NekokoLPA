@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
-import {KeyboardAvoidingView, Platform, ScrollView, StyleSheet,} from 'react-native';
-import {useTranslation} from 'react-i18next';
+import {KeyboardAvoidingView, Platform, ScrollView,} from 'react-native';
 import {SafeScreen} from '@/components/template';
-import type {RootScreenProps} from "@/navigators/navigation";
+import type {RootScreenProps} from "@/screens/navigation";
 import {Text} from "react-native-ui-lib";
 import {ScannerInitial} from "@/screens/Download/Scanner/ScannerInitial";
 import {ScannerAuthentication} from "@/screens/Download/Scanner/ScannerAuthentication";
@@ -31,9 +30,6 @@ function Scanner({ route,  navigation }: RootScreenProps<'Scanner'>) {
 
 	return (
 		<SafeScreen>
-			<KeyboardAvoidingView
-				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-			>
 				<ScrollView>
 					{
 						scanState === -1 ? (
@@ -121,7 +117,6 @@ function Scanner({ route,  navigation }: RootScreenProps<'Scanner'>) {
 						)
 					}
 				</ScrollView>
-			</KeyboardAvoidingView>
 		</SafeScreen>
 	);
 }

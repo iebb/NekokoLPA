@@ -1,4 +1,4 @@
-package ee.nekoko.nlpa
+package ee.nekoko.nlpa_utils
 
 import android.util.Log
 import com.facebook.react.bridge.Promise

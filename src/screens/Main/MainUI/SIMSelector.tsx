@@ -4,7 +4,7 @@ import {useSelector} from "react-redux";
 import {RootState} from "@/redux/reduxDataStore";
 import {selectAppConfig} from "@/redux/configStore";
 import {useTheme} from "@/theme";
-import {EUICCPage} from "@/components/MainUI/EUICCPage";
+import {EUICCPage} from "@/screens/Main/MainUI/EUICCPage";
 import {useTranslation} from "react-i18next";
 import {ScrollView} from "react-native";
 import {Adapters} from "@/native/adapters/registry";

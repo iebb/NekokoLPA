@@ -40,24 +40,6 @@ export interface DownloadResult {
 }
 
 
-export interface EuiccInfo2 {
-  baseProfilePackageVersion:      Values;
-  certificationDataObject:        CertificationDataObject;
-  euiccCiPKIdListForSigning:      EuiccCiPkIDList;
-  euiccCiPKIdListForVerification: EuiccCiPkIDList;
-  euiccFirmwareVersion:           Values;
-  euiccRspCapability:             Bits;
-  extCardResource:                Values;
-  forbiddenProfilePolicyRules:    Bits;
-  globalplatformVersion:          Values;
-  lowestSvn:                      Values;
-  ppVersion:                      Values;
-  sasAcreditationNumber:          Values;
-  ts102241Version:                Values;
-  uiccCapability:                 Bits;
-}
-
-
 export interface CertificationDataObject {
   discoveryBaseURL: number[];
   platformLabel:    number[];
@@ -74,4 +56,31 @@ export interface Bits {
 
 export interface Values {
   value:   number[];
+}
+
+
+
+
+export interface EuiccInfo2 {
+  certificationDataObject:        CertificationDataObject;
+  euiccCategory:                  null;
+  euiccCiPKIdListForSigning:      string[];
+  euiccCiPKIdListForVerification: string[];
+  euiccFirmwareVer:               string;
+  extCardResource:                EXTCardResource;
+  forbiddenProfilePolicyRules:    string[];
+  globalplatformVersion:          string;
+  ppVersion:                      string;
+  profileVersion:                 string;
+  rspCapability:                  string[];
+  sasAcreditationNumber:          string;
+  svn:                            string;
+  ts102241Version:                string;
+  uiccCapability:                 string[];
+}
+
+export interface EXTCardResource {
+  freeNonVolatileMemory: number;
+  freeVolatileMemory:    number;
+  installedApplication:  number;
 }

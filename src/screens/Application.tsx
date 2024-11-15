@@ -2,12 +2,16 @@ import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import {NavigationContainer, NavigationContainerRef} from '@react-navigation/native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {useTheme} from '@/theme';
-import type {RootStackParamList} from '@/navigators/navigation';
-import ErrorToast from "@/components/common/ErrorToast";
+import type {RootStackParamList} from '@/screens/navigation';
 import React, {useEffect} from "react";
 import {Linking} from "react-native";
 import {LPACode} from "@/components/utils/lpaRegex";
-import {Main, Profile, Scanner, Stats} from '@/screens';
+import EuiccInfo from "@/screens/EuiccInfo";
+import Main from "@/screens/Main";
+import Scanner from "@/screens/Download";
+import Profile from "@/screens/Profile";
+import Settings from "@/screens/Settings/Settings";
+import Stats from "@/screens/Stats/Stats";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -21,9 +25,6 @@ function ApplicationNavigator() {
 			const match = url.match(LPACode);
 			if (match && match[0].length) {
 				console.log("App Link Matched: URL", url);
-				// navigationRef.current?.navigate('Scanner', {
-				// 	appLink: url,
-				// });
 			}
 		}
 	}
@@ -50,25 +51,12 @@ function ApplicationNavigator() {
 					key={variant}
 					screenOptions={{ headerShown: false }}
 				>
-					<Stack.Screen
-						name="Main"
-						component={Main}
-					/>
-					<Stack.Screen
-						name="Scanner"
-						component={Scanner}
-						options={TransitionPresets.SlideFromRightIOS}
-					/>
-					<Stack.Screen
-						name="Profile"
-						component={Profile}
-						options={TransitionPresets.SlideFromRightIOS}
-					/>
-					<Stack.Screen
-						name="Stats"
-						component={Stats}
-						options={TransitionPresets.SlideFromRightIOS}
-					/>
+					<Stack.Screen name="Main" component={Main} />
+					<Stack.Screen name="Scanner" component={Scanner} options={TransitionPresets.SlideFromRightIOS} />
+					<Stack.Screen name="Profile" component={Profile} options={TransitionPresets.SlideFromRightIOS} />
+					<Stack.Screen name="Stats" component={Stats} options={TransitionPresets.SlideFromRightIOS} />
+					<Stack.Screen name="Settings" component={Settings} options={TransitionPresets.SlideFromRightIOS} />
+					<Stack.Screen name="EuiccInfo" component={EuiccInfo} options={TransitionPresets.SlideFromRightIOS} />
 				</Stack.Navigator>
 			</NavigationContainer>
 		</SafeAreaProvider>

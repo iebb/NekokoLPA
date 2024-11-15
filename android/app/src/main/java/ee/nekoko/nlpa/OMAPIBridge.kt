@@ -14,6 +14,8 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.google.gson.Gson
+import ee.nekoko.nlpa_utils.hexStringToByteArray
+import ee.nekoko.nlpa_utils.toHex
 import java.io.IOException
 
 
@@ -22,7 +24,7 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
         return "OMAPIBridge"
     }
 
-    private lateinit var seService: SEService
+    private var seService: SEService
     var channelMappings: MutableMap<String, Channel> = HashMap()
     var sessionMappings: MutableMap<String, Session> = HashMap()
 
@@ -39,13 +41,13 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
 
     protected fun removeActivityEventListener(listener: ActivityEventListener?) {
         Log.i(TAG, "Shutdown, clearing connections")
-        for (reader in seService.readers) {
-            sessionMappings[reader.name]?.closeChannels()
-            channelMappings[reader.name]?.close()
-            sessionMappings[reader.name]?.close()
-        }
-        channelMappings.clear()
-        sessionMappings.clear()
+//        for (reader in seService.readers) {
+//            sessionMappings[reader.name]?.closeChannels()
+//            channelMappings[reader.name]?.close()
+//            sessionMappings[reader.name]?.close()
+//        }
+//        channelMappings.clear()
+//        sessionMappings.clear()
     }
 
 
@@ -72,32 +74,29 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
                             sessionMappings[reader.name]?.closeChannels()
                             sessionMappings[reader.name]?.close()
                         }
+                        reader.closeSessions()
                         val session: Session = reader.openSession()
                         session.closeChannels()
                         sessionMappings[reader.name] = session
                         val atr = session.getATR()
                         Log.i(TAG, reader.name)
                         Log.i(TAG, reader.name + " ATR: " + atr + " Session: " + session)
-                        chan = session.openLogicalChannel(
-                            byteArrayOf(
-                                0xA0.toByte(), 0x00, 0x00, 0x05, 0x59, 0x10, 0x10,
-                                0xFF.toByte(), 0xFF.toByte(),
-                                0xFF.toByte(), 0xFF.toByte(), 0x89.toByte(),
-                                0x00, 0x00, 0x01, 0x00
-                            )
-                        )!!
-                        Log.i(TAG, reader.name + " Opened Channel")
-                        val response: ByteArray = chan.getSelectResponse()!!
+                        chan = session.openLogicalChannel(hexStringToByteArray("A0000005591010FFFFFFFF8900000100"))
+                        if (chan == null) {
+                            // open channel failed.
+                            result.add(hashMapOf("name" to reader.name, "available" to "false", "description" to "Open Channel Failed"))
+                            continue
+                        }
+                        Log.i(TAG, reader.name + " Opened Channel: $chan")
+                        val response: ByteArray = chan!!.getSelectResponse()!!
                         Log.i(TAG,"Opened logical channel: ${response.toHex()}")
                         channelMappings[reader.name] = chan
                     }
 
-                    val resp1 = chan.transmit(byteArrayOf(
-                        0x81.toByte(), 0xE2.toByte(), 0x91.toByte(), 0x00.toByte(), 0x06.toByte(), 0xBF.toByte(), 0x3E.toByte(), 0x03.toByte(), 0x5C.toByte(), 0x01.toByte(), 0x5A.toByte()
-                    ))
+                    val resp1 = chan.transmit(hexStringToByteArray("81E2910006BF3E035C015A"))
                     Log.i(TAG,"Transmit Response: ${resp1.toHex()}")
                     if (resp1[0] == 0xbf.toByte()) {
-                        var eid = resp1.toHex().substring(10, 10 + 32)
+                        val eid = resp1.toHex().substring(10, 10 + 32)
                         Log.i(TAG,"EID: ${eid}")
                         result.add(hashMapOf("name" to reader.name, "eid" to eid, "available" to "true"))
                     } else {

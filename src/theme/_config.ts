@@ -421,11 +421,6 @@ export const config = {
 		radius: [4, 16],
 		colors: colorsLight,
 	},
-	navigationColors: {
-		...DefaultTheme.colors,
-		background: 'transparent',
-		card: colorsLight.gray50,
-	},
 	variants: {
 		dark: {
 			colors: colorsDark,
@@ -433,11 +428,6 @@ export const config = {
 				colors: colorsDark,
 			},
 			backgrounds: colorsDark,
-			navigationColors: {
-				...DarkTheme.colors,
-				background: 'transparent',
-				card: colorsDark.purple50,
-			},
 		},
 	},
 } as const satisfies ThemeConfiguration;

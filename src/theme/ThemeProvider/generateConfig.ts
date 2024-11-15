@@ -28,12 +28,6 @@ export default (variant: Variant) => {
 			? variantConfig.borders.colors
 			: {}),
 	};
-	const navigationColors = {
-		...defaultConfig.navigationColors,
-		...(variantConfig && hasProperty(variantConfig, 'navigationColors')
-			? variantConfig.navigationColors
-			: {}),
-	};
 	const colors = {
 		...defaultConfig.colors,
 		...(variantConfig && hasProperty(variantConfig, 'colors')
@@ -54,7 +48,5 @@ export default (variant: Variant) => {
 			radius: defaultConfig.borders.radius,
 			colors: borderColors,
 		},
-		// @ts-ignore
-		navigationColors,
 	} as const satisfies FulfilledThemeConfiguration;
 };

@@ -2,6 +2,8 @@ import {Adapters} from "@/native/adapters/registry";
 import {setupDevice} from "@/native/jsnative/setup";
 import {setDeviceState} from "@/redux/stateStore";
 import {Dispatch} from "@reduxjs/toolkit";
+import {EuiccConfiguredAddresses} from "@/native/types/EuiccInfo";
+import {EuiccInfo2} from "@/native/types";
 
 export interface Device {
   type: string;
@@ -24,7 +26,6 @@ export class Adapter {
   profiles: string = '';
   dispatch: Dispatch;
   isLocked = false;
-
 
   setState = (state: object) => {
     this.dispatch(setDeviceState([state, this.deviceId]));
@@ -66,8 +67,12 @@ export class Adapter {
       profiles,
     });
     const euicc_info = await this.get_euicc_info();
+
+
     this.setState({
       eid: euicc_info.eidValue,
+      euiccInfo2: euicc_info.EUICCInfo2,
+      euiccAddress: euicc_info.EuiccConfiguredAddresses,
       bytesFree: euicc_info.EUICCInfo2.extCardResource.freeNonVolatileMemory,
     });
   }

@@ -4,7 +4,7 @@
 PLIST_FILE="./ios/NekokoLPA/Info.plist"
 
 # Read the version and buildNumber from package.json
-VERSION=$(jq -r .iOSVersion package.json)
+VERSION=$(jq -r .version package.json)
 BUILD_NUMBER=$(jq -r .buildVersion package.json)
 
 # Update Info.plist with version and build number

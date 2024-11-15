@@ -2,8 +2,8 @@ import {Card, Colors, Drawer, Switch, Text, View} from "react-native-ui-lib";
 import {useSelector} from "react-redux";
 import {selectAppConfig} from "@/redux/configStore";
 import {Profile} from "@/native/types";
-import {Alert, Dimensions, Image, RefreshControl, ScrollView, TouchableOpacity} from "react-native";
-import {parseMetadata} from "@/components/MainUI/ProfileList/parser";
+import {Alert, Dimensions, Image, PixelRatio, RefreshControl, ScrollView, TouchableOpacity} from "react-native";
+import {parseMetadata} from "@/screens/Main/MainUI/ProfileList/parser";
 import React, {useState} from "react";
 import {useTheme} from "@/theme";
 import {useNavigation} from "@react-navigation/native";
@@ -185,9 +185,9 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
                             });
                           }}
                         >
-                          <View row>
+                          <View row gap-2>
                             <Image
-                              style={{width: 20, height: 20}}
+                              style={{width: 20 * PixelRatio.getFontScale(), height: 20 * PixelRatio.getFontScale()}}
                               source={Flags[country] || Flags.UN}
                             />
                             <Text color={colors.std200} marginL-5 style={{ fontSize: 16, marginTop: -2 }}>

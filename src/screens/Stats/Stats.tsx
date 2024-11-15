@@ -2,7 +2,7 @@ import React from 'react';
 import {ScrollView,} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {SafeScreen} from '@/components/template';
-import type {RootScreenProps} from "@/navigators/navigation";
+import type {RootScreenProps} from "@/screens/navigation";
 import Title from "@/components/common/Title";
 import Container from "@/components/common/Container";
 import {ProfileStats} from "@/components/stats/ProfileStats";

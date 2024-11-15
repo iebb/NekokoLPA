@@ -5,15 +5,15 @@ import {SafeScreen} from '@/components/template';
 import {useTheme} from '@/theme';
 import CatImage from '@/theme/assets/images/shiroya.png';
 import {Button, Text, View} from "react-native-ui-lib";
-import SIMSelector from "@/components/MainUI/SIMSelector";
-import type {RootScreenProps} from "@/navigators/navigation";
-import {Image, Linking, Platform, TouchableOpacity} from "react-native";
+import SIMSelector from "@/screens/Main/MainUI/SIMSelector";
+import type {RootScreenProps} from "@/screens/navigation";
+import {Image, Linking, PixelRatio, Platform, TouchableOpacity} from "react-native";
 import {version} from '../../../package.json';
 import {useDispatch, useSelector} from "react-redux";
 import {nextValue, selectAppConfig} from "@/redux/configStore";
 import type {Variant} from "@/types/theme/config";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
-import {faFlag, faLanguage, faMoon, faRefresh} from "@fortawesome/free-solid-svg-icons";
+import {faCog, faFlag, faLanguage, faMoon, faRefresh} from "@fortawesome/free-solid-svg-icons";
 import {setupInternalDevices} from "@/native/Hybrid";
 import {Adapter} from "@/native/adapters/adapter";
 import {setInternalDevices} from "@/redux/stateStore";
@@ -89,15 +89,15 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 									}
 								}
 							}}>
-								<Text style={[fonts.size_16, fonts.gray800, fonts.bold]} >
+								<Text style={{fontSize: 16 / PixelRatio.getFontScale(), ...fonts.bold, ...fonts.gray800}} >
 									{t('welcome:title')}
 								</Text>
-								<Text style={{ fontSize: 12 , color: isLatest ? colors.std200 : colors.red400 }}>
+								<Text style={{ fontSize: 12 / PixelRatio.getFontScale() , color: isLatest ? colors.std200 : colors.red400 }}>
 									v{version} {!isLatest && "↑"}
 								</Text>
 								{
 									!isLatest && (
-										<Text style={{ fontSize: 12 , color: isLatest ? colors.std200 : colors.green400 }}>
+										<Text style={{ fontSize: 12 / PixelRatio.getFontScale() , color: isLatest ? colors.std200 : colors.green400 }}>
 											{release.tag_name} available
 										</Text>
 									)
@@ -127,6 +127,21 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 								animateLayout
 								animateTo={'left'}
 							/>
+						{/*	<Button*/}
+						{/*	size={'small'}*/}
+						{/*	style={{ padding: 10 }}*/}
+						{/*	iconSource={*/}
+						{/*		style => <FontAwesomeIcon icon={faCog} color={colors.std200} />*/}
+						{/*	}*/}
+						{/*	backgroundColor={colors.cardBackground}*/}
+						{/*	onPress={() => {*/}
+						{/*		navigation.navigate('Settings', {*/}
+						{/*		});*/}
+						{/*	}}*/}
+						{/*	iconOnRight*/}
+						{/*	animateLayout*/}
+						{/*	animateTo={'left'}*/}
+						{/*/>*/}
 							<Button
 								size={'small'}
 								style={{ padding: 10 }}

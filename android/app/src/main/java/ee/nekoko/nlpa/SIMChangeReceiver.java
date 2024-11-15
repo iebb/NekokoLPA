@@ -9,7 +9,6 @@ public class SIMChangeReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(final Context context, final Intent intent) {
-
         Log.d("SimChangedReceiver", "--> SIM state changed <--");
         Log.d("SimChangedReceiver", "--> Refreshing eUICCs <--");
     }

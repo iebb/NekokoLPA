@@ -4,10 +4,9 @@ import {ViewProps} from "react-native";
 export default function Container(props: ViewProps): JSX.Element {
   return (
     <View
-      paddingH-25
-      paddingT-20
+      paddingH-20
+      paddingT-10
       gap-10
-      flex
       {...props}
     />
   )
