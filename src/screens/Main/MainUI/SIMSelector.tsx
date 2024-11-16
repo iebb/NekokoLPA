@@ -40,11 +40,7 @@ export default function SIMSelector() {
   const segments = [...internalList.map((name, _idx) => {
     const adapter = Adapters[name];
     return {
-      label: (Adapters.eid && nicknames[adapter.eid]) ? (
-        adapter.device.deviceName + "\n" + nicknames[adapter.eid]
-      ) : (
-        adapter.device.deviceName
-      ),
+      label: (adapter.eid && nicknames[adapter.eid]) ? nicknames[adapter.eid] + ` (${adapter.device.deviceName})` : adapter.device.deviceName,
     };
   })];
 
@@ -78,9 +74,7 @@ export default function SIMSelector() {
       </View>
       {
         selected && (
-          <View flex key={selected}>
-            <EUICCPage deviceId={selected} />
-          </View>
+          <EUICCPage deviceId={selected} key={selected} />
         )
       }
     </View>

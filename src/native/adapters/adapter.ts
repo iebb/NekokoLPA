@@ -2,7 +2,7 @@ import {Adapters} from "@/native/adapters/registry";
 import {setupDevice} from "@/native/jsnative/setup";
 import {setDeviceState} from "@/redux/stateStore";
 import {Dispatch} from "@reduxjs/toolkit";
-import {EuiccConfiguredAddresses} from "@/native/types/EuiccInfo";
+import {EuiccConfiguredAddresses, Notification} from "@/native/types/LPA";
 import {EuiccInfo2} from "@/native/types";
 
 export interface Device {
@@ -24,6 +24,7 @@ export class Adapter {
   deviceId: string = '';
   device: Device;
   profiles: string = '';
+  notifications: Notification[] = [];
   dispatch: Dispatch;
   isLocked = false;
 
@@ -62,19 +63,8 @@ export class Adapter {
 
   async initialize() {
     await this.connect();
-    const profiles = await this.get_profiles();
-    this.setState({
-      profiles,
-    });
-    const euicc_info = await this.get_euicc_info();
-
-
-    this.setState({
-      eid: euicc_info.eidValue,
-      euiccInfo2: euicc_info.EUICCInfo2,
-      euiccAddress: euicc_info.EuiccConfiguredAddresses,
-      bytesFree: euicc_info.EUICCInfo2.extCardResource.freeNonVolatileMemory,
-    });
+    await this.get_profiles();
+    await this.get_euicc_info();
   }
 
   async _execute(s: string, args: any[]): Promise<any> {
@@ -106,7 +96,16 @@ export class Adapter {
 
 
   async get_euicc_info() {
-    return await this.execute('get_euicc_info', []);
+    const euicc_info = await this.execute('get_euicc_info', []);
+
+    this.eid = euicc_info.eidValue;
+    this.setState({
+      eid: euicc_info.eidValue,
+      euiccInfo2: euicc_info.EUICCInfo2,
+      euiccAddress: euicc_info.EuiccConfiguredAddresses,
+      bytesFree: euicc_info.EUICCInfo2.extCardResource.freeNonVolatileMemory,
+    });
+    return await euicc_info;
   }
 
   async get_profiles() {
@@ -117,6 +116,30 @@ export class Adapter {
     });
     return profiles;
   }
+
+  async getNotifications() {
+    const notifications = await this.execute('get_notifications', []);
+    console.log('notifications', notifications);
+    this.notifications = notifications;
+    this.setState({ notifications });
+    return notifications;
+  }
+
+  async deleteNotification(id: number) {
+    const result = await this.execute('delete_notification_single', [id]);
+    console.log('deleteNotification result', result);
+    const notifications = await this.execute('get_notifications', []);
+    this.notifications = notifications;
+    this.setState({ notifications });
+    return notifications;
+  }
+
+  async sendNotification(id: number) {
+    const result = await this.execute('process_notification_single', [id]);
+    console.log('sendNotification result', result);
+    return result;
+  }
+
 
   async disableProfileByIccId(iccid: string) {
     const result = await this.execute('disable_profile', [iccid, this.device.type == 'omapi' ? '1': '0']);

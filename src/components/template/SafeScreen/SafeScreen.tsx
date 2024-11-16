@@ -23,11 +23,7 @@ function SafeScreen({ children }: PropsWithChildren) {
 				barStyle={variant === 'dark' ? 'light-content' : 'dark-content'}
 				backgroundColor={colors.std900}
 			/>
-			<KeyboardAvoidingView
-				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-			>
-				{children}
-			</KeyboardAvoidingView>
+			{children}
 		</View>
 	);
 }

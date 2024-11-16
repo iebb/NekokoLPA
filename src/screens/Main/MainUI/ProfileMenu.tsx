@@ -29,7 +29,7 @@ export default function ProfileMenu({ deviceId } : { deviceId: string }) {
     <View>
       <ActionSheet
         title={`EID: ${DeviceState?.eid}`}
-        cancelButtonIndex={5}
+        cancelButtonIndex={6}
         containerStyle={{
           backgroundColor: colors.std800,
         }}
@@ -88,14 +88,18 @@ export default function ProfileMenu({ deviceId } : { deviceId: string }) {
                 }
               );
             }},
-          // {
-          //   label: 'Manage Notifications',
-          //   onPress: () => {
-          //     // navigation.navigate('Scanner', {
-          //     //   deviceId: deviceId,
-          //     // });
-          //   }
-          // },
+          {
+            label: 'Manage Notifications',
+            labelStyle: {
+              color: colors.std200,
+            },
+            onPress: () => {
+              // @ts-ignore
+              navigation.navigate('Notifications', {
+                deviceId: deviceId,
+              });
+            }
+          },
           {
             label: 'Cancel',
             labelStyle: {

@@ -12,6 +12,7 @@ import Scanner from "@/screens/Download";
 import Profile from "@/screens/Profile";
 import Settings from "@/screens/Settings/Settings";
 import Stats from "@/screens/Stats/Stats";
+import Notifications from "@/screens/Notifications";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -57,6 +58,7 @@ function ApplicationNavigator() {
 					<Stack.Screen name="Stats" component={Stats} options={TransitionPresets.SlideFromRightIOS} />
 					<Stack.Screen name="Settings" component={Settings} options={TransitionPresets.SlideFromRightIOS} />
 					<Stack.Screen name="EuiccInfo" component={EuiccInfo} options={TransitionPresets.SlideFromRightIOS} />
+					<Stack.Screen name="Notifications" component={Notifications} options={TransitionPresets.SlideFromRightIOS} />
 				</Stack.Navigator>
 			</NavigationContainer>
 		</SafeAreaProvider>

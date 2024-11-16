@@ -3,7 +3,7 @@ import {AuthenticateResult, DownloadResult, EuiccInfo2, ProfileMetadataMap, Prof
 import {TypedUseSelectorHook, useDispatch, useSelector} from 'react-redux';
 import {MMKV} from "react-native-mmkv";
 import {Adapter, Device} from "@/native/adapters/adapter";
-import {EuiccConfiguredAddresses} from "@/native/types/EuiccInfo";
+import {EuiccConfiguredAddresses, Notification} from "@/native/types/LPA";
 
 
 export type RootState = ReturnType<typeof store.getState>;
@@ -39,6 +39,7 @@ export interface EuiccList {
     bytesFree?: number;
     version?: string;
     euiccInfo2?: EuiccInfo2;
+    notifications: Notification[];
     euiccAddress?: EuiccConfiguredAddresses;
     profiles: ProfileMetadataMap[];
     message: string;

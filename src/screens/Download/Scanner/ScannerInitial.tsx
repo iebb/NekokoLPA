@@ -12,7 +12,7 @@ import BlockingLoader from "@/components/common/BlockingLoader";
 import {LPACode} from "@/components/utils/lpaRegex";
 import {launchImageLibrary} from "react-native-image-picker";
 import QrImageReader from 'react-native-qr-image-reader';
-import {Dimensions} from "react-native";
+import {Dimensions, KeyboardAvoidingView, Platform} from "react-native";
 import {Adapters} from "@/native/adapters/registry";
 
 export function ScannerInitial({ appLink, eUICC, deviceId, finishAuthenticate }: any) {
@@ -82,9 +82,10 @@ export function ScannerInitial({ appLink, eUICC, deviceId, finishAuthenticate }:
         )
       }
       <Container>
-        <View
-          flex
-          style={{ gap: 10 }}
+        <KeyboardAvoidingView
+          behavior='position'
+          keyboardVerticalOffset={Platform.OS == 'ios' ? 80 : 0}
+          style={{ gap: 10, flex: 1 }}
         >
           <View center gap-5 marginV-10>
             <Text text70M color={colors.std200}>
@@ -203,7 +204,7 @@ export function ScannerInitial({ appLink, eUICC, deviceId, finishAuthenticate }:
               onValueChange={v => setConfirmationCodeReq(v)}
             />
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Container>
     </View>
   )

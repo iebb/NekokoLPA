@@ -45,7 +45,8 @@ export function dateToDate6(d: Date): string {
 
 export function parseMetadata(metadata: ProfileMetadataMap, colors: any, t: TFunction) {
   const tags = [];
-  let nickname = metadata.profileNickname ?? metadata.serviceProviderName ?? metadata.profileName;
+
+  let nickname = metadata.profileNickname || metadata.profileName || metadata.serviceProviderName;
   if (nickname) {
 
     const eDates = nickname.matchAll(/\s*d:(2[012])?(\d\d)(\d\d)(\d\d)/g);
@@ -100,6 +101,59 @@ export function parseMetadata(metadata: ProfileMetadataMap, colors: any, t: TFun
       rawValue: `t:${match[1]}`,
       color: colors.blue700,
       backgroundColor: colors.blue100,
+    });
+    nickname = nickname.replace(match[0], '').trim();
+  }
+
+  let mccMncInfo = resolveMccMnc(metadata.profileOwnerMccMnc);
+
+  let lastValue: {[key: string]: string} = {};
+  try {
+    if (mccMncInfo.MCC) {
+      lastValue = JSON.parse(countryList.getString(mccMncInfo.MCC) || '{}') as {[key: string]: string};
+      lastValue[metadata.profileOwnerMccMnc] = mccMncInfo.Operator || metadata.serviceProviderName || metadata.profileOwnerMccMnc;
+      countryList.set(mccMncInfo.MCC, JSON.stringify(lastValue));
+    }
+  } finally {
+  }
+
+  let countryEmoji = mccMncInfo.ISO1 ?? predictCountryForICCID(metadata.iccid).code;
+  let countryMatch = nickname.match(/[🇦-🇿]{2}/u);
+  if (countryMatch) {
+    countryEmoji = emojiToCountryCode(countryMatch[0]);
+    nickname = nickname.replace(countryMatch[0], "").trim();
+  }
+
+  return {
+    name: nickname,
+    tags: tags,
+    country: countryEmoji,
+    mccMnc: mccMncInfo,
+  };
+
+}
+
+export function parseMetadataOnly(metadata: ProfileMetadataMap) {
+  const tags = [];
+
+  let nickname = metadata.profileNickname || metadata.profileName || metadata.serviceProviderName;
+  if (nickname) {
+
+    const eDates = nickname.matchAll(/\s*d:(2[012])?(\d\d)(\d\d)(\d\d)/g);
+    for(const eDate of eDates) {
+      if (eDate && eDate.length > 1) {
+        nickname = nickname.replace(eDate[0], '').trim();
+      }
+    }
+  }
+
+
+  const it = nickname.matchAll(/\s*t:(\S+)/g);
+  for(const match of it) {
+    tags.push({
+      tag: 'text',
+      value: match[1].replaceAll("_", " "),
+      rawValue: `t:${match[1]}`,
     });
     nickname = nickname.replace(match[0], '').trim();
   }

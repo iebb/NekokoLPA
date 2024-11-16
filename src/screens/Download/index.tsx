@@ -1,12 +1,11 @@
 import React, {useState} from 'react';
-import {KeyboardAvoidingView, Platform, ScrollView,} from 'react-native';
+import {Platform, ScrollView,} from 'react-native';
 import {SafeScreen} from '@/components/template';
 import type {RootScreenProps} from "@/screens/navigation";
 import {Text} from "react-native-ui-lib";
 import {ScannerInitial} from "@/screens/Download/Scanner/ScannerInitial";
 import {ScannerAuthentication} from "@/screens/Download/Scanner/ScannerAuthentication";
 import {ScannerResult} from "@/screens/Download/Scanner/ScannerResult";
-import {ScannerEuicc} from "@/screens/Download/Scanner/ScannerEuicc";
 import {version} from '../../../package.json';
 import {sizeStats} from "@/storage/mmkv";
 import {Adapters} from "@/native/adapters/registry";
@@ -20,7 +19,7 @@ function Scanner({ route,  navigation }: RootScreenProps<'Scanner'>) {
 	const { deviceId, appLink } = route.params;
 
 	const DeviceState = deviceId ? useSelector(selectDeviceState(deviceId)) : null;
-	const [scanState, setScanState] = useState(deviceId ? 0 : -1);
+	const [scanState, setScanState] = useState(0);
 	const [authenticateResult, setAuthenticateResult] = useState(null);
 	const [downloadResult, setDownloadResult] = useState(null);
 	const [confirmationCode, setConfirmationCode] = useState('');
@@ -32,21 +31,7 @@ function Scanner({ route,  navigation }: RootScreenProps<'Scanner'>) {
 		<SafeScreen>
 				<ScrollView>
 					{
-						scanState === -1 ? (
-							<ScannerEuicc
-								appLink={appLink}
-								eUICC={DeviceState}
-								finishAuthenticate={({ authenticateResult, smdp, confirmationCode } : any) => {
-									setAuthenticateResult(authenticateResult);
-									setSmdpAddress(smdp);
-									setConfirmationCode(confirmationCode);
-									setScanState(1);
-								}}
-								setEUICC={() => {
-
-								}}
-							/>
-						) : scanState === 0 ? (
+						scanState === 0 ? (
 							<ScannerInitial
 								appLink={appLink}
 								adapter={adapter}

@@ -5,8 +5,11 @@ export type RootStackParamList = {
 	Main: {};
 	Stats: {};
 	Settings: {};
+	Notifications: {
+		deviceId: string,
+	};
 	EuiccInfo: {
-		deviceId?: string,
+		deviceId: string,
 	};
 	Scanner: {
 		appLink?: string,

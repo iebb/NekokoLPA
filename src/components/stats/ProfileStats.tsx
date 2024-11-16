@@ -16,6 +16,15 @@ export function ProfileStats() {
           countryList.getAllKeys().sort().map(mcc => {
             const mncs = JSON.parse(countryList.getString(mcc) as string);
             const mccData = (_MCC as any)[mcc];
+
+            for(const k of Object.keys(mncs)) {
+              if (k.length == 6 && (k[3] == "0" || k[3] == "f")) {
+                delete mncs[k];
+              }
+            }
+
+            countryList.set(mcc, JSON.stringify(mncs));
+
             return (
               <View key={mcc}>
                 <View row gap-10>

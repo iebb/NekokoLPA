@@ -1,5 +1,5 @@
 import ProfileMenu from "@/screens/Main/MainUI/ProfileMenu";
-import ProfileSelector from "@/screens/Main/MainUI/ProfileList/ProfileSelector";
+import ProfileSelector from "@/screens/Main/MainUI/ProfileSelector";
 import {LoaderScreen, View} from "react-native-ui-lib";
 import React from "react";
 import {useSelector} from "react-redux";
