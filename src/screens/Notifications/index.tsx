@@ -137,7 +137,7 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
       </View>
     );
   }
-  const sorted = notifications ?  [...notifications].sort((a, b) => b.seqNumber - a.seqNumber) : [];
+  const sorted = Array.isArray(notifications) ?  [...notifications].sort((a, b) => b.seqNumber - a.seqNumber) : [];
   return (
     <SafeScreen>
       <Title>{t('notifications:notifications')}</Title>
