@@ -125,10 +125,11 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
                             result.add(hashMapOf("name" to reader.name, "available" to "false", "description" to "Open Channel Failed"))
                             continue
                         }
+
                         Log.i(TAG, reader.name + " Opened Channel: $chan")
-                        val response: ByteArray = chan!!.getSelectResponse()!!
-                        Log.i(TAG,"Opened logical channel: ${response.toHex()}")
                         channelMappings[reader.name] = chan
+                        val response: ByteArray? = chan.getSelectResponse()
+                        Log.i(TAG, "Opened logical channel: ${response?.toHex()}")
                     }
 
                     val resp1 = chan.transmit(hexStringToByteArray("81E2910006BF3E035C015A"))
@@ -226,8 +227,8 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
                         )
                     )!!
                     Log.i(TAG, reader.name + " Opened Channel")
-                    val response: ByteArray = chan.getSelectResponse()!!
-                    Log.i(TAG, "Opened logical channel: ${response.toHex()}")
+                    val response = chan.getSelectResponse()
+                    Log.i(TAG, "Opened logical channel: ${response?.toHex()}")
                     channelMappings[reader.name] = chan
 
                     val resp1 = chan.transmit(byteArrayOf(
