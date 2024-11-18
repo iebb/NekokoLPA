@@ -1,14 +1,12 @@
 // @ts-nocheck
 import _ from 'lodash';
-import React, {PropsWithChildren, useMemo, useEffect, useState, useCallback} from 'react';
-import {useAnimatedReaction, useSharedValue, withTiming, runOnJS} from 'react-native-reanimated';
+import React, {PropsWithChildren, useCallback, useEffect, useMemo, useState} from 'react';
+import {runOnJS, useAnimatedReaction, useSharedValue, withTiming} from 'react-native-reanimated';
 import {useOrientation, useThemeProps} from 'react-native-ui-lib/src/components/../hooks';
 import {Constants} from 'react-native-ui-lib/src/components/../commons/new';
 import TabBarContext from './TabBarContext';
 import TabBar, {TabControllerBarProps} from './TabBar';
 import TabBarItem, {TabControllerItemProps} from './TabBarItem';
-import TabPage from './TabPage';
-import PageCarousel from './PageCarousel';
 import useImperativeTabControllerHandle, {TabControllerImperativeMethods} from './useImperativeTabControllerHandle';
 
 export {TabControllerBarProps, TabControllerItemProps, TabControllerImperativeMethods};
@@ -16,8 +14,6 @@ export {TabControllerBarProps, TabControllerItemProps, TabControllerImperativeMe
 interface TabControllerStatics {
   TabBar: typeof TabBar;
   TabBarItem: typeof TabBarItem;
-  TabPage: typeof TabPage;
-  PageCarousel: typeof PageCarousel;
 }
 
 export interface TabControllerProps {
@@ -145,9 +141,5 @@ const TabController = React.forwardRef((props: PropsWithChildren<TabControllerPr
 TabController.TabBar = TabBar;
 // @ts-expect-error
 TabController.TabBarItem = TabBarItem;
-// @ts-expect-error
-TabController.TabPage = TabPage;
-// @ts-expect-error
-TabController.PageCarousel = PageCarousel;
 
 export default TabController as typeof TabController & TabControllerStatics;

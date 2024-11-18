@@ -1,6 +1,9 @@
 package ee.nekoko.nlpa
 
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.se.omapi.Channel
 import android.se.omapi.SEService
 import android.se.omapi.Session
@@ -18,6 +21,38 @@ import ee.nekoko.nlpa_utils.hexStringToByteArray
 import ee.nekoko.nlpa_utils.toHex
 import java.io.IOException
 
+val commonStkNames: Array<String> = arrayOf(
+    "com.android.stk/.StkMain",
+    "com.android.stk/.StkMainHide",
+    "com.android.stk/.StkListActivity",
+    "com.android.stk/.StkLauncherListActivity",
+)
+
+val commonSlotStkName: Map<String, Array<String>> = mapOf(
+    Pair("SIM1", arrayOf(
+        "com.android.stk/.StkMain1",
+        "com.android.stk/.PrimaryStkMain",
+        "com.android.stk/.StkLauncherActivity",
+        "com.android.stk/.StkLauncherActivity_Chn",
+        "com.android.stk/.StkLauncherActivityI",
+        "com.android.stk/.OppoStkLauncherActivity1",
+        "com.android.stk/.OplusStkLauncherActivity1",
+        "com.android.stk/.mtk.StkLauncherActivityI",
+    )),
+    Pair("SIM2", arrayOf(
+        "com.android.stk/.StkMain2",
+        "com.android.stk/.SecondaryStkMain",
+        "com.android.stk/.StkLauncherActivity2",
+        "com.android.stk/.StkLauncherActivityII",
+        "com.android.stk/.OppoStkLauncherActivity2",
+        "com.android.stk/.OplusStkLauncherActivity2",
+        "com.android.stk/.mtk.StkLauncherActivityII",
+        "com.android.stk1/.StkLauncherActivity",
+        "com.android.stk2/.StkLauncherActivity",
+        "com.android.stk2/.StkLauncherActivity_Chn",
+        "com.android.stk2/.StkLauncherActivity2",
+    )),
+)
 
 class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) : ReactContextBaseJavaModule() {
     override fun getName(): String {
@@ -125,7 +160,7 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
                         "Opening eUICC connection ${reader.name} failed. [NP] Message: ${e.message}",
                         e
                     )
-                    result.add(hashMapOf("name" to reader.name, "available" to "false", "description" to "Unable to open a connection", "signatures" to signatureList))
+                    result.add(hashMapOf("name" to reader.name, "available" to "false", "description" to "Unable to open a connection: " + e.stackTrace.toString(), "signatures" to signatureList))
                     // throw e
                 } catch (e: NoSuchElementException) {
                     Log.e(
@@ -258,6 +293,34 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
         context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit("onDataUpdate", params)
     }
 
+
+    @ReactMethod
+    fun openSTK(device: String) {
+        if (commonSlotStkName.containsKey(device)) {
+            val intentArray = commonSlotStkName[device]!!.plus(commonStkNames)
+            for (componentName in intentArray) {
+                try {
+                    val intent = Intent().apply {
+                        component = ComponentName.unflattenFromString(componentName)
+                    }
+
+                    // Check if the intent resolves to a valid activity
+                    val packageManager: PackageManager = (context as Context).packageManager
+                    val activities = packageManager.queryIntentActivities(intent, 0)
+
+                    if (activities.isNotEmpty()) {
+                        // If the activity is available, start the intent
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        (context as Context).startActivity(intent)
+                        Log.d("IntentLauncher", "Launched: $componentName")
+                        return // Exit after launching the first available intent
+                    }
+                } catch (e: Exception) {
+                    Log.e("IntentLauncher", "Error launching intent: $componentName", e)
+                }
+            }
+        }
+    }
 
     @ReactMethod
     fun listDevices(promise: Promise) {

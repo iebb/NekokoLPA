@@ -12,6 +12,7 @@ import TabController from "@/components/ui/tabController";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faDownload, faSimCard} from "@fortawesome/free-solid-svg-icons";
 import Clipboard from "@react-native-clipboard/clipboard";
+import {OMAPIDevice} from "@/native/adapters/omapi_adapter";
 
 export default function SIMSelector() {
   const {colors} = useTheme();
@@ -68,7 +69,7 @@ export default function SIMSelector() {
               labelColor: colors.std400,
               selectedLabelColor: colors.purple300,
               selectedIconColor: colors.purple300,
-              width: internalList.length <= 3 ? width / internalList.length : undefined,
+              width: internalList.length <= 3 ? width / internalList.length : 100,
             })
 
           })
@@ -79,6 +80,9 @@ export default function SIMSelector() {
         <TabController.TabBar
           backgroundColor={colors.cardBackground}
           labelColor={colors.purple300}
+          faderProps={{
+            tintColor: colors.std900,
+          }}
           containerStyle={{
             width: '100%',
             overflow: "hidden",
@@ -89,7 +93,7 @@ export default function SIMSelector() {
         />
       </TabController>
       {
-        selected && (
+        selected && (adapter != null) && (
           adapter.device.available ? (
             <EUICCPage deviceId={selected} key={selected}/>
           ): (
@@ -114,7 +118,7 @@ export default function SIMSelector() {
 
                       <View flex paddingB-40 gap-10>
                         {adapter.device.signatures.split(",").map((s: string) => (
-                          <Text color={colors.std200} text70L center key={s} onPress={() => {
+                          <Text color={colors.std200} text80L center key={s} onPress={() => {
                             ToastAndroid.show(`ARA-M ${s} Copied`, ToastAndroid.SHORT);
                             Clipboard.setString(s)
                           }}>{s}</Text>
@@ -123,13 +127,22 @@ export default function SIMSelector() {
                     </>
                   )
                 }
-                <Button backgroundColor={colors.purple300} marginT-60 onPress={() => {
+                {
+                  (Platform.OS === 'android') && (
+                    <>
+                      <Text color={colors.std200} center underline text60L marginT-40 onPress={() => {
+                        OMAPIDevice.openSTK(adapter.device.deviceName);
+                      }}>
+                        {t('main:open_stk_menu')}
+                      </Text>
+                    </>
+                  )
+                }
+                <Text color={colors.purple400} center underline text60L marginT-40 onPress={() => {
                   Linking.openURL("https://lpa.nekoko.ee/products");
                 }}>
-                  <Text color={colors.white} center text50L>
-                    {t('main:purchase_note')}
-                  </Text>
-                </Button>
+                  {t('main:purchase_note')}
+                </Text>
               </View>
             </ScrollView>
           )

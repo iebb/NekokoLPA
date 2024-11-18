@@ -3,6 +3,7 @@
   "no_device": "无法从该读卡器读取",
   "unsupported_device": "{{name}} 不受支持",
   "insert_supported_sim": "请尝试插入受支持的卡片，刷新或者重启应用再次尝试。",
+  "open_stk_menu": "打开 STK 菜单",
   "android_aram": "本应用版本支持以下 ARA-M 值。卡片需要支持以下任意值才可以使用",
   "purchase_note": "购买支持的设备",
   "set_nickname": "设置昵称",

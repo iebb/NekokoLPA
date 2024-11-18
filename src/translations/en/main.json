@@ -3,6 +3,7 @@
   "no_device": "Error occurred while reading from this slot.",
   "unsupported_device": "{{name}} is unavailable.",
   "insert_supported_sim": "Try insert a supported SIM card or relaunch the app.",
+  "open_stk_menu": "Open STK Menu",
   "android_aram": "This application supports following ARA-Ms.",
   "purchase_note": "Buy supported devices",
   "set_nickname": "Set Nickname",
