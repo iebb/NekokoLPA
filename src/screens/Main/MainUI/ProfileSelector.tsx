@@ -133,9 +133,9 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
                                   text: t('profile:delete_tag_ok'),
                                   style: 'destructive',
                                   onPress: () => {
-                                    // makeLoading(setLoading, () => {
-                                    //   adapter.deleteProfileByIccId(device, metadata.iccid);
-                                    // })
+                                    makeLoading(setLoading, async () => {
+                                      await adapter.deleteProfileByIccId(metadata.iccid);
+                                    })
                                   }
                                 },
                                 {

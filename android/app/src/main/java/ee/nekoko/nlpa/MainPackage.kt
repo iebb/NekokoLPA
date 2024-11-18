@@ -18,6 +18,7 @@ class MainPackage : ReactPackage {
         reactContext: ReactApplicationContext
     ): MutableList<NativeModule> = listOf(
         OMAPIBridge(reactContext),
+        CCIDPlugin(reactContext),
         CustomHttp(reactContext)
     ).toMutableList()
 }

@@ -1,8 +1,10 @@
 {
   "available_space": "Available: {{bytes}} B",
-  "no_device": "No compatible readers or SIMs found. Drop down to refresh.",
+  "no_device": "Error occurred while reading from this slot.",
   "unsupported_device": "{{name}} is unavailable.",
   "insert_supported_sim": "Try insert a supported SIM card or relaunch the app.",
+  "android_aram": "This application supports following ARA-Ms.",
+  "purchase_note": "Buy supported devices",
   "set_nickname": "Set Nickname",
   "set_nickname_prompt": "Set a nickname for this card. Works locally only"
 }

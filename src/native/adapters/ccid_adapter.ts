@@ -1,7 +1,5 @@
 import {NativeModules} from "react-native";
-import {setupDevice} from "@/native/jsnative/setup";
 import {Device} from "@/native/adapters/adapter";
-
 const { CCIDPlugin } = NativeModules;
 
 
@@ -9,6 +7,7 @@ export class CCIDDevice implements Device {
   type = "ccid";
   deviceName = "";
   deviceId = "";
+  available = true;
   explicitConnectionRequired = true;
 
   constructor(deviceName: string) {
@@ -28,17 +27,13 @@ export class CCIDDevice implements Device {
     try {
       await this.transmit("007080FF00");
     } catch (error) {
-      console.log("cannot close channel");
     }
-    console.log("disconnecting from ccid");
     await CCIDPlugin.disconnect(this.deviceName);
     return true;
   }
 
   async transmit(s: string): Promise<string> {
-    console.log(this.deviceName, s);
-    const r = await CCIDPlugin.transceive(this.deviceName, s);
-    console.log("Ret:", r);
-    return r;
+    return await CCIDPlugin.transceive(this.deviceName, s);
   }
+
 }

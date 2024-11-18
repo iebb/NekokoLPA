@@ -58,7 +58,6 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
         break;
     }
 
-
     return (
       <View key={row.seqNumber} backgroundColor={colors.std900} marginB-10>
       <Drawer
@@ -72,7 +71,10 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
           width: 60,
           background: Colors.green30,
           onPress: async () => {
-            await adapter.sendNotification(row.seqNumber);
+            const result = await adapter.sendNotification(row.seqNumber);
+            if (result.result !== 0) {
+              Alert.alert(t('notifications:send_failed'), t('notifications:send_failed_alert'));
+            }
           }
         }]}
         leftItem={{

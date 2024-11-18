@@ -1,0 +1,10 @@
+{
+  "notifications": "通知",
+
+  "send_failed": "发送失败",
+  "send_failed_alert": "通知发送失败",
+  "delete": "删除通知",
+  "delete_alert": "确认删除通知？此操作不可逆。",
+  "delete_ok": "确认删除",
+  "delete_cancel": "取消"
+}

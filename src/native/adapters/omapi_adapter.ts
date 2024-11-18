@@ -11,10 +11,14 @@ export class OMAPIDevice implements Device {
   deviceName = "";
   deviceId = "";
   explicitConnectionRequired = true;
+  available = true;
+  signatures = "";
+  description = "";
 
-  constructor(deviceName: string) {
+  constructor(deviceName: string, available: boolean = false) {
     this.deviceName = deviceName;
     this.deviceId = "oampi:" + deviceName;
+    this.available = available;
   }
 
   async connect(): Promise<boolean> {

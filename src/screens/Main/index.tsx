@@ -14,10 +14,7 @@ import {nextValue, selectAppConfig} from "@/redux/configStore";
 import type {Variant} from "@/types/theme/config";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faCog, faFlag, faLanguage, faMoon, faRefresh} from "@fortawesome/free-solid-svg-icons";
-import {setupInternalDevices} from "@/native/Hybrid";
-import {Adapter} from "@/native/adapters/adapter";
-import {setInternalDevices} from "@/redux/stateStore";
-import {Adapters} from "@/native/adapters/registry";
+import {setupDevices} from "@/native/Hybrid";
 
 const DEBUG_REPORTING_URL = "https://nlpa-data.nekoko.ee/api/debug/log";
 
@@ -113,15 +110,7 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 								}
 								backgroundColor={colors.cardBackground}
 								onPress={() => {
-									setupInternalDevices().then(internalList => {
-										for(const f of Object.keys(Adapters)) Adapters[f].obsolete = true;
-										for(const d of internalList) (new Adapter(d, dispatch)).initialize();
-										for(const f of Object.keys(Adapters)) if (Adapters[f].obsolete) {
-											Adapters[f].device.disconnect();
-											delete Adapters[f];
-										}
-										dispatch(setInternalDevices(internalList.map(d => d.deviceId)));
-									});
+									setupDevices(dispatch).then(r => r);
 								}}
 								iconOnRight
 								animateLayout

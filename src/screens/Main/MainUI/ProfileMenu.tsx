@@ -34,6 +34,7 @@ export default function ProfileMenu({ deviceId } : { deviceId: string }) {
           backgroundColor: colors.std800,
         }}
 
+
         options={[
           {
             label: 'Copy EID',

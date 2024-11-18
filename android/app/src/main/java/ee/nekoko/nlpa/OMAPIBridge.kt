@@ -24,16 +24,11 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
         return "OMAPIBridge"
     }
 
-    private var seService: SEService
+    private var seService: SEService = SEService(context as Context, { obj: Runnable -> obj.run() }, {
+        // emitData("readers", )
+    })
     var channelMappings: MutableMap<String, Channel> = HashMap()
     var sessionMappings: MutableMap<String, Session> = HashMap()
-
-
-    init {
-        seService = SEService(context as Context, { obj: Runnable -> obj.run() }, {
-            // emitData("readers", )
-        })
-    }
 
     protected fun addActivityEventListener(listener: ActivityEventListener?) {
         // eventListeners.add(listener)
@@ -53,10 +48,14 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
 
     fun listReaders(): List<Map<String, String>> {
         val result = mutableListOf<Map<String, String>>()
+        val signatureList = SystemInfo(context as Context).signatureList().joinToString(",")
         Log.i(TAG,"SE List Readers:")
         if (seService.isConnected) {
             Log.i(TAG,"SE List ${seService.readers.size} Readers:")
             for (reader in seService.readers) {
+                if (!reader.name.startsWith("SIM")) {
+                    continue
+                }
                 try {
                     var chan: Channel? = channelMappings[reader.name]
                     if (chan != null) {
@@ -76,14 +75,16 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
                         }
                         reader.closeSessions()
                         val session: Session = reader.openSession()
-                        session.closeChannels()
                         sessionMappings[reader.name] = session
                         val atr = session.getATR()
                         Log.i(TAG, reader.name)
                         Log.i(TAG, reader.name + " ATR: " + atr + " Session: " + session)
-                        chan = session.openLogicalChannel(hexStringToByteArray("A0000005591010FFFFFFFF8900000100"))
+                        for (i in 1..5) {
+                            chan = session.openLogicalChannel(hexStringToByteArray("A0000005591010FFFFFFFF8900000100"))
+                            if (chan != null) break
+                            Thread.sleep((i * 300).toLong())
+                        }
                         if (chan == null) {
-                            // open channel failed.
                             result.add(hashMapOf("name" to reader.name, "available" to "false", "description" to "Open Channel Failed"))
                             continue
                         }
@@ -100,7 +101,7 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
                         Log.i(TAG,"EID: ${eid}")
                         result.add(hashMapOf("name" to reader.name, "eid" to eid, "available" to "true"))
                     } else {
-                        result.add(hashMapOf("name" to reader.name, "available" to "false", "description" to "No EID Found"))
+                        result.add(hashMapOf("name" to reader.name, "available" to "false", "description" to "No EID Found", "signatures" to signatureList))
                     }
                 } catch (e: SecurityException) {
                     Log.e(
@@ -108,7 +109,7 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
                         "Opening eUICC connection ${reader.name} failed. [java.lang.SecurityException]",
                         e
                     )
-                    result.add(hashMapOf("name" to reader.name, "available" to "false", "description" to "ARA-M not supported"))
+                    result.add(hashMapOf("name" to reader.name, "available" to "false", "description" to "ARA-M not supported", "signatures" to signatureList))
                     // throw e
                 } catch (e: IOException) {
                     Log.e(
@@ -116,7 +117,7 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
                         "Opening eUICC connection ${reader.name} failed. [IO]",
                         e
                     )
-                    result.add(hashMapOf("name" to reader.name, "available" to "false", "description" to "Card unavailable"))
+                    result.add(hashMapOf("name" to reader.name, "available" to "false", "description" to "Card unavailable", "signatures" to signatureList))
                     // throw e
                 } catch (e: NullPointerException) {
                     Log.e(
@@ -124,7 +125,7 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
                         "Opening eUICC connection ${reader.name} failed. [NP] Message: ${e.message}",
                         e
                     )
-                    result.add(hashMapOf("name" to reader.name, "available" to "false", "description" to "Unable to open a connection"))
+                    result.add(hashMapOf("name" to reader.name, "available" to "false", "description" to "Unable to open a connection", "signatures" to signatureList))
                     // throw e
                 } catch (e: NoSuchElementException) {
                     Log.e(
@@ -132,6 +133,7 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
                         "Opening eUICC connection ${reader.name} failed: NoSuchElementException [EX]",
                         e
                     )
+                    result.add(hashMapOf("name" to reader.name, "available" to "false", "description" to "Secure Element not found", "signatures" to signatureList))
                     // throw e
                 } catch (e: Exception) {
                     Log.e(
@@ -139,6 +141,7 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
                         "Opening eUICC connection ${reader.name} failed. [EX]",
                         e
                     )
+                    result.add(hashMapOf("name" to reader.name, "available" to "false", "description" to e.message.toString(), "signatures" to signatureList))
                     // throw e
                 }
 
@@ -162,10 +165,10 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
         if (seService.isConnected) {
             for (reader in seService.readers) {
                 if (reader.name != rr) continue
+                reader.closeSessions()
                 sessionMappings[reader.name]?.closeChannels()
                 channelMappings[reader.name]?.close()
                 sessionMappings[reader.name]?.close()
-
 
                 try {
 
@@ -185,11 +188,11 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
                     )!!
                     Log.i(TAG, reader.name + " Opened Channel")
                     val response: ByteArray = chan.getSelectResponse()!!
-                    Log.i(TAG,"Opened logical channel: ${response.toHex()}")
+                    Log.i(TAG, "Opened logical channel: ${response.toHex()}")
                     channelMappings[reader.name] = chan
 
                     val resp1 = chan.transmit(byteArrayOf(
-                        0x81.toByte(), 0xE2.toByte(), 0x91.toByte(), 0x00.toByte(), 0x06.toByte(), 0xBF.toByte(), 0x3E.toByte(), 0x03.toByte(), 0x5C.toByte(), 0x01.toByte(), 0x5A.toByte()
+                        0x80.toByte(), 0xE2.toByte(), 0x91.toByte(), 0x00.toByte(), 0x06.toByte(), 0xBF.toByte(), 0x3E.toByte(), 0x03.toByte(), 0x5C.toByte(), 0x01.toByte(), 0x5A.toByte()
                     ))
                     Log.i(TAG,"Transmit Response: ${resp1.toHex()}")
                     if (resp1[0] == 0xbf.toByte()) {
@@ -272,6 +275,12 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
     fun transceive(device: String, apdu: String, promise: Promise) {
         Thread {
             var chan = channelMappings[device]
+            if (chan == null) {
+                Log.e(TAG, "Restarting channel $device")
+                if (restartChannel(device)) {
+                    chan = channelMappings[device]
+                }
+            }
             if (chan == null) {
                 promise.reject("NO_SUCH_CHANNEL", "No such channel")
             } else {

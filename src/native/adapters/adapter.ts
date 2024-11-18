@@ -2,10 +2,12 @@ import {Adapters} from "@/native/adapters/registry";
 import {setupDevice} from "@/native/jsnative/setup";
 import {setDeviceState} from "@/redux/stateStore";
 import {Dispatch} from "@reduxjs/toolkit";
-import {EuiccConfiguredAddresses, Notification} from "@/native/types/LPA";
-import {EuiccInfo2} from "@/native/types";
+import {Notification} from "@/native/types/LPA";
 
 export interface Device {
+  available: boolean;
+  description?: string;
+  signatures?: string;
   type: string;
   deviceName: string;
   deviceId: string;
@@ -177,7 +179,7 @@ export class Adapter {
     return result;
   }
 
-  async authenticateProfile(smdp: string, matchingId: string, imei: string = "") {
+  async authenticateProfile(smdp: string, matchingId: string, imei: string = "356726381389691") {
     return await this.execute('authenticate_profile', [smdp, matchingId, imei]);
   }
 

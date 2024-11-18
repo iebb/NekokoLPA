@@ -1,6 +1,8 @@
 {
   "notifications": "Notifications",
 
+  "send_failed": "Send Failed",
+  "send_failed_alert": "This notification has failed to send.",
   "delete": "Delete Notification",
   "delete_alert": "Are you sure to delete this notification? It cannot be recovered",
   "delete_ok": "OK",

@@ -6,6 +6,10 @@
 //
 
 import Foundation
+import AsyncHTTPClient
+import NIO
+import NIOSSL
+
 
 @objc(CustomHttp) class CustomHttp: NSObject {
   
@@ -17,27 +21,32 @@ import Foundation
     resolvePromise resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    let request = ASIHTTPRequest(url: URL(string: requestUrl))!
-    request.requestMethod = "POST"
-    request.addHeader("Content-Type", value: "application/json")
-    request.validatesSecureCertificate = false
-  
-    request.postBody = NSMutableData(data: postData.data(using: .utf8)!)
     
-    // Set completion and failure blocks
-    request.completionBlock = {
-      let responseString = request.responseString()
-      resolve(responseString)
+    
+    
+    var tlsConfiguration = TLSConfiguration.makeClientConfiguration()
+    tlsConfiguration.certificateVerification = .none
+    
+    Task {
+      var request = HTTPClientRequest(url: requestUrl)
+      request.tlsConfiguration = tlsConfiguration
+      request.method = .POST
+      request.headers.add(name: "User-Agent", value: "Swift HTTPClient")
+      request.headers.add(name: "Content-Type", value: "application/json")
+      request.body = .bytes(ByteBuffer(string: postData))
+      let response = try await HTTPClient.shared.execute(request, timeout: .seconds(30))
+      if response.status == .ok {
+        let body = response.body
+        let collectedBytes = try await body.collect(upTo: 1024 * 1024 * 30)
+        let responseString = collectedBytes.getString(at: 0, length: collectedBytes.readableBytes)!
+        print("Response String: \(responseString)")
+        resolve(responseString)
+      } else {
+        reject("0", response.status.reasonPhrase, nil)
+      }
     }
-    
-    request.setFailedBlock {
-      let error = request.error
-      reject("0", error?.localizedDescription, nil)
-    }
-    
-    // Start the request asynchronously
-    request.startAsynchronous()
     
   }
 }
+
 
