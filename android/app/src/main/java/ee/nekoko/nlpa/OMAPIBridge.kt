@@ -20,6 +20,8 @@ import com.google.gson.Gson
 import ee.nekoko.nlpa_utils.hexStringToByteArray
 import ee.nekoko.nlpa_utils.toHex
 import java.io.IOException
+import java.io.PrintWriter
+import java.io.StringWriter
 
 val commonStkNames: Array<String> = arrayOf(
     "com.android.stk/.StkMain",
@@ -160,7 +162,9 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
                         "Opening eUICC connection ${reader.name} failed. [NP] Message: ${e.message}",
                         e
                     )
-                    result.add(hashMapOf("name" to reader.name, "available" to "false", "description" to "Unable to open a connection: " + e.stackTrace.toString(), "signatures" to signatureList))
+                    var sw = StringWriter()
+                    e.printStackTrace(PrintWriter(sw));
+                    result.add(hashMapOf("name" to reader.name, "available" to "false", "description" to "Unable to open a connection: $sw", "signatures" to signatureList))
                     // throw e
                 } catch (e: NoSuchElementException) {
                     Log.e(
