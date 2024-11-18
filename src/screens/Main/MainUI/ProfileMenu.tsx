@@ -92,7 +92,7 @@ export default function ProfileMenu({ deviceId } : { deviceId: string }) {
         );
       }},
     {
-      label: t('main:download_profile'),
+      label: t('main:manage_notifications'),
       labelStyle: {
         color: colors.std200,
       },
