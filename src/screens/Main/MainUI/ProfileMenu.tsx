@@ -9,9 +9,10 @@ import {useNavigation} from "@react-navigation/native";
 import {useTranslation} from "react-i18next";
 import {nextValue, selectAppConfig, setNickname} from "@/redux/configStore";
 import {Adapters} from "@/native/adapters/registry";
-import {ToastAndroid} from "react-native";
+import {NativeModules, Platform, ToastAndroid} from "react-native";
 import Clipboard from "@react-native-clipboard/clipboard";
 import prompt from "react-native-prompt-android";
+import {OMAPIDevice} from "@/native/adapters/omapi_adapter";
 
 
 export default function ProfileMenu({ deviceId } : { deviceId: string }) {
@@ -25,90 +26,101 @@ export default function ProfileMenu({ deviceId } : { deviceId: string }) {
 
   const adapter = Adapters[deviceId];
 
+  const options = [
+    {
+      label: t('main:eid_copy'),
+      labelStyle: {
+        color: colors.std200,
+      },
+      onPress: () => {
+        ToastAndroid.show('EID Copied', ToastAndroid.SHORT);
+        Clipboard.setString(DeviceState.eid!)
+      }
+    },
+    ...((Platform.OS === 'android' ? [{
+      label: t('main:open_stk_menu'),
+      labelStyle: {
+        color: colors.std200,
+      },
+      onPress: () => {
+        // @ts-ignore
+        const { OMAPIBridge } = NativeModules;
+        OMAPIBridge.openSTK(adapter.device.deviceName);
+      }
+    }] : [])),
+    {
+      label: 'EUICC Info',
+      labelStyle: {
+        color: colors.std200,
+      },
+      onPress: () => {
+        // @ts-ignore
+        navigation.navigate('EuiccInfo', { deviceId: deviceId });
+      }
+    },
+    {
+      label: t('main:download_profile'),
+      labelStyle: {
+        color: colors.std200,
+      },
+      onPress: () => {
+        // @ts-ignore
+        navigation.navigate('Scanner', { deviceId: deviceId });
+      }
+    },
+    {
+      label: t('main:set_nickname'),
+      labelStyle: {
+        color: colors.std200,
+      },
+      onPress: () => {
+        prompt(
+          t('main:set_nickname'),
+          t('main:set_nickname_prompt'),
+          [
+            {text: 'Cancel', onPress: () => {}, style: 'cancel'},
+            {text: 'OK', onPress: (nickname: string) => {
+                // @ts-ignore
+                dispatch(setNickname({ [DeviceState?.eid] : nickname}));
+              }},
+          ],
+          {
+            cancelable: true,
+            defaultValue: nicknames[DeviceState.eid!],
+            placeholder: 'placeholder'
+          }
+        );
+      }},
+    {
+      label: t('main:download_profile'),
+      labelStyle: {
+        color: colors.std200,
+      },
+      onPress: () => {
+        // @ts-ignore
+        navigation.navigate('Notifications', {
+          deviceId: deviceId,
+        });
+      }
+    },
+    {
+      label: 'Cancel',
+      labelStyle: {
+        color: colors.std200,
+      },
+      onPress: () => setEuiccMenu(false)
+    }
+  ];
+
   return (
     <View>
       <ActionSheet
         title={`EID: ${DeviceState?.eid}`}
-        cancelButtonIndex={6}
+        cancelButtonIndex={options.length - 1}
         containerStyle={{
           backgroundColor: colors.std800,
         }}
-
-
-        options={[
-          {
-            label: 'Copy EID',
-            labelStyle: {
-              color: colors.std200,
-            },
-            onPress: () => {
-              ToastAndroid.show('EID Copied', ToastAndroid.SHORT);
-              Clipboard.setString(DeviceState.eid!)
-            }
-          },
-          {
-            label: 'EUICC Info',
-            labelStyle: {
-              color: colors.std200,
-            },
-            onPress: () => {
-              // @ts-ignore
-              navigation.navigate('EuiccInfo', { deviceId: deviceId });
-            }
-          },
-          {
-            label: 'Download Profile',
-            labelStyle: {
-              color: colors.std200,
-            },
-            onPress: () => {
-              // @ts-ignore
-              navigation.navigate('Scanner', { deviceId: deviceId });
-            }
-          },
-          {
-            label: t('main:set_nickname'),
-            labelStyle: {
-              color: colors.std200,
-            },
-            onPress: () => {
-              prompt(
-                t('main:set_nickname'),
-                t('main:set_nickname_prompt'),
-                [
-                  {text: 'Cancel', onPress: () => {}, style: 'cancel'},
-                  {text: 'OK', onPress: (nickname: string) => {
-                      // @ts-ignore
-                      dispatch(setNickname({ [DeviceState?.eid] : nickname}));
-                    }},
-                ],
-                {
-                  cancelable: true,
-                  defaultValue: nicknames[DeviceState.eid!],
-                  placeholder: 'placeholder'
-                }
-              );
-            }},
-          {
-            label: 'Manage Notifications',
-            labelStyle: {
-              color: colors.std200,
-            },
-            onPress: () => {
-              // @ts-ignore
-              navigation.navigate('Notifications', {
-                deviceId: deviceId,
-              });
-            }
-          },
-          {
-            label: 'Cancel',
-            labelStyle: {
-              color: colors.std200,
-            },
-            onPress: () => setEuiccMenu(false)
-          }
-        ]}
+        options={options}
         visible={euiccMenu}
         useNativeIOS
         onDismiss={() => setEuiccMenu(false)}

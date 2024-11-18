@@ -6,7 +6,7 @@ import {selectAppConfig} from "@/redux/configStore";
 import {useTheme} from "@/theme";
 import {EUICCPage} from "@/screens/Main/MainUI/EUICCPage";
 import {useTranslation} from "react-i18next";
-import {Dimensions, Linking, Platform, ScrollView, ToastAndroid} from "react-native";
+import {Dimensions, Linking, NativeModules, Platform, ScrollView, ToastAndroid} from "react-native";
 import {Adapters} from "@/native/adapters/registry";
 import TabController from "@/components/ui/tabController";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
@@ -106,7 +106,7 @@ export default function SIMSelector() {
                 <Text color={colors.std200} center text70L>
                   {t('main:no_device')}
                 </Text>
-                <Text color={colors.red500} center text60L>
+                <Text color={colors.red500} center text60L marginB-40>
                   {adapter.device.description}
                 </Text>
                 {
@@ -131,7 +131,8 @@ export default function SIMSelector() {
                   (Platform.OS === 'android') && (
                     <>
                       <Text color={colors.std200} center underline text60L marginT-40 onPress={() => {
-                        OMAPIDevice.openSTK(adapter.device.deviceName);
+                        const { OMAPIBridge } = NativeModules;
+                        OMAPIBridge.openSTK(adapter.device.deviceName);
                       }}>
                         {t('main:open_stk_menu')}
                       </Text>

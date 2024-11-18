@@ -4,9 +4,12 @@
   "unsupported_device": "{{name}} 不受支持",
   "insert_supported_sim": "请尝试插入受支持的卡片，刷新或者重启应用再次尝试。",
   "open_stk_menu": "打开 STK 菜单",
-  "android_aram": "本应用版本支持以下 ARA-M 值。卡片需要支持以下任意值才可以使用",
+  "android_aram": "本应用版本支持以下 ARA-M 值。\n卡片需要支持以下任意值才可以使用",
   "purchase_note": "购买支持的设备",
   "set_nickname": "设置昵称",
-  "set_nickname_prompt": "为这张卡片设置昵称。仅在当前设备生效"
+  "set_nickname_prompt": "为这张卡片设置昵称。仅在当前设备生效",
+  "download_profile": "配置下载",
+  "manage_notifications": "通知管理",
+  "eid_copy": "复制 EID"
 }
 

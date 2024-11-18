@@ -31,8 +31,10 @@ import NIOSSL
       var request = HTTPClientRequest(url: requestUrl)
       request.tlsConfiguration = tlsConfiguration
       request.method = .POST
-      request.headers.add(name: "User-Agent", value: "Swift HTTPClient")
+      request.headers.add(name: "User-Agent", value: "gsma-rsp-lpad")
       request.headers.add(name: "Content-Type", value: "application/json")
+      request.headers.add(name: "X-Admin-Protocol", value: "gsma/rsp/v2.2.0")
+      request.headers.add(name: "Accept", value: "application/json")
       request.body = .bytes(ByteBuffer(string: postData))
       let response = try await HTTPClient.shared.execute(request, timeout: .seconds(30))
       if response.status == .ok {

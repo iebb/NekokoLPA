@@ -7,6 +7,9 @@
   "android_aram": "This application supports following ARA-Ms.",
   "purchase_note": "Buy supported devices",
   "set_nickname": "Set Nickname",
-  "set_nickname_prompt": "Set a nickname for this card. Works locally only"
+  "set_nickname_prompt": "Set a nickname for this card. Works locally only",
+  "download_profile": "Download Profile",
+  "manage_notifications": "Manage Notifications",
+  "eid_copy": "Copy EID"
 }
 
