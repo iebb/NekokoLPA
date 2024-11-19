@@ -32,11 +32,14 @@ export const appConfigStore = createSlice({
     initialState: getAppConfig(),
     reducers: {
         setValue: (state, action: PayloadAction<object>) => {
+
+            console.log("setting", action, action.payload);
             for(const k of Object.keys(action.payload)) {
                 // @ts-ignore
                 state[k] = action.payload[k];
                 // @ts-ignore
                 storage.set(k, action.payload[k]);
+                console.log("setting", k, action.payload[k]);
             }
         },
         setNickname: (state, action: PayloadAction<object>) => {
@@ -61,4 +64,4 @@ export const appConfigStore = createSlice({
 
 export const selectAppConfig = (state: RootState) => state.AppConfig;
 
-export const { nextValue, setNickname } = appConfigStore.actions;
+export const { setValue, nextValue, setNickname } = appConfigStore.actions;

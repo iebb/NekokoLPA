@@ -8,7 +8,7 @@ import {BorderRadiuses, Colors, ListItem, Text} from "react-native-ui-lib";
 import {useSelector} from "react-redux";
 import {selectDeviceState} from "@/redux/stateStore";
 import Clipboard from "@react-native-clipboard/clipboard";
-import {useTheme} from "@/theme";
+import {useTheme} from "../../theme_legacy";
 
 export type EuiccInfoDataType = {
 	key: string;
@@ -81,16 +81,4 @@ function EuiccInfo({ route,  navigation }: RootScreenProps<'EuiccInfo'>) {
 
 }
 
-const styles = StyleSheet.create({
-	image: {
-		width: 54,
-		height: 54,
-		borderRadius: BorderRadiuses.br20,
-		marginHorizontal: 14
-	},
-	border: {
-		borderBottomWidth: StyleSheet.hairlineWidth,
-		borderColor: Colors.grey70
-	}
-});
 export default EuiccInfo;

@@ -5,33 +5,37 @@ import {Adapter, Device} from "@/native/adapters/adapter";
 import {Adapters} from "@/native/adapters/registry";
 import {setInternalDevices} from "@/redux/stateStore";
 import {Dispatch} from "@reduxjs/toolkit";
+import {RemoteDevice} from "@/native/adapters/remote_adapter";
 
 const { CCIDPlugin, OMAPIBridge, CustomHttp } = NativeModules;
 
 
 export async function setupInternalDevices(): Promise<Device[]> {
   const _devices = [];
-  if (Platform.OS === 'android') {
-    const devices = JSON.parse(await OMAPIBridge.listDevices());
-    for(const d of devices) {
-      if (d.available === 'true') {
-        _devices.push(new OMAPIDevice(d.name, true) as Device);
-      } else {
-        const dv = new OMAPIDevice(d.name, false) as Device;
-        dv.description = d.description;
-        dv.signatures = d.signatures;
-        _devices.push(dv);
-      }
-    }
-
-  }
-
-  if (CCIDPlugin) {
-    const readers = await CCIDPlugin.listReaders();
-    for(const r of readers) {
-      _devices.push(new CCIDDevice(r) as Device);
-    }
-  }
+  // if (Platform.OS === 'android') {
+  //   const devices = JSON.parse(await OMAPIBridge.listDevices());
+  //   for(const d of devices) {
+  //     if (d.available === 'true') {
+  //       _devices.push(new OMAPIDevice(d.name, true) as Device);
+  //     } else {
+  //       const dv = new OMAPIDevice(d.name, false) as Device;
+  //       dv.description = d.description;
+  //       dv.signatures = d.signatures;
+  //       _devices.push(dv);
+  //     }
+  //   }
+  //
+  // }
+  //
+  // // const dv = new RemoteDevice("") as Device;
+  // // _devices.push(dv);
+  //
+  // if (CCIDPlugin) {
+  //   const readers = await CCIDPlugin.listReaders();
+  //   for(const r of readers) {
+  //     _devices.push(new CCIDDevice(r) as Device);
+  //   }
+  // }
   return _devices;
 }
 

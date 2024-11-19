@@ -1,6 +1,6 @@
 import {Text, View} from "react-native-ui-lib";
 import React from "react";
-import {useTheme} from "@/theme";
+import {useTheme} from "../../theme_legacy";
 import {countryList} from "@/storage/mmkv";
 import _MCC from "@/data/mcc.json";
 import {Flags} from "@/assets/flags";

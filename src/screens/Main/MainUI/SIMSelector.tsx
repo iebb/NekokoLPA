@@ -1,9 +1,9 @@
 import {Text, View} from "react-native-ui-lib";
-import React, {useState, useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {RootState} from "@/redux/reduxDataStore";
 import {selectAppConfig} from "@/redux/configStore";
-import {useTheme} from "@/theme";
+import {useTheme} from "../../../theme_legacy";
 import {EUICCPage} from "@/screens/Main/MainUI/EUICCPage";
 import {useTranslation} from "react-i18next";
 import {Dimensions, Linking, NativeModules, Platform, ScrollView, ToastAndroid} from "react-native";
@@ -22,11 +22,10 @@ export default function SIMSelector() {
   const [index, setIndex] = useState(firstAvailable < 0 ? 0 : firstAvailable);
   const selected = index < internalList.length ? internalList[index] : null;
   const adapter = selected ? Adapters[selected] : null;
-  console.log("Index", index);
   const width = Dimensions.get('window').width - 48;
 
   useEffect(() => {
-    if (firstAvailable > 0 && !adapter.device.available) {
+    if (firstAvailable > 0 && !(adapter?.device.available)) {
       setIndex(firstAvailable < 0 ? 0 : firstAvailable);
     }
   }, [firstAvailable]);

@@ -1,6 +1,7 @@
 import { DarkTheme, DefaultTheme } from '@react-navigation/native';
 
 import type { ThemeConfiguration } from '@/types/theme/config';
+import {Colors} from "react-native-ui-lib";
 
 const colorsLight = {
 	transparent:'transparent',
@@ -19,6 +20,7 @@ const colorsLight = {
 	"std300": "#505E7C",
 	"std200": "#3C465D",
 	"std100": "#282F3E",
+	"foreground": "#282F3E",
 	"std50": "#14171F",
 	whiteAlpha50:'rgba(255,255,255,0.04)',
 	whiteAlpha100:'rgba(255,255,255,0.06)',
@@ -214,6 +216,7 @@ const colorsDark = {
 	cardBackground: "#282F3E",
 	"std50": "#EFF1F5",
 	"std100": "#D4D8E3",
+	"foreground": "#D4D8E3",
 	"std200": "#B8C0D1",
 	"std300": "#9CA7BF",
 	"std400": "#808EAD",
@@ -421,6 +424,11 @@ export const config = {
 		radius: [4, 16],
 		colors: colorsLight,
 	},
+	navigationColors: {
+		...DefaultTheme.colors,
+		background: colorsLight.gray50,
+		card: colorsLight.gray50,
+	},
 	variants: {
 		dark: {
 			colors: colorsDark,
@@ -428,6 +436,11 @@ export const config = {
 				colors: colorsDark,
 			},
 			backgrounds: colorsDark,
+			navigationColors: {
+				...DarkTheme.colors,
+				background: colorsDark.purple50,
+				card: colorsDark.purple50,
+			},
 		},
 	},
 } as const satisfies ThemeConfiguration;

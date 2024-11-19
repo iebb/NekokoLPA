@@ -1,4 +1,4 @@
-import { config } from '@/theme/_config';
+import { config } from '@/theme_legacy/_config';
 import { hasProperty } from '@/types/guards/theme';
 
 import type {

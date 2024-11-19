@@ -1,6 +1,6 @@
 import {LoaderScreen, Text, View} from "react-native-ui-lib";
 import React from "react";
-import {useTheme} from "@/theme";
+import {useTheme} from "../../theme_legacy";
 
 export default function BlockingLoader({ message }: { message?: string }) {
   const { colors} = useTheme();

@@ -2,8 +2,8 @@ import React, {useEffect, useState} from 'react';
 import i18next from 'i18next';
 import {useTranslation} from 'react-i18next';
 import {SafeScreen} from '@/components/template';
-import {useTheme} from '@/theme';
-import CatImage from '@/theme/assets/images/shiroya.png';
+import {useTheme} from '../../theme_legacy';
+import CatImage from '@/theme_legacy/assets/images/shiroya.png';
 import {Button, Text, View} from "react-native-ui-lib";
 import SIMSelector from "@/screens/Main/MainUI/SIMSelector";
 import type {RootScreenProps} from "@/screens/navigation";
@@ -116,64 +116,64 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 								animateLayout
 								animateTo={'left'}
 							/>
-						{/*	<Button*/}
-						{/*	size={'small'}*/}
-						{/*	style={{ padding: 10 }}*/}
-						{/*	iconSource={*/}
-						{/*		style => <FontAwesomeIcon icon={faCog} color={colors.std200} />*/}
-						{/*	}*/}
-						{/*	backgroundColor={colors.cardBackground}*/}
-						{/*	onPress={() => {*/}
-						{/*		navigation.navigate('Settings', {*/}
-						{/*		});*/}
-						{/*	}}*/}
-						{/*	iconOnRight*/}
-						{/*	animateLayout*/}
-						{/*	animateTo={'left'}*/}
-						{/*/>*/}
 							<Button
-								size={'small'}
-								style={{ padding: 10 }}
-								iconSource={
-									style => <FontAwesomeIcon icon={faFlag} color={colors.std200} />
-								}
-								backgroundColor={colors.cardBackground}
-								onPress={() => {
-									navigation.navigate('Stats', {
-									});
-								}}
-								iconOnRight
-								animateLayout
-								animateTo={'left'}
-							/>
-							<Button
-								size={'small'}
-								style={{ padding: 10 }}
-								iconSource={
-									style => <FontAwesomeIcon icon={faLanguage} color={colors.std200} />
-								}
-								backgroundColor={colors.cardBackground}
-								onPress={() => {
-									dispatch(nextValue('language'))
-								}}
-								iconOnRight
-								animateLayout
-								animateTo={'left'}
-							/>
-							<Button
-								size={'small'}
-								style={{ padding: 10 }}
-								iconSource={
-									style => <FontAwesomeIcon icon={faMoon} color={colors.std200} />
-								}
-								backgroundColor={colors.cardBackground}
-								onPress={() => {
-									dispatch(nextValue('theme'))
-								}}
-								iconOnRight
-								animateLayout
-								animateTo={'left'}
-							/>
+							size={'small'}
+							style={{ padding: 10 }}
+							iconSource={
+								style => <FontAwesomeIcon icon={faCog} color={colors.std200} />
+							}
+							backgroundColor={colors.cardBackground}
+							onPress={() => {
+								navigation.navigate('Settings', {
+								});
+							}}
+							iconOnRight
+							animateLayout
+							animateTo={'left'}
+						/>
+							{/*<Button*/}
+							{/*	size={'small'}*/}
+							{/*	style={{ padding: 10 }}*/}
+							{/*	iconSource={*/}
+							{/*		style => <FontAwesomeIcon icon={faFlag} color={colors.std200} />*/}
+							{/*	}*/}
+							{/*	backgroundColor={colors.cardBackground}*/}
+							{/*	onPress={() => {*/}
+							{/*		navigation.navigate('Stats', {*/}
+							{/*		});*/}
+							{/*	}}*/}
+							{/*	iconOnRight*/}
+							{/*	animateLayout*/}
+							{/*	animateTo={'left'}*/}
+							{/*/>*/}
+							{/*<Button*/}
+							{/*	size={'small'}*/}
+							{/*	style={{ padding: 10 }}*/}
+							{/*	iconSource={*/}
+							{/*		style => <FontAwesomeIcon icon={faLanguage} color={colors.std200} />*/}
+							{/*	}*/}
+							{/*	backgroundColor={colors.cardBackground}*/}
+							{/*	onPress={() => {*/}
+							{/*		dispatch(nextValue('language'))*/}
+							{/*	}}*/}
+							{/*	iconOnRight*/}
+							{/*	animateLayout*/}
+							{/*	animateTo={'left'}*/}
+							{/*/>*/}
+							{/*<Button*/}
+							{/*	size={'small'}*/}
+							{/*	style={{ padding: 10 }}*/}
+							{/*	iconSource={*/}
+							{/*		style => <FontAwesomeIcon icon={faMoon} color={colors.std200} />*/}
+							{/*	}*/}
+							{/*	backgroundColor={colors.cardBackground}*/}
+							{/*	onPress={() => {*/}
+							{/*		dispatch(nextValue('theme'))*/}
+							{/*	}}*/}
+							{/*	iconOnRight*/}
+							{/*	animateLayout*/}
+							{/*	animateTo={'left'}*/}
+							{/*/>*/}
 						</View>
 					</View>
 					<SIMSelector />

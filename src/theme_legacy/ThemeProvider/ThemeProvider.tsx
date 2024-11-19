@@ -6,22 +6,22 @@ import {
 	useState,
 } from 'react';
 
-import { config } from '@/theme/_config';
+import { config } from '@/theme_legacy/_config';
 import {
 	generateFontSizes,
 	generateFontColors,
 	staticFontStyles,
-} from '@/theme/fonts';
+} from '@/theme_legacy/fonts';
 import {
 	generateBorderColors,
 	generateBorderRadius,
 	generateBorderWidths,
-} from '@/theme/borders';
-import layout from '@/theme/layout';
-import componentsGenerator from '@/theme/components';
-import { generateBackgrounds } from '@/theme/backgrounds';
-import { generateGutters } from '@/theme/gutters';
-import generateConfig from '@/theme/ThemeProvider/generateConfig';
+} from '@/theme_legacy/borders';
+import layout from '@/theme_legacy/layout';
+import componentsGenerator from '@/theme_legacy/components';
+import { generateBackgrounds } from '@/theme_legacy/backgrounds';
+import { generateGutters } from '@/theme_legacy/gutters';
+import generateConfig from '@/theme_legacy/ThemeProvider/generateConfig';
 
 import type { MMKV } from 'react-native-mmkv';
 import type { ComponentTheme, Theme } from '@/types/theme/theme';
@@ -42,7 +42,7 @@ type Props = PropsWithChildren<{
 	storage: MMKV;
 }>;
 
-function ThemeProvider({ children = false, storage }: Props) {
+function ThemeProvider2({ children = false, storage }: Props) {
 	// Current theme variant
 	const [variant, setVariant] = useState(
 		(storage.getString('theme') as Variant) || 'default',
@@ -112,4 +112,4 @@ function ThemeProvider({ children = false, storage }: Props) {
 	);
 }
 
-export default ThemeProvider;
+export default ThemeProvider2;

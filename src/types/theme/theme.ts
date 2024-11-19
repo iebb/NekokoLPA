@@ -1,5 +1,5 @@
-import layout from '@/theme/layout';
-import componentGenerators from '@/theme/components';
+import layout from '@/theme_legacy/layout';
+import componentGenerators from '@/theme_legacy/components';
 import type {Colors} from '@/types/theme/colors';
 import type {Variant} from './config';
 import type {Gutters} from './gutters';

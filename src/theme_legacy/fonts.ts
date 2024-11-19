@@ -1,7 +1,7 @@
 import { TextStyle } from 'react-native';
 import type { FontColors, FontSizes } from '@/types/theme/fonts';
 import type { UnionConfiguration } from '@/types/theme/config';
-import { config } from '@/theme/_config';
+import { config } from '@/theme_legacy/_config';
 
 export const generateFontColors = (configuration: UnionConfiguration) => {
 	return Object.entries(configuration.fonts.colors ?? {}).reduce(

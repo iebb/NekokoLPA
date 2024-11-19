@@ -7,9 +7,8 @@ import {Constants} from 'react-native-ui-lib/src/components/../commons/new';
 import TabBarContext from './TabBarContext';
 import TabBar, {TabControllerBarProps} from './TabBar';
 import TabBarItem, {TabControllerItemProps} from './TabBarItem';
-import useImperativeTabControllerHandle, {TabControllerImperativeMethods} from './useImperativeTabControllerHandle';
 
-export {TabControllerBarProps, TabControllerItemProps, TabControllerImperativeMethods};
+export {TabControllerBarProps, TabControllerItemProps};
 
 interface TabControllerStatics {
   TabBar: typeof TabBar;
@@ -110,8 +109,6 @@ const TabController = React.forwardRef((props: PropsWithChildren<TabControllerPr
       prevValue !== null && runOnJS(onChangeIndex)(value, prevValue);
     }
   });
-
-  useImperativeTabControllerHandle(ref, setCurrentIndex);
 
   const context = useMemo(() => {
     return {

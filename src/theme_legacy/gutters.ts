@@ -1,4 +1,4 @@
-import { config } from '@/theme/_config';
+import { config } from '@/theme_legacy/_config';
 
 import type { Gutters } from '@/types/theme/gutters';
 import type { ViewStyle } from 'react-native';

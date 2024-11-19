@@ -7,7 +7,7 @@ import Title from "@/components/common/Title";
 import {Colors, Drawer, ListItem, Text, View} from "react-native-ui-lib";
 import {useSelector} from "react-redux";
 import {selectDeviceState} from "@/redux/stateStore";
-import {useTheme} from "@/theme";
+import {useTheme} from "../../theme_legacy";
 import {Adapters} from "@/native/adapters/registry";
 import {Notification} from "@/native/types/LPA";
 import {parseMetadataOnly} from "@/screens/Main/MainUI/ProfileList/parser";

@@ -1,5 +1,5 @@
-import { config } from '@/theme/_config';
-import { staticBorderStyles } from '@/theme/borders';
+import { config } from '@/theme_legacy/_config';
+import { staticBorderStyles } from '@/theme_legacy/borders';
 
 import type { ArrayValue, RemoveBeforeSeparator, ToNumber } from './common';
 import type { UnionConfiguration } from './config';

@@ -1,6 +1,6 @@
 import {Text, View} from "react-native-ui-lib";
 import React, {useEffect, useState} from "react";
-import {useTheme} from "@/theme";
+import {useTheme} from "../../theme_legacy";
 import {ProfileMetadataMap} from "@/native/types";
 import {Image, StyleSheet, ToastAndroid, TouchableOpacity} from "react-native";
 import {resolveMccMnc, T_PLMN} from "@/data/mccMncResolver";

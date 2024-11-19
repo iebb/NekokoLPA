@@ -1,78 +1,114 @@
 import React from 'react';
-import {Alert, FlatList, ScrollView, StyleSheet,} from 'react-native';
+import {FlatList,} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {SafeScreen} from '@/components/template';
 import type {RootScreenProps} from "@/screens/navigation";
 import Title from "@/components/common/Title";
-import Container from "@/components/common/Container";
-import {ProfileStats} from "@/components/stats/ProfileStats";
-import {BorderRadiuses, Colors, ListItem, Text, View} from "react-native-ui-lib";
+import {Colors, ListItem, Picker, View} from "react-native-ui-lib";
+import {preferences} from "@/storage/mmkv";
+import {setValue} from "@/redux/configStore";
+import {useDispatch} from "react-redux";
+import {useAppTheme} from "@/theme/context";
 
-const renderRow = (row: any, id: number) => {
-	const statusColor = row.inventory.status === 'Paid' ? Colors.green30 : Colors.red30;
+export type SettingDataType = {
+	key: string;
+	options: string[];
+	type?: string;
+	onChange?: (value: string) => void;
+}
 
-	return (
-		<View>
-			<ListItem
-				activeBackgroundColor={Colors.grey60}
-				activeOpacity={0.3}
-				height={77.5}
-				onPress={() => Alert.alert(`pressed on order #${id + 1}`)}
-			>
-				<ListItem.Part left>
-					{/*<Image source={{uri: row.mediaUrl}} style={styles.image}/>*/}
-				</ListItem.Part>
-				<ListItem.Part middle column containerStyle={[styles.border, {paddingRight: 17}]}>
-					<ListItem.Part containerStyle={{marginBottom: 3}}>
-						<Text grey10 text70 style={{flex: 1, marginRight: 10}} numberOfLines={1}>
-							{row.name}
-						</Text>
-						<Text grey10 text70 style={{marginTop: 2}}>
-							{row.formattedPrice}
-						</Text>
-					</ListItem.Part>
-					<ListItem.Part>
-						<Text
-							style={{flex: 1, marginRight: 10}}
-							text90
-							grey40
-							numberOfLines={1}
-						>{`${row.inventory.quantity} item`}</Text>
-						<Text text90 color={statusColor} numberOfLines={1}>
-							{row.inventory.status}
-						</Text>
-					</ListItem.Part>
-				</ListItem.Part>
-			</ListItem>
-		</View>
-	);
+function PickerRow({row} : {row: SettingDataType}) {
+	const { t } = useTranslation(['settings']);
+	const currentValue = preferences.getString(row.key) ?? row.options[0];
+	const [v, setV] = React.useState<string>(currentValue);
+		if (row.type === 'select') {
+		return (
+			<View style={{ width : "100%" }}>
+				<Picker
+					placeholder={t(`settings:title_${row.key}`)}
+					topBarProps={{title: t(`settings:title_${row.key}`)}}
+					floatingPlaceholder
+					value={v}
+					onChange={(value) => {
+						setV(value);
+						console.log(value);
+						preferences.set(row.key, value);
+						if (row.onChange) {
+							row.onChange(value);
+						}
+					}}
+					items={row.options?.map(opt => ({
+						label: t(`settings:item_${row.key}_${opt}`),
+						value: opt,
+						labelStyle: {
+							color: Colors.$textDefault,
+						}
+					}))}
+				/>
+			</View>
+		);
+	}
+
+	return null;
 }
 
 
 function Settings({ route,  navigation }: RootScreenProps<'Settings'>) {
 
-	const { t } = useTranslation(['settings']);
+	const {t} = useTranslation(['settings']);
+	const {theme, setTheme} = useAppTheme();
+	const dispatch = useDispatch();
 	return (
 		<SafeScreen>
 			<Title>{t('settings:settings')}</Title>
-			<Container>
-
-			</Container>
+			<View
+				marginT-20
+			>
+				<FlatList
+					key={theme}
+					data={[
+						{
+							key: "showSlots",
+							options: ['possible', 'all', 'available'],
+							type: 'select'
+						},
+						{
+							key: "language",
+							options: ['en', 'zh'],
+							type: 'select',
+							onChange: (value: string) => {
+								dispatch(setValue({language: value}))
+							}
+						},
+						{
+							key: "theme",
+							options: ['default', 'dark', 'light'],
+							type: 'select',
+							onChange: (value: string) => {
+								setTheme(value);
+							}
+						},
+					]}
+					renderItem={({item, index}) => (
+						<View
+							paddingH-20
+							key={item.key}
+							borderTopWidth={0.5}
+							borderTopColor={Colors.$outlineDisabled}
+						>
+							<ListItem
+								activeBackgroundColor={Colors.grey60}
+								activeOpacity={0.3}
+							>
+								<PickerRow row={item}/>
+							</ListItem>
+						</View>
+					)}
+					keyExtractor={(item: SettingDataType) => item.key}
+				/>
+			</View>
 		</SafeScreen>
 	);
-
 }
 
-const styles = StyleSheet.create({
-	image: {
-		width: 54,
-		height: 54,
-		borderRadius: BorderRadiuses.br20,
-		marginHorizontal: 14
-	},
-	border: {
-		borderBottomWidth: StyleSheet.hairlineWidth,
-		borderColor: Colors.grey70
-	}
-});
 export default Settings;

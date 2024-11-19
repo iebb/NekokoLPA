@@ -1,17 +1,16 @@
-import {KeyboardAvoidingView, Platform, StatusBar, View} from 'react-native';
+import {StatusBar, View} from 'react-native';
 import React, {PropsWithChildren} from 'react';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-
-import {useTheme} from '@/theme';
+import {Colors} from "react-native-ui-lib";
+import {useAppTheme} from "@/theme/context";
 
 function SafeScreen({ children }: PropsWithChildren) {
-	const { colors, variant } = useTheme();
+	const { theme } = useAppTheme();
 	const insets = useSafeAreaInsets();
-
 	return (
 		<View
 			style={{
-				backgroundColor: colors.std900,
+				backgroundColor: Colors.$backgroundDefault,
 				paddingTop: insets.top,
 				paddingBottom: insets.bottom,
 				paddingLeft: insets.left,
@@ -20,8 +19,8 @@ function SafeScreen({ children }: PropsWithChildren) {
 			}}
 		>
 			<StatusBar
-				barStyle={variant === 'dark' ? 'light-content' : 'dark-content'}
-				backgroundColor={colors.std900}
+				barStyle={theme === 'dark' ? 'light-content' : 'dark-content'}
+				backgroundColor={Colors.$backgroundDefault}
 			/>
 			{children}
 		</View>

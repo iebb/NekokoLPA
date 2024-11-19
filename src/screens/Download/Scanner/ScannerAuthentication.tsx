@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {StyleSheet,} from 'react-native';
 import {useTranslation} from 'react-i18next';
-import {useTheme} from '@/theme';
+import {useTheme} from '../../../theme_legacy';
 import {Button, Colors, Text, TextField, View} from "react-native-ui-lib";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faCancel, faDownload} from "@fortawesome/free-solid-svg-icons";

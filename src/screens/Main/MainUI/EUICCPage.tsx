@@ -1,22 +1,20 @@
 import ProfileMenu from "@/screens/Main/MainUI/ProfileMenu";
 import ProfileSelector from "@/screens/Main/MainUI/ProfileSelector";
-import {LoaderScreen, View} from "react-native-ui-lib";
+import {Colors, LoaderScreen, View} from "react-native-ui-lib";
 import React from "react";
 import {useSelector} from "react-redux";
-import {useTheme} from "@/theme";
 import {selectDeviceState} from "@/redux/stateStore";
 
 export function EUICCPage({ deviceId } : { deviceId: string }) {
-  const { colors } = useTheme();
   if (!deviceId) return null;
   const DeviceState = useSelector(selectDeviceState(deviceId));
 
   if (!DeviceState) {
     return (
       <LoaderScreen
-        color={colors.blue500}
+        color={Colors.$outlineGeneral}
         size="large"
-        loaderColor={colors.std200}
+        loaderColor={Colors.$outlineGeneral}
       />
     )
   }

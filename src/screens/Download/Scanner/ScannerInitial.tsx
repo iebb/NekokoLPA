@@ -6,7 +6,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faDownload, faPhotoFilm} from "@fortawesome/free-solid-svg-icons";
 import React, {useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
-import {useTheme} from "@/theme";
+import {useTheme} from "../../../theme_legacy";
 import {makeLoading} from "@/components/utils/loading";
 import BlockingLoader from "@/components/common/BlockingLoader";
 import {LPACode} from "@/components/utils/lpaRegex";

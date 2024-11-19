@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Alert, Image, ScrollView, ToastAndroid, TouchableOpacity,} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {SafeScreen} from '@/components/template';
-import {useTheme} from '@/theme';
+import {useTheme} from '../../theme_legacy';
 import type {RootScreenProps} from "@/screens/navigation";
 import {
 	Button,

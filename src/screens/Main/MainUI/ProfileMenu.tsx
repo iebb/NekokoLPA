@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {EuiccList, selectDeviceState} from "@/redux/stateStore";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faClipboard, faPlus} from '@fortawesome/free-solid-svg-icons'
-import {useTheme} from "@/theme";
+import {useTheme} from "../../../theme_legacy";
 import {useNavigation} from "@react-navigation/native";
 import {useTranslation} from "react-i18next";
 import {nextValue, selectAppConfig, setNickname} from "@/redux/configStore";

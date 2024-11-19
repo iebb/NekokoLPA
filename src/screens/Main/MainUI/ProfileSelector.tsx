@@ -5,7 +5,7 @@ import {Profile} from "@/native/types";
 import {Alert, Dimensions, Image, PixelRatio, RefreshControl, ScrollView, TouchableOpacity} from "react-native";
 import {parseMetadata} from "@/screens/Main/MainUI/ProfileList/parser";
 import React, {useState} from "react";
-import {useTheme} from "@/theme";
+import {useTheme} from "../../../theme_legacy";
 import {useNavigation} from "@react-navigation/native";
 import {useTranslation} from "react-i18next";
 import BlockingLoader from "@/components/common/BlockingLoader";

@@ -1,6 +1,6 @@
 import {Colors, LoaderScreen, Text, View} from "react-native-ui-lib";
 import React from "react";
-import {useTheme} from "@/theme";
+import {useTheme} from "../../theme_legacy";
 import {RemoteError} from "@/native/types";
 
 export default function RemoteErrorView({ remoteError }: { remoteError?: RemoteError }) {

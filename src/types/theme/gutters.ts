@@ -1,5 +1,5 @@
-import { config } from '@/theme/_config';
-import { staticGutterStyles } from '@/theme/gutters';
+import { config } from '@/theme_legacy/_config';
+import { staticGutterStyles } from '@/theme_legacy/gutters';
 
 import type {
 	ArrayValue,

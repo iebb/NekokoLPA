@@ -1,3 +1,14 @@
 {
-  "settings": "Settings"
+  "settings": "Settings",
+  "title_showSlots": "SIM Slot display rules",
+  "item_showSlots_all": "All SIM card slots",
+  "item_showSlots_possible": "OMAPI-enabled slots",
+  "item_showSlots_available": "Readable eUICC only",
+  "title_language": "Language",
+  "item_language_en": "English",
+  "item_language_zh": "中文（简化字）",
+  "title_theme": "Theme",
+  "item_theme_default": "Follow device",
+  "item_theme_light": "Light",
+  "item_theme_dark": "Dark"
 }

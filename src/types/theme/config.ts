@@ -1,5 +1,5 @@
-import { config } from '@/theme/_config';
-import generateConfig from '@/theme/ThemeProvider/generateConfig';
+import { config } from '@/theme_legacy/_config';
+import generateConfig from '@/theme_legacy/ThemeProvider/generateConfig';
 import type { AllPartial } from './common';
 
 export type Variant = keyof typeof config.variants | 'default';

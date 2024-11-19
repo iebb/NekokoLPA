@@ -1,13 +1,11 @@
-import {Toast} from "react-native-ui-lib";
+import {Colors, Toast} from "react-native-ui-lib";
 import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {selectState} from "@/redux/reduxDataStore";
-import {useTheme} from "@/theme";
 
 const errorDisplayTime = 5000;
 
 export default function ErrorToast({ eUICC = "SIM1" }) {
-  const { colors} = useTheme();
   const [show, setShow] = useState<boolean>(false);
   const {error} = useSelector(selectState);
 
@@ -24,7 +22,7 @@ export default function ErrorToast({ eUICC = "SIM1" }) {
       // renderAttachment={this.renderBelowToast}
       visible={show}
       position={'bottom'}
-      backgroundColor={colors.red400}
+      backgroundColor={Colors.$backgroundDangerHeavy}
       message={`${error.header}
 
 ${error.body}`}
