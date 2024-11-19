@@ -152,9 +152,9 @@ export function ScannerInitial({ appLink, eUICC, deviceId, finishAuthenticate }:
               makeLoading(
                 setLoading,
                 async () => {
-                  if (smtp.length == 0 && euiccAddress?.defaultDpAddress) {
+                  if (smdp.length == 0 && euiccAddress?.defaultDpAddress) {
                     setSmdp(euiccAddress?.defaultDpAddress);
-                  } else if (smtp.length > 0) {
+                  } else if (smdp.length > 0) {
                     const authenticateResult = await adapter.authenticateProfile(
                       smdp, acToken
                     );
