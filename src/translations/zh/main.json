@@ -1,6 +1,7 @@
 {
   "available_space": "可用: {{bytes}} B",
-  "no_device": "无法从该读卡器读取",
+  "error_device": "无法从该读卡器读取",
+  "no_device": "没有兼容的设备",
   "unsupported_device": "{{name}} 不受支持",
   "insert_supported_sim": "请尝试插入受支持的卡片，刷新或者重启应用再次尝试。",
   "open_stk_menu": "打开 STK 菜单",

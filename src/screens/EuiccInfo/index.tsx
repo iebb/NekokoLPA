@@ -12,6 +12,7 @@ import {useTheme} from "@/theme";
 
 export type EuiccInfoDataType = {
 	key: string;
+	raw: any;
 	rendered: any;
 }
 
@@ -35,7 +36,7 @@ function EuiccInfo({ route,  navigation }: RootScreenProps<'EuiccInfo'>) {
 				activeOpacity={0.3}
 				onPress={() => {
 					ToastAndroid.show('Value Copied', ToastAndroid.SHORT);
-					Clipboard.setString(row.rendered)
+					Clipboard.setString(row.raw ?? row.rendered)
 				}}
 				style={{ borderBottomWidth: 0.25, borderBottomColor: colors.std900 }}
 			>
@@ -66,8 +67,8 @@ function EuiccInfo({ route,  navigation }: RootScreenProps<'EuiccInfo'>) {
 					{key: "freeVolatileMemory", rendered: `${euiccInfo2?.extCardResource.freeVolatileMemory} B` },
 					{key: "defaultDpAddress", rendered: euiccAddress?.defaultDpAddress },
 					{key: "rootDsAddress", rendered: euiccAddress?.rootDsAddress },
-					{key: "euiccCiPKIdListForSigning", rendered: euiccInfo2?.euiccCiPKIdListForSigning.join(", ") },
-					{key: "euiccCiPKIdListForVerification", rendered: euiccInfo2?.euiccCiPKIdListForVerification.join(", ") },
+					{key: "euiccCiPKIdListForSigning", rendered: euiccInfo2?.euiccCiPKIdListForSigning.map(x => x.substr(0, 16)).join(", "), raw: euiccInfo2?.euiccCiPKIdListForSigning.join("\n") },
+					{key: "euiccCiPKIdListForVerification", rendered: euiccInfo2?.euiccCiPKIdListForVerification.map(x => x.substr(0, 16)).join(", "), raw: euiccInfo2?.euiccCiPKIdListForVerification.join("\n") },
 					{key: "profileVersion", rendered: euiccInfo2?.profileVersion },
 					{key: "globalplatformVersion", rendered: euiccInfo2?.globalplatformVersion },
 					{key: "euiccFirmwareVer", rendered: euiccInfo2?.euiccFirmwareVer },

@@ -1,7 +1,7 @@
 {
   "name": "nekokolpa",
-  "buildVersion": 311,
-  "version": "1.10.311",
+  "buildVersion": 312,
+  "version": "1.10.312",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -24,7 +24,6 @@
     "@fortawesome/react-native-fontawesome": "^0.3.2",
     "@react-native-clipboard/clipboard": "^1.14.3",
     "@react-native-community/datetimepicker": "^8.2.0",
-    "@react-native-masked-view/masked-view": "^0.3.2",
     "@react-navigation/native": "^7.0.0",
     "@react-navigation/stack": "^7.0.0",
     "@reduxjs/toolkit": "^2.3.0",

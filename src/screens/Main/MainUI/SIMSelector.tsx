@@ -1,4 +1,4 @@
-import {Button, Text, View} from "react-native-ui-lib";
+import {Text, View} from "react-native-ui-lib";
 import React, {useState} from "react";
 import {useSelector} from "react-redux";
 import {RootState} from "@/redux/reduxDataStore";
@@ -12,20 +12,38 @@ import TabController from "@/components/ui/tabController";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faDownload, faSimCard} from "@fortawesome/free-solid-svg-icons";
 import Clipboard from "@react-native-clipboard/clipboard";
-import {OMAPIDevice} from "@/native/adapters/omapi_adapter";
 
 export default function SIMSelector() {
   const {colors} = useTheme();
   const {internalList} = useSelector((state: RootState) => state.LPA);
   const {nicknames} = useSelector(selectAppConfig);
   const {t} = useTranslation(['main']);
-  const [index, setIndex] = useState(0);
+  const firstAvailable = internalList.map(x => x.available).indexOf(true);
+  const [index, setIndex] = useState(firstAvailable < 0 ? 0 : firstAvailable);
   const selected = index < internalList.length ? internalList[index] : null;
   const adapter = selected ? Adapters[selected] : null;
 
-  const width = Dimensions.get('window').width - 48
+  const width = Dimensions.get('window').width - 48;
 
   if (width <= 0) return null;
+  if (internalList.length == 0) return (
+    <ScrollView
+      bounces
+      alwaysBounceVertical
+      overScrollMode="always"
+    >
+      <View flex paddingT-20 gap-10>
+        <Text color={colors.std200} center text70L>
+          {t('main:no_device')}
+        </Text>
+        <Text color={colors.purple400} center underline text60L marginT-40 onPress={() => {
+          Linking.openURL("https://lpa.nekoko.ee/products");
+        }}>
+          {t('main:purchase_note')}
+        </Text>
+      </View>
+    </ScrollView>
+  );
 
   return (
     <View
@@ -79,10 +97,13 @@ export default function SIMSelector() {
       >
         <TabController.TabBar
           backgroundColor={colors.cardBackground}
+          activeBackgroundColor={colors.std600}
           labelColor={colors.purple300}
+          indicatorWidth={internalList.length <= 3 ? width / internalList.length : 100}
           faderProps={{
             tintColor: colors.std900,
           }}
+          containerWidth={width}
           containerStyle={{
             width: '100%',
             overflow: "hidden",
@@ -104,7 +125,7 @@ export default function SIMSelector() {
             >
               <View flex paddingT-20 gap-10>
                 <Text color={colors.std200} center text70L>
-                  {t('main:no_device')}
+                  {t('main:error_device')}
                 </Text>
                 <Text color={colors.red500} center text60L marginB-40>
                   {adapter.device.description}

@@ -1,6 +1,7 @@
 {
   "available_space": "Available: {{bytes}} B",
-  "no_device": "Error occurred while reading from this slot.",
+  "no_device": "No compatible device found",
+  "error_device": "Error occurred while reading from this slot.",
   "unsupported_device": "{{name}} is unavailable.",
   "insert_supported_sim": "Try insert a supported SIM card or relaunch the app.",
   "open_stk_menu": "Open STK Menu",

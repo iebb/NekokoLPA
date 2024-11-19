@@ -26,6 +26,7 @@ export class Adapter {
   deviceId: string = '';
   device: Device;
   profiles: string = '';
+  smdp: string = '';
   notifications: Notification[] = [];
   dispatch: Dispatch;
   isLocked = false;
@@ -101,6 +102,7 @@ export class Adapter {
     const euicc_info = await this.execute('get_euicc_info', []);
 
     this.eid = euicc_info.eidValue;
+    this.smdp = euicc_info.EuiccConfiguredAddresses.defaultDpAddress;
     this.setState({
       eid: euicc_info.eidValue,
       euiccInfo2: euicc_info.EUICCInfo2,
@@ -145,7 +147,6 @@ export class Adapter {
 
   async disableProfileByIccId(iccid: string) {
     const result = await this.execute('disable_profile', [iccid, this.device.type == 'omapi' ? '1': '0']);
-    console.log("disable result", result);
     if (this.device.type == 'omapi') {
       await new Promise(res => setTimeout(res, 1000));
     }
@@ -155,7 +156,6 @@ export class Adapter {
 
   async enableProfileByIccId(iccid: string) {
     const result = await this.execute('enable_profile', [iccid, this.device.type == 'omapi' ? '1': '0']);
-    console.log("enable result", result);
     if (this.device.type == 'omapi') {
       await new Promise(res => setTimeout(res, 1000));
     }
@@ -165,7 +165,6 @@ export class Adapter {
 
   async setNicknameByIccId(iccid: string, nickname: string) {
     const result = await this.execute('rename_profile', [iccid, nickname]);
-    console.log("result", result);
     await this.get_profiles();
     return result;
   }
@@ -176,6 +175,7 @@ export class Adapter {
       await new Promise(res => setTimeout(res, 1000));
     }
     await this.get_profiles();
+    await this.get_euicc_info();
     return result;
   }
 
@@ -188,7 +188,12 @@ export class Adapter {
   }
 
   async downloadProfile(internal_state: string, confirmation_code: string = "") {
-    return await this.execute('download_profile', [internal_state, confirmation_code]);
+    const result = await this.execute('download_profile', [internal_state, confirmation_code]);
+    if (result.success) {
+      await this.get_profiles();
+      await this.get_euicc_info();
+    }
+    return result;
   }
 
   async processNotifications(iccid: string) {

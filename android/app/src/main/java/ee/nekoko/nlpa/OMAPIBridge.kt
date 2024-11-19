@@ -73,13 +73,6 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
 
     protected fun removeActivityEventListener(listener: ActivityEventListener?) {
         Log.i(TAG, "Shutdown, clearing connections")
-//        for (reader in seService.readers) {
-//            sessionMappings[reader.name]?.closeChannels()
-//            channelMappings[reader.name]?.close()
-//            sessionMappings[reader.name]?.close()
-//        }
-//        channelMappings.clear()
-//        sessionMappings.clear()
     }
 
 

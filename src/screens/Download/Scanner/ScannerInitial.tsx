@@ -14,13 +14,15 @@ import {launchImageLibrary} from "react-native-image-picker";
 import QrImageReader from 'react-native-qr-image-reader';
 import {Dimensions, KeyboardAvoidingView, Platform} from "react-native";
 import {Adapters} from "@/native/adapters/registry";
+import {useSelector} from "react-redux";
+import {selectDeviceState} from "@/redux/stateStore";
 
 export function ScannerInitial({ appLink, eUICC, deviceId, finishAuthenticate }: any) {
   const device = eUICC.name;
+  const DeviceState = useSelector(selectDeviceState(deviceId));
   const { t } = useTranslation(['profile']);
   const { colors } = useTheme();
 
-  const [smdp, setSmdp] = useState("");
   const [acToken, setAcToken] = useState("");
   const [oid, setOid] = useState("");
   const [confirmationCode, setConfirmationCode] = useState("");
@@ -29,7 +31,9 @@ export function ScannerInitial({ appLink, eUICC, deviceId, finishAuthenticate }:
   const [loading, setLoading] = useState(false);
   const { hasPermission, requestPermission } = useCameraPermission();
 
+  const { eid, euiccAddress, euiccInfo2 } = DeviceState;
   const adapter = Adapters[deviceId];
+  const [smdp, setSmdp] = useState('');
 
 
   useEffect(() => {
@@ -143,18 +147,23 @@ export function ScannerInitial({ appLink, eUICC, deviceId, finishAuthenticate }:
             marginV-12
             borderRadius={210}
             backgroundColor={colors.blue500}
+            disabled={smdp.length === 0 && !(euiccAddress?.defaultDpAddress)}
             onPress={() => {
               makeLoading(
                 setLoading,
                 async () => {
-                  const authenticateResult = await adapter.authenticateProfile(
-                    smdp, acToken
-                  );
-                  finishAuthenticate({
-                    authenticateResult,
-                    smdp,
-                    confirmationCode
-                  });
+                  if (smtp.length == 0 && euiccAddress?.defaultDpAddress) {
+                    setSmdp(euiccAddress?.defaultDpAddress);
+                  } else if (smtp.length > 0) {
+                    const authenticateResult = await adapter.authenticateProfile(
+                      smdp, acToken
+                    );
+                    finishAuthenticate({
+                      authenticateResult,
+                      smdp,
+                      confirmationCode
+                    });
+                  }
                 }
               )
             }}
@@ -169,7 +178,7 @@ export function ScannerInitial({ appLink, eUICC, deviceId, finishAuthenticate }:
               placeholder={'SM-DP'}
               floatingPlaceholder
               value={smdp}
-              onChangeText={c => c.includes('$') ? processLPACode(c) : setSmdp(c)}
+              onChangeText={c => c.includes('$') ? processLPACode(c) : setSmdp(c.trim())}
               enableErrors
               validate={['required']}
               validationMessage={['Field is required']}

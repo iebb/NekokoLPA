@@ -82,10 +82,10 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 			<Title>{t('profile:profile_detail')}</Title>
 			<Dialog
 				useSafeArea
-				center
+				bottom
 				visible={tagModal}
 				onDismiss={() => setTagModal(false)}
-				panDirection={PanningProvider.Directions.RIGHT}
+				panDirection={PanningProvider.Directions.BOTTOM}
 				renderPannableHeader={props => {
 					const {title} = props;
 					return (
@@ -110,8 +110,8 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 				<View height={200} padding-20>
 					<View flex-1>
 						<RadioGroup initialValue={newTagType} onValueChange={setNewTagType}>
-							<Text color={colors.std200}>{t('profile:add_tag_type')}:</Text>
 							<View row marginT-10 gap-20>
+								<Text color={colors.std200}>{t('profile:add_tag_type')}:</Text>
 								<RadioButton value={'date'} label={t('profile:tags_date')} labelStyle={{ color: colors.std200 }} />
 								<RadioButton value={'text'} label={t('profile:tags_text')} labelStyle={{ color: colors.std200 }} />
 							</View>
@@ -165,7 +165,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 			</Dialog>
 			<Container>
 				<ScrollView>
-					<View marginB-10 row gap-5>
+					<View row gap-5>
 						<Image
 							style={{width: 20, height: 20}}
 							source={Flags[country] || Flags.UN}
@@ -187,6 +187,15 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 								{nickname}
 							</Text>
 						</TouchableOpacity>
+					</View>
+					<View marginB-10 row gap-5>
+						<Text
+							text80L
+							color={colors.std500}
+							adjustsFontSizeToFit
+						>
+							{metadata.serviceProviderName}
+						</Text>
 					</View>
 					<View paddingT-20>
 						<Text color={colors.std200} marginB-10 style={{ fontSize: 13 }}>Tags</Text>
