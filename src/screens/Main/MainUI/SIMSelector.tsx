@@ -1,5 +1,5 @@
 import {Text, View} from "react-native-ui-lib";
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {useSelector} from "react-redux";
 import {RootState} from "@/redux/reduxDataStore";
 import {selectAppConfig} from "@/redux/configStore";
@@ -18,12 +18,18 @@ export default function SIMSelector() {
   const {internalList} = useSelector((state: RootState) => state.LPA);
   const {nicknames} = useSelector(selectAppConfig);
   const {t} = useTranslation(['main']);
-  const firstAvailable = internalList.map(x => x.available).indexOf(true);
+  const firstAvailable = internalList.map(x => Adapters[x].device.available).indexOf(true);
   const [index, setIndex] = useState(firstAvailable < 0 ? 0 : firstAvailable);
   const selected = index < internalList.length ? internalList[index] : null;
   const adapter = selected ? Adapters[selected] : null;
-
+  console.log("Index", index);
   const width = Dimensions.get('window').width - 48;
+
+  useEffect(() => {
+    if (firstAvailable > 0 && !adapter.device.available) {
+      setIndex(firstAvailable < 0 ? 0 : firstAvailable);
+    }
+  }, [firstAvailable]);
 
   if (width <= 0) return null;
   if (internalList.length == 0) return (
@@ -56,7 +62,10 @@ export default function SIMSelector() {
 
             const adapter = Adapters[name];
             return ({
-              label: (adapter.eid && nicknames[adapter.eid]) ? nicknames[adapter.eid] + ` (${adapter.device.deviceName})` : adapter.device.deviceName,
+              label:
+                adapter.device.available ?
+                  ((adapter.eid && nicknames[adapter.eid]) ? nicknames[adapter.eid] + ` (${adapter.device.deviceName})` : adapter.device.deviceName)
+                : `${adapter.device.deviceName}\nunavailable`,
               icon: (
                 <FontAwesomeIcon
                   icon={
@@ -87,7 +96,7 @@ export default function SIMSelector() {
               labelColor: colors.std400,
               selectedLabelColor: colors.purple300,
               selectedIconColor: colors.purple300,
-              width: internalList.length <= 3 ? width / internalList.length : 100,
+              width: width / internalList.length,
             })
 
           })
@@ -99,7 +108,7 @@ export default function SIMSelector() {
           backgroundColor={colors.cardBackground}
           activeBackgroundColor={colors.std600}
           labelColor={colors.purple300}
-          indicatorWidth={internalList.length <= 3 ? width / internalList.length : 100}
+          indicatorWidth={width / internalList.length}
           faderProps={{
             tintColor: colors.std900,
           }}

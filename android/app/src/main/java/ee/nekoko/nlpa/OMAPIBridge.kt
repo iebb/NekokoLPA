@@ -158,7 +158,7 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
                     )
                     var sw = StringWriter()
                     e.printStackTrace(PrintWriter(sw));
-                    result.add(hashMapOf("name" to reader.name, "available" to "false", "description" to "Unable to open a connection: $sw", "signatures" to signatureList))
+                    result.add(hashMapOf("name" to reader.name, "available" to "false", "description" to "Unable to open a connection", "stack" to sw.toString(), "signatures" to signatureList))
                     // throw e
                 } catch (e: NoSuchElementException) {
                     Log.e(

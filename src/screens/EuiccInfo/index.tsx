@@ -12,7 +12,7 @@ import {useTheme} from "@/theme";
 
 export type EuiccInfoDataType = {
 	key: string;
-	raw: any;
+	raw?: any;
 	rendered: any;
 }
 
