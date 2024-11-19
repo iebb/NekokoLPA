@@ -5,7 +5,6 @@ import {useAppTheme} from '@/theme/context';
 import type {RootStackParamList} from '@/screens/navigation';
 import React, {useEffect} from "react";
 import {Linking} from "react-native";
-import {View, Text} from "react-native-ui-lib";
 import {LPACode} from "@/components/utils/lpaRegex";
 import EuiccInfo from "@/screens/EuiccInfo";
 import Main from "@/screens/Main";
@@ -22,32 +21,33 @@ function ApplicationNavigator() {
 	const { theme } = useAppTheme();
 	const navigationRef = React.createRef<NavigationContainerRef<RootStackParamList>>();
 
-	const processUrl = (url: string) => {
-		if (url) {
-			const match = url.match(LPACode);
-			if (match && match[0].length) {
-				console.log("App Link Matched: URL", url);
-			}
-		}
-	}
+	// const processUrl = (url: string) => {
+	// 	if (url) {
+	// 		const match = url.match(LPACode);
+	// 		if (match && match[0].length) {
+	// 			console.log("App Link Matched: URL", url);
+	// 		}
+	// 	}
+	// }
+	//
+	// useEffect(() => {
+	// 	if (navigationRef) {
+	// 		Linking.addEventListener('url', ({url}) => processUrl(url));
+	// 		const getUrlAsync = async () => {
+	// 			try {
+	// 				const linkUrl = await Linking.getInitialURL();
+	// 				if (linkUrl) {
+	// 					processUrl(linkUrl);
+	// 				}
+	// 			} catch (e) {}
+	// 		};
+	// 		getUrlAsync();
+	// 	}
+	// }, [navigationRef]);
 
-	useEffect(() => {
-		if (navigationRef) {
-			Linking.addEventListener('url', ({url}) => processUrl(url));
-			const getUrlAsync = async () => {
-				try {
-					const linkUrl = await Linking.getInitialURL();
-					if (linkUrl) {
-						processUrl(linkUrl);
-					}
-				} catch (e) {}
-			};
-			getUrlAsync();
-		}
-	}, [navigationRef]);
-
-	/*
-	<NavigationContainer ref={navigationRef}>
+	return (
+		<SafeAreaProvider>
+			<NavigationContainer ref={navigationRef}>
 				<Stack.Navigator
 					key={theme}
 					screenOptions={{ headerShown: false }}
@@ -61,12 +61,6 @@ function ApplicationNavigator() {
 					<Stack.Screen name="Settings" component={Settings} options={TransitionPresets.SlideFromRightIOS} />
 				</Stack.Navigator>
 			</NavigationContainer>
-	 */
-	return (
-		<SafeAreaProvider>
-			<View>
-				<Text>Application Screen</Text>
-			</View>
 		</SafeAreaProvider>
 	);
 }
