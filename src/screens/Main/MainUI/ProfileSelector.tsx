@@ -1,6 +1,5 @@
 import {Card, Colors, Drawer, Switch, Text, View} from "react-native-ui-lib";
 import {useSelector} from "react-redux";
-import {selectAppConfig} from "@/redux/configStore";
 import {Profile} from "@/native/types";
 import {Alert, Image, PixelRatio, RefreshControl, ScrollView, TouchableOpacity} from "react-native";
 import {parseMetadata} from "@/screens/Main/MainUI/ProfileList/parser";
@@ -15,7 +14,7 @@ import {faPencil, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {makeLoading} from "@/components/utils/loading";
 import {Adapters} from "@/native/adapters/registry";
 import {selectDeviceState} from "@/redux/stateStore";
-import {sizeStats} from "@/storage/mmkv";
+import {preferences, sizeStats} from "@/storage/mmkv";
 
 
 interface ProfileExt extends Profile {
@@ -28,7 +27,7 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
 
   const { t } = useTranslation(['profile']);
   const navigation = useNavigation();
-  const { stealthMode } = useSelector(selectAppConfig);
+  const stealthMode = preferences.getString("redactMode") ?? "none";
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
 
