@@ -4,26 +4,14 @@ import {useTranslation} from 'react-i18next';
 import SafeScreen from '@/theme/SafeScreen';
 import type {RootScreenProps} from "@/screens/navigation";
 import Title from "@/components/common/Title";
-import {
-	Button,
-	ColorPicker,
-	ColorPickerDialog,
-	Colors,
-	ListItem,
-	Picker,
-	Text,
-	TextField,
-	View
-} from "react-native-ui-lib";
+import {Button, ColorPickerDialog, Colors, ListItem, Picker, Text, TextField, View} from "react-native-ui-lib";
 import {preferences} from "@/storage/mmkv";
-import {setValue} from "@/redux/configStore";
 import {useDispatch} from "react-redux";
 import {useAppTheme} from "@/theme/context";
 import i18next from "i18next";
-import {initializeTheme} from "@/theme/theme";
-import {getValidColorString} from "react-native-ui-lib/src/components/colorPicker/ColorPickerPresenter";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
-import {faPaintbrush, faPlus} from "@fortawesome/free-solid-svg-icons";
+import {faPaintbrush} from "@fortawesome/free-solid-svg-icons";
+import RNRestart from 'react-native-restart';
 
 export type SettingDataType = {
 	key: string;
@@ -99,9 +87,11 @@ function PickerRow({row} : {row: SettingDataType}) {
 					visible={picker}
 					onDismiss={() => showPicker(false)}
 					onSubmit={(value) => {
-						console.log(value);
 						setV(value);
 						preferences.set(row.key, value);
+						if (row.onChange) {
+							row.onChange(value);
+						}
 					}}
 					// animatedIndex={0}
 				/>
@@ -158,6 +148,12 @@ function Settings({ route,  navigation }: RootScreenProps<'Settings'>) {
 							type: 'select'
 						},
 						{
+							key: "displaySubtitle",
+							options: ['provider', 'operator', 'country', 'code', 'iccid'],
+							defaultValue: 'provider',
+							type: 'select'
+						},
+						{
 							key: "remoteDevice",
 							defaultValue: '',
 							type: 'text'
@@ -167,9 +163,8 @@ function Settings({ route,  navigation }: RootScreenProps<'Settings'>) {
 							defaultValue: '#a575f6',
 							type: 'color',
 							onChange: (value: string) => {
-								initializeTheme(value);
 								setThemeColor(value);
-								setTheme(preferences.getString('theme'));
+								RNRestart.restart();
 							}
 						},
 					]}

@@ -1,5 +1,5 @@
 {
-  "available_space": "Available: {{bytes}} B",
+  "available_space": "Available: {{bytes}} B / {{kBytes}} kiB",
   "no_device": "No compatible device found",
   "error_device": "Error occurred while reading from this slot.",
   "unsupported_device": "{{name}} is unavailable.",

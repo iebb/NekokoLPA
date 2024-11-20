@@ -20,8 +20,6 @@ export const ThemeProvider = ({children}) => {
 
   const setThemeColor = (color) => {
     initializeTheme(color);
-    _setTheme(theme);
-    _setEffectiveTheme(theme === 'default' ? Appearance.getColorScheme() : theme);
   };
 
   return (

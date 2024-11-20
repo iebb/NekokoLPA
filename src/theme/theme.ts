@@ -41,8 +41,8 @@ export function initializeTheme(primaryColor) {
     };
   });
 
-
   if (preferences.getString("theme") !== undefined) {
     Colors.setScheme((preferences.getString("theme") as SchemeType) ?? Appearance.getColorScheme() ?? "light");
   }
+
 }

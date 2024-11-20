@@ -13,6 +13,8 @@ import Clipboard from "@react-native-clipboard/clipboard";
 import prompt from "react-native-prompt-android";
 import {preferences} from "@/storage/mmkv";
 import {useAppTheme} from "@/theme/context";
+import _ from "lodash";
+import {toCIName} from "@/screens/EuiccInfo/CINames";
 
 
 export default function ProfileMenu({ deviceId } : { deviceId: string }) {
@@ -33,7 +35,7 @@ export default function ProfileMenu({ deviceId } : { deviceId: string }) {
         Clipboard.setString(DeviceState.eid!)
       }
     },
-    ...((Platform.OS === 'android' ? [{
+    ...(((Platform.OS === 'android' && deviceId.startsWith("omapi")) ? [{
       label: t('main:open_stk_menu'),
       onPress: () => {
         // @ts-ignore
@@ -115,14 +117,33 @@ export default function ProfileMenu({ deviceId } : { deviceId: string }) {
       >
         <View style={{ flexGrow: 1 }}>
           <View paddingH-10 paddingV-3 style={{ overflow: 'hidden' }}>
-            <Text text100L $textDefault>
-              {t('main:available_space', {
-                bytes: DeviceState.bytesFree !== null ? Intl.NumberFormat().format(DeviceState.bytesFree || 0) : "??"
-              })}
-            </Text>
-            <Text text100L $textDefault>
-              EUM: {DeviceState.eid?.substring(0, 8)}
-            </Text>
+            <View row fullWidth>
+              <Text text100L $textDefault>
+                {t('main:available_space', {
+                  bytes: Intl.NumberFormat().format(DeviceState.bytesFree || 0),
+                  kBytes: Intl.NumberFormat().format((DeviceState.bytesFree || 0) / 1024.0)
+                })}
+              </Text>
+              <Text flexG text100L $textDefault style={{ textAlign: "right" }}>
+                CI: {
+                  DeviceState.euiccInfo2?.euiccCiPKIdListForSigning.map(x => toCIName(x)).join(", ")
+                }
+              </Text>
+            </View>
+            <View row fullWidth>
+              <Text text100L $textDefault>
+                EID: {
+                  DeviceState.eid?.substring(0, stealthMode == 'none' ? null : stealthMode === 'medium' ? 18 : 13)
+                }{
+                  _.repeat("*", DeviceState.eid?.length - (stealthMode == 'none' ? DeviceState.eid.length : stealthMode === 'medium' ? 18 : 13))
+                }
+              </Text>
+              <Text flexG text100L $textDefault style={{ textAlign: "right" }}>
+                SAS #: {
+                  DeviceState.euiccInfo2?.sasAcreditationNumber
+                }
+              </Text>
+            </View>
           </View>
         </View>
         <View style={{ width: 36, flexBasis: 36 }}>

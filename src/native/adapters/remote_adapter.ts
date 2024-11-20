@@ -46,7 +46,7 @@ export class RemoteDevice implements Device {
           {
             text: 'OK',
             onPress: async (pin: string) => {
-              console.log(this.url + "/authorization");
+              console.log("POST: " + this.url + "/authorization");
               const response = await fetch(this.url + "/authorization", {
                 method: 'POST',
                 headers: {
@@ -65,6 +65,7 @@ export class RemoteDevice implements Device {
                 this.available = false;
               } else {
                 const data = await response.json();
+                console.error('R-Device Response:', data);
                 remoteTokens.set(this.url, data.token);
                 this.connect();
               }
@@ -124,6 +125,7 @@ export class RemoteDevice implements Device {
       }
 
       const data = await response.json();
+      console.error('R-Device Response:', data.response);
       return data.response;
     } catch (error) {
       console.error('Error during fetch:', error);

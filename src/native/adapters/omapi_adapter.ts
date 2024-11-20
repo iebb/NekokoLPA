@@ -18,7 +18,7 @@ export class OMAPIDevice implements Device {
 
   constructor(deviceName: string, available: boolean = false) {
     this.deviceName = deviceName;
-    this.deviceId = "oampi:" + deviceName;
+    this.deviceId = "omapi:" + deviceName;
     this.available = available;
   }
 

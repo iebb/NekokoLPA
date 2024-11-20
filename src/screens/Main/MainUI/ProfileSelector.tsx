@@ -24,10 +24,10 @@ interface ProfileExt extends Profile {
 export default function ProfileSelector({ deviceId } : { deviceId: string }) {
 
   const DeviceState = useSelector(selectDeviceState(deviceId));
-
   const { t } = useTranslation(['profile']);
   const navigation = useNavigation();
   const stealthMode = preferences.getString("redactMode") ?? "none";
+  const displaySubtitle = preferences.getString("displaySubtitle") ?? "profileProvider";
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -71,7 +71,7 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
               const metadata = profile;
               const numICCID = metadata.iccid.replaceAll(/\D/g, '');
               const hueICCID = (parseInt(numICCID.substring(numICCID.length - 7), 10) * 17.84) % 360;
-              const { tags, name, country } = parseMetadata(metadata, t);
+              const { tags, name, country, mccMnc } = parseMetadata(metadata, t);
 
               const phoneNumbers = findPhoneNumbersInText(name);
               let replacedName = name;
@@ -96,7 +96,6 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
               if (metadata?.iccid) {
                 Size = sizeStats.getNumber(metadata?.iccid) || 0;
               }
-
 
               return (
                 <Drawer
@@ -197,8 +196,23 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
                             </Text>
                           </View>
                           <View row>
-                            <Text text90L $textDefault>
-                              {metadata?.serviceProviderName} / {metadata?.profileName}
+                            <Text text90L $textNeutral numberOfLines={1}>
+                              {
+                                (displaySubtitle === "provider") ? (
+                                  `${metadata?.serviceProviderName} / ${metadata?.profileName}`
+                                ) : (displaySubtitle === "operator") ? (
+                                  `[${mccMnc.ISO}] ${mccMnc.Operator}`
+                                ) : (displaySubtitle === "code") ? (
+                                  `[${mccMnc.ISO}] ${mccMnc.PLMN} ${mccMnc.TADIG}`
+                                ) : (displaySubtitle === "country") ? (
+                                  `[${mccMnc.ISO}] ${mccMnc.Country}`
+                                ) : (displaySubtitle === "iccid") ? (
+                                  `ICCID: ${metadata.iccid}`
+                                ) : (
+                                  ''
+                                )
+                              }
+
                             </Text>
                           </View>
                           <View>
@@ -238,8 +252,8 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
                           />
                           {
                             Size > 1000 && (
-                              <Text text100L $textDefault style={{ position: "absolute", right: 5, bottom: 0 }}>
-                                ~{(Size / 1024).toFixed(1)}kB
+                              <Text text100L $textDefault style={{ position: "absolute", right: 2, bottom: 0 }}>
+                                {(Size / 1024).toFixed(1)}kB
                               </Text>
                             )
                           }
