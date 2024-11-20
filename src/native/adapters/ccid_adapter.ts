@@ -8,7 +8,7 @@ export class CCIDDevice implements Device {
   deviceName = "";
   deviceId = "";
   available = true;
-  explicitConnectionRequired = true;
+  explicitConnectionRequired = false;
 
   constructor(deviceName: string) {
     this.deviceName = deviceName;

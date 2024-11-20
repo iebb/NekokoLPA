@@ -1,13 +1,12 @@
 import React, {useEffect} from 'react';
-import {Alert, FlatList, Image, PixelRatio, ScrollView, TouchableOpacity,} from 'react-native';
+import {Alert, Image, PixelRatio, ScrollView, TouchableOpacity,} from 'react-native';
 import {useTranslation} from 'react-i18next';
-import {SafeScreen} from '@/components/template';
+import SafeScreen from '@/theme/SafeScreen';
 import type {RootScreenProps} from "@/screens/navigation";
 import Title from "@/components/common/Title";
-import {Colors, Drawer, ListItem, Text, View} from "react-native-ui-lib";
+import {Colors, Drawer, Text, View} from "react-native-ui-lib";
 import {useSelector} from "react-redux";
 import {selectDeviceState} from "@/redux/stateStore";
-import {useTheme} from "../../theme_legacy";
 import {Adapters} from "@/native/adapters/registry";
 import {Notification} from "@/native/types/LPA";
 import {parseMetadataOnly} from "@/screens/Main/MainUI/ProfileList/parser";
@@ -18,7 +17,6 @@ import {faBan, faCircleCheck, faDownload, faPaperPlane, faTrash} from "@fortawes
 function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>) {
   const { deviceId } = route.params;
   const DeviceState = useSelector(selectDeviceState(deviceId!));
-  const { colors } = useTheme();
   const { t } = useTranslation(['notifications']);
   const { profiles, notifications } = DeviceState;
 
@@ -33,8 +31,6 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
     const metadata = profiles.find(p => p.iccid === row.iccid);
 
     const { name, country } = metadata ? parseMetadataOnly(metadata) : {name: "unknown", country: "WW"};
-
-    // row.profileManagementOperation ==
 
     var iconType = faDownload;
     var type = 'download';
@@ -59,14 +55,14 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
     }
 
     return (
-      <View key={row.seqNumber} backgroundColor={colors.std900} marginB-10>
+      <View key={row.seqNumber} backgroundColor={Colors.pageBackground} marginB-10>
       <Drawer
         style={{
           overflow: "hidden",
         }}
         rightItems={[{
           customElement: (
-            <FontAwesomeIcon icon={faPaperPlane} style={{ color: colors.cardBackground, }} />
+            <FontAwesomeIcon icon={faPaperPlane} style={{ color: Colors.buttonForeground }} />
           ),
           width: 60,
           background: Colors.green30,
@@ -79,7 +75,7 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
         }]}
         leftItem={{
           customElement: (
-            <FontAwesomeIcon icon={faTrash} style={{ color: colors.cardBackground, }} />
+            <FontAwesomeIcon icon={faTrash} style={{ color: Colors.buttonForeground }} />
           ),
           width: 60,
           background: Colors.red30,
@@ -102,33 +98,33 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
         }}
       >
         <TouchableOpacity>
-        <View flex row backgroundColor={colors.std900} paddingH-20 paddingV-10 >
+        <View flex row backgroundColor={Colors.pageBackground} paddingH-20 paddingV-10 >
           <View flexG>
             <View row>
-              <Text color={colors.std200} text70BL style={{width: 40}} numberOfLines={1}>
+              <Text $textDefault text70BL numberOfLines={1} marginR-10>
                 #{row.seqNumber}
               </Text>
-              <Text color={colors.std200} text70BL numberOfLines={1}>
+              <Text $textDefault text70BL numberOfLines={1}>
                 <Image
                   style={{width: 20 * PixelRatio.getFontScale(), height: 20 * PixelRatio.getFontScale()}}
                   source={Flags[country] || Flags.UN}
                 />
                 {
-                  metadata && ` [${country}] ${name}`
+                  metadata ? ` [${country}] ${name}` : ` ${row.iccid}`
                 }
               </Text>
             </View>
             <View>
-              <Text color={colors.std300} text90L>RSP: {row.notificationAddress}</Text>
-              <Text color={colors.std300} text90L>ICCID: {row.iccid}</Text>
+              <Text $textNeutral text90L>RSP: {row.notificationAddress}</Text>
+              <Text $textNeutral text90L>ICCID: {row.iccid}</Text>
             </View>
           </View>
           <View>
             <View>
               <Text style={{ textAlign: 'right', height: 20 }}>
-                <FontAwesomeIcon icon={iconType} style={{ color: colors.std300 }} size={20} />
+                <FontAwesomeIcon icon={iconType} style={{ color: Colors.$iconNeutral }} size={20} />
               </Text>
-              <Text marginT-5 text90L style={{ textAlign: 'right', color: colors.std300 }}>{type}</Text>
+              <Text marginT-5 text90L style={{ textAlign: 'right', color: Colors.$iconNeutral }}>{type}</Text>
             </View>
           </View>
         </View>

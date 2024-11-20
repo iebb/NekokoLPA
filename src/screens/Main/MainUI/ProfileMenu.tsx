@@ -1,37 +1,33 @@
-import {ActionSheet, Button, Card, Text, View} from "react-native-ui-lib";
+import {ActionSheet, Button, Card, Colors, Text, View} from "react-native-ui-lib";
 import {useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {EuiccList, selectDeviceState} from "@/redux/stateStore";
+import {selectDeviceState} from "@/redux/stateStore";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
-import {faClipboard, faPlus} from '@fortawesome/free-solid-svg-icons'
-import {useTheme} from "../../../theme_legacy";
+import {faPlus} from '@fortawesome/free-solid-svg-icons'
 import {useNavigation} from "@react-navigation/native";
 import {useTranslation} from "react-i18next";
-import {nextValue, selectAppConfig, setNickname} from "@/redux/configStore";
+import {selectAppConfig, setNickname} from "@/redux/configStore";
 import {Adapters} from "@/native/adapters/registry";
 import {NativeModules, Platform, ToastAndroid} from "react-native";
 import Clipboard from "@react-native-clipboard/clipboard";
 import prompt from "react-native-prompt-android";
-import {OMAPIDevice} from "@/native/adapters/omapi_adapter";
+import {preferences} from "@/storage/mmkv";
+import {useAppTheme} from "@/theme/context";
 
 
 export default function ProfileMenu({ deviceId } : { deviceId: string }) {
-  const { colors } = useTheme();
   const { t } = useTranslation(['main']);
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const { stealthMode , nicknames } = useSelector(selectAppConfig);
+  const { nicknames } = useSelector(selectAppConfig);
   const [euiccMenu, setEuiccMenu] = useState(false);
   const DeviceState = useSelector(selectDeviceState(deviceId));
-
+  const stealthMode = preferences.getString("redactMode") ?? "none";
   const adapter = Adapters[deviceId];
 
   const options = [
     {
       label: t('main:eid_copy'),
-      labelStyle: {
-        color: colors.std200,
-      },
       onPress: () => {
         ToastAndroid.show('EID Copied', ToastAndroid.SHORT);
         Clipboard.setString(DeviceState.eid!)
@@ -39,9 +35,6 @@ export default function ProfileMenu({ deviceId } : { deviceId: string }) {
     },
     ...((Platform.OS === 'android' ? [{
       label: t('main:open_stk_menu'),
-      labelStyle: {
-        color: colors.std200,
-      },
       onPress: () => {
         // @ts-ignore
         const { OMAPIBridge } = NativeModules;
@@ -50,9 +43,6 @@ export default function ProfileMenu({ deviceId } : { deviceId: string }) {
     }] : [])),
     {
       label: 'EUICC Info',
-      labelStyle: {
-        color: colors.std200,
-      },
       onPress: () => {
         // @ts-ignore
         navigation.navigate('EuiccInfo', { deviceId: deviceId });
@@ -60,9 +50,6 @@ export default function ProfileMenu({ deviceId } : { deviceId: string }) {
     },
     {
       label: t('main:download_profile'),
-      labelStyle: {
-        color: colors.std200,
-      },
       onPress: () => {
         // @ts-ignore
         navigation.navigate('Scanner', { deviceId: deviceId });
@@ -70,9 +57,6 @@ export default function ProfileMenu({ deviceId } : { deviceId: string }) {
     },
     {
       label: t('main:set_nickname'),
-      labelStyle: {
-        color: colors.std200,
-      },
       onPress: () => {
         prompt(
           t('main:set_nickname'),
@@ -93,9 +77,6 @@ export default function ProfileMenu({ deviceId } : { deviceId: string }) {
       }},
     {
       label: t('main:manage_notifications'),
-      labelStyle: {
-        color: colors.std200,
-      },
       onPress: () => {
         // @ts-ignore
         navigation.navigate('Notifications', {
@@ -105,9 +86,6 @@ export default function ProfileMenu({ deviceId } : { deviceId: string }) {
     },
     {
       label: 'Cancel',
-      labelStyle: {
-        color: colors.std200,
-      },
       onPress: () => setEuiccMenu(false)
     }
   ];
@@ -117,9 +95,6 @@ export default function ProfileMenu({ deviceId } : { deviceId: string }) {
       <ActionSheet
         title={`EID: ${DeviceState?.eid}`}
         cancelButtonIndex={options.length - 1}
-        containerStyle={{
-          backgroundColor: colors.std800,
-        }}
         options={options}
         visible={euiccMenu}
         useNativeIOS
@@ -127,33 +102,26 @@ export default function ProfileMenu({ deviceId } : { deviceId: string }) {
       />
       <Card
         style={{
+          backgroundColor: Colors.cardBackground,
           borderRadius: 10,
-          borderColor: colors.std800,
+          borderColor: Colors.$outlineNeutral,
           borderWidth: 1,
           overflow: "hidden",
           width: "100%",
         }}
         row
-        backgroundColor={colors.cardBackground}
         enableShadow
         onPress={() => setEuiccMenu(true)}
-        onLongPress={
-          () => {
-            dispatch(nextValue('stealthMode'))
-          }
-        }
       >
         <View style={{ flexGrow: 1 }}>
           <View paddingH-10 paddingV-3 style={{ overflow: 'hidden' }}>
-            <Text text100L color={colors.std50}>
+            <Text text100L $textDefault>
               {t('main:available_space', {
                 bytes: DeviceState.bytesFree !== null ? Intl.NumberFormat().format(DeviceState.bytesFree || 0) : "??"
               })}
             </Text>
-            <Text text100L color={colors.std50}>
-              {
-                stealthMode === 'none' ? `EID: ` + DeviceState.eid : `EUM: ${DeviceState.eid?.substring(0, 8)}`
-              }
+            <Text text100L $textDefault>
+              EUM: {DeviceState.eid?.substring(0, 8)}
             </Text>
           </View>
         </View>
@@ -171,7 +139,7 @@ export default function ProfileMenu({ deviceId } : { deviceId: string }) {
               });
             }}
           >
-            <FontAwesomeIcon icon={faPlus} style={{ color: colors.cardBackground, }} />
+            <FontAwesomeIcon icon={faPlus} style={{ color: Colors.buttonForeground }} />
           </Button>
         </View>
       </Card>

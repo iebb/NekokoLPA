@@ -1,29 +1,45 @@
 import React from 'react';
 import {FlatList,} from 'react-native';
 import {useTranslation} from 'react-i18next';
-import {SafeScreen} from '@/components/template';
+import SafeScreen from '@/theme/SafeScreen';
 import type {RootScreenProps} from "@/screens/navigation";
 import Title from "@/components/common/Title";
-import {Colors, ListItem, Picker, View} from "react-native-ui-lib";
+import {
+	Button,
+	ColorPicker,
+	ColorPickerDialog,
+	Colors,
+	ListItem,
+	Picker,
+	Text,
+	TextField,
+	View
+} from "react-native-ui-lib";
 import {preferences} from "@/storage/mmkv";
 import {setValue} from "@/redux/configStore";
 import {useDispatch} from "react-redux";
 import {useAppTheme} from "@/theme/context";
+import i18next from "i18next";
+import {initializeTheme} from "@/theme/theme";
+import {getValidColorString} from "react-native-ui-lib/src/components/colorPicker/ColorPickerPresenter";
+import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
+import {faPaintbrush, faPlus} from "@fortawesome/free-solid-svg-icons";
 
 export type SettingDataType = {
 	key: string;
 	options: string[];
 	type?: string;
 	onChange?: (value: string) => void;
+	validate?: (value: string) => boolean;
 }
 
 function PickerRow({row} : {row: SettingDataType}) {
-	const { t } = useTranslation(['settings']);
-	const currentValue = preferences.getString(row.key) ?? row.options[0];
+	const {t} = useTranslation(['settings']);
+	const currentValue = preferences.getString(row.key) ?? row.defaultValue;
 	const [v, setV] = React.useState<string>(currentValue);
-		if (row.type === 'select') {
+	if (row.type === 'select') {
 		return (
-			<View style={{ width : "100%" }}>
+			<View style={{width: "100%"}}>
 				<Picker
 					placeholder={t(`settings:title_${row.key}`)}
 					topBarProps={{title: t(`settings:title_${row.key}`)}}
@@ -31,7 +47,6 @@ function PickerRow({row} : {row: SettingDataType}) {
 					value={v}
 					onChange={(value) => {
 						setV(value);
-						console.log(value);
 						preferences.set(row.key, value);
 						if (row.onChange) {
 							row.onChange(value);
@@ -49,6 +64,51 @@ function PickerRow({row} : {row: SettingDataType}) {
 		);
 	}
 
+	if (row.type === 'text') {
+		return (
+			<View style={{width: "100%"}}>
+				<TextField
+					placeholder={t(`settings:title_${row.key}`)}
+					floatingPlaceholder
+					value={v}
+					onChangeText={value => {
+						setV(value);
+						if (!row.validate || row.validate(value)) {
+							preferences.set(row.key, value);
+						}
+					}}
+					enableErrors
+					style={{ borderBottomWidth: 0.5, borderColor: Colors.$outlineDisabledHeavy }}
+				/>
+			</View>
+		);
+	}
+
+	if (row.type === 'color') {
+		const [picker, showPicker] = React.useState<boolean>(false);
+		return (
+			<View style={{width: "100%"}}>
+				<Text $textNeutralLight text90L>
+					{t(`settings:title_${row.key}`)}
+				</Text>
+				<Button backgroundColor={v} onPress={() => showPicker(true)} marginT-10 style={{ maxWidth: 100 }}>
+					<FontAwesomeIcon icon={faPaintbrush} style={{ color: Colors.buttonForeground }} />
+				</Button>
+				<ColorPickerDialog
+					initialColor={v}
+					visible={picker}
+					onDismiss={() => showPicker(false)}
+					onSubmit={(value) => {
+						console.log(value);
+						setV(value);
+						preferences.set(row.key, value);
+					}}
+					// animatedIndex={0}
+				/>
+			</View>
+		);
+	}
+
 	return null;
 }
 
@@ -56,7 +116,7 @@ function PickerRow({row} : {row: SettingDataType}) {
 function Settings({ route,  navigation }: RootScreenProps<'Settings'>) {
 
 	const {t} = useTranslation(['settings']);
-	const {theme, setTheme} = useAppTheme();
+	const {theme, setTheme, setThemeColor} = useAppTheme();
 	const dispatch = useDispatch();
 	return (
 		<SafeScreen>
@@ -68,24 +128,48 @@ function Settings({ route,  navigation }: RootScreenProps<'Settings'>) {
 					key={theme}
 					data={[
 						{
-							key: "showSlots",
-							options: ['possible', 'all', 'available'],
-							type: 'select'
-						},
-						{
 							key: "language",
 							options: ['en', 'zh'],
+							defaultValue: 'en',
 							type: 'select',
 							onChange: (value: string) => {
-								dispatch(setValue({language: value}))
+								void i18next.changeLanguage(value);
 							}
 						},
 						{
 							key: "theme",
 							options: ['default', 'dark', 'light'],
+							defaultValue: 'default',
 							type: 'select',
 							onChange: (value: string) => {
 								setTheme(value);
+							}
+						},
+						{
+							key: "showSlots",
+							options: ['all', 'possible', 'available'],
+							defaultValue: 'all',
+							type: 'select'
+						},
+						{
+							key: "redactMode",
+							options: ['none', 'medium', 'hard'],
+							defaultValue: 'none',
+							type: 'select'
+						},
+						{
+							key: "remoteDevice",
+							defaultValue: '',
+							type: 'text'
+						},
+						{
+							key: "themeColor",
+							defaultValue: '#a575f6',
+							type: 'color',
+							onChange: (value: string) => {
+								initializeTheme(value);
+								setThemeColor(value);
+								setTheme(preferences.getString('theme'));
 							}
 						},
 					]}

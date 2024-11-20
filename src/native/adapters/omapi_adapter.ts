@@ -10,10 +10,11 @@ export class OMAPIDevice implements Device {
   type = "omapi";
   deviceName = "";
   deviceId = "";
-  explicitConnectionRequired = true;
+  explicitConnectionRequired = false;
   available = true;
   signatures = "";
   description = "";
+  slotAvailable = false;
 
   constructor(deviceName: string, available: boolean = false) {
     this.deviceName = deviceName;

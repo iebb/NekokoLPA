@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {StyleSheet,} from 'react-native';
 import {useTranslation} from 'react-i18next';
-import {useTheme} from '../../../theme_legacy';
 import {Button, Colors, Text, TextField, View} from "react-native-ui-lib";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faCancel, faDownload} from "@fortawesome/free-solid-svg-icons";
@@ -24,7 +23,6 @@ export function ScannerAuthentication(
   }: any
 ) {
   const { t } = useTranslation(['profile']);
-  const { colors, gutters} = useTheme();
   const [loading, setLoading] = useState(false);
   const [confirmationCode, setConfirmationCode] = useState(initialConfirmationCode);
 
@@ -42,34 +40,34 @@ export function ScannerAuthentication(
         (authenticateResult?.success) ? (
           <Container>
             <MetadataView metadata={authenticateResult.profile} />
-            <View left style={{
-              flexDirection: "column", display: "flex",
-              justifyContent: "space-between", gap: 10
-            }}>
+            <View left column gap-10>
               {
                 (authenticateResult.isCcRequired || confirmationCode) && (
                   <View style={styles.tableRow} row>
-                    <Text style={styles.tableHeader} color={colors.std200}>
+                    <Text style={styles.tableHeader}>
                       {t('profile:conf_code')}:
                     </Text>
-                    <TextField
-                      placeholder={'Activation Code'}
-                      value={confirmationCode}
-                      onChangeText={c => setConfirmationCode(c)}
-                      enableErrors
-                      validate={['required']}
-                      validationMessage={['Field is required']}
-                      color={colors.std200}
-                      style={{
-                        ...styles.tableColumn,
-                        borderColor: colors.std400,
-                        borderBottomWidth: 1,
-                        marginBottom: -10,
-                        flexGrow: 1,
-                        marginTop: -5,
-                        marginLeft: -5
-                    }}
-                    />
+                    <View style={styles.tableColumn}>
+                      <TextField
+                        placeholder={'Activation Code'}
+                        value={confirmationCode}
+                        onChangeText={c => setConfirmationCode(c)}
+                        enableErrors
+                        validate={['required']}
+                        validationMessage={['Field is required']}
+                        color={Colors.$textDefault}
+                        placeholderTextColor={Colors.$textNeutralLight}
+                        style={{
+                          ...styles.tableColumn,
+                          color: Colors.$textDefault,
+                          borderColor: Colors.$outlineDisabledHeavy,
+                          borderBottomWidth: 1,
+                          marginBottom: -10,
+                          marginTop: -5,
+                          marginLeft: -5,
+                        }}
+                      />
+                    </View>
                   </View>
                 )
               }
@@ -77,7 +75,8 @@ export function ScannerAuthentication(
             <View flex>
               <View flex row style={{ gap: 10 }}>
                 <Button
-                  style={{ flex: 1, ...gutters.marginVertical_12 }}
+                  flex-1
+                  marginV-12
                   backgroundColor={Colors.red20}
                   onPress={() => {
                     makeLoading(
@@ -92,14 +91,16 @@ export function ScannerAuthentication(
                 >
                   <FontAwesomeIcon
                     icon={faCancel}
-                    style={{ color: colors.constWhite }}
+                    style={{ color: Colors.white }}
                   />
                   <Text
-                    style={{ color: colors.constWhite, marginLeft: 10 }}
+                    marginL-10
+                    color={Colors.white}
                   >{t('profile:ui_cancel')}</Text>
                 </Button>
                 <Button
-                  style={{ flex: 10, ...gutters.marginVertical_12 }}
+                  style={{ flex: 10 }}
+                  marginV-12
                   color={Colors.green50}
                   onPress={() => {
                     makeLoading(
@@ -107,7 +108,6 @@ export function ScannerAuthentication(
                       async () => {
                         const downloadResult = await adapter.downloadProfile(authenticateResult._internal, confirmationCode);
                         await adapter.processNotifications(authenticateResult.profile.iccid);
-                        console.log(downloadResult);
                         // InfiLPA.refreshProfileList(device);
                         confirmDownload({
                           downloadResult
@@ -118,10 +118,10 @@ export function ScannerAuthentication(
                 >
                   <FontAwesomeIcon
                     icon={faDownload}
-                    style={{ color: colors.constWhite }}
+                    style={{ color: Colors.white }}
                   />
                   <Text
-                    style={{ color: colors.constWhite, marginLeft: 10 }}
+                    style={{ color: Colors.white, marginLeft: 10 }}
                   >{t('profile:ui_download')}</Text>
                 </Button>
               </View>
@@ -130,25 +130,26 @@ export function ScannerAuthentication(
         ) : (
           <Container>
             <View flex style={{ gap: 20 }}>
-              <Text center text60 color={colors.std200}>
+              <Text center text60>
                 {t('profile:download_failure')}
               </Text>
               <RemoteErrorView remoteError={authenticateResult} />
               <View flex>
-                <View flex style={{ flexDirection: "row", gap: 10 }}>
+                <View flex gap-10>
                   <Button
-                    style={{ flex: 1, ...gutters.marginVertical_12 }}
-                    backgroundColor={colors.gray600}
+                    flex-1
+                    marginV-12
+                    backgroundColor={Colors.grey60}
                     onPress={() => {
                       goBack();
                     }}
                   >
                     <FontAwesomeIcon
                       icon={faCancel}
-                      style={{ color: colors.constWhite }}
+                      style={{ color: Colors.white }}
                     />
                     <Text
-                      style={{ color: colors.constWhite, marginLeft: 10 }}
+                      style={{ color: Colors.white, marginLeft: 10 }}
                     >{t('profile:ui_back')}</Text>
                   </Button>
                 </View>

@@ -96,7 +96,6 @@ export const DeviceStateDataStore = createSlice({
                 // @ts-ignore
                 state[eUICC][k] = value[k];
             }
-            console.log("Result", state);
         },
     },
 });

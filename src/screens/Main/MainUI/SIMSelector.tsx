@@ -1,9 +1,8 @@
-import {Text, View} from "react-native-ui-lib";
+import {Colors, Text, View} from "react-native-ui-lib";
 import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {RootState} from "@/redux/reduxDataStore";
 import {selectAppConfig} from "@/redux/configStore";
-import {useTheme} from "../../../theme_legacy";
 import {EUICCPage} from "@/screens/Main/MainUI/EUICCPage";
 import {useTranslation} from "react-i18next";
 import {Dimensions, Linking, NativeModules, Platform, ScrollView, ToastAndroid} from "react-native";
@@ -12,17 +11,36 @@ import TabController from "@/components/ui/tabController";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faDownload, faSimCard} from "@fortawesome/free-solid-svg-icons";
 import Clipboard from "@react-native-clipboard/clipboard";
+import {preferences} from "@/storage/mmkv";
 
 export default function SIMSelector() {
-  const {colors} = useTheme();
   const {internalList} = useSelector((state: RootState) => state.LPA);
   const {nicknames} = useSelector(selectAppConfig);
   const {t} = useTranslation(['main']);
-  const firstAvailable = internalList.map(x => Adapters[x].device.available).indexOf(true);
+  const showSlots = preferences.getString("showSlots");
+
+  let deviceList = internalList;
+  if (showSlots === "all") {
+    deviceList = internalList;
+  } else if (showSlots === "possible") {
+    deviceList = internalList.filter(x => Adapters[x].device.available || Adapters[x].device.slotAvailable);
+  } else if (showSlots === "available") {
+    deviceList = internalList.filter(x => Adapters[x].device.available);
+  } else {
+    deviceList = internalList;
+  }
+  
+  const firstAvailable = deviceList.map(x => Adapters[x].device.available).indexOf(true);
+  
   const [index, setIndex] = useState(firstAvailable < 0 ? 0 : firstAvailable);
-  const selected = index < internalList.length ? internalList[index] : null;
+  const selected = index < deviceList.length ? deviceList[index] : null;
   const adapter = selected ? Adapters[selected] : null;
   const width = Dimensions.get('window').width - 48;
+  
+  const deviceCount = deviceList.length;
+  const displayWidth = width / deviceList.length;
+  const displayWidth2 = (deviceList.length === 1 ? 2 : 1) * width / deviceList.length;
+
 
   useEffect(() => {
     if (firstAvailable > 0 && !(adapter?.device.available)) {
@@ -31,17 +49,17 @@ export default function SIMSelector() {
   }, [firstAvailable]);
 
   if (width <= 0) return null;
-  if (internalList.length == 0) return (
+  if (deviceList.length == 0) return (
     <ScrollView
       bounces
       alwaysBounceVertical
       overScrollMode="always"
     >
       <View flex paddingT-20 gap-10>
-        <Text color={colors.std200} center text70L>
+        <Text $textDefault center text70L>
           {t('main:no_device')}
         </Text>
-        <Text color={colors.purple400} center underline text60L marginT-40 onPress={() => {
+        <Text $textPrimary center underline text60L marginT-40 onPress={() => {
           Linking.openURL("https://lpa.nekoko.ee/products");
         }}>
           {t('main:purchase_note')}
@@ -54,11 +72,11 @@ export default function SIMSelector() {
     <View
       flexG-1
       flexS-0
+      key={deviceList.length}
     >
       <TabController
         items={
-          internalList.map((name, _idx) => {
-
+          deviceList.map((name, _idx) => {
             const adapter = Adapters[name];
             return ({
               label:
@@ -71,7 +89,7 @@ export default function SIMSelector() {
                     adapter.device.deviceName.startsWith("SIM") ? faSimCard : faDownload
                   }
                   style={{
-                    color: colors.std400,
+                    color: Colors.$textPrimary,
                     marginRight: 4,
                     marginTop: -2,
                   }}
@@ -91,11 +109,9 @@ export default function SIMSelector() {
                 lineHeight: 16,
                 fontWeight: '500',
               },
-              iconColor: colors.std400,
-              labelColor: colors.std400,
-              selectedLabelColor: colors.purple300,
-              selectedIconColor: colors.purple300,
-              width: width / internalList.length,
+              labelColor: Colors.$textNeutral,
+              selectedLabelColor: Colors.$textPrimary,
+              width: displayWidth,
             })
 
           })
@@ -104,12 +120,12 @@ export default function SIMSelector() {
         onChangeIndex={setIndex}
       >
         <TabController.TabBar
-          backgroundColor={colors.cardBackground}
-          activeBackgroundColor={colors.std600}
-          labelColor={colors.purple300}
-          indicatorWidth={width / internalList.length}
-          faderProps={{
-            tintColor: colors.std900,
+          activeColor={Colors.$textPrimary}
+          outlineColor={Colors.$textPrimary}
+          backgroundColor={Colors.cardBackground}
+          indicatorWidth={displayWidth2}
+          indicatorStyle={{
+            backgroundColor: Colors.$textPrimary,
           }}
           containerWidth={width}
           containerStyle={{
@@ -132,22 +148,22 @@ export default function SIMSelector() {
               overScrollMode="always"
             >
               <View flex paddingT-20 gap-10>
-                <Text color={colors.std200} center text70L>
+                <Text $textDefault center text70L>
                   {t('main:error_device')}
                 </Text>
-                <Text color={colors.red500} center text60L marginB-40>
+                <Text $textMajor center text60L marginB-40>
                   {adapter.device.description}
                 </Text>
                 {
                   (Platform.OS === 'android' && adapter.device.signatures) && (
                     <>
-                      <Text color={colors.std200} center text70L>
+                      <Text $textDefault center text70L>
                         {t('main:android_aram')}
                       </Text>
 
                       <View flex paddingB-40 gap-10>
                         {adapter.device.signatures.split(",").map((s: string) => (
-                          <Text color={colors.std200} text80L center key={s} onPress={() => {
+                          <Text $textDefault text80L center key={s} onPress={() => {
                             ToastAndroid.show(`ARA-M ${s} Copied`, ToastAndroid.SHORT);
                             Clipboard.setString(s)
                           }}>{s}</Text>
@@ -159,7 +175,7 @@ export default function SIMSelector() {
                 {
                   (Platform.OS === 'android') && (
                     <>
-                      <Text color={colors.std200} center underline text60L marginT-40 onPress={() => {
+                      <Text $textDefault center underline text60L marginT-40 onPress={() => {
                         const { OMAPIBridge } = NativeModules;
                         OMAPIBridge.openSTK(adapter.device.deviceName);
                       }}>
@@ -168,7 +184,7 @@ export default function SIMSelector() {
                     </>
                   )
                 }
-                <Text color={colors.purple400} center underline text60L marginT-40 onPress={() => {
+                <Text $textPrimary center underline text60L marginT-40 onPress={() => {
                   Linking.openURL("https://lpa.nekoko.ee/products");
                 }}>
                   {t('main:purchase_note')}

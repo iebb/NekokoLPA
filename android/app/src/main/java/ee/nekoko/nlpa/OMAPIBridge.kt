@@ -11,6 +11,7 @@ import android.telephony.SubscriptionManager
 import android.util.Log
 import com.facebook.react.bridge.ActivityEventListener
 import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
@@ -56,9 +57,13 @@ val commonSlotStkName: Map<String, Array<String>> = mapOf(
     )),
 )
 
-class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) : ReactContextBaseJavaModule() {
+class OMAPIBridge @ReactMethod constructor(private val context: ReactContext) : ReactContextBaseJavaModule(), LifecycleEventListener  {
     override fun getName(): String {
         return "OMAPIBridge"
+    }
+
+    init {
+        context.addLifecycleEventListener(this);
     }
 
     private var seService: SEService = SEService(context as Context, { obj: Runnable -> obj.run() }, {
@@ -68,18 +73,43 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
     var sessionMappings: MutableMap<String, Session> = HashMap()
 
     protected fun addActivityEventListener(listener: ActivityEventListener?) {
-        // eventListeners.add(listener)
+        Log.i(TAG, "addActivityEventListener called")
     }
 
     protected fun removeActivityEventListener(listener: ActivityEventListener?) {
-        Log.i(TAG, "Shutdown, clearing connections")
+        Log.i(TAG, "removeActivityEventListener called")
     }
 
+
+    override fun onHostPause() {
+        for(chan in channelMappings.values) {
+            chan.close()
+        }
+        for(sess in sessionMappings.values) {
+            sess.closeChannels()
+        }
+        for (reader in seService.readers) {
+            reader.closeSessions()
+        }
+        Log.e(TAG, "Terminating all connections")
+        Log.e(TAG, "Host paused")
+    }
+
+    override fun onHostResume() {
+        Log.e(TAG, "$channelMappings length: ${channelMappings.size}")
+        // Called when the host (e.g., an activity) resumes
+        Log.e(TAG, "Host resumed")
+    }
+    override fun onHostDestroy() {
+        // Called when the host is destroyed
+        Log.e(TAG, "Host destroyed")
+    }
 
     fun listReaders(): List<Map<String, String>> {
         val result = mutableListOf<Map<String, String>>()
         val signatureList = SystemInfo(context as Context).signatureList().joinToString(",")
         Log.i(TAG,"SE List Readers:")
+        Log.e(TAG, "$channelMappings length: ${channelMappings.size}")
         if (seService.isConnected) {
             Log.i(TAG,"SE List ${seService.readers.size} Readers:")
             for (reader in seService.readers) {
@@ -89,8 +119,10 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
                 try {
                     var chan: Channel? = channelMappings[reader.name]
                     if (chan != null) {
+                        Log.e(TAG, "Channel already exist")
                         try {
-                            val response: ByteArray? = chan.getSelectResponse()
+                            chan.getSelectResponse()
+                            Log.e(TAG, "Channel still alive")
                         } catch (ex: Exception) {
                             Log.e(TAG, "Select Failed, removing channel", ex)
                             channelMappings.remove(reader.name)
@@ -109,7 +141,7 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
                         val atr = session.getATR()
                         Log.i(TAG, reader.name)
                         Log.i(TAG, reader.name + " ATR: " + atr + " Session: " + session)
-                        for (i in 1..5) {
+                        for (i in 1..3) {
                             chan = session.openLogicalChannel(hexStringToByteArray("A0000005591010FFFFFFFF8900000100"))
                             if (chan != null) break
                             Thread.sleep((i * 300).toLong())
@@ -130,9 +162,9 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
                     if (resp1[0] == 0xbf.toByte()) {
                         val eid = resp1.toHex().substring(10, 10 + 32)
                         Log.i(TAG,"EID: ${eid}")
-                        result.add(hashMapOf("name" to reader.name, "eid" to eid, "available" to "true"))
+                        result.add(hashMapOf("name" to reader.name, "eid" to eid, "slotAvailable" to "true", "available" to "true"))
                     } else {
-                        result.add(hashMapOf("name" to reader.name, "available" to "false", "description" to "No EID Found", "signatures" to signatureList))
+                        result.add(hashMapOf("name" to reader.name, "available" to "false", "slotAvailable" to "true", "description" to "No EID Found", "signatures" to signatureList))
                     }
                 } catch (e: SecurityException) {
                     Log.e(
@@ -140,7 +172,7 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
                         "Opening eUICC connection ${reader.name} failed. [java.lang.SecurityException]",
                         e
                     )
-                    result.add(hashMapOf("name" to reader.name, "available" to "false", "description" to "ARA-M not supported", "signatures" to signatureList))
+                    result.add(hashMapOf("name" to reader.name, "available" to "false", "slotAvailable" to "true", "description" to "ARA-M not supported", "signatures" to signatureList))
                     // throw e
                 } catch (e: IOException) {
                     Log.e(
@@ -198,13 +230,12 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
         if (seService.isConnected) {
             for (reader in seService.readers) {
                 if (reader.name != rr) continue
-                reader.closeSessions()
-                sessionMappings[reader.name]?.closeChannels()
-                channelMappings[reader.name]?.close()
-                sessionMappings[reader.name]?.close()
+                // sessionMappings[reader.name]?.closeChannels()
+                // channelMappings[reader.name]?.close()
+                // sessionMappings[reader.name]?.close()
 
                 try {
-
+                    reader.closeSessions()
                     val session: Session = reader.openSession()
                     session.closeChannels()
                     sessionMappings[reader.name] = session
@@ -218,20 +249,25 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
                             0xFF.toByte(), 0xFF.toByte(), 0x89.toByte(),
                             0x00, 0x00, 0x01, 0x00
                         )
-                    )!!
-                    Log.i(TAG, reader.name + " Opened Channel")
-                    val response = chan.getSelectResponse()
-                    Log.i(TAG, "Opened logical channel: ${response?.toHex()}")
-                    channelMappings[reader.name] = chan
+                    )
 
-                    val resp1 = chan.transmit(byteArrayOf(
-                        0x80.toByte(), 0xE2.toByte(), 0x91.toByte(), 0x00.toByte(), 0x06.toByte(), 0xBF.toByte(), 0x3E.toByte(), 0x03.toByte(), 0x5C.toByte(), 0x01.toByte(), 0x5A.toByte()
-                    ))
-                    Log.i(TAG,"Transmit Response: ${resp1.toHex()}")
-                    if (resp1[0] == 0xbf.toByte()) {
-                        var eid = resp1.toHex().substring(10, 10 + 32)
-                        Log.i(TAG,"EID: ${eid}")
-                        return true
+                    if (chan != null) {
+                        Log.i(TAG, reader.name + " Opened Channel")
+                        val response = chan?.getSelectResponse()
+                        Log.i(TAG, "Opened logical channel: ${response?.toHex()}")
+                        channelMappings[reader.name] = chan
+
+                        val resp1 = chan.transmit(byteArrayOf(
+                            0x80.toByte(), 0xE2.toByte(), 0x91.toByte(), 0x00.toByte(), 0x06.toByte(), 0xBF.toByte(), 0x3E.toByte(), 0x03.toByte(), 0x5C.toByte(), 0x01.toByte(), 0x5A.toByte()
+                        ))
+                        Log.i(TAG,"Transmit Response: ${resp1.toHex()}")
+                        if (resp1[0] == 0xbf.toByte()) {
+                            var eid = resp1.toHex().substring(10, 10 + 32)
+                            Log.i(TAG,"EID: ${eid}")
+                            return true
+                        }
+                    } else {
+                        Log.i(TAG, reader.name + " Can't Open Channel")
                     }
                 } catch (e: SecurityException) {
                     Log.e(
@@ -277,20 +313,6 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext?) :
         }
         return false
     }
-
-    fun emitData(key: String, value: Any?) { // reserved for native errors
-        Log.d(TAG, "Emitting $key = $value")
-        if (context == null || !context.hasActiveReactInstance()) {
-            Log.d(TAG, "Not ready!")
-            Log.d(TAG, "Failed sending: $key")
-            return
-        }
-        val jsonData = Gson().toJson(value)
-        val params = Arguments.createMap()
-        params.putString(key, jsonData)
-        context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit("onDataUpdate", params)
-    }
-
 
     @ReactMethod
     fun openSTK(device: String) {

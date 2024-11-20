@@ -6,7 +6,6 @@ import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faDownload, faPhotoFilm} from "@fortawesome/free-solid-svg-icons";
 import React, {useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
-import {useTheme} from "../../../theme_legacy";
 import {makeLoading} from "@/components/utils/loading";
 import BlockingLoader from "@/components/common/BlockingLoader";
 import {LPACode} from "@/components/utils/lpaRegex";
@@ -21,7 +20,6 @@ export function ScannerInitial({ appLink, eUICC, deviceId, finishAuthenticate }:
   const device = eUICC.name;
   const DeviceState = useSelector(selectDeviceState(deviceId));
   const { t } = useTranslation(['profile']);
-  const { colors } = useTheme();
 
   const [acToken, setAcToken] = useState("");
   const [oid, setOid] = useState("");
@@ -92,10 +90,10 @@ export function ScannerInitial({ appLink, eUICC, deviceId, finishAuthenticate }:
           style={{ gap: 10, flex: 1 }}
         >
           <View center gap-5 marginV-10>
-            <Text text70M color={colors.std200}>
+            <Text $textDefault text70M>
               {t('profile:scan_qr_prompt')}
             </Text>
-            <Text text70M color={colors.std200}>
+            <Text $textDefault text70M>
               {t('profile:current_euicc', { device: adapter.device.deviceName })}
             </Text>
           </View>
@@ -124,9 +122,10 @@ export function ScannerInitial({ appLink, eUICC, deviceId, finishAuthenticate }:
                         }
                       });
                     }}
-                    backgroundColor={colors.blue500}
+                    $textPrimary
+                    bg-$backgroundPrimary
                   >
-                    <FontAwesomeIcon icon={faPhotoFilm} style={{ color: Colors.$backgroundDefault }} />
+                    <FontAwesomeIcon icon={faPhotoFilm} style={{ color: Colors.white }} />
                   </Button>
                   <Camera
                     device={cameraDevice}
@@ -136,7 +135,7 @@ export function ScannerInitial({ appLink, eUICC, deviceId, finishAuthenticate }:
                   />
                 </View>
               ) : (
-                <Text color={colors.std200}>
+                <Text>
                   {t('profile:camera_unsupported')}
                 </Text>
               )
@@ -146,7 +145,7 @@ export function ScannerInitial({ appLink, eUICC, deviceId, finishAuthenticate }:
           <Button
             marginV-12
             borderRadius={210}
-            backgroundColor={colors.blue500}
+            bg-$backgroundPrimary
             disabled={smdp.length === 0 && !(euiccAddress?.defaultDpAddress)}
             onPress={() => {
               makeLoading(
@@ -168,9 +167,8 @@ export function ScannerInitial({ appLink, eUICC, deviceId, finishAuthenticate }:
               )
             }}
           >
-            <FontAwesomeIcon icon={faDownload} style={{ color: Colors.$backgroundDefault }} />
-            <Text
-              style={{ color: colors.blue50, marginLeft: 10 }}
+            <FontAwesomeIcon icon={faDownload} style={{ color: Colors.white }} />
+            <Text style={{ marginLeft: 10, color: Colors.white }}
             >{t('profile:ui_download')}</Text>
           </Button>
           <View style={{ padding: 10, display: "flex", gap: 0, paddingVertical: 10 }}>
@@ -182,8 +180,8 @@ export function ScannerInitial({ appLink, eUICC, deviceId, finishAuthenticate }:
               enableErrors
               validate={['required']}
               validationMessage={['Field is required']}
-              color={colors.std200}
-              style={{ borderBottomWidth: 1, borderColor: colors.std400 }}
+             
+              style={{ borderBottomWidth: 0.5, borderColor: Colors.$outlineDisabledHeavy }}
             />
             <TextField
               placeholder={'Matching ID'}
@@ -191,8 +189,8 @@ export function ScannerInitial({ appLink, eUICC, deviceId, finishAuthenticate }:
               value={acToken}
               onChangeText={c => c.includes('$') ? processLPACode(c) : setAcToken(c)}
               enableErrors
-              color={colors.std200}
-              style={{ borderBottomWidth: 1, borderColor: colors.std400 }}
+             
+              style={{ borderBottomWidth: 0.5, borderColor: Colors.$outlineDisabledHeavy }}
             />
             {/*<TextField*/}
             {/*  placeholder={'OID'}*/}
@@ -200,15 +198,14 @@ export function ScannerInitial({ appLink, eUICC, deviceId, finishAuthenticate }:
             {/*  value={oid}*/}
             {/*  onChangeText={c => c.includes('$') ? processLPACode(c) : setOid(c)}*/}
             {/*  enableErrors*/}
-            {/*  color={colors.std200}*/}
-            {/*  style={{ borderBottomWidth: 1, marginBottom: -10, borderColor: colors.std400 }}*/}
+            {/* */}
+            {/*  style={{ borderBottomWidth: 1, marginBottom: -10, borderColor: Colors.grey40 }}*/}
             {/*/>*/}
             <Checkbox
               label={t('profile:download_confcode_required')}
               value={confirmationCodeReq}
               labelStyle={{
                 marginLeft: 10,
-                color: colors.std200,
               }}
               onValueChange={v => setConfirmationCodeReq(v)}
             />

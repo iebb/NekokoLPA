@@ -1,3 +1,22 @@
 {
-  "settings": "Settings"
+  "settings": "Settings",
+  "title_showSlots": "卡槽显示",
+  "item_showSlots_all": "显示所有 SIM 卡槽",
+  "item_showSlots_possible": "仅显示 OMAPI 可用卡槽",
+  "item_showSlots_available": "仅显示可读取的卡片",
+  "title_language": "语言",
+  "item_language_en": "English",
+  "item_language_zh": "中文（简化字）",
+  "title_theme": "主题",
+  "item_theme_default": "跟随设备",
+  "item_theme_light": "浅色",
+  "item_theme_dark": "深色",
+  "title_redactMode": "隐私模式",
+  "item_redactMode_none": "无",
+  "item_redactMode_medium": "隐藏配置中的手机号",
+  "item_redactMode_hard": "隐藏配置名称与标签",
+  "title_remoteDevice": "远程设备",
+  "text_remoteDevice": "通过 HTTPS 连接至远程读卡器",
+  "title_themeColor": "主题色 (重启生效)",
+  "text_themeColor": ""
 }

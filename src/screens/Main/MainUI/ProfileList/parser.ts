@@ -3,6 +3,7 @@ import {ProfileMetadataMap} from "@/native/types";
 import {resolveMccMnc, T_PLMN} from "@/data/mccMncResolver";
 import {TFunction} from "i18next";
 import {countryList} from "@/storage/mmkv";
+import {Colors} from "react-native-ui-lib";
 
 export function predictCountryForICCID(iccid: string) {
   const prefix = iccid.substring(2).replaceAll(/^0+/g, '');
@@ -43,7 +44,7 @@ export function dateToDate6(d: Date): string {
   return dateToDate8(d).substring(2);
 }
 
-export function parseMetadata(metadata: ProfileMetadataMap, colors: any, t: TFunction) {
+export function parseMetadata(metadata: ProfileMetadataMap, t: TFunction) {
   const tags = [];
 
   let nickname = metadata.profileNickname || metadata.profileName || metadata.serviceProviderName;
@@ -71,8 +72,8 @@ export function parseMetadata(metadata: ProfileMetadataMap, colors: any, t: TFun
               remaining: -days,
             }) as string,
             rawValue: `d:${date6}`,
-            color: colors.red700,
-            backgroundColor: colors.red100,
+            color: Colors.red10,
+            backgroundColor: Colors.red70,
           })
         } else {
           tags.push({
@@ -83,8 +84,8 @@ export function parseMetadata(metadata: ProfileMetadataMap, colors: any, t: TFun
               remaining: days,
             }) as string,
             rawValue: `d:${date6}`,
-            color: days < 7 ? colors.orange700 : colors.green700,
-            backgroundColor: days < 7 ? colors.orange100 : colors.green100,
+            color: days < 7 ? Colors.orange10 : Colors.green10,
+            backgroundColor: days < 7 ? Colors.orange70 : Colors.green70,
           })
         }
         nickname = nickname.replace(eDate[0], '').trim();
@@ -99,8 +100,8 @@ export function parseMetadata(metadata: ProfileMetadataMap, colors: any, t: TFun
       tag: 'text',
       value: match[1].replaceAll("_", " "),
       rawValue: `t:${match[1]}`,
-      color: colors.blue700,
-      backgroundColor: colors.blue100,
+      color: Colors.blue10,
+      backgroundColor: Colors.blue70,
     });
     nickname = nickname.replace(match[0], '').trim();
   }

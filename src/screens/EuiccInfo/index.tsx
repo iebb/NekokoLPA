@@ -1,14 +1,13 @@
 import React from 'react';
-import {FlatList, StyleSheet, ToastAndroid,} from 'react-native';
+import {FlatList, ToastAndroid,} from 'react-native';
 import {useTranslation} from 'react-i18next';
-import {SafeScreen} from '@/components/template';
+import SafeScreen from '@/theme/SafeScreen';
 import type {RootScreenProps} from "@/screens/navigation";
 import Title from "@/components/common/Title";
-import {BorderRadiuses, Colors, ListItem, Text} from "react-native-ui-lib";
+import {Colors, ListItem, Text} from "react-native-ui-lib";
 import {useSelector} from "react-redux";
 import {selectDeviceState} from "@/redux/stateStore";
 import Clipboard from "@react-native-clipboard/clipboard";
-import {useTheme} from "../../theme_legacy";
 
 export type EuiccInfoDataType = {
 	key: string;
@@ -19,7 +18,6 @@ export type EuiccInfoDataType = {
 function EuiccInfo({ route,  navigation }: RootScreenProps<'EuiccInfo'>) {
 	const { deviceId } = route.params;
 	const DeviceState = useSelector(selectDeviceState(deviceId!));
-	const { colors, variant } = useTheme();
 
 	const { t } = useTranslation(['euiccinfo']);
 
@@ -32,22 +30,22 @@ function EuiccInfo({ route,  navigation }: RootScreenProps<'EuiccInfo'>) {
 			<ListItem
 				paddingV-0
 				paddingH-20
-				activeBackgroundColor={colors.std400}
+				activeBackgroundColor={Colors.$backgroundNeutralMedium}
 				activeOpacity={0.3}
 				onPress={() => {
 					ToastAndroid.show('Value Copied', ToastAndroid.SHORT);
 					Clipboard.setString(row.raw ?? row.rendered)
 				}}
-				style={{ borderBottomWidth: 0.25, borderBottomColor: colors.std900 }}
+				style={{ borderBottomWidth: 0.25, borderBottomColor: Colors.$outlineNeutral }}
 			>
 				<ListItem.Part middle column>
 					<ListItem.Part>
-						<Text color={colors.std200}  text70BL style={{flex: 1}} numberOfLines={1}>
+						<Text $textDefault text70BL flex-1 numberOfLines={1}>
 							{t('euiccinfo:' + row.key)}
 						</Text>
 					</ListItem.Part>
 						<ListItem.Part>
-							<Text color={colors.std100} text80L style={{ flex: 1, textAlign: 'right'}}>
+							<Text $textNeutral text80L style={{ flex: 1, textAlign: 'right'}}>
 								{row.rendered ?? "[empty]"}
 							</Text>
 					</ListItem.Part>

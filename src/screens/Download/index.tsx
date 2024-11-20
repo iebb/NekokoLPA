@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Platform, ScrollView,} from 'react-native';
-import {SafeScreen} from '@/components/template';
+import SafeScreen from '@/theme/SafeScreen';
 import type {RootScreenProps} from "@/screens/navigation";
 import {Text} from "react-native-ui-lib";
 import {ScannerInitial} from "@/screens/Download/Scanner/ScannerInitial";

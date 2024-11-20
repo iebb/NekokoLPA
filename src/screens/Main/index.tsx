@@ -1,32 +1,20 @@
 import React, {useEffect, useState} from 'react';
-import i18next from 'i18next';
 import {useTranslation} from 'react-i18next';
-import {SafeScreen} from '@/components/template';
-import {useTheme} from '../../theme_legacy';
-import CatImage from '@/theme_legacy/assets/images/shiroya.png';
-import {Button, Text, View} from "react-native-ui-lib";
+import SafeScreen from '@/theme/SafeScreen';
+import CatImage from '@/assets/images/shiroya.png';
+import {Button, Colors, Text, View} from "react-native-ui-lib";
 import SIMSelector from "@/screens/Main/MainUI/SIMSelector";
 import type {RootScreenProps} from "@/screens/navigation";
 import {Image, Linking, PixelRatio, Platform, TouchableOpacity} from "react-native";
 import {version} from '../../../package.json';
 import {useDispatch, useSelector} from "react-redux";
-import {nextValue, selectAppConfig} from "@/redux/configStore";
-import type {Variant} from "@/types/theme/config";
+import {selectAppConfig} from "@/redux/configStore";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
-import {faCog, faFlag, faLanguage, faMoon, faRefresh} from "@fortawesome/free-solid-svg-icons";
+import {faCog, faFlag, faRefresh} from "@fortawesome/free-solid-svg-icons";
 import {setupDevices} from "@/native/Hybrid";
 
-const DEBUG_REPORTING_URL = "https://nlpa-data.nekoko.ee/api/debug/log";
-
 function Main({ navigation }: RootScreenProps<'Main'>) {
-	const { t } = useTranslation(['welcome']);
-
-	const {
-		colors,
-		changeTheme,
-		gutters,
-		fonts,
-	} = useTheme();
+	const { t } = useTranslation(['welcome', 'main']);
 
 	const dispatch = useDispatch();
 	const { language, theme } = useSelector(selectAppConfig);
@@ -34,13 +22,6 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 		tag_name: `v${version}`,
 	});
 
-	useEffect(() => {
-		void i18next.changeLanguage(language);
-	}, [language]);
-
-	useEffect(() => {
-		changeTheme(theme as Variant);
-	}, [theme]);
 
 
 	useEffect(() => {
@@ -62,10 +43,8 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 	return (
 		<SafeScreen>
 			<View
-				style={{
-					...gutters.paddingHorizontal_24,
-					...gutters.marginTop_12,
-				}}
+				paddingH-24
+				marginT-12
 			>
 				<View style={{flexDirection: 'column', display: 'flex', height: '100%', gap: 10}}>
 					<View row>
@@ -86,15 +65,15 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 									}
 								}
 							}}>
-								<Text style={{fontSize: 16 / PixelRatio.getFontScale(), ...fonts.bold, ...fonts.gray800}} >
+								<Text style={{fontSize: 16 / PixelRatio.getFontScale(), fontWeight: 'bold'}} $textDefault >
 									{t('welcome:title')}
 								</Text>
-								<Text style={{ fontSize: 12 / PixelRatio.getFontScale() , color: isLatest ? colors.std200 : colors.red400 }}>
+								<Text style={{ fontSize: 12 / PixelRatio.getFontScale() , color: isLatest ? Colors.$textNeutralLight : Colors.red40 }}>
 									v{version} {!isLatest && "↑"}
 								</Text>
 								{
 									!isLatest && (
-										<Text style={{ fontSize: 12 / PixelRatio.getFontScale() , color: isLatest ? colors.std200 : colors.green400 }}>
+										<Text style={{ fontSize: 12 / PixelRatio.getFontScale() , color: isLatest ? Colors.$textNeutralLight : Colors.red40 }}>
 											{release.tag_name} available
 										</Text>
 									)
@@ -104,13 +83,26 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 						<View row gap-10>
 							<Button
 								size={'small'}
-								style={{ padding: 10 }}
+								padding-10
 								iconSource={
-									style => <FontAwesomeIcon icon={faRefresh} color={colors.std200} />
+									style => <FontAwesomeIcon icon={faFlag} style={{ color: style[0].tintColor }} />
 								}
-								backgroundColor={colors.cardBackground}
 								onPress={() => {
-									setupDevices(dispatch).then(r => r);
+									navigation.navigate('Stats', {
+									});
+								}}
+								iconOnRight
+								animateLayout
+								animateTo={'left'}
+							/>
+							<Button
+								size={'small'}
+								padding-10
+								iconSource={
+									style => <FontAwesomeIcon icon={faRefresh}  style={{ color: style[0].tintColor }} />
+								}
+								onPress={() => {
+									setupDevices(dispatch, t).then(r => r);
 								}}
 								iconOnRight
 								animateLayout
@@ -118,11 +110,10 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 							/>
 							<Button
 							size={'small'}
-							style={{ padding: 10 }}
+							padding-10
 							iconSource={
-								style => <FontAwesomeIcon icon={faCog} color={colors.std200} />
+								style => <FontAwesomeIcon icon={faCog}  style={{ color: style[0].tintColor }} />
 							}
-							backgroundColor={colors.cardBackground}
 							onPress={() => {
 								navigation.navigate('Settings', {
 								});
@@ -135,22 +126,7 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 							{/*	size={'small'}*/}
 							{/*	style={{ padding: 10 }}*/}
 							{/*	iconSource={*/}
-							{/*		style => <FontAwesomeIcon icon={faFlag} color={colors.std200} />*/}
-							{/*	}*/}
-							{/*	backgroundColor={colors.cardBackground}*/}
-							{/*	onPress={() => {*/}
-							{/*		navigation.navigate('Stats', {*/}
-							{/*		});*/}
-							{/*	}}*/}
-							{/*	iconOnRight*/}
-							{/*	animateLayout*/}
-							{/*	animateTo={'left'}*/}
-							{/*/>*/}
-							{/*<Button*/}
-							{/*	size={'small'}*/}
-							{/*	style={{ padding: 10 }}*/}
-							{/*	iconSource={*/}
-							{/*		style => <FontAwesomeIcon icon={faLanguage} color={colors.std200} />*/}
+							{/*		style => <FontAwesomeIcon icon={faLanguage} />*/}
 							{/*	}*/}
 							{/*	backgroundColor={colors.cardBackground}*/}
 							{/*	onPress={() => {*/}
@@ -164,7 +140,7 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 							{/*	size={'small'}*/}
 							{/*	style={{ padding: 10 }}*/}
 							{/*	iconSource={*/}
-							{/*		style => <FontAwesomeIcon icon={faMoon} color={colors.std200} />*/}
+							{/*		style => <FontAwesomeIcon icon={faMoon} />*/}
 							{/*	}*/}
 							{/*	backgroundColor={colors.cardBackground}*/}
 							{/*	onPress={() => {*/}

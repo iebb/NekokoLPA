@@ -49,7 +49,6 @@ function ApplicationNavigator() {
 		<SafeAreaProvider>
 			<NavigationContainer ref={navigationRef}>
 				<Stack.Navigator
-					key={theme}
 					screenOptions={{ headerShown: false }}
 				>
 					<Stack.Screen name="Main" component={Main} />

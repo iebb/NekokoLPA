@@ -1,31 +1,41 @@
 import 'react-native-gesture-handler';
 import {MMKV} from 'react-native-mmkv'
-
-require('react-native-ui-lib/config').setConfig({appScheme: 'default'});
-
+import {preferences} from "@/storage/mmkv";
 import {ThemeProvider} from '@/theme/context';
 import './translations';
 import {NativeListener} from "@/native/NativeListener";
 import {store} from "@/redux/reduxDataStore";
 import {Provider} from "react-redux";
-import {ThemeProvider2} from "@/theme_legacy";
 import ApplicationNavigator from '@/screens/Application';
+import {useEffect} from "react";
+import i18next from "i18next";
+import {initializeTheme} from "@/theme/theme";
+import {getValidColorString} from "react-native-ui-lib/src/components/colorPicker/ColorPickerPresenter";
 
-require('@/theme/theme');
+require('react-native-ui-lib/config').setConfig({appScheme: preferences.getString("theme") ?? 'default'});
+try {
+	initializeTheme(preferences.getString("themeColor") ?? '#a575f6');
+} catch {
+
+}
+
 
 export const storage = new MMKV();
 
 function App() {
+
+	useEffect(() => {
+		void i18next.changeLanguage(preferences.getString("language") ?? "en");
+	}, []);
+
 	return (
-		<Provider store={store}>
-			<NativeListener>
-				<ThemeProvider>
-					<ThemeProvider2 storage={storage}>
-						<ApplicationNavigator />
-					</ThemeProvider2>
-				</ThemeProvider>
-			</NativeListener>
-		</Provider>
+		<ThemeProvider>
+			<Provider store={store}>
+				<NativeListener>
+					<ApplicationNavigator />
+				</NativeListener>
+			</Provider>
+		</ThemeProvider>
 	);
 }
 

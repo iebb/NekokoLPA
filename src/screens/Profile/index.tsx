@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {Alert, Image, ScrollView, ToastAndroid, TouchableOpacity,} from 'react-native';
 import {useTranslation} from 'react-i18next';
-import {SafeScreen} from '@/components/template';
-import {useTheme} from '../../theme_legacy';
+import SafeScreen from '@/theme/SafeScreen';
 import type {RootScreenProps} from "@/screens/navigation";
 import {
 	Button,
 	Chip,
+	Colors,
 	DateTimePicker,
 	Dialog,
 	PanningProvider,
@@ -38,7 +38,6 @@ function getUTF8Length(s: string) {
 
 function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 	const { t } = useTranslation(['profile', 'welcome']);
-	const { colors } = useTheme();
 	const { deviceId, iccid } = route.params;
 
 
@@ -58,7 +57,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 	const metadata = DeviceState.profiles.find(m => m.iccid === iccid)!;
 
 	useEffect(() => {
-		const { tags, name, country } = parseMetadata(metadata, colors, t);
+		const { tags, name, country } = parseMetadata(metadata, t);
 		setTags(tags as any);
 		setNickname(name);
 		setCountry(country);
@@ -71,6 +70,10 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 			await adapter.setNicknameByIccId(iccid, n);
 		});
 	}
+
+	console.log(Colors.buttonForeground);
+	console.log(Colors.buttonBackground);
+	console.log(Colors.primaryColor);
 
 	return (
 		<SafeScreen>
@@ -91,17 +94,17 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 					return (
 						<View>
 							<View marginH-20 marginV-15>
-								<Text text60 color={colors.std200}>{title}</Text>
+								<Text $textDefault text60>{title}</Text>
 							</View>
-							<View height={1} style={{ backgroundColor: colors.std500}} />
+							<View height={1} style={{ backgroundColor: Colors.$outlineDisabledHeavy}} />
 						</View>
 					);
 				}}
 				pannableHeaderProps={{ title: t('profile:add_tag')}}
 				containerStyle={{
-					backgroundColor: colors.white,
+					backgroundColor: Colors.$backgroundElevatedLight,
 					borderRadius: 12,
-					shadowColor: colors.black,
+					shadowColor: Colors.$backgroundElevated,
 					shadowOpacity: 0.05,
 					shadowRadius: 12,
 					shadowOffset: {height: 6, width: 0},
@@ -111,9 +114,9 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 					<View flex-1>
 						<RadioGroup initialValue={newTagType} onValueChange={setNewTagType}>
 							<View row marginT-10 gap-20>
-								<Text color={colors.std200}>{t('profile:add_tag_type')}:</Text>
-								<RadioButton value={'date'} label={t('profile:tags_date')} labelStyle={{ color: colors.std200 }} />
-								<RadioButton value={'text'} label={t('profile:tags_text')} labelStyle={{ color: colors.std200 }} />
+								<Text $textDefault>{t('profile:add_tag_type')}:</Text>
+								<RadioButton value={'date'} label={t('profile:tags_date')} />
+								<RadioButton value={'text'} label={t('profile:tags_text')} />
 							</View>
 						</RadioGroup>
 						<View marginT-20>
@@ -122,12 +125,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 									<DateTimePicker
 										placeholder={t('profile:tags_date_placeholder')}
 										mode={'date'}
-										color={colors.std200}
-										labelStyle={{ color: colors.std200 }}
-										containerStyle={{ borderBottomWidth: 1, borderBottomColor: colors.std500 }}
-										style={{ color: colors.std200 }}
-										labelColor={colors.std200}
-										placeholderTextColor={colors.std200}
+										containerStyle={{ borderBottomWidth: 1, borderBottomColor: Colors.$outlineDisabledHeavy }}
 										defaultValue={new Date().toISOString().split('T')[0]}
 										dateTimeFormatter={e => new Date(+e - new Date().getTimezoneOffset() * 60 * 1000).toISOString().split('T')[0]}
 										onChange={e => {
@@ -138,12 +136,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 								) : newTagType === 'text' ? (
 									<TextField
 										placeholder={t('profile:tags_text_placeholder')}
-										color={colors.std200}
-										labelStyle={{ color: colors.std200 }}
-										containerStyle={{ borderBottomWidth: 1, borderBottomColor: colors.std500 }}
-										style={{ color: colors.std200 }}
-										labelColor={colors.std200}
-										placeholderTextColor={colors.std200}
+										containerStyle={{ borderBottomWidth: 1 }}
 										onChangeText={c => {
 											setTagValue(`t:${c.replaceAll(" ", "_")}`)
 										}}
@@ -180,8 +173,8 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 							}}
 						>
 							<Text
-								color={colors.std200}
-								style={{ fontWeight: '500', flex: 1, flexWrap: 'wrap', padding: 0, fontSize: 20 }}
+								$textDefault
+								text60L
 								adjustsFontSizeToFit
 							>
 								{nickname}
@@ -191,14 +184,14 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 					<View marginB-10 row gap-5>
 						<Text
 							text80L
-							color={colors.std500}
+							$textNeutral
 							adjustsFontSizeToFit
 						>
 							{metadata.serviceProviderName}
 						</Text>
 					</View>
 					<View paddingT-20>
-						<Text color={colors.std200} marginB-10 style={{ fontSize: 13 }}>Tags</Text>
+						<Text marginB-10 text70L $textDefault>Tags</Text>
 						<View flex row gap-10 style={{ flexWrap: "wrap" }}>
 							{tags.map((tag, i) => {
 								return (
@@ -209,6 +202,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 										labelStyle={{
 											marginRight: Spacings.s1,
 											fontWeight: '500',
+											color: tag.color,
 										}}
 										onDismiss={() => Alert.alert(
 											t('profile:delete_tag'),
@@ -235,7 +229,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 										paddingL-10
 										containerStyle={{
 											borderWidth: 0,
-											padding: 3,
+											padding: 7,
 											backgroundColor: tag.backgroundColor,
 										}}
 									/>
@@ -244,11 +238,18 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 
 							<Chip
 								label={"＋"}
-								labelStyle={{ fontSize: 22, paddingTop: 10 }}
+								resetSpacings
+								labelStyle={{
+									fontSize: 22,
+									paddingTop: 10, paddingLeft: 0, paddingRight: 0,
+									textAlign: 'center',
+									width: 30,
+									color: Colors.buttonForeground
+								}}
 								onPress={() => setTagModal(true)}
 								containerStyle={{
 									borderWidth: 0,
-									backgroundColor: colors.blue400,
+									backgroundColor: Colors.buttonBackground,
 								}}
 							/>
 						</View>
@@ -269,8 +270,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 								helperText={`${getUTF8Length(nickname + tagChars)}/64`}
 								containerStyle={{flex: 1}}
 								enableErrors
-								style={{ borderBottomWidth: 1, borderColor: colors.std400, fontSize: 16, paddingRight: 3 }}
-								color={colors.std200}
+								style={{ borderBottomWidth: 1, borderColor: Colors.$outlineDisabledHeavy, fontSize: 16, paddingRight: 3 }}
 								showCharCounter
 							/>
 							<View>
@@ -279,7 +279,6 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 									marginL-10
 									style={{ borderRadius: 5, paddingHorizontal: 0, width: 50, height: 50, padding: 0 }}
 									$iconDefault
-									backgroundColor={colors.std400}
 									labelProps={{
 										style: {width: 10, padding: 10}
 									}}
@@ -289,12 +288,12 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 										updateNickname(nickname + tagChars);
 									}}
 								>
-									<FontAwesomeIcon icon={faSave} style={{ color: colors.std900 }} />
+									<FontAwesomeIcon icon={faSave} style={{ color: Colors.buttonForeground }} />
 								</Button>
 							</View>
 						</View>
 					</View>
-					<View marginT-40>
+					<View marginT-40 $textDefault>
 						<MetadataView metadata={metadata} />
 					</View>
 					{
@@ -304,7 +303,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 								<Button
 									link
 									label={t('profile:delete_profile')}
-									color={colors.red500}
+									color={Colors.$textDangerLight}
 									onPress={() => Alert.alert(
 										t('profile:delete_profile'),
 										t('profile:delete_profile_alert_body'), [

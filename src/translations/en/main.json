@@ -11,6 +11,8 @@
   "set_nickname_prompt": "Set a nickname for this card. Works locally only",
   "download_profile": "Download Profile",
   "manage_notifications": "Manage Notifications",
-  "eid_copy": "Copy EID"
+  "eid_copy": "Copy EID",
+  "remote_device": "PIN for Remote Device",
+  "remote_device_pin": "Remote Endpoint\n{{remote}}\nrequires a PIN to connect to.",
 }
 

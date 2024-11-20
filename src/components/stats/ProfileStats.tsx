@@ -1,13 +1,11 @@
 import {Text, View} from "react-native-ui-lib";
 import React from "react";
-import {useTheme} from "../../theme_legacy";
 import {countryList} from "@/storage/mmkv";
 import _MCC from "@/data/mcc.json";
 import {Flags} from "@/assets/flags";
 import {Image} from "react-native";
 
 export function ProfileStats() {
-  const { colors, gutters, fonts } = useTheme();
 
   return (
     <View flex flexG style={{ gap: 10 }}>
@@ -33,14 +31,14 @@ export function ProfileStats() {
                     source={Flags[mccData.ISO1] || Flags.UN}
                   />
                   <View flexG>
-                    <Text text70M style={{ color: colors.std200, marginTop: -2 }} flexG>
+                    <Text text70M style={{ marginTop: -2 }} flexG $textDefault>
                       {mcc} {mccData.Country}
                     </Text>
                     <View>
                       {
                         Object.keys(mncs).map((mnc: string) => (
-                          <Text key={mnc}
-                                text90M style={{ color: colors.std400 }}
+                          <Text key={mnc} $textNeutral
+                                text90M
                                 flexG>{mnc.substring(3)} {mncs[mnc]}</Text>
                         ))
                       }

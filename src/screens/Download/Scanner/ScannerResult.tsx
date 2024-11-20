@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {StyleSheet,} from 'react-native';
 import {useTranslation} from 'react-i18next';
-import {useTheme} from '../../../theme_legacy';
 import {Button, Colors, Text, TextField, View} from "react-native-ui-lib";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faArrowLeftLong, faCancel, faCheck, faCheckCircle} from "@fortawesome/free-solid-svg-icons";
@@ -24,7 +23,6 @@ export function ScannerResult(
   }: any
 ) {
   const { t } = useTranslation(['profile']);
-  const { colors, gutters} = useTheme();
   const [loading, setLoading] = useState(false);
   const [confirmationCode, setConfirmationCode] = useState(initialConfirmationCode);
   const adapter = Adapters[deviceId];
@@ -42,9 +40,9 @@ export function ScannerResult(
           (
             <Container>
               <View center style={{ marginVertical: 20 }}>
-                <FontAwesomeIcon icon={faCheckCircle} size={80} color={colors.green500} />
+                <FontAwesomeIcon icon={faCheckCircle} size={80} color={Colors.green30} />
               </View>
-              <Text center text60 color={colors.std200}>
+              <Text center text60>
                 {t('profile:download_success')}
               </Text>
               <MetadataView metadata={authenticateResult.profile} />
@@ -56,7 +54,7 @@ export function ScannerResult(
                 {
                   (authenticateResult.isCcRequired) && (
                     <View style={styles.tableRow}>
-                      <Text style={styles.tableHeader} color={colors.std200}>
+                      <Text style={styles.tableHeader}>
                         {t('profile:conf_code')}:
                       </Text>
                       <TextField
@@ -73,24 +71,25 @@ export function ScannerResult(
                 }
               </View>
               <View flex>
-                <View flex style={{ flexDirection: "row", gap: 10 }}>
+                <View flex row gap-10>
                   <Button
-                    style={{ flex: 1, ...gutters.marginVertical_12 }}
-                    backgroundColor={colors.gray500}
+                    marginV-12 flex
+                    backgroundColor={Colors.$backgroundNeutralHeavy}
                     onPress={() => {
                       goBack();
                     }}
                   >
                     <FontAwesomeIcon
                       icon={faArrowLeftLong}
-                      style={{ color: colors.constWhite }}
+                      style={{ color: Colors.white }}
                     />
                     <Text
-                      style={{ color: colors.constWhite, marginLeft: 10 }}
+                      marginL-10
+                      color={Colors.white}
                     >{t('profile:ui_back')}</Text>
                   </Button>
                   <Button
-                    style={{ flex: 1, ...gutters.marginVertical_12 }}
+                    marginV-12 flex
                     backgroundColor={Colors.green500}
                     onPress={() => {
                       makeLoading(
@@ -104,10 +103,11 @@ export function ScannerResult(
                   >
                     <FontAwesomeIcon
                       icon={faCheck}
-                      style={{ color: colors.constWhite }}
+                      style={{ color: Colors.white }}
                     />
                     <Text
-                      style={{ color: colors.constWhite, marginLeft: 10 }}
+                      marginL-10
+                      color={Colors.white}
                     >{t('profile:ui_enable')}</Text>
                   </Button>
                 </View>
@@ -116,15 +116,15 @@ export function ScannerResult(
           ) : (
             <Container>
               <View flex style={{ gap: 20 }}>
-                <Text center text60 color={colors.std200}>
+                <Text center text60>
                   {t('profile:download_failure')}
                 </Text>
                 <RemoteErrorView remoteError={downloadResult} />
                 <View flex>
                   <View flex style={{ flexDirection: "row", gap: 10 }}>
                     <Button
-                      style={{ flex: 1, ...gutters.marginVertical_12 }}
-                      backgroundColor={colors.gray500}
+                      marginV-12 flex
+                      backgroundColor={Colors.red20}
                       onPress={() => {
                         makeLoading(setLoading,
                           async () => {
@@ -135,10 +135,11 @@ export function ScannerResult(
                     >
                       <FontAwesomeIcon
                         icon={faCancel}
-                        style={{ color: colors.constWhite }}
+                        style={{ color: Colors.white }}
                       />
                       <Text
-                        style={{ color: colors.constWhite, marginLeft: 10 }}
+                        marginL-10
+                        color={Colors.white}
                       >{t('profile:ui_back')}</Text>
                     </Button>
                   </View>

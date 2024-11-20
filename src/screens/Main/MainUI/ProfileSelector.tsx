@@ -2,10 +2,9 @@ import {Card, Colors, Drawer, Switch, Text, View} from "react-native-ui-lib";
 import {useSelector} from "react-redux";
 import {selectAppConfig} from "@/redux/configStore";
 import {Profile} from "@/native/types";
-import {Alert, Dimensions, Image, PixelRatio, RefreshControl, ScrollView, TouchableOpacity} from "react-native";
+import {Alert, Image, PixelRatio, RefreshControl, ScrollView, TouchableOpacity} from "react-native";
 import {parseMetadata} from "@/screens/Main/MainUI/ProfileList/parser";
 import React, {useState} from "react";
-import {useTheme} from "../../../theme_legacy";
 import {useNavigation} from "@react-navigation/native";
 import {useTranslation} from "react-i18next";
 import BlockingLoader from "@/components/common/BlockingLoader";
@@ -27,7 +26,6 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
 
   const DeviceState = useSelector(selectDeviceState(deviceId));
 
-  const { colors} = useTheme();
   const { t } = useTranslation(['profile']);
   const navigation = useNavigation();
   const { stealthMode } = useSelector(selectAppConfig);
@@ -74,7 +72,7 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
               const metadata = profile;
               const numICCID = metadata.iccid.replaceAll(/\D/g, '');
               const hueICCID = (parseInt(numICCID.substring(numICCID.length - 7), 10) * 17.84) % 360;
-              const { tags, name, country } = parseMetadata(metadata, colors, t);
+              const { tags, name, country } = parseMetadata(metadata, t);
 
               const phoneNumbers = findPhoneNumbersInText(name);
               let replacedName = name;
@@ -110,7 +108,7 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
                   }}
                   rightItems={profile.selected ? [] : [{
                     customElement: (
-                      <FontAwesomeIcon icon={faTrash} style={{ color: colors.cardBackground, }} />
+                      <FontAwesomeIcon icon={faTrash} style={{ color: Colors.$backgroundDefault, }} />
                     ),
                     width: 60,
                     background: Colors.red30,
@@ -150,7 +148,7 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
                   }]}
                   leftItem={{
                     customElement: (
-                      <FontAwesomeIcon icon={faPencil} style={{ color: colors.cardBackground, }} />
+                      <FontAwesomeIcon icon={faPencil} style={{ color: Colors.$backgroundDefault, }} />
                     ),
                     background: Colors.yellow30,
                     width: 60,
@@ -164,10 +162,13 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
                     }
                   }}
                 >
-                  <Card backgroundColor={colors.cardBackground}>
+                  <Card
+                    style={{ backgroundColor: Colors.cardBackground }}
+                  >
                     <View
                       paddingT-5
-                      paddingH-10
+                      paddingL-15
+                      paddingR-10
                       margin-0
                       gap-5
                     >
@@ -188,7 +189,7 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
                               style={{width: 20 * PixelRatio.getFontScale(), height: 20 * PixelRatio.getFontScale()}}
                               source={Flags[country] || Flags.UN}
                             />
-                            <Text color={colors.std200} marginL-5 style={{ fontSize: 16, marginTop: -2 }}>
+                            <Text marginL-5 text70L $textDefault style={{ marginTop: -2 }}>
                               {
                                 (stealthMode === 'none' || stealthMode === 'medium') ? replacedName : (
                                   metadata?.serviceProviderName
@@ -197,7 +198,7 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
                             </Text>
                           </View>
                           <View row>
-                            <Text text90L color={colors.std200}>
+                            <Text text90L $textDefault>
                               {metadata?.serviceProviderName} / {metadata?.profileName}
                             </Text>
                           </View>
@@ -206,7 +207,7 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
                               {tags.map((t, i) => {
                                 return (
                                   <View style={{ paddingHorizontal: 5, borderRadius: 5, backgroundColor: t.backgroundColor }} key={i}>
-                                    <Text color={colors.std200} style={{ color: t.color, fontSize: 10, fontWeight: 500}}>{
+                                    <Text style={{ color: t.color, fontSize: 10, fontWeight: 500}}>{
                                       stealthMode === 'none' ? t.value : stealthMode === 'medium' ? t.value : '***'
                                     }</Text>
                                   </View>
@@ -238,7 +239,7 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
                           />
                           {
                             Size > 1000 && (
-                              <Text text100L $textDefault color={colors.std200} style={{ position: "absolute", right: 5, bottom: 0 }}>
+                              <Text text100L $textDefault style={{ position: "absolute", right: 5, bottom: 0 }}>
                                 ~{(Size / 1024).toFixed(1)}kB
                               </Text>
                             )

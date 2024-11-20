@@ -1,9 +1,7 @@
-import {LoaderScreen, Text, View} from "react-native-ui-lib";
+import {Colors, LoaderScreen, Text, View} from "react-native-ui-lib";
 import React from "react";
-import {useTheme} from "../../theme_legacy";
 
 export default function BlockingLoader({ message }: { message?: string }) {
-  const { colors} = useTheme();
   return (
     <View
       style={{
@@ -17,7 +15,7 @@ export default function BlockingLoader({ message }: { message?: string }) {
         zIndex: 999,
       }}
     >
-      <View style={{ minHeight: 100, minWidth: 150, backgroundColor: colors.std900, borderRadius: 10, shadowColor: colors.std200,
+      <View style={{ minHeight: 100, minWidth: 150, backgroundColor: Colors.$backgroundNeutral, borderRadius: 10, shadowColor: Colors.$backgroundNeutralHeavy,
         shadowOffset: {
           width: 2,
           height: 2,
@@ -26,14 +24,14 @@ export default function BlockingLoader({ message }: { message?: string }) {
         shadowRadius: 3.84,
         elevation: 5, }}>
         <LoaderScreen
-          color={colors.blue500}
+          color={Colors.blue30}
           size="large"
-          loaderColor={colors.std200}
+          loaderColor={Colors.$backgroundNeutral}
         />
           {
             message && (
               <View center paddingB-20>
-                <Text color={colors.std200} paddingB-10>{message}</Text>
+                <Text $textDefault paddingB-10>{message}</Text>
               </View>
             )
           }

@@ -3,14 +3,15 @@ import React, {PropsWithChildren} from 'react';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Colors} from "react-native-ui-lib";
 import {useAppTheme} from "@/theme/context";
+import { Appearance } from 'react-native';
 
 function SafeScreen({ children }: PropsWithChildren) {
-	const { theme } = useAppTheme();
+	const { effectiveTheme } = useAppTheme();
 	const insets = useSafeAreaInsets();
 	return (
 		<View
 			style={{
-				backgroundColor: Colors.$backgroundDefault,
+				backgroundColor: Colors.pageBackground,
 				paddingTop: insets.top,
 				paddingBottom: insets.bottom,
 				paddingLeft: insets.left,
@@ -19,8 +20,8 @@ function SafeScreen({ children }: PropsWithChildren) {
 			}}
 		>
 			<StatusBar
-				barStyle={theme === 'dark' ? 'light-content' : 'dark-content'}
-				backgroundColor={Colors.$backgroundDefault}
+				barStyle={effectiveTheme === 'dark' ? 'light-content' : 'dark-content'}
+				backgroundColor={Colors.pageBackground}
 			/>
 			{children}
 		</View>

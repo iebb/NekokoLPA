@@ -10,5 +10,13 @@
   "title_theme": "Theme",
   "item_theme_default": "Follow device",
   "item_theme_light": "Light",
-  "item_theme_dark": "Dark"
+  "item_theme_dark": "Dark",
+  "title_redactMode": "Redactions",
+  "item_redactMode_none": "None",
+  "item_redactMode_medium": "Phone Numbers only",
+  "item_redactMode_hard": "Profile Name",
+  "title_remoteDevice": "Remote Reader",
+  "text_remoteDevice": "Connect to a remote reader with HTTPS",
+  "title_themeColor": "Theme Color (restart to take effect)",
+  "text_themeColor": ""
 }

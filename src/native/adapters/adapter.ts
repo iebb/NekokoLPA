@@ -6,6 +6,7 @@ import {Notification} from "@/native/types/LPA";
 
 export interface Device {
   available: boolean;
+  slotAvailable?: boolean;
   description?: string;
   signatures?: string;
   type: string;
