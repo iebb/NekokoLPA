@@ -92,6 +92,12 @@ export default function ProfileMenu({ deviceId } : { deviceId: string }) {
     }
   ];
 
+  const maskedEid = DeviceState.eid ? (
+    DeviceState.eid.substring(0, stealthMode == 'none' ? null : stealthMode === 'medium' ? 18 : 13)
+    +
+    _.repeat("*", DeviceState.eid?.length - (stealthMode == 'none' ? DeviceState.eid.length : stealthMode === 'medium' ? 18 : 13))
+  ) : "-";
+
   return (
     <View>
       <ActionSheet
@@ -132,11 +138,7 @@ export default function ProfileMenu({ deviceId } : { deviceId: string }) {
             </View>
             <View row fullWidth>
               <Text text100L $textDefault>
-                EID: {
-                  DeviceState.eid?.substring(0, stealthMode == 'none' ? null : stealthMode === 'medium' ? 18 : 13)
-                }{
-                  _.repeat("*", DeviceState.eid?.length - (stealthMode == 'none' ? DeviceState.eid.length : stealthMode === 'medium' ? 18 : 13))
-                }
+                EID: {maskedEid}
               </Text>
               <Text flexG text100L $textDefault style={{ textAlign: "right" }}>
                 SAS #: {
