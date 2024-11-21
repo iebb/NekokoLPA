@@ -209,7 +209,7 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
                                 ) : (displaySubtitle === "iccid") ? (
                                   `ICCID: ${metadata.iccid}`
                                 ) : (
-                                  ''
+                                  `${metadata?.serviceProviderName} / ${metadata?.profileName}`
                                 )
                               }
 

@@ -95,7 +95,7 @@ export default function ProfileMenu({ deviceId } : { deviceId: string }) {
   const maskedEid = DeviceState.eid ? (
     DeviceState.eid.substring(0, stealthMode == 'none' ? null : stealthMode === 'medium' ? 18 : 13)
     +
-    _.repeat("*", DeviceState.eid?.length - (stealthMode == 'none' ? DeviceState.eid.length : stealthMode === 'medium' ? 18 : 13))
+    _.repeat("*", DeviceState.eid.length - (stealthMode == 'none' ? DeviceState.eid.length : stealthMode === 'medium' ? 18 : 13))
   ) : "-";
 
   return (
@@ -116,39 +116,49 @@ export default function ProfileMenu({ deviceId } : { deviceId: string }) {
           borderWidth: 1,
           overflow: "hidden",
           width: "100%",
+          display: "flex",
+          flexDirection: "row"
         }}
         row
         enableShadow
         onPress={() => setEuiccMenu(true)}
       >
-        <View style={{ flexGrow: 1 }}>
-          <View paddingH-10 paddingV-3 style={{ overflow: 'hidden' }}>
-            <View row fullWidth>
-              <Text text100L $textDefault>
-                {t('main:available_space', {
-                  bytes: Intl.NumberFormat().format(DeviceState.bytesFree || 0),
-                  kBytes: Intl.NumberFormat().format((DeviceState.bytesFree || 0) / 1024.0)
-                })}
-              </Text>
-              <Text flexG text100L $textDefault style={{ textAlign: "right" }}>
-                CI: {
-                  DeviceState.euiccInfo2?.euiccCiPKIdListForSigning.map(x => toCIName(x)).join(", ")
-                }
-              </Text>
-            </View>
-            <View row fullWidth>
-              <Text text100L $textDefault>
-                EID: {maskedEid}
-              </Text>
-              <Text flexG text100L $textDefault style={{ textAlign: "right" }}>
-                SAS #: {
-                  DeviceState.euiccInfo2?.sasAcreditationNumber
-                }
-              </Text>
-            </View>
+        <View paddingH-10 paddingV-3 flexG style={{ flex: 1 }}>
+          {/* First Row */}
+          <View row style={{ width: '100%' }}>
+            <Text text100L $textDefault numberOfLines={1}>
+              {t('main:available_space', {
+                bytes: Intl.NumberFormat().format(DeviceState.bytesFree || 0),
+                kBytes: Intl.NumberFormat().format((DeviceState.bytesFree || 0) / 1024.0),
+              })}
+            </Text>
+            <Text
+              text100L
+              $textDefault
+              style={{ textAlign: 'right', flexGrow: 1 }}
+              numberOfLines={1}
+            >
+              CI: {DeviceState.euiccInfo2?.euiccCiPKIdListForSigning.map(x => toCIName(x)).join(', ')}
+            </Text>
+          </View>
+
+          {/* Second Row */}
+          <View row style={{ width: '100%' }}>
+            <Text text100L $textDefault>
+              EID: {maskedEid}
+            </Text>
+            <Text
+              text100L
+              $textDefault
+              style={{ textAlign: 'right', flexGrow: 1 }}
+            >
+              SAS #: {DeviceState.euiccInfo2?.sasAcreditationNumber}
+            </Text>
           </View>
         </View>
-        <View style={{ width: 36, flexBasis: 36 }}>
+
+        {/* Button Container */}
+        <View flexG-1 style={{ maxWidth: 36, flex: 1 }}>
           <Button
             borderRadius={0}
             fullWidth

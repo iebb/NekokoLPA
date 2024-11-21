@@ -59,13 +59,12 @@ export class RemoteDevice implements Device {
               if (!response.ok) {
                 const errorData = await response.json();
                 console.error('Error from server:', errorData);
-                Alert.alert('Authentication failed', errorData.message, [
+                Alert.alert('Authentication failed', errorData.message ?? "unknwon error", [
                   {text: 'OK', onPress: () => console.log('OK Pressed')},
                 ]);
                 this.available = false;
               } else {
                 const data = await response.json();
-                console.error('R-Device Response:', data);
                 remoteTokens.set(this.url, data.token);
                 this.connect();
               }
@@ -117,7 +116,10 @@ export class RemoteDevice implements Device {
       // Handle the response
       if (!response.ok) {
         const errorData = await response.json();
-        if (response.status >= 400 && response.status < 500) {
+        if (response.status >= 400 && response.status <= 500) {
+          Alert.alert('Authentication failed', errorData.message ?? "unknwon error", [
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+          ]);
           remoteTokens.delete(this.url);
           this.connect();
         }

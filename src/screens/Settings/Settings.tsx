@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList,} from 'react-native';
+import {Alert, FlatList,} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import SafeScreen from '@/theme/SafeScreen';
 import type {RootScreenProps} from "@/screens/navigation";
@@ -164,7 +164,10 @@ function Settings({ route,  navigation }: RootScreenProps<'Settings'>) {
 							type: 'color',
 							onChange: (value: string) => {
 								setThemeColor(value);
-								RNRestart.restart();
+								Alert.alert('Color changed', "Restart to take effect?", [
+									{text: 'Cancel'},
+									{text: 'OK', onPress: () => RNRestart.restart()},
+								]);
 							}
 						},
 					]}
