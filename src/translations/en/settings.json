@@ -6,6 +6,7 @@
   "item_showSlots_available": "Readable eUICC only",
   "title_language": "Language",
   "item_language_en": "English",
+  "item_language_ja": "日本語",
   "item_language_zh": "中文（简化字）",
   "title_unit": "Size Unit",
   "item_unit_b": "Bytes",

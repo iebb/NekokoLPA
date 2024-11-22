@@ -119,7 +119,7 @@ function Settings({ route,  navigation }: RootScreenProps<'Settings'>) {
 					data={[
 						{
 							key: "language",
-							options: ['en', 'zh'],
+							options: ['en', 'ja', 'zh'],
 							defaultValue: 'en',
 							type: 'select',
 							onChange: (value: string) => {

@@ -1,0 +1,16 @@
+{
+  "euiccinfo": "EUICCインフォ",
+  "sasAcreditationNumber": "SASアクレディテーション",
+  "profileVersion": "プロファイルバージョン",
+  "globalplatformVersion": "グローバルプラットフォームバージョン",
+  "euiccFirmwareVer": "ファームウェアバージョン",
+  "svn": "ローエストサポートバージョン",
+  "eid": "EID",
+
+  "freeNonVolatileMemory": "フリーノンボラタイルメモリ",
+  "freeVolatileMemory": "フリーボラタイルメモリ",
+  "euiccCiPKIdListForSigning": "EUICCサインCI",
+  "euiccCiPKIdListForVerification": "EUICCベリファイCI",
+  "defaultDpAddress": "デフォルトSM-DP+アドレス",
+  "rootDsAddress": "ルートSM-DSアドレス"
+}

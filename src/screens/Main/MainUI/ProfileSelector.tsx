@@ -251,14 +251,14 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
                               })
                             }}
                           />
-                          {
-                            Size > 1000 && (
-                              <Text text100L $textDefault style={{ position: "absolute", right: 2, bottom: 0 }}>
-                                {formatSize(Size)}
-                              </Text>
-                            )
-                          }
                         </View>
+                        {
+                          (Size > 1536) && (
+                            <Text text100L $textDefault style={{ position: "absolute", right: 2, bottom: 0 }} numberOfLines={1}>
+                              {formatSize(Size)}
+                            </Text>
+                          )
+                        }
                       </View>
                     </View>
                     <View

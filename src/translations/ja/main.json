@@ -1,0 +1,17 @@
+{
+  "available_space": "アベイラブル: {{size}}",
+  "no_device": "コンパチブルデバイスが見つかりません",
+  "error_device": "このスロットから読み取り中にエラーが発生しました。",
+  "unsupported_device": "{{name}}は使用できません。",
+  "insert_supported_sim": "サポートされているSIMカードを挿入するか、アプリを再起動してください。",
+  "open_stk_menu": "STKメニューをオープン",
+  "android_aram": "このアプリは以下のARA-Mをサポートしています。",
+  "purchase_note": "サポートされているデバイスを購入",
+  "set_nickname": "ニックネームを設定",
+  "set_nickname_prompt": "このカードにニックネームを設定します。ローカルのみで動作します。",
+  "download_profile": "プロファイルをダウンロード",
+  "manage_notifications": "ノーティフィケーションを管理",
+  "eid_copy": "EIDをコピー",
+  "remote_device": "リモートデバイスのPIN",
+  "remote_device_pin": "リモートエンドポイント\n{{remote}}\nに接続するにはPINが必要です。"
+}
