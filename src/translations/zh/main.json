@@ -1,5 +1,5 @@
 {
-  "available_space": "可用: {{bytes}} B / {{kBytes}} kiB",
+  "available_space": "可用: {{size}}",
   "error_device": "无法从该读卡器读取",
   "no_device": "没有兼容的设备",
   "unsupported_device": "{{name}} 不受支持",

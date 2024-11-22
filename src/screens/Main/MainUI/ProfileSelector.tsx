@@ -15,6 +15,7 @@ import {makeLoading} from "@/components/utils/loading";
 import {Adapters} from "@/native/adapters/registry";
 import {selectDeviceState} from "@/redux/stateStore";
 import {preferences, sizeStats} from "@/storage/mmkv";
+import {formatSize} from "@/utils/size";
 
 
 interface ProfileExt extends Profile {
@@ -253,7 +254,7 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
                           {
                             Size > 1000 && (
                               <Text text100L $textDefault style={{ position: "absolute", right: 2, bottom: 0 }}>
-                                {(Size / 1024).toFixed(1)}kB
+                                {formatSize(Size)}
                               </Text>
                             )
                           }

@@ -8,6 +8,7 @@ import {Colors, ListItem, Text} from "react-native-ui-lib";
 import {useSelector} from "react-redux";
 import {selectDeviceState} from "@/redux/stateStore";
 import Clipboard from "@react-native-clipboard/clipboard";
+import {formatSize} from "@/utils/size";
 
 export type EuiccInfoDataType = {
 	key: string;
@@ -61,8 +62,8 @@ function EuiccInfo({ route,  navigation }: RootScreenProps<'EuiccInfo'>) {
 					{key: "eid", rendered: `${eid}` },
 					{key: "sasAcreditationNumber", rendered: euiccInfo2?.sasAcreditationNumber },
 					{key: "svn", rendered: euiccInfo2?.svn },
-					{key: "freeNonVolatileMemory", rendered: `${euiccInfo2?.extCardResource.freeNonVolatileMemory} B` },
-					{key: "freeVolatileMemory", rendered: `${euiccInfo2?.extCardResource.freeVolatileMemory} B` },
+					{key: "freeNonVolatileMemory", rendered: formatSize(euiccInfo2?.extCardResource.freeNonVolatileMemory) },
+					{key: "freeVolatileMemory", rendered: formatSize(euiccInfo2?.extCardResource.freeVolatileMemory) },
 					{key: "defaultDpAddress", rendered: euiccAddress?.defaultDpAddress },
 					{key: "rootDsAddress", rendered: euiccAddress?.rootDsAddress },
 					{key: "euiccCiPKIdListForSigning", rendered: euiccInfo2?.euiccCiPKIdListForSigning.map(x => x.substr(0, 16)).join(", "), raw: euiccInfo2?.euiccCiPKIdListForSigning.join("\n") },

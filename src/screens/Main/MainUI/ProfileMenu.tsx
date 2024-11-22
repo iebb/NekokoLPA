@@ -15,6 +15,7 @@ import {preferences} from "@/storage/mmkv";
 import {useAppTheme} from "@/theme/context";
 import _ from "lodash";
 import {toCIName} from "@/screens/EuiccInfo/CINames";
+import {formatSize} from "@/utils/size";
 
 
 export default function ProfileMenu({ deviceId } : { deviceId: string }) {
@@ -92,11 +93,11 @@ export default function ProfileMenu({ deviceId } : { deviceId: string }) {
     }
   ];
 
-  const maskedEid = DeviceState.eid ? (
-    DeviceState.eid.substring(0, stealthMode == 'none' ? null : stealthMode === 'medium' ? 18 : 13)
-    +
-    _.repeat("*", DeviceState.eid.length - (stealthMode == 'none' ? DeviceState.eid.length : stealthMode === 'medium' ? 18 : 13))
-  ) : "-";
+  const eid = (DeviceState?.eid) ?? "";
+  const maskedEid = stealthMode == 'none' ? eid : (
+    eid.substring(0, stealthMode === 'medium' ? 18 : 13)
+    + "..."
+  );
 
   return (
     <View>
@@ -128,8 +129,7 @@ export default function ProfileMenu({ deviceId } : { deviceId: string }) {
           <View row style={{ width: '100%' }}>
             <Text text100L $textDefault numberOfLines={1}>
               {t('main:available_space', {
-                bytes: Intl.NumberFormat().format(DeviceState.bytesFree || 0),
-                kBytes: Intl.NumberFormat().format((DeviceState.bytesFree || 0) / 1024.0),
+                size: formatSize(DeviceState.bytesFree),
               })}
             </Text>
             <Text
@@ -146,13 +146,6 @@ export default function ProfileMenu({ deviceId } : { deviceId: string }) {
           <View row style={{ width: '100%' }}>
             <Text text100L $textDefault>
               EID: {maskedEid}
-            </Text>
-            <Text
-              text100L
-              $textDefault
-              style={{ textAlign: 'right', flexGrow: 1 }}
-            >
-              SAS #: {DeviceState.euiccInfo2?.sasAcreditationNumber}
             </Text>
           </View>
         </View>

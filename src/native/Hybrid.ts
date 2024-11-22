@@ -41,8 +41,9 @@ export async function setupInternalDevices(resolver: any) {
   }
 
   const remoteDevice = preferences.getString("remoteDevice") ?? "";
+  const useRemoteDevice = preferences.getString("useRemoteDevice") ?? "off";
 
-  if (remoteDevice.startsWith("http://") || remoteDevice.startsWith("https://")) {
+  if (useRemoteDevice === "on" && (remoteDevice.startsWith("http://") || remoteDevice.startsWith("https://"))) {
     _devices.push(new RemoteDevice(remoteDevice));
   }
 

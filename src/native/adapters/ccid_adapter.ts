@@ -16,6 +16,7 @@ export class CCIDDevice implements Device {
   }
 
   async connect(): Promise<boolean> {
+    // TODO: try
     await CCIDPlugin.connect(this.deviceName);
     await this.transmit("80AA00000AA9088100820101830107");
     await this.transmit("0070000001");

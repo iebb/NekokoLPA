@@ -20,31 +20,6 @@ const Stack = createStackNavigator<RootStackParamList>();
 function ApplicationNavigator() {
 	const { theme } = useAppTheme();
 	const navigationRef = React.createRef<NavigationContainerRef<RootStackParamList>>();
-
-	// const processUrl = (url: string) => {
-	// 	if (url) {
-	// 		const match = url.match(LPACode);
-	// 		if (match && match[0].length) {
-	// 			console.log("App Link Matched: URL", url);
-	// 		}
-	// 	}
-	// }
-	//
-	// useEffect(() => {
-	// 	if (navigationRef) {
-	// 		Linking.addEventListener('url', ({url}) => processUrl(url));
-	// 		const getUrlAsync = async () => {
-	// 			try {
-	// 				const linkUrl = await Linking.getInitialURL();
-	// 				if (linkUrl) {
-	// 					processUrl(linkUrl);
-	// 				}
-	// 			} catch (e) {}
-	// 		};
-	// 		getUrlAsync();
-	// 	}
-	// }, [navigationRef]);
-
 	return (
 		<SafeAreaProvider>
 			<NavigationContainer ref={navigationRef}>

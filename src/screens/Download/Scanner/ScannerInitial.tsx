@@ -3,7 +3,7 @@ import Container from "@/components/common/Container";
 import {Button, Checkbox, Colors, Text, TextField, View} from "react-native-ui-lib";
 import {Camera, useCameraDevice, useCameraPermission, useCodeScanner} from "react-native-vision-camera";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
-import {faDownload, faPhotoFilm} from "@fortawesome/free-solid-svg-icons";
+import {faCamera, faDownload, faPhotoFilm} from "@fortawesome/free-solid-svg-icons";
 import React, {useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {makeLoading} from "@/components/utils/loading";
@@ -15,20 +15,24 @@ import {Dimensions, KeyboardAvoidingView, Platform} from "react-native";
 import {Adapters} from "@/native/adapters/registry";
 import {useSelector} from "react-redux";
 import {selectDeviceState} from "@/redux/stateStore";
+import {preferences} from "@/storage/mmkv";
 
 export function ScannerInitial({ appLink, eUICC, deviceId, finishAuthenticate }: any) {
   const device = eUICC.name;
   const DeviceState = useSelector(selectDeviceState(deviceId));
-  const { t } = useTranslation(['profile']);
+  const cameraState = preferences.getString("useCamera");
 
+
+  const [showCamera, setShowCamera] = useState(cameraState === 'always');
+  const onDemandCamera = cameraState === 'ondemand' && !showCamera;
+
+  const { t } = useTranslation(['profile']);
   const [acToken, setAcToken] = useState("");
   const [oid, setOid] = useState("");
   const [confirmationCode, setConfirmationCode] = useState("");
   const [confirmationCodeReq, setConfirmationCodeReq] = useState(false);
-
   const [loading, setLoading] = useState(false);
   const { hasPermission, requestPermission } = useCameraPermission();
-
   const { eid, euiccAddress, euiccInfo2 } = DeviceState;
   const adapter = Adapters[deviceId];
   const [smdp, setSmdp] = useState('');
@@ -98,49 +102,56 @@ export function ScannerInitial({ appLink, eUICC, deviceId, finishAuthenticate }:
             </Text>
           </View>
           <View center style={{ borderRadius: 30 }}>
-            {
-              cameraDevice && hasPermission ? (
-                <View
-                  style={{ width: size, height: size, borderRadius: 20, overflow: "hidden" }}
-                >
+            <View style={{ width: cameraDevice && hasPermission && showCamera ? size : 80, height: cameraDevice && hasPermission && showCamera ? size : 40, borderRadius: 20, overflow: "hidden" }}>
+              <Button
+                round
+                style={{ borderRadius: 20, position: "absolute", top: 0, right: 0, zIndex: 100 }}
+                onPress={() => {
+                  launchImageLibrary({
+                    mediaType: "photo",
+                  }, (result) => {
+                    if (result.assets) {
+                      for(const a of result.assets) {
+                        QrImageReader.decode({ path: a.uri })
+                          .then(({result}) => {
+                            processLPACode(result!);
+                          })
+                          .catch(error => console.log(error || 'No QR code found.'));
+                      }
+                    }
+                  });
+                }}
+                $textPrimary
+                bg-$backgroundPrimary
+              >
+                <FontAwesomeIcon icon={faPhotoFilm} style={{ color: Colors.white }} />
+              </Button>
+              {
+                onDemandCamera && (
                   <Button
                     round
-                    style={{ borderRadius: 20, position: "absolute", top: 0, right: 0, zIndex: 100 }}
+                    style={{ borderRadius: 20, position: "absolute", top: 0, left: 0, zIndex: 100 }}
                     onPress={() => {
-                      launchImageLibrary({
-                        mediaType: "photo",
-                      }, (result) => {
-                        if (result.assets) {
-                          for(const a of result.assets) {
-                            QrImageReader.decode({ path: a.uri })
-                              .then(({result}) => {
-                                processLPACode(result!);
-                              })
-                              .catch(error => console.log(error || 'No QR code found.'));
-                          }
-
-                        }
-                      });
+                      setShowCamera(true);
                     }}
                     $textPrimary
                     bg-$backgroundPrimary
                   >
-                    <FontAwesomeIcon icon={faPhotoFilm} style={{ color: Colors.white }} />
+                    <FontAwesomeIcon icon={faCamera} style={{ color: Colors.white }} />
                   </Button>
+                )
+              }
+              {
+                cameraDevice && hasPermission && showCamera && (
                   <Camera
                     device={cameraDevice}
                     isActive
                     codeScanner={codeScanner}
                     style={{ width: size, height: size}}
                   />
-                </View>
-              ) : (
-                <Text>
-                  {t('profile:camera_unsupported')}
-                </Text>
-              )
-            }
-
+                )
+              }
+            </View>
           </View>
           <Button
             marginV-12
@@ -180,7 +191,7 @@ export function ScannerInitial({ appLink, eUICC, deviceId, finishAuthenticate }:
               enableErrors
               validate={['required']}
               validationMessage={['Field is required']}
-             
+
               style={{ borderBottomWidth: 0.5, borderColor: Colors.$outlineDisabledHeavy }}
             />
             <TextField
@@ -189,7 +200,7 @@ export function ScannerInitial({ appLink, eUICC, deviceId, finishAuthenticate }:
               value={acToken}
               onChangeText={c => c.includes('$') ? processLPACode(c) : setAcToken(c)}
               enableErrors
-             
+
               style={{ borderBottomWidth: 0.5, borderColor: Colors.$outlineDisabledHeavy }}
             />
             {/*<TextField*/}
