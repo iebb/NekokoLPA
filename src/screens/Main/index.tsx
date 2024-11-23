@@ -26,11 +26,15 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 
 	useEffect(() => {
 		if (Platform.OS === 'android') {
-			fetch('https://api.github.com/repos/iebb/NekokoLPA/releases/latest').then(
-				r => r.json()
-			).then(
-				data => setRelease(data)
-			)
+			try {
+				fetch('https://api.github.com/repos/iebb/NekokoLPA/releases/latest').then(
+					r => r.json()
+				).then(
+					data => setRelease(data)
+				)
+			} catch (e) {
+
+			}
 		}
 	}, [theme]);
 
