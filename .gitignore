@@ -85,3 +85,4 @@ output-metadata.json
 *.aab.idsig
 
 !sakurasim.keystore
+/build_private.sh
