@@ -166,5 +166,5 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
 }
 
 const styles = StyleSheet.create({
-  tableHeader:{ width: 80, flexGrow: 0, flexShrink: 0, fontSize: 17 },
+  tableHeader:{ width: 100, flexGrow: 0, flexShrink: 0, fontSize: 17 },
 })

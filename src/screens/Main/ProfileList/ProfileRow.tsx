@@ -63,11 +63,11 @@ export const ProfileRow = ({profile, deviceId, isLoading, setLoading} : {profile
   useEffect(() => {
 
     const searchString = (displaySubtitle === "provider") ? (
-      `${metadata?.serviceProviderName} - ${mccMnc.Brand ?? mccMnc.Operator} - ${mccMnc.Country}`
+      `${metadata?.serviceProviderName} - ${mccMnc.Brand ?? mccMnc.Operator}`
     ) : (displaySubtitle === "operator") ? (
-      `${mccMnc.Brand ?? mccMnc.Operator} - ${mccMnc.ISO}`
+      `${mccMnc.Brand ?? mccMnc.Operator}`
     ) : (displaySubtitle === "code") ? (
-      `${mccMnc.Brand ?? mccMnc.Operator} - ${mccMnc.ISO}`
+      `${mccMnc.Brand ?? mccMnc.Operator}`
     ) : (displaySubtitle === "country") ? (
       null
     ) : (displaySubtitle === "iccid") ? (
@@ -82,7 +82,7 @@ export const ProfileRow = ({profile, deviceId, isLoading, setLoading} : {profile
         uri => setImageUri(uri)
       );
     }
-  }, [mccMnc, metadata]);
+  }, [mccMnc, metadata, displaySubtitle]);
 
   return (
     <Drawer
