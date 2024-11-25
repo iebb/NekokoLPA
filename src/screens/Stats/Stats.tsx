@@ -5,7 +5,7 @@ import SafeScreen from '@/theme/SafeScreen';
 import type {RootScreenProps} from "@/screens/navigation";
 import Title from "@/components/common/Title";
 import Container from "@/components/common/Container";
-import {ProfileStats} from "@/components/stats/ProfileStats";
+import {ProfileStats} from "@/screens/Stats/ProfileStats";
 
 function Stats({ route,  navigation }: RootScreenProps<'Stats'>) {
 

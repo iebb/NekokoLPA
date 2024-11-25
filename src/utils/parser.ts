@@ -1,4 +1,4 @@
-import {countries} from "@/screens/Main/MainUI/ProfileList/countryData";
+import {countries} from "@/data/countryData";
 import {ProfileMetadataMap} from "@/native/types";
 import {resolveMccMnc, T_PLMN} from "@/data/mccMncResolver";
 import {TFunction} from "i18next";

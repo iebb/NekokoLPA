@@ -3,7 +3,7 @@ import {useTranslation} from 'react-i18next';
 import SafeScreen from '@/theme/SafeScreen';
 import CatImage from '@/assets/images/shiroya.png';
 import {Button, Colors, Text, View} from "react-native-ui-lib";
-import SIMSelector from "@/screens/Main/MainUI/SIMSelector";
+import SIMSelector from "@/screens/Main/SIMSelector";
 import type {RootScreenProps} from "@/screens/navigation";
 import {Image, Linking, PixelRatio, Platform, TouchableOpacity} from "react-native";
 import {version} from '../../../package.json';

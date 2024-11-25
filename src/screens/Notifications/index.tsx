@@ -9,7 +9,7 @@ import {useSelector} from "react-redux";
 import {selectDeviceState} from "@/redux/stateStore";
 import {Adapters} from "@/native/adapters/registry";
 import {Notification} from "@/native/types/LPA";
-import {parseMetadataOnly} from "@/screens/Main/MainUI/ProfileList/parser";
+import {parseMetadataOnly} from "@/utils/parser";
 import {Flags} from "@/assets/flags";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faBan, faCircleCheck, faDownload, faPaperPlane, faTrash} from "@fortawesome/free-solid-svg-icons";

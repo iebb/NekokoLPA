@@ -11,11 +11,10 @@ export const useAppTheme = () => useContext(ThemeContext);
 export const ThemeProvider = ({children}) => {
   const [theme, _setTheme] = useState('default');
   const [themeColor, _setThemeColor] = useState(preferences.getString("themeColor") ?? '#a575f6');
-  const [effectiveTheme, _setEffectiveTheme] = useState('default');
+  const effectiveTheme = theme === 'default' ? Appearance.getColorScheme() : theme;
   const setTheme = (_theme) => {
     Colors.setScheme(_theme);
     _setTheme(_theme);
-    _setEffectiveTheme(_theme === 'default' ? Appearance.getColorScheme() : _theme);
   };
 
   const setThemeColor = (color) => {

@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {RootState} from "@/redux/reduxDataStore";
 import {selectAppConfig} from "@/redux/configStore";
-import {EUICCPage} from "@/screens/Main/MainUI/EUICCPage";
+import {EUICCPage} from "@/screens/Main/EUICCPage";
 import {useTranslation} from "react-i18next";
 import {Dimensions, Linking, NativeModules, Platform, ScrollView, ToastAndroid} from "react-native";
 import {Adapters} from "@/native/adapters/registry";

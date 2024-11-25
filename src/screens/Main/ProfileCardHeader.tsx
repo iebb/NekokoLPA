@@ -18,7 +18,7 @@ import {toCIName} from "@/screens/EuiccInfo/CINames";
 import {formatSize} from "@/utils/size";
 
 
-export default function ProfileMenu({ deviceId } : { deviceId: string }) {
+export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
   const { t } = useTranslation(['main']);
   const navigation = useNavigation();
   const dispatch = useDispatch();

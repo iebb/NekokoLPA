@@ -16,7 +16,8 @@ import RNRestart from 'react-native-restart';
 export type SettingDataType = {
 	key: string;
 	options: string[];
-	type?: string;
+	type: string;
+	defaultValue: string;
 	onChange?: (value: string) => void;
 	validate?: (value: string) => boolean;
 }
@@ -133,6 +134,10 @@ function Settings({ route,  navigation }: RootScreenProps<'Settings'>) {
 							type: 'select',
 							onChange: (value: string) => {
 								setTheme(value);
+								Alert.alert('Theme changed', "Restart to take effect?", [
+									{text: 'Cancel'},
+									{text: 'OK', onPress: () => RNRestart.restart()},
+								]);
 							}
 						},
 						{

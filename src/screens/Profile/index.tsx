@@ -23,7 +23,7 @@ import Title from "@/components/common/Title";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faSave} from "@fortawesome/free-solid-svg-icons";
 import Clipboard from "@react-native-clipboard/clipboard";
-import {dateToDate6, parseMetadata, Tag} from "@/screens/Main/MainUI/ProfileList/parser";
+import {dateToDate6, parseMetadata, Tag} from "@/utils/parser";
 import {Spacings} from "react-native-ui-lib/src/components/../style";
 import Container from "@/components/common/Container";
 import {Flags} from "@/assets/flags";
