@@ -39,6 +39,7 @@ jobs:
     # Step 5: Run the build script
     - name: Build APK
       env: # Or as an environment variable
+        SENTRY_PROJECT: react-native
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       run: chmod +x build_for_github.sh && bash ./build_for_github.sh
 
