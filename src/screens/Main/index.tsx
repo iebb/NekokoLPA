@@ -39,8 +39,12 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 	}, [theme]);
 
 	const getBuild = (e: string) => {
-		const s = e.split(".");
-		return Number(s[s.length - 1]);
+		try {
+			const s = e.split(".");
+			return Number(s[s.length - 1]);
+		} catch (e) {
+			return version;
+		}
 	}
 	const isLatest = getBuild(release.tag_name) <= getBuild(version);
 

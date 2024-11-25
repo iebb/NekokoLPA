@@ -103,7 +103,7 @@ export class Adapter {
     const euicc_info = await this.execute('get_euicc_info', []);
 
     this.eid = euicc_info.eidValue;
-    this.smdp = euicc_info.EuiccConfiguredAddresses.defaultDpAddress;
+    this.smdp = euicc_info?.EuiccConfiguredAddresses?.defaultDpAddress;
     this.setState({
       eid: euicc_info.eidValue,
       euiccInfo2: euicc_info.EUICCInfo2,
