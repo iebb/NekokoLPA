@@ -17,13 +17,12 @@ import {useSelector} from "react-redux";
 import {selectDeviceState} from "@/redux/stateStore";
 import {preferences} from "@/storage/mmkv";
 
-export function ScannerInitial({ appLink, eUICC, deviceId, finishAuthenticate }: any) {
-  const device = eUICC.name;
+export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
   const DeviceState = useSelector(selectDeviceState(deviceId));
   const cameraState = preferences.getString("useCamera");
 
 
-  const [showCamera, setShowCamera] = useState(cameraState === 'always');
+  const [showCamera, setShowCamera] = useState(cameraState === 'always' || !cameraState);
   const onDemandCamera = cameraState === 'ondemand' && !showCamera;
 
   const { t } = useTranslation(['profile']);

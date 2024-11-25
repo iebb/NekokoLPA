@@ -50,19 +50,28 @@ export class Adapter {
   }
 
   async connect() {
-    if (!this.connected) {
-      await this.device.connect();
+    try {
+      if (!this.connected) {
+        await this.device.connect();
+      }
+      this.connected = true;
+      return true;
+    } catch {
+      this.connected = false;
+      return false;
     }
-    this.connected = true;
-    return true;
   }
 
   async disconnect() {
-    if (this.connected) {
-      await this.device.disconnect();
+    try {
+      if (this.connected) {
+        await this.device.disconnect();
+      }
+      this.connected = false;
+      return true;
+    } catch {
+      return false;
     }
-    this.connected = false;
-    return true;
   }
 
   async initialize() {
@@ -108,7 +117,7 @@ export class Adapter {
       eid: euicc_info.eidValue,
       euiccInfo2: euicc_info.EUICCInfo2,
       euiccAddress: euicc_info.EuiccConfiguredAddresses,
-      bytesFree: euicc_info.EUICCInfo2.extCardResource.freeNonVolatileMemory,
+      bytesFree: euicc_info.EUICCInfo2?.extCardResource.freeNonVolatileMemory,
     });
     return await euicc_info;
   }

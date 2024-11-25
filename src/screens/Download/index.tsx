@@ -36,7 +36,6 @@ function Scanner({ route,  navigation }: RootScreenProps<'Scanner'>) {
 								appLink={appLink}
 								adapter={adapter}
 								deviceId={deviceId}
-								eUICC={DeviceState}
 								finishAuthenticate={({ authenticateResult, smdp, confirmationCode } : any) => {
 									setAuthenticateResult(authenticateResult);
 									setSmdpAddress(smdp);
