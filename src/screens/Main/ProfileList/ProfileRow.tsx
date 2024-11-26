@@ -60,29 +60,29 @@ export const ProfileRow = ({profile, deviceId, isLoading, setLoading} : {profile
     Size = sizeStats.getNumber(metadata?.iccid) || 0;
   }
 
-  useEffect(() => {
-
-    const searchString = (displaySubtitle === "provider") ? (
-      `${metadata?.serviceProviderName} - ${mccMnc.Brand ?? mccMnc.Operator}`
-    ) : (displaySubtitle === "operator") ? (
-      `${mccMnc.Brand ?? mccMnc.Operator}`
-    ) : (displaySubtitle === "code") ? (
-      `${mccMnc.Brand ?? mccMnc.Operator}`
-    ) : (displaySubtitle === "country") ? (
-      null
-    ) : (displaySubtitle === "iccid") ? (
-      null
-    ) : (
-      `${metadata?.serviceProviderName}`
-    )
-
-
-    if (searchString != null) {
-      getUri(searchString).then(
-        uri => setImageUri(uri)
-      );
-    }
-  }, [mccMnc, metadata, displaySubtitle]);
+  // useEffect(() => {
+  //
+  //   const searchString = (displaySubtitle === "provider") ? (
+  //     `${metadata?.serviceProviderName} - ${mccMnc.Brand ?? mccMnc.Operator}`
+  //   ) : (displaySubtitle === "operator") ? (
+  //     `${mccMnc.Brand ?? mccMnc.Operator}`
+  //   ) : (displaySubtitle === "code") ? (
+  //     `${mccMnc.Brand ?? mccMnc.Operator}`
+  //   ) : (displaySubtitle === "country") ? (
+  //     null
+  //   ) : (displaySubtitle === "iccid") ? (
+  //     null
+  //   ) : (
+  //     `${metadata?.serviceProviderName}`
+  //   )
+  //
+  //
+  //   // if (searchString != null) {
+  //   //   getUri(searchString).then(
+  //   //     uri => setImageUri(uri)
+  //   //   );
+  //   // }
+  // }, [mccMnc, metadata, displaySubtitle]);
 
   return (
     <Drawer
@@ -183,18 +183,18 @@ export const ProfileRow = ({profile, deviceId, isLoading, setLoading} : {profile
                 </Text>
               </View>
               <View row>
-                {
-                  imageUri && (
-                    <Image
-                      source={{ uri: imageUri }}
-                      style={{
-                        marginRight: 4,
-                        width: 12,
-                        height: 12
-                      }}
-                    />
-                  )
-                }
+                {/*{*/}
+                {/*  imageUri && (*/}
+                {/*    <Image*/}
+                {/*      source={{ uri: imageUri }}*/}
+                {/*      style={{*/}
+                {/*        marginRight: 4,*/}
+                {/*        width: 12,*/}
+                {/*        height: 12*/}
+                {/*      }}*/}
+                {/*    />*/}
+                {/*  )*/}
+                {/*}*/}
                 <Text text90L $textNeutral numberOfLines={1}>
                   {
                     (displaySubtitle === "provider") ? (
