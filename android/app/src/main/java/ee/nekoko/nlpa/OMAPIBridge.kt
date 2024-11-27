@@ -62,6 +62,8 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext) : 
         return "OMAPIBridge"
     }
 
+    var aid: MutableList<String> = mutableListOf("A0000005591010FFFFFFFF8900000100", "A0000005591010FFFFFFFF8900000100", "A0000005591010FFFFFFFF8900000100", "A0000005591010FFFFFFFF8900050500")
+
     init {
         context.addLifecycleEventListener(this);
     }
@@ -106,6 +108,11 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext) : 
     }
 
     fun listReaders(): List<Map<String, String>> {
+
+//        if (fallbackAid.length > 0) {
+//            aid.add(fallbackAid);
+//        }
+
         val result = mutableListOf<Map<String, String>>()
         val signatureList = SystemInfo(context as Context).signatureList().joinToString(",")
         Log.i(TAG,"SE List Readers:")
@@ -139,10 +146,9 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext) : 
                         val session: Session = reader.openSession()
                         sessionMappings[reader.name] = session
                         val atr = session.getATR()
-                        Log.i(TAG, reader.name)
                         Log.i(TAG, reader.name + " ATR: " + atr + " Session: " + session)
-                        for (i in 1..3) {
-                            chan = session.openLogicalChannel(hexStringToByteArray("A0000005591010FFFFFFFF8900000100"))
+                        for (i in 0..(aid.size)) {
+                            chan = session.openLogicalChannel(hexStringToByteArray(aid[i]))
                             if (chan != null) break
                             Thread.sleep((i * 300).toLong())
                         }
@@ -242,14 +248,14 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext) : 
                     val atr = session.getATR()
                     Log.i(TAG, reader.name)
                     Log.i(TAG, reader.name + " ATR: " + atr + " Session: " + session)
-                    val chan = session.openLogicalChannel(
-                        byteArrayOf(
-                            0xA0.toByte(), 0x00, 0x00, 0x05, 0x59, 0x10, 0x10,
-                            0xFF.toByte(), 0xFF.toByte(),
-                            0xFF.toByte(), 0xFF.toByte(), 0x89.toByte(),
-                            0x00, 0x00, 0x01, 0x00
-                        )
-                    )
+
+                    var chan: Channel? = null
+
+                    for (i in 0..(aid.size)) {
+                        chan = session.openLogicalChannel(hexStringToByteArray(aid[i]))
+                        if (chan != null) break
+                        Thread.sleep((i * 300).toLong())
+                    }
 
                     if (chan != null) {
                         Log.i(TAG, reader.name + " Opened Channel")
@@ -305,11 +311,7 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext) : 
                     )
                     // throw e
                 }
-
-
-
             }
-
         }
         return false
     }
@@ -388,7 +390,6 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext) : 
                                         Thread.sleep((500 * i).toLong())
                                     }
                                 } else {
-
                                     Thread.sleep((500 * i).toLong())
                                 }
                             }

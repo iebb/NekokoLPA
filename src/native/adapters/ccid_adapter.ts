@@ -21,6 +21,7 @@ export class CCIDDevice implements Device {
     await this.transmit("80AA00000AA9088100820101830107");
     await this.transmit("0070000001");
     await this.transmit("01A4040010A0000005591010FFFFFFFF8900000100");
+    // await this.transmit("01A4040010A0000005591010FFFFFFFF8900050500");
     return true;
   }
 

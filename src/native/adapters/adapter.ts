@@ -165,6 +165,7 @@ export class Adapter {
   }
 
   async enableProfileByIccId(iccid: string) {
+    console.log("target iccid", iccid);
     const result = await this.execute('enable_profile', [iccid, this.device.type == 'omapi' ? '1': '0']);
     if (this.device.type == 'omapi') {
       await new Promise(res => setTimeout(res, 1000));

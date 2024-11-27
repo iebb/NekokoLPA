@@ -30,8 +30,12 @@ function PickerRow({row} : {row: SettingDataType}) {
 		return (
 			<View style={{width: "100%"}}>
 				<Picker
+					enableModalBlur
 					placeholder={t(`settings:title_${row.key}`)}
-					topBarProps={{title: t(`settings:title_${row.key}`)}}
+					topBarProps={{
+						useSafeArea: true,
+						title: t(`settings:title_${row.key}`)
+					}}
 					floatingPlaceholder
 					value={v}
 					onChange={(value) => {

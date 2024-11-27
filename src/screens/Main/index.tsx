@@ -7,8 +7,7 @@ import SIMSelector from "@/screens/Main/SIMSelector";
 import type {RootScreenProps} from "@/screens/navigation";
 import {Image, Linking, PixelRatio, Platform, TouchableOpacity} from "react-native";
 import {version} from '../../../package.json';
-import {useDispatch, useSelector} from "react-redux";
-import {selectAppConfig} from "@/redux/configStore";
+import {useDispatch} from "react-redux";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faCog, faFlag, faRefresh} from "@fortawesome/free-solid-svg-icons";
 import {setupDevices} from "@/native/Hybrid";
@@ -17,7 +16,6 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 	const { t } = useTranslation(['welcome', 'main']);
 
 	const dispatch = useDispatch();
-	const { language, theme } = useSelector(selectAppConfig);
 	const [release, setRelease] = useState({
 		tag_name: `v${version}`,
 	});
@@ -36,7 +34,7 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 
 			}
 		}
-	}, [theme]);
+	}, []);
 
 	const getBuild = (e: string) => {
 		try {
@@ -130,34 +128,6 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 							animateLayout
 							animateTo={'left'}
 						/>
-							{/*<Button*/}
-							{/*	size={'small'}*/}
-							{/*	style={{ padding: 10 }}*/}
-							{/*	iconSource={*/}
-							{/*		style => <FontAwesomeIcon icon={faLanguage} />*/}
-							{/*	}*/}
-							{/*	backgroundColor={colors.cardBackground}*/}
-							{/*	onPress={() => {*/}
-							{/*		dispatch(nextValue('language'))*/}
-							{/*	}}*/}
-							{/*	iconOnRight*/}
-							{/*	animateLayout*/}
-							{/*	animateTo={'left'}*/}
-							{/*/>*/}
-							{/*<Button*/}
-							{/*	size={'small'}*/}
-							{/*	style={{ padding: 10 }}*/}
-							{/*	iconSource={*/}
-							{/*		style => <FontAwesomeIcon icon={faMoon} />*/}
-							{/*	}*/}
-							{/*	backgroundColor={colors.cardBackground}*/}
-							{/*	onPress={() => {*/}
-							{/*		dispatch(nextValue('theme'))*/}
-							{/*	}}*/}
-							{/*	iconOnRight*/}
-							{/*	animateLayout*/}
-							{/*	animateTo={'left'}*/}
-							{/*/>*/}
 						</View>
 					</View>
 					<SIMSelector />
