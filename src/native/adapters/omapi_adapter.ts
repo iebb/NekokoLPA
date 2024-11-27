@@ -13,6 +13,7 @@ export class OMAPIDevice implements Device {
   explicitConnectionRequired = false;
   available = true;
   signatures = "";
+  channel = "1";
   description = "";
   slotAvailable = false;
 

@@ -175,16 +175,22 @@ function Settings({ route,  navigation }: RootScreenProps<'Settings'>) {
 							type: 'select'
 						},
 						{
-							key: "useRemoteDevice",
-							options: ['off', 'on'],
-							defaultValue: 'off',
+							key: "customAidCompat",
+							options: ['none', '5ber'],
+							defaultValue: 'none',
 							type: 'select'
 						},
-						{
-							key: "remoteDevice",
-							defaultValue: '',
-							type: 'text'
-						},
+						// {
+						// 	key: "useRemoteDevice",
+						// 	options: ['off', 'on'],
+						// 	defaultValue: 'off',
+						// 	type: 'select'
+						// },
+						// {
+						// 	key: "remoteDevice",
+						// 	defaultValue: '',
+						// 	type: 'text'
+						// },
 						{
 							key: "themeColor",
 							defaultValue: '#a575f6',

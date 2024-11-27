@@ -9,6 +9,7 @@ export interface Device {
   slotAvailable?: boolean;
   description?: string;
   signatures?: string;
+  channel: string;
   type: string;
   deviceName: string;
   deviceId: string;
@@ -150,7 +151,6 @@ export class Adapter {
 
   async sendNotification(id: number) {
     const result = await this.execute('process_notification_single', [id]);
-    console.log('sendNotification result', result);
     return result;
   }
 
@@ -165,7 +165,6 @@ export class Adapter {
   }
 
   async enableProfileByIccId(iccid: string) {
-    console.log("target iccid", iccid);
     const result = await this.execute('enable_profile', [iccid, this.device.type == 'omapi' ? '1': '0']);
     if (this.device.type == 'omapi') {
       await new Promise(res => setTimeout(res, 1000));

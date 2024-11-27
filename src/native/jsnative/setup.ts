@@ -7,7 +7,7 @@ export async function setupDevice(a: Adapter): Promise<(s: string, args: any[]) 
   module.jsSendApdu = async (x: string) => {
     console.log("TX >> ", x);
     try {
-      const result = await a.device.transmit(`81${x.substring(2)}`);
+      const result = await a.device.transmit(`8${a.device.channel ?? "1"}${x.substring(2)}`);
       console.log("RX >> ", result);
       return result;
     } catch (error) {

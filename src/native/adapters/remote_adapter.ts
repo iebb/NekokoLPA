@@ -94,6 +94,7 @@ export class RemoteDevice implements Device {
     // }
     // // await CCIDPlugin.disconnect(this.deviceName);
     // return true;
+    return true;
   }
 
   async transmit(request: string): Promise<string> {
