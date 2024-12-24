@@ -25,9 +25,6 @@ export const ProfileRow = ({profile, deviceId, isLoading, setLoading} : {profile
   const { t } = useTranslation(['profile']);
   const adapter = Adapters[deviceId];
 
-
-  const [imageUri, setImageUri] = useState<string>("");
-
   const navigation = useNavigation();
   const stealthMode = preferences.getString("redactMode") ?? "none";
   const displaySubtitle = preferences.getString("displaySubtitle") ?? "profileProvider";

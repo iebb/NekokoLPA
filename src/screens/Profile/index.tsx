@@ -37,7 +37,7 @@ function getUTF8Length(s: string) {
 }
 
 function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
-	const { t } = useTranslation(['profile', 'welcome']);
+	const { t } = useTranslation(['profile']);
 	const { deviceId, iccid } = route.params;
 
 

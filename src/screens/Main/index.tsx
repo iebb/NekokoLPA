@@ -1,7 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {useTranslation} from 'react-i18next';
 import SafeScreen from '@/theme/SafeScreen';
-import CatImage from '@/assets/images/shiroya.png';
 import {Button, Colors, Text, View} from "react-native-ui-lib";
 import SIMSelector from "@/screens/Main/SIMSelector";
 import type {RootScreenProps} from "@/screens/navigation";
@@ -11,27 +9,27 @@ import {useDispatch} from "react-redux";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faCog, faFlag, faRefresh} from "@fortawesome/free-solid-svg-icons";
 import {setupDevices} from "@/native/Hybrid";
+import {AppCheckForUpdates, AppLogo, AppTitle} from "@/screens/Main/config";
 
 function Main({ navigation }: RootScreenProps<'Main'>) {
-	const { t } = useTranslation(['welcome', 'main']);
 
 	const dispatch = useDispatch();
 	const [release, setRelease] = useState({
 		tag_name: `v${version}`,
 	});
 
-
-
 	useEffect(() => {
-		if (Platform.OS === 'android') {
-			try {
-				fetch('https://api.github.com/repos/iebb/NekokoLPA/releases/latest').then(
-					r => r.json()
-				).then(
-					data => setRelease(data)
-				)
-			} catch (e) {
+		if (AppCheckForUpdates) {
+			if (Platform.OS === 'android') {
+				try {
+					fetch('https://api.github.com/repos/iebb/NekokoLPA/releases/latest').then(
+						r => r.json()
+					).then(
+						data => setRelease(data)
+					)
+				} catch (e) {
 
+				}
 			}
 		}
 	}, []);
@@ -57,8 +55,8 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 						<View row gap-5 flexG>
 							<TouchableOpacity>
 								<Image
-									source={CatImage}
-									style={{ width: 40, height: 40 }}
+									source={AppLogo}
+									style={{width: 40, height: 40}}
 								/>
 							</TouchableOpacity>
 							<View onTouchStart={() => {
@@ -71,15 +69,21 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 									}
 								}
 							}}>
-								<Text style={{fontSize: 16 / PixelRatio.getFontScale(), fontWeight: 'bold'}} $textDefault >
-									{t('welcome:title')}
+								<Text style={{fontSize: 16 / PixelRatio.getFontScale(), fontWeight: 'bold'}} $textDefault>
+									{AppTitle}
 								</Text>
-								<Text style={{ fontSize: 12 / PixelRatio.getFontScale() , color: isLatest ? Colors.$textNeutralLight : Colors.red40 }}>
+								<Text style={{
+									fontSize: 12 / PixelRatio.getFontScale(),
+									color: isLatest ? Colors.$textNeutralLight : Colors.red40
+								}}>
 									v{version} {!isLatest && "↑"}
 								</Text>
 								{
 									!isLatest && (
-										<Text style={{ fontSize: 12 / PixelRatio.getFontScale() , color: isLatest ? Colors.$textNeutralLight : Colors.red40 }}>
+										<Text style={{
+											fontSize: 12 / PixelRatio.getFontScale(),
+											color: isLatest ? Colors.$textNeutralLight : Colors.red40
+										}}>
 											{release.tag_name} available
 										</Text>
 									)
@@ -91,11 +95,10 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 								size={'small'}
 								padding-10
 								iconSource={
-									style => <FontAwesomeIcon icon={faFlag} style={{ color: style[0].tintColor }} />
+									style => <FontAwesomeIcon icon={faFlag} style={{color: (style as any)[0].tintColor}}/>
 								}
 								onPress={() => {
-									navigation.navigate('Stats', {
-									});
+									navigation.navigate('Stats', {});
 								}}
 								iconOnRight
 								animateLayout
@@ -105,32 +108,31 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 								size={'small'}
 								padding-10
 								iconSource={
-									style => <FontAwesomeIcon icon={faRefresh}  style={{ color: style[0].tintColor }} />
+									style => <FontAwesomeIcon icon={faRefresh} style={{color: (style as any)[0].tintColor}}/>
 								}
 								onPress={() => {
-									setupDevices(dispatch, t).then(r => r);
+									setupDevices(dispatch).then(r => r);
 								}}
 								iconOnRight
 								animateLayout
 								animateTo={'left'}
 							/>
 							<Button
-							size={'small'}
-							padding-10
-							iconSource={
-								style => <FontAwesomeIcon icon={faCog}  style={{ color: style[0].tintColor }} />
-							}
-							onPress={() => {
-								navigation.navigate('Settings', {
-								});
-							}}
-							iconOnRight
-							animateLayout
-							animateTo={'left'}
-						/>
+								size={'small'}
+								padding-10
+								iconSource={
+									style => <FontAwesomeIcon icon={faCog} style={{color: (style as any)[0].tintColor}}/>
+								}
+								onPress={() => {
+									navigation.navigate('Settings', {});
+								}}
+								iconOnRight
+								animateLayout
+								animateTo={'left'}
+							/>
 						</View>
 					</View>
-					<SIMSelector />
+					<SIMSelector/>
 				</View>
 			</View>
 		</SafeScreen>

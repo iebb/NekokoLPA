@@ -27,7 +27,6 @@ export const appConfigStore = createSlice({
                 state[k] = action.payload[k];
                 // @ts-ignore
                 storage.set(k, action.payload[k]);
-                console.log("setting", k, action.payload[k]);
             }
         },
         setNickname: (state, action: PayloadAction<object>) => {

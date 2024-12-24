@@ -7,6 +7,7 @@
   "svn": "Lowest Supported Version",
   "eid": "EID",
 
+  "aramReader": "ARA-M Reader",
   "freeNonVolatileMemory": "Free Non-volatile Memory",
   "freeVolatileMemory": "Free Volatile Memory",
   "euiccCiPKIdListForSigning": "EUICC Sign CI",

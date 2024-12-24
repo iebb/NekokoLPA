@@ -1,7 +1,7 @@
 {
   "name": "nekokolpa",
-  "buildVersion": 329,
-  "version": "1.10.329",
+  "buildVersion": 331,
+  "version": "1.10.331",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -16,7 +16,13 @@
     "build": "bash build.sh",
     "build-and-upload": "bash build.sh && bash upload.sh",
     "bump": "python3 bump_version.py",
-    "postinstall": "npx patch-package"
+    "postinstall": "npx patch-package",
+    "android:flavor1": "react-native run-android --mode=flavor1debug --appId ee.nekoko.nlpa.flavor1",
+    "android:flavor1-release": "react-native run-android --mode=flavor1release --appId ee.nekoko.nlpa.flavor1",
+    "android:dev": "react-native run-android --mode=developmentdebug --appId ee.nekoko.nlpa.multisign",
+    "android:dev-release": "react-native run-android --mode=developmentrelease --appId ee.nekoko.nlpa.multisign",
+    "android:prod": "react-native run-android --mode=productiondebug --appId ee.nekoko.nlpa",
+    "android:prod-release": "react-native run-android --mode=productionrelease --appId ee.nekoko.nlpa"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
@@ -36,9 +42,11 @@
     "react": "18.3.1",
     "react-i18next": "^14.1.0",
     "react-native": "0.76.1",
-    "react-native-config": "^1.5.3",
+    "react-native-ble-plx": "^3.2.1",
+    "react-native-config": "1.4.6",
     "react-native-gesture-handler": "^2.19.0",
     "react-native-image-picker": "^7.1.2",
+    "react-native-macos": "^0.76.0-0",
     "react-native-mmkv": "2.12.2",
     "react-native-prompt-android": "^1.1.0",
     "react-native-qr-image-reader": "^1.0.5",

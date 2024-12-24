@@ -17,6 +17,7 @@ export interface Device {
   // getProfiles: () => (any[]);
   // getEid: () => string;
   connect: () => Promise<boolean>;
+  accessRule?: () => Promise<boolean>;
   disconnect: () => Promise<boolean>;
   transmit: (s: string) => Promise<string>;
 }

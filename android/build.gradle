@@ -31,4 +31,5 @@ apply plugin: "com.facebook.react.rootproject"
 
 repositories {
     google()
+    maven { url 'https://www.jitpack.io' }
 }

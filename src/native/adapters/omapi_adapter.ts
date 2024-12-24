@@ -24,7 +24,6 @@ export class OMAPIDevice implements Device {
   }
 
   async connect(): Promise<boolean> {
-    console.log("connecting ", this.deviceName);
     return true;
   }
 

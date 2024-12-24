@@ -4,24 +4,26 @@ import {useTranslation} from 'react-i18next';
 import SafeScreen from '@/theme/SafeScreen';
 import type {RootScreenProps} from "@/screens/navigation";
 import Title from "@/components/common/Title";
-import {Colors, ListItem, Text} from "react-native-ui-lib";
+import {Button, Colors, ListItem, Text} from "react-native-ui-lib";
 import {useSelector} from "react-redux";
 import {selectDeviceState} from "@/redux/stateStore";
 import Clipboard from "@react-native-clipboard/clipboard";
 import {formatSize} from "@/utils/size";
+import {Adapters} from "@/native/adapters/registry";
 
 export type EuiccInfoDataType = {
 	key: string;
 	raw?: any;
 	rendered: any;
+	element?: any;
 }
 
 function EuiccInfo({ route,  navigation }: RootScreenProps<'EuiccInfo'>) {
 	const { deviceId } = route.params;
 	const DeviceState = useSelector(selectDeviceState(deviceId!));
+	const adapter = Adapters[deviceId];
 
 	const { t } = useTranslation(['euiccinfo']);
-
 
 	const { eid, euiccAddress, euiccInfo2 } = DeviceState;
 
@@ -46,9 +48,11 @@ function EuiccInfo({ route,  navigation }: RootScreenProps<'EuiccInfo'>) {
 						</Text>
 					</ListItem.Part>
 						<ListItem.Part>
-							<Text $textNeutral text80L style={{ flex: 1, textAlign: 'right'}}>
-								{row.rendered ?? "[empty]"}
-							</Text>
+							{ row.element ?? (
+								<Text $textNeutral text80L style={{ flex: 1, textAlign: 'right'}}>
+									{row.rendered ?? "[empty]"}
+								</Text>
+							)}
 					</ListItem.Part>
 				</ListItem.Part>
 			</ListItem>
@@ -64,6 +68,11 @@ function EuiccInfo({ route,  navigation }: RootScreenProps<'EuiccInfo'>) {
 					{key: "svn", rendered: euiccInfo2?.svn },
 					{key: "freeNonVolatileMemory", rendered: formatSize(euiccInfo2?.extCardResource.freeNonVolatileMemory) },
 					{key: "freeVolatileMemory", rendered: formatSize(euiccInfo2?.extCardResource.freeVolatileMemory) },
+					// {key: "aramReader", element: (
+					// 	<Button onPress={() => {
+					// 		adapter.device.accessRule && adapter.device.accessRule();
+					// 	}}><Text>11</Text></Button>
+					// 	) },
 					{key: "defaultDpAddress", rendered: euiccAddress?.defaultDpAddress },
 					{key: "rootDsAddress", rendered: euiccAddress?.rootDsAddress },
 					{key: "euiccCiPKIdListForSigning", rendered: euiccInfo2?.euiccCiPKIdListForSigning.map(x => x.substr(0, 16)).join(", "), raw: euiccInfo2?.euiccCiPKIdListForSigning.join("\n") },

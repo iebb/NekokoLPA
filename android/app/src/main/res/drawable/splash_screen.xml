@@ -2,11 +2,13 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:drawable="@color/splashscreen_bg"/>
-
-    <item>
+    <item
+        android:left="16dp"
+        android:right="16dp">
         <bitmap
             android:gravity="center"
-            android:src="@drawable/splash_icon"
+            android:src="@drawable/turtle_card"
+            android:antialias="true"
         />
     </item>
 

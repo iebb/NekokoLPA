@@ -5,8 +5,21 @@ plugins {
     id "com.android.application"
 }
 
+project.ext.envConfigFiles = [
+   storerelease: "env.release.store.env",
+   flavor1release: "env.release.flavor1.env",
+   multisignrelease: "env.release.multisign.env",
+
+   storedebug: "env.debug.store.env",
+   flavor1debug: "env.debug.flavor1.env",
+   multisigndebug: "env.debug.multisign.env",
+]
+
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
+
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -99,6 +112,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode packageJson["buildVersion"]
         versionName packageJson["version"]
+        resValue "string", "build_config_package", "ee.nekoko.nlpa"
     }
     signingConfigs {
         community {
@@ -146,17 +160,17 @@ android {
                     appLabel: 'NekokoLPA M',
                     appIcon: "@mipmap/ic_launcher_multi"
             ]
-        }
-//        esim9 {
-//            applicationIdSuffix ".esim9"
-//            dimension "version"
-//            versionNameSuffix "-9e"
-//            signingConfig signingConfigs.esim9
-//            manifestPlaceholders = [
-//                    appLabel: '9eSIM',
-//                    appIcon: "@mipmap/ic_launcher_9esim"
-//            ]
-//        }
+       }
+       flavor1 {
+           applicationIdSuffix ".flavor1"
+           dimension "version"
+           versionNameSuffix "-9e"
+           signingConfig signingConfigs.esim9
+           manifestPlaceholders = [
+                   appLabel: '9eSIM-nLPA',
+                   appIcon: "@mipmap/ic_launcher_9esim"
+           ]
+       }
         store {
             dimension "version"
             manifestPlaceholders = [

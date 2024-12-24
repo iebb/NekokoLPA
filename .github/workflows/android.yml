@@ -50,13 +50,6 @@ jobs:
         SIGN_PASS_NEKOKO_BEEF: ${{ secrets.SIGN_PASS_NEKOKO_BEEF }}
       run: chmod +x sign.sh && bash ./sign.sh
 
-    # Step 6: Upload APK to artifacts (optional)
-    - name: Upload APK as artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: apk
-        path: ./outputs/ee.nekoko.nlpa.multisign-arm64-v8a-${{ env.VERSION }}.apk
-
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1

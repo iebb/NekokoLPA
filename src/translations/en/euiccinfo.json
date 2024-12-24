@@ -8,6 +8,7 @@
   "eid": "EID",
 
   "freeNonVolatileMemory": "Free Non-volatile Memory",
+  "aramReader": "ARA-M Reader",
   "freeVolatileMemory": "Free Volatile Memory",
   "euiccCiPKIdListForSigning": "EUICC Sign CI",
   "euiccCiPKIdListForVerification": "EUICC Verify CI",
