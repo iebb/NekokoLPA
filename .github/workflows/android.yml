@@ -48,6 +48,7 @@ jobs:
       env: # Or as an environment variable
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         SIGN_PASS_NEKOKO_BEEF: ${{ secrets.SIGN_PASS_NEKOKO_BEEF }}
+        SIGN_PASS_WENZI: ${{ secrets.SIGN_PASS_WENZI }}
       run: chmod +x sign.sh && bash ./sign.sh
 
     - name: Create Release
