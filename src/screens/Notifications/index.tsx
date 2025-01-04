@@ -91,7 +91,12 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
                 text: t('notifications:delete_ok'),
                 style: 'destructive',
                 onPress: async () => {
-                  await adapter.deleteNotification(row.seqNumber);
+                  const result = await adapter.sendNotification(row.seqNumber);
+                  if (result.result === 0) {
+                    await adapter.deleteNotification(row.seqNumber);
+                  } else {
+                    Alert.alert(t('notifications:send_failed'), t('notifications:send_failed_alert'));
+                  }
                 }
               },
             ])

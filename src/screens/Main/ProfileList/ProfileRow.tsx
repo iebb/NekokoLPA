@@ -115,6 +115,7 @@ export const ProfileRow = ({profile, deviceId, isLoading, setLoading} : {profile
                       onPress: () => {
                         makeLoading(setLoading, async () => {
                           await adapter.deleteProfileByIccId(metadata.iccid);
+                          await adapter.processNotifications(metadata.iccid);
                         })
                       }
                     },
