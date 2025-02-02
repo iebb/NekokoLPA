@@ -5,18 +5,17 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.se.omapi.Channel
+import android.se.omapi.Reader
 import android.se.omapi.SEService
 import android.se.omapi.Session
 import android.telephony.SubscriptionManager
 import android.util.Log
 import com.facebook.react.bridge.ActivityEventListener
-import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
-import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.google.gson.Gson
 import ee.nekoko.nlpa_utils.hexStringToByteArray
 import ee.nekoko.nlpa_utils.toHex
@@ -62,7 +61,7 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext) : 
         return "OMAPIBridge"
     }
 
-    var aid: MutableList<String> = mutableListOf("A0000005591010FFFFFFFF8900000100", "A0000005591010FFFFFFFF8900000100", "A0000005591010FFFFFFFF8900000100", "A0000005591010FFFFFFFF8900050500")
+    var aidListDefault = "A0000005591010FFFFFFFF8900000100,A0000005591010FFFFFFFF8900050500";
 
     init {
         context.addLifecycleEventListener(this);
@@ -107,12 +106,36 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext) : 
         Log.e(TAG, "Host destroyed")
     }
 
-    fun listReaders(): List<Map<String, String>> {
+    fun openLogicalChannel(reader: Reader, aids: List<String>): Channel? {
+        try {
+            sessionMappings[reader.name]?.closeChannels()
+            sessionMappings[reader.name]?.close()
+            reader.closeSessions()
+            val session = reader.openSession()
+            sessionMappings[reader.name] = session
+            Log.i(TAG, "${reader.name} ATR: ${session.getATR()} Session: $session")
 
-//        if (fallbackAid.length > 0) {
-//            aid.add(fallbackAid);
-//        }
+            for (aid in aids + aids) {
+                try {
+                    Log.i(TAG, "Opening eUICC connection ${reader.name} with AID $aid")
+                    return session.openLogicalChannel(hexStringToByteArray(aid))?.also {
+                        Log.i(TAG, "${reader.name} Opened Channel: $it")
+                        channelMappings[reader.name] = it
+                    }
+                } catch (e: NoSuchElementException) {
+                    Log.e(TAG, "Opening eUICC connection ${reader.name} with AID $aid failed. Trying next AID")
+                    Thread.sleep(300)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Opening eUICC connection ${reader.name} failed.", e)
+        }
+        return null
+    }
 
+    fun listReaders(aidList: String): List<Map<String, String>> {
+        aidListDefault = aidList
+        var aids = aidListDefault.split(",")
         val result = mutableListOf<Map<String, String>>()
         val signatureList = SystemInfo(context as Context).signatureList().joinToString(",")
         Log.i(TAG,"SE List Readers:")
@@ -120,49 +143,16 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext) : 
         if (seService.isConnected) {
             Log.i(TAG,"SE List ${seService.readers.size} Readers:")
             for (reader in seService.readers) {
+                Log.i(TAG, "SE Reader: " + reader.name)
                 if (!reader.name.startsWith("SIM")) {
                     continue
                 }
                 try {
-                    var chan: Channel? = channelMappings[reader.name]
-                    if (chan != null) {
-                        Log.e(TAG, "Channel already exist")
-                        try {
-                            chan.getSelectResponse()
-                            Log.e(TAG, "Channel still alive")
-                        } catch (ex: Exception) {
-                            Log.e(TAG, "Select Failed, removing channel", ex)
-                            channelMappings.remove(reader.name)
-                            chan = null;
-                        }
-                    }
-
+                    val chan = channelMappings[reader.name] ?: openLogicalChannel(reader, aids)
                     if (chan == null) {
-                        if (sessionMappings[reader.name] != null) {
-                            sessionMappings[reader.name]?.closeChannels()
-                            sessionMappings[reader.name]?.close()
-                        }
-                        reader.closeSessions()
-                        val session: Session = reader.openSession()
-                        sessionMappings[reader.name] = session
-                        val atr = session.getATR()
-                        Log.i(TAG, reader.name + " ATR: " + atr + " Session: " + session)
-                        for (i in 0..(aid.size)) {
-                            chan = session.openLogicalChannel(hexStringToByteArray(aid[i]))
-                            if (chan != null) break
-                            Thread.sleep((i * 300).toLong())
-                        }
-                        if (chan == null) {
-                            result.add(hashMapOf("name" to reader.name, "available" to "false", "description" to "Open Channel Failed"))
-                            continue
-                        }
-
-                        Log.i(TAG, reader.name + " Opened Channel: $chan")
-                        channelMappings[reader.name] = chan
-                        val response: ByteArray? = chan.getSelectResponse()
-                        Log.i(TAG, "Opened logical channel: ${response?.toHex()}")
+                        result.add(mapOf("name" to reader.name, "available" to "false", "description" to "Open Channel Failed"))
+                        continue
                     }
-
                     val resp1 = chan.transmit(hexStringToByteArray("81E2910006BF3E035C015A"))
                     Log.i(TAG,"Transmit Response: ${resp1.toHex()}")
                     if (resp1[0] == 0xbf.toByte()) {
@@ -215,9 +205,6 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext) : 
                     result.add(hashMapOf("name" to reader.name, "available" to "false", "description" to e.message.toString(), "signatures" to signatureList))
                     // throw e
                 }
-
-
-
             }
             if (seService.readers.isEmpty()) {
                 val subscriptionManager = SubscriptionManager.from(context);
@@ -232,89 +219,14 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext) : 
         return result;
     }
 
-    fun restartChannel(rr: String): Boolean {
-        if (seService.isConnected) {
-            for (reader in seService.readers) {
-                if (reader.name != rr) continue
-                // sessionMappings[reader.name]?.closeChannels()
-                // channelMappings[reader.name]?.close()
-                // sessionMappings[reader.name]?.close()
 
-                try {
-                    reader.closeSessions()
-                    val session: Session = reader.openSession()
-                    session.closeChannels()
-                    sessionMappings[reader.name] = session
-                    val atr = session.getATR()
-                    Log.i(TAG, reader.name)
-                    Log.i(TAG, reader.name + " ATR: " + atr + " Session: " + session)
-
-                    var chan: Channel? = null
-
-                    for (i in 0..(aid.size)) {
-                        chan = session.openLogicalChannel(hexStringToByteArray(aid[i]))
-                        if (chan != null) break
-                        Thread.sleep((i * 300).toLong())
-                    }
-
-                    if (chan != null) {
-                        Log.i(TAG, reader.name + " Opened Channel")
-                        val response = chan?.getSelectResponse()
-                        Log.i(TAG, "Opened logical channel: ${response?.toHex()}")
-                        channelMappings[reader.name] = chan
-
-                        val resp1 = chan.transmit(byteArrayOf(
-                            0x80.toByte(), 0xE2.toByte(), 0x91.toByte(), 0x00.toByte(), 0x06.toByte(), 0xBF.toByte(), 0x3E.toByte(), 0x03.toByte(), 0x5C.toByte(), 0x01.toByte(), 0x5A.toByte()
-                        ))
-                        Log.i(TAG,"Transmit Response: ${resp1.toHex()}")
-                        if (resp1[0] == 0xbf.toByte()) {
-                            var eid = resp1.toHex().substring(10, 10 + 32)
-                            Log.i(TAG,"EID: ${eid}")
-                            return true
-                        }
-                    } else {
-                        Log.i(TAG, reader.name + " Can't Open Channel")
-                    }
-                } catch (e: SecurityException) {
-                    Log.e(
-                        TAG,
-                        "Opening eUICC connection ${reader.name} failed. [java.lang.SecurityException]",
-                        e
-                    )
-                    // throw e
-                } catch (e: IOException) {
-                    Log.e(
-                        TAG,
-                        "Opening eUICC connection ${reader.name} failed. [IO]",
-                        e
-                    )
-                    // throw e
-                } catch (e: NullPointerException) {
-                    Log.e(
-                        TAG,
-                        "Opening eUICC connection ${reader.name} failed. [NP] Message: ${e.message}",
-                        e
-                    )
-                    // throw e
-                } catch (e: NoSuchElementException) {
-                    Log.e(
-                        TAG,
-                        "Opening eUICC connection ${reader.name} failed: NoSuchElementException [EX]",
-                        e
-                    )
-                    // throw e
-                } catch (e: Exception) {
-                    Log.e(
-                        TAG,
-                        "Opening eUICC connection ${reader.name} failed. [EX]",
-                        e
-                    )
-                    // throw e
-                }
-            }
-        }
-        return false
+    fun connectChannel(readerName: String): Boolean {
+        val aids = aidListDefault.split(",")
+        return seService.readers.find { it.name == readerName }?.let { reader ->
+            openLogicalChannel(reader, aids) != null
+        } ?: false
     }
+
 
     @ReactMethod
     fun openSTK(device: String) {
@@ -345,10 +257,10 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext) : 
     }
 
     @ReactMethod
-    fun listDevices(promise: Promise) {
+    fun listDevices(aidList: String, promise: Promise) {
         Thread {
             try {
-                promise.resolve(Gson().toJson(listReaders()))
+                promise.resolve(Gson().toJson(listReaders(aidList)))
             } catch (e: Exception) {
                 Log.e(TAG, "Exception: $e", e)
                 promise.reject("LIST_ERROR", "Error message", e)
@@ -362,7 +274,7 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext) : 
             var chan = channelMappings[device]
             if (chan == null) {
                 Log.e(TAG, "Restarting channel $device")
-                if (restartChannel(device)) {
+                if (connectChannel(device)) {
                     chan = channelMappings[device]
                 }
             }
@@ -377,7 +289,7 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext) : 
                         is IllegalStateException, is IOException -> {
                             for (i in 1..10) {
                                 Log.e(TAG, "Restarting Channel, count $i")
-                                val result = restartChannel(device)
+                                val result = connectChannel(device)
                                 if (result) {
                                     try {
                                         chan = channelMappings[device]

@@ -12,6 +12,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faDownload, faSimCard} from "@fortawesome/free-solid-svg-icons";
 import Clipboard from "@react-native-clipboard/clipboard";
 import {preferences} from "@/storage/mmkv";
+import {AppBuyLink} from "@/screens/Main/config";
 
 export default function SIMSelector() {
   const {internalList} = useSelector((state: RootState) => state.LPA);
@@ -60,7 +61,7 @@ export default function SIMSelector() {
           {t('main:no_device')}
         </Text>
         <Text $textPrimary center underline text60L marginT-40 onPress={() => {
-          Linking.openURL("https://lpa.nekoko.ee/products");
+          Linking.openURL(AppBuyLink);
         }}>
           {t('main:purchase_note')}
         </Text>
@@ -185,7 +186,7 @@ export default function SIMSelector() {
                   )
                 }
                 <Text $textPrimary center underline text60L marginT-40 onPress={() => {
-                  Linking.openURL("https://lpa.nekoko.ee/products");
+                  Linking.openURL(AppBuyLink);
                 }}>
                   {t('main:purchase_note')}
                 </Text>

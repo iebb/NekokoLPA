@@ -1,0 +1,7 @@
+export const AIDList = "A0000005591010FFFFFFFF8900000100,A0000005591010FFFFFFFF8900050500";
+/*
+(preferences.getString("customAidCompat") == "5ber" || preferences.getString("customAidCompat") == "all") ?
+      "A0000005591010FFFFFFFF8900000100,A0000005591010FFFFFFFF8900050500" :
+      "A0000005591010FFFFFFFF8900000100"
+    ;
+ */

@@ -6,9 +6,8 @@ import {Adapters} from "@/native/adapters/registry";
 import {setInternalDevices} from "@/redux/stateStore";
 import {Dispatch} from "@reduxjs/toolkit";
 import {RemoteDevice} from "@/native/adapters/remote_adapter";
-import prompt from "react-native-prompt-android";
-import {setNickname} from "@/redux/configStore";
 import {preferences} from "@/storage/mmkv";
+import {AIDList} from "@/native/AID";
 
 const { CCIDPlugin, OMAPIBridge, CustomHttp } = NativeModules;
 
@@ -16,7 +15,7 @@ const { CCIDPlugin, OMAPIBridge, CustomHttp } = NativeModules;
 export async function setupInternalDevices(resolver: any) {
   const _devices = [];
   if (Platform.OS === 'android') {
-    const devices = JSON.parse(await OMAPIBridge.listDevices());
+    const devices = JSON.parse(await OMAPIBridge.listDevices(AIDList));
     for(const d of devices) {
       if (d.available === 'true') {
         _devices.push(new OMAPIDevice(d.name, true) as Device);

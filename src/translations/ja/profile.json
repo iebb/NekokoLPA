@@ -8,6 +8,7 @@
   "operator": "オペレーター",
   "brand": "ブランド",
   "iccid": "ICCID",
+  "size": "推定サイズ",
   "conf_code": "コンフコード",
   "rename_profile": "プロファイルリネーム",
   "date_remaining": "{{date}} / {{remaining}}dリメイン",

@@ -16,6 +16,7 @@ import {Adapters} from "@/native/adapters/registry";
 import {useSelector} from "react-redux";
 import {selectDeviceState} from "@/redux/stateStore";
 import {preferences} from "@/storage/mmkv";
+import {formatSize} from "@/utils/size";
 
 export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
   const DeviceState = useSelector(selectDeviceState(deviceId));
@@ -25,7 +26,7 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
   const [showCamera, setShowCamera] = useState(cameraState === 'always' || !cameraState);
   const onDemandCamera = cameraState === 'ondemand' && !showCamera;
 
-  const { t } = useTranslation(['profile']);
+  const { t } = useTranslation(['profile', 'main']);
   const [acToken, setAcToken] = useState("");
   const [oid, setOid] = useState("");
   const [confirmationCode, setConfirmationCode] = useState("");
@@ -35,7 +36,6 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
   const { eid, euiccAddress, euiccInfo2 } = DeviceState;
   const adapter = Adapters[deviceId];
   const [smdp, setSmdp] = useState('');
-
 
   useEffect(() => {
     if (appLink) {
@@ -98,6 +98,11 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
             </Text>
             <Text $textDefault text70M>
               {t('profile:current_euicc', { device: adapter.device.deviceName })}
+            </Text>
+            <Text $textDefault text70M>
+              {t('main:available_space', {
+                size: formatSize(euiccInfo2?.extCardResource?.freeNonVolatileMemory),
+              })}
             </Text>
           </View>
           <View center style={{ borderRadius: 30 }}>
@@ -183,7 +188,7 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
           </Button>
           <View style={{ padding: 10, display: "flex", gap: 0, paddingVertical: 10 }}>
             <TextField
-              placeholder={'SM-DP'}
+              placeholder={'SM-DP+ Address'}
               floatingPlaceholder
               value={smdp}
               onChangeText={c => c.includes('$') ? processLPACode(c) : setSmdp(c.trim())}

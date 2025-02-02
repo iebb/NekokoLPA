@@ -5,10 +5,10 @@ const { CustomHttp } = NativeModules;
 export async function setupDevice(a: Adapter): Promise<(s: string, args: any[]) => Promise<(fn: string, args: any[]) => Promise<any>>> {
   const module = await (require("./web.out"))();
   module.jsSendApdu = async (x: string) => {
-    console.log("TX >> ", x);
+    // console.log("TX >> ", x);
     try {
       const result = await a.device.transmit(`8${a.device.channel ?? "1"}${x.substring(2)}`);
-      console.log("RX >> ", result);
+      // console.log("RX >> ", result);
       return result;
     } catch (error) {
       console.error("err:", error);

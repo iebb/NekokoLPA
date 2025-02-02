@@ -174,12 +174,6 @@ function Settings({ route,  navigation }: RootScreenProps<'Settings'>) {
 							defaultValue: 'always',
 							type: 'select'
 						},
-						{
-							key: "customAidCompat",
-							options: ['none', '5ber'],
-							defaultValue: 'none',
-							type: 'select'
-						},
 						// {
 						// 	key: "useRemoteDevice",
 						// 	options: ['off', 'on'],

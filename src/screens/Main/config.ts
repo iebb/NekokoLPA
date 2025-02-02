@@ -10,7 +10,13 @@ const flavorImages = {
   store: CatImage,
   multisign: multisignImage,
 }
+const flavorLinks = {
+  flavor1: "https://9es.im/",
+  store: "https://lpa.nekoko.ee/products",
+  multisign: "https://lpa.nekoko.ee/products",
+}
 export const AppLogo = (flavorImages as any)[Config.FLAVOR || 'store'];
+export const AppBuyLink = (flavorLinks as any)[Config.FLAVOR || 'store'];
 export const AppCheckForUpdates = Config.CHECK_FOR_UPDATES === "1";
 
 console.log("Cfg", Config);

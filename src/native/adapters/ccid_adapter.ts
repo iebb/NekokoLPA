@@ -1,6 +1,7 @@
 import {NativeModules} from "react-native";
 import {Device} from "@/native/adapters/adapter";
 import {preferences} from "@/storage/mmkv";
+import {AIDList} from "@/native/AID";
 const { CCIDPlugin } = NativeModules;
 
 
@@ -24,17 +25,18 @@ export class CCIDDevice implements Device {
     const channelResp = await this.transmit("0070000001");
     const channel = channelResp.substring(0, 2);
     this.channel = channel.substring(1);
-    const aidResp = await this.transmit(channel + "A4040010A0000005591010FFFFFFFF8900000100");
-    if (aidResp === "6a82") {
-      if (preferences.getString("customAidCompat") === "5ber") {
-        await this.transmit(channel + "A4040010A0000005591010FFFFFFFF8900050500");
+
+    for(const aid of AIDList.split(",")) {
+      const aidResp = await this.transmit(channel + "A4040010" + aid);
+      if (aidResp === "6a82") {
+      } else {
+        return true;
       }
     }
-    return true;
+    return false;
   }
 
   async accessRule(): Promise<boolean> {
-    console.log("ar");
     await this.transmitP("00a40004023f00");
     await this.transmitP("00c000001f");
     await this.transmitP("00a40004027f10");

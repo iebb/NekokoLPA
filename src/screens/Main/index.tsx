@@ -76,7 +76,7 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 									fontSize: 12 / PixelRatio.getFontScale(),
 									color: isLatest ? Colors.$textNeutralLight : Colors.red40
 								}}>
-									v{version} {!isLatest && "↑"}
+									{version} {!isLatest && "↑"}
 								</Text>
 								{
 									!isLatest && (

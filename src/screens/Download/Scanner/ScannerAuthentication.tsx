@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {StyleSheet,} from 'react-native';
+import {Alert, StyleSheet,} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {Button, Colors, Text, TextField, View} from "react-native-ui-lib";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
@@ -11,6 +11,10 @@ import Title from "@/components/common/Title";
 import Container from "@/components/common/Container";
 import {makeLoading} from "@/components/utils/loading";
 import {Adapters} from "@/native/adapters/registry";
+import sizeFile from "@/data/sizes";
+import {useSelector} from "react-redux";
+import {selectDeviceState} from "@/redux/stateStore";
+import {formatSize} from "@/utils/size";
 
 
 export function ScannerAuthentication(
@@ -22,11 +26,20 @@ export function ScannerAuthentication(
     initialConfirmationCode
   }: any
 ) {
-  const { t } = useTranslation(['profile']);
+  const { t } = useTranslation(['profile', 'main']);
   const [loading, setLoading] = useState(false);
   const [confirmationCode, setConfirmationCode] = useState(initialConfirmationCode);
+  const DeviceState = useSelector(selectDeviceState(deviceId));
 
   const adapter = Adapters[deviceId];
+  const { eid, euiccAddress, euiccInfo2 } = DeviceState;
+
+
+  const sizeDelta = sizeFile.offset[eid.substring(0, 8)] ?? 0;
+  const sizeValue = sizeFile.sizes[`${authenticateResult.profile.profileOwnerMccMnc}|${authenticateResult.profile.serviceProviderName}`] ?? null;
+  const sizeData = sizeValue ? sizeValue.map(d => d + sizeDelta) : null;
+  const maxSizeData = sizeData ? sizeData[2]: 10000;
+  const freeSpace = Math.round((euiccInfo2?.extCardResource?.freeNonVolatileMemory || 0));
 
   return (
     <View>
@@ -40,10 +53,10 @@ export function ScannerAuthentication(
         (authenticateResult?.success) ? (
           <Container>
             <MetadataView metadata={authenticateResult.profile} />
-            <View left column gap-10>
+            <View left column gap-10 style={{ marginTop: 20 }}>
               {
                 (authenticateResult.isCcRequired || confirmationCode) && (
-                  <View style={styles.tableRow} row>
+                  <View style={styles.tableRow} row flex-1 gap-12 fullWidth>
                     <Text style={styles.tableHeader}>
                       {t('profile:conf_code')}:
                     </Text>
@@ -69,6 +82,32 @@ export function ScannerAuthentication(
                       />
                     </View>
                   </View>
+                )
+              }
+              {
+                sizeData && (
+                  <>
+                    <View style={styles.tableRow} flex-1 gap-12 fullWidth>
+                      <Text style={styles.tableHeader}>
+                        {t('profile:size')}:
+                      </Text>
+                      <View style={styles.tableColumn}>
+                        <Text $textDefault flexG text70L>
+                          {formatSize(sizeData[1])} ({formatSize(sizeData[0])} ~ {formatSize(sizeData[2])})
+                        </Text>
+                      </View>
+                    </View>
+                    <View style={styles.tableRow} flex-1 gap-12 fullWidth>
+                      <Text style={styles.tableHeader}>
+                        {t('profile:available_space')}:
+                      </Text>
+                      <View style={styles.tableColumn}>
+                        <Text $textDefault flexG text70L style={freeSpace <= maxSizeData ? { color: "red" } : null }>
+                          {formatSize(freeSpace)}
+                        </Text>
+                      </View>
+                    </View>
+                  </>
                 )
               }
             </View>
@@ -101,19 +140,47 @@ export function ScannerAuthentication(
                 <Button
                   style={{ flex: 10 }}
                   marginV-12
-                  color={Colors.green50}
                   onPress={() => {
-                    makeLoading(
-                      setLoading,
-                      async () => {
-                        const downloadResult = await adapter.downloadProfile(authenticateResult._internal, confirmationCode);
-                        await adapter.processNotifications(authenticateResult.profile.iccid);
-                        // InfiLPA.refreshProfileList(device);
-                        confirmDownload({
-                          downloadResult
-                        });
-                      }
-                    )
+                    if (freeSpace <= maxSizeData) {
+                      Alert.alert(
+                        t('profile:title_confirm_profile'),
+                        t('profile:available_space_alert', { space: formatSize(freeSpace) }), [
+                          {
+                            text: t('profile:delete_tag_cancel'),
+                            onPress: () => {},
+                            style: 'cancel',
+                          },
+                          {
+                            text: t('profile:delete_tag_ok'),
+                            style: 'destructive',
+                            onPress: () => {
+                              makeLoading(
+                                setLoading,
+                                async () => {
+                                  const downloadResult = await adapter.downloadProfile(authenticateResult._internal, confirmationCode);
+                                  await adapter.processNotifications(authenticateResult.profile.iccid);
+                                  // InfiLPA.refreshProfileList(device);
+                                  confirmDownload({
+                                    downloadResult
+                                  });
+                                }
+                              )
+                            }
+                          },
+                        ]);
+                    } else {
+                      makeLoading(
+                        setLoading,
+                        async () => {
+                          const downloadResult = await adapter.downloadProfile(authenticateResult._internal, confirmationCode);
+                          await adapter.processNotifications(authenticateResult.profile.iccid);
+                          // InfiLPA.refreshProfileList(device);
+                          confirmDownload({
+                            downloadResult
+                          });
+                        }
+                      )
+                    }
                   }}
                 >
                   <FontAwesomeIcon
@@ -163,7 +230,7 @@ export function ScannerAuthentication(
 }
 
 const styles = StyleSheet.create({
-  tableHeader:{ width: 80, flexGrow: 0, flexShrink: 0, fontSize: 17 },
+  tableHeader:{ width: 100, flexGrow: 0, flexShrink: 0, fontSize: 17 },
   tableColumn:{ flexGrow: 1, flexShrink: 0, fontSize: 17 },
   tableRow:{ flexDirection: "row", flex: 1, gap: 10 },
 })
