@@ -1,7 +1,7 @@
 {
   "name": "nekokolpa",
-  "buildVersion": 333,
-  "version": "1.10.333",
+  "buildVersion": 334,
+  "version": "1.10.334",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -46,7 +46,6 @@
     "react-native-config": "1.4.6",
     "react-native-gesture-handler": "^2.19.0",
     "react-native-image-picker": "^7.1.2",
-    "react-native-macos": "^0.76.0-0",
     "react-native-mmkv": "2.12.2",
     "react-native-prompt-android": "^1.1.0",
     "react-native-qr-image-reader": "^1.0.5",
@@ -74,7 +73,7 @@
     "@testing-library/react-native": "^12.1.2",
     "@types/jest": "^29.4.0",
     "@types/lodash": "^4.17.7",
-    "@types/node": "^18.14.1",
+    "@types/node": "^22.13.0",
     "@types/react": "^18.2.6",
     "@types/react-test-renderer": "^18.0.0",
     "@typescript-eslint/parser": "^6.13.1",

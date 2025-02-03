@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
 import {MMKV} from "react-native-mmkv";
-import {preferences} from "@/storage/mmkv";
+import {preferences} from "@/utils/mmkv";
 import {ThemeProvider} from "@/theme/context";
 import "./translations";
 import {NativeListener} from "@/native/NativeListener";

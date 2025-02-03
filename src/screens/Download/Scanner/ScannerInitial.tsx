@@ -15,7 +15,7 @@ import {Dimensions, KeyboardAvoidingView, Platform} from "react-native";
 import {Adapters} from "@/native/adapters/registry";
 import {useSelector} from "react-redux";
 import {selectDeviceState} from "@/redux/stateStore";
-import {preferences} from "@/storage/mmkv";
+import {preferences} from "@/utils/mmkv";
 import {formatSize} from "@/utils/size";
 
 export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {

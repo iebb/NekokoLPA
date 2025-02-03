@@ -5,7 +5,7 @@ import SafeScreen from '@/theme/SafeScreen';
 import type {RootScreenProps} from "@/screens/navigation";
 import Title from "@/components/common/Title";
 import {Button, ColorPickerDialog, Colors, ListItem, Picker, Text, TextField, View} from "react-native-ui-lib";
-import {preferences} from "@/storage/mmkv";
+import {preferences} from "@/utils/mmkv";
 import {useDispatch} from "react-redux";
 import {useAppTheme} from "@/theme/context";
 import i18next from "i18next";

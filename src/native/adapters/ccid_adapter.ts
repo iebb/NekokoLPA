@@ -1,7 +1,7 @@
 import {NativeModules} from "react-native";
 import {Device} from "@/native/adapters/adapter";
-import {preferences} from "@/storage/mmkv";
-import {AIDList} from "@/native/AID";
+import {preferences} from "@/utils/mmkv";
+import {AIDList} from "@/utils/aid";
 const { CCIDPlugin } = NativeModules;
 
 

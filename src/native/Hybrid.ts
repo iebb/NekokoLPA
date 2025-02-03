@@ -6,8 +6,8 @@ import {Adapters} from "@/native/adapters/registry";
 import {setInternalDevices} from "@/redux/stateStore";
 import {Dispatch} from "@reduxjs/toolkit";
 import {RemoteDevice} from "@/native/adapters/remote_adapter";
-import {preferences} from "@/storage/mmkv";
-import {AIDList} from "@/native/AID";
+import {preferences} from "@/utils/mmkv";
+import {AIDList} from "@/utils/aid";
 
 const { CCIDPlugin, OMAPIBridge, CustomHttp } = NativeModules;
 

@@ -1,4 +1,4 @@
-import {preferences} from "@/storage/mmkv";
+import {preferences} from "@/utils/mmkv";
 
 const numberFormat = Intl.NumberFormat();
 

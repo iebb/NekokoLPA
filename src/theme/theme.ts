@@ -1,5 +1,5 @@
 import {Colors, SchemeType, ThemeManager} from "react-native-ui-lib";
-import {preferences} from "@/storage/mmkv";
+import {preferences} from "@/utils/mmkv";
 import {Appearance} from "react-native";
 
 export function initializeTheme(primaryColor) {

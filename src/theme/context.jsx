@@ -2,7 +2,7 @@ import React, {createContext, useContext, useState} from 'react';
 import {Colors, ThemeManager, View} from 'react-native-ui-lib';
 import {Appearance} from "react-native";
 import {initializeTheme} from "@/theme/theme";
-import {preferences} from "@/storage/mmkv";
+import {preferences} from "@/utils/mmkv";
 
 const ThemeContext = createContext();
 

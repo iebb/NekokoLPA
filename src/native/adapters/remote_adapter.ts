@@ -2,7 +2,7 @@ import {Alert, NativeModules} from "react-native";
 import {Device} from "@/native/adapters/adapter";
 import {version} from '../../../package.json';
 import prompt from "react-native-prompt-android";
-import {preferences} from "@/storage/mmkv";
+import {preferences} from "@/utils/mmkv";
 import {MMKV} from "react-native-mmkv";
 const { CCIDPlugin } = NativeModules;
 

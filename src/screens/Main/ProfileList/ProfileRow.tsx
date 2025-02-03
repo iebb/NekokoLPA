@@ -1,6 +1,6 @@
 import {parseMetadata} from "@/utils/parser";
 import {findPhoneNumbersInText} from "libphonenumber-js/min";
-import {preferences, sizeStats} from "@/storage/mmkv";
+import {preferences, sizeStats} from "@/utils/mmkv";
 import {Card, Colors, Drawer, Switch, Text, View} from "react-native-ui-lib";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faPencil, faTrash} from "@fortawesome/free-solid-svg-icons";

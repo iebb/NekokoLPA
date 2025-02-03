@@ -36,7 +36,7 @@ export function ScannerAuthentication(
 
 
   const sizeDelta = sizeFile.offset[eid.substring(0, 8)] ?? 0;
-  const sizeValue = sizeFile.sizes[`${authenticateResult.profile.profileOwnerMccMnc}|${authenticateResult.profile.serviceProviderName}`] ?? null;
+  const sizeValue = sizeFile.sizes[`${authenticateResult?.profile?.profileOwnerMccMnc}|${authenticateResult?.profile?.serviceProviderName}`] ?? null;
   const sizeData = sizeValue ? sizeValue.map(d => d + sizeDelta) : null;
   const maxSizeData = sizeData ? sizeData[2]: 10000;
   const freeSpace = Math.round((euiccInfo2?.extCardResource?.freeNonVolatileMemory || 0));

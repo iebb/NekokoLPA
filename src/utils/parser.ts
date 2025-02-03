@@ -1,8 +1,8 @@
 import {countries} from "@/data/countryData";
 import {ProfileMetadataMap} from "@/native/types";
-import {resolveMccMnc, T_PLMN} from "@/data/mccMncResolver";
+import {resolveMccMnc} from "@/data/mccMncResolver";
 import {TFunction} from "i18next";
-import {countryList} from "@/storage/mmkv";
+import {countryList} from "@/utils/mmkv";
 import {Colors} from "react-native-ui-lib";
 
 export function predictCountryForICCID(iccid: string) {

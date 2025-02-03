@@ -11,11 +11,12 @@ import {Adapters} from "@/native/adapters/registry";
 import {NativeModules, Platform, ToastAndroid} from "react-native";
 import Clipboard from "@react-native-clipboard/clipboard";
 import prompt from "react-native-prompt-android";
-import {preferences} from "@/storage/mmkv";
+import {preferences} from "@/utils/mmkv";
 import {useAppTheme} from "@/theme/context";
 import _ from "lodash";
-import {toCIName} from "@/screens/EuiccInfo/CINames";
+import {toCIName} from "@/utils/CINames";
 import {formatSize} from "@/utils/size";
+import {toFriendlyName} from "@/utils/friendlyName";
 
 
 export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
@@ -99,6 +100,8 @@ export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
     + "..."
   );
 
+  let supplementText = toFriendlyName(eid, DeviceState.euiccInfo2);
+
   return (
     <View>
       <ActionSheet
@@ -146,6 +149,14 @@ export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
           <View row style={{ width: '100%' }}>
             <Text text100L $textDefault>
               EID: {maskedEid}
+            </Text>
+            <Text
+              text100L
+              $textDefault
+              style={{ textAlign: 'right', flexGrow: 1 }}
+              numberOfLines={1}
+            >
+              {supplementText}
             </Text>
           </View>
         </View>

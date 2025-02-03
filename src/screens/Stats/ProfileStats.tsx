@@ -1,6 +1,6 @@
 import {Text, View} from "react-native-ui-lib";
 import React from "react";
-import {countryList} from "@/storage/mmkv";
+import {countryList} from "@/utils/mmkv";
 import _MCC from "@/data/mcc.json";
 import {Flags} from "@/assets/flags";
 import {Image} from "react-native";
@@ -14,14 +14,6 @@ export function ProfileStats() {
           countryList.getAllKeys().sort().map(mcc => {
             const mncs = JSON.parse(countryList.getString(mcc) as string);
             const mccData = (_MCC as any)[mcc];
-
-            for(const k of Object.keys(mncs)) {
-              if (k.length == 6 && (k[3] == "0" || k[3] == "f")) {
-                delete mncs[k];
-              }
-            }
-
-            countryList.set(mcc, JSON.stringify(mncs));
 
             return (
               <View key={mcc}>

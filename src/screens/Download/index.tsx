@@ -7,7 +7,7 @@ import {ScannerInitial} from "@/screens/Download/Scanner/ScannerInitial";
 import {ScannerAuthentication} from "@/screens/Download/Scanner/ScannerAuthentication";
 import {ScannerResult} from "@/screens/Download/Scanner/ScannerResult";
 import {version} from '../../../package.json';
-import {sizeStats} from "@/storage/mmkv";
+import {sizeStats} from "@/utils/mmkv";
 import {Adapters} from "@/native/adapters/registry";
 import {useSelector} from "react-redux";
 import {selectDeviceState} from "@/redux/stateStore";

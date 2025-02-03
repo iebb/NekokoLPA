@@ -30,11 +30,8 @@ import {Flags} from "@/assets/flags";
 import {makeLoading} from "@/components/utils/loading";
 import {Adapters} from "@/native/adapters/registry";
 import {selectDeviceState} from "@/redux/stateStore";
+import {getUTF8Length} from "@/utils/encoding";
 
-
-function getUTF8Length(s: string) {
-	return new TextEncoder().encode(s).length;
-}
 
 function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 	const { t } = useTranslation(['profile']);
@@ -70,10 +67,6 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 			await adapter.setNicknameByIccId(iccid, n);
 		});
 	}
-
-	console.log(Colors.buttonForeground);
-	console.log(Colors.buttonBackground);
-	console.log(Colors.primaryColor);
 
 	return (
 		<SafeScreen>
