@@ -78,7 +78,7 @@ sentry.properties
 
 *.aab
 *.apk
-upload.sh
+release.sh
 
 
 output-metadata.json
@@ -88,3 +88,4 @@ output-metadata.json
 /build_private.sh
 
 .creds
+store/

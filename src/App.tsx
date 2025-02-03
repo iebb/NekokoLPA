@@ -10,14 +10,6 @@ import ApplicationNavigator from "@/screens/Application";
 import {useEffect} from "react";
 import i18next from "i18next";
 import {initializeTheme} from "@/theme/theme";
-import * as Sentry from "@sentry/react-native";
-
-Sentry.init({
-  dsn: "https://0bd91e9c300e703b7743cabf578f64d0@o4505050046332928.ingest.us.sentry.io/4508350673190912",
-
-  // uncomment the line below to enable Spotlight (https://spotlightjs.com)
-  // enableSpotlight: __DEV__,
-});
 
 require("react-native-ui-lib/config").setConfig({
   appScheme: preferences.getString("theme") ?? "default",
