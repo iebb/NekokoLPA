@@ -13,5 +13,5 @@ for filename in outputs/apk/*.apk; do
 done
 
 cp outputs/apk/app-multisign-arm64-v8a-release.apk "outputs/ee.nekoko.nlpa.multisign-arm64-v8a-$(jq .version package.json -r).apk"
-cp outputs/apk/app-flavor1-arm64-v8a-release.apk "outputs/ee.nekoko.nlpa.flavor1-arm64-v8a-$(jq .version package.json -r).apk"
+# cp outputs/apk/app-flavor1-arm64-v8a-release.apk "outputs/ee.nekoko.nlpa.flavor1-arm64-v8a-$(jq .version package.json -r).apk"
 # cp outputs/apk/app-flavor2-arm64-v8a-release.apk "outputs/ee.nekoko.nlpa.flavor2-arm64-v8a-$(jq .version package.json -r).apk"

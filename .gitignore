@@ -86,3 +86,5 @@ output-metadata.json
 
 !sakurasim.keystore
 /build_private.sh
+
+.creds
