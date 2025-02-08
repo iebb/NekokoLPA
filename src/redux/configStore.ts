@@ -20,8 +20,6 @@ export const appConfigStore = createSlice({
     initialState: getAppConfig(),
     reducers: {
         setValue: (state, action: PayloadAction<object>) => {
-
-            console.log("setting", action, action.payload);
             for(const k of Object.keys(action.payload)) {
                 // @ts-ignore
                 state[k] = action.payload[k];

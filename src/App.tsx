@@ -26,13 +26,13 @@ function App() {
   }, []);
 
   return (
-    <ThemeProvider>
-      <Provider store={store}>
-        <NativeListener>
+    <Provider store={store}>
+      <NativeListener>
+        <ThemeProvider>
           <ApplicationNavigator />
-        </NativeListener>
-      </Provider>
-    </ThemeProvider>
+        </ThemeProvider>
+      </NativeListener>
+    </Provider>
   );
 }
 

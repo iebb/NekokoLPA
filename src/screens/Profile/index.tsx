@@ -81,7 +81,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 				bottom
 				visible={tagModal}
 				onDismiss={() => setTagModal(false)}
-				panDirection={PanningProvider.Directions.BOTTOM}
+				panDirection={PanningProvider.Directions.DOWN}
 				renderPannableHeader={props => {
 					const {title} = props;
 					return (

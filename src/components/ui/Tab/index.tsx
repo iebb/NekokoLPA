@@ -1,12 +1,25 @@
 // @ts-nocheck
 import _ from 'lodash';
 import React, {PropsWithChildren, useCallback, useEffect, useMemo, useState} from 'react';
-import {runOnJS, useAnimatedReaction, useSharedValue, withTiming} from 'react-native-reanimated';
-import {useOrientation, useThemeProps} from 'react-native-ui-lib/src/components/../hooks';
-import {Constants} from 'react-native-ui-lib/src/components/../commons/new';
+import {
+  configureReanimatedLogger,
+  ReanimatedLogLevel,
+  runOnJS,
+  useAnimatedReaction,
+  useSharedValue,
+  withTiming
+} from 'react-native-reanimated';
+import {useOrientation, useThemeProps} from 'react-native-ui-lib/src/hooks';
+import {Constants} from 'react-native-ui-lib/src/commons/new';
 import TabBarContext from './TabBarContext';
 import TabBar, {TabControllerBarProps} from './TabBar';
 import TabBarItem, {TabControllerItemProps} from './TabBarItem';
+
+// This is the default configuration
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.warn,
+  strict: false, // Reanimated runs in strict mode by default
+});
 
 export {TabControllerBarProps, TabControllerItemProps};
 

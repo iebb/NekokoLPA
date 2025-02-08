@@ -5,7 +5,6 @@ import {Adapter, Device} from "@/native/adapters/adapter";
 import {Adapters} from "@/native/adapters/registry";
 import {setInternalDevices} from "@/redux/stateStore";
 import {Dispatch} from "@reduxjs/toolkit";
-import {RemoteDevice} from "@/native/adapters/remote_adapter";
 import {preferences} from "@/utils/mmkv";
 import {AIDList} from "@/utils/aid";
 
@@ -16,6 +15,7 @@ export async function setupInternalDevices(resolver: any) {
   const _devices = [];
   if (Platform.OS === 'android') {
     const devices = JSON.parse(await OMAPIBridge.listDevices(AIDList));
+    console.log("DEV", devices);
     for(const d of devices) {
       if (d.available === 'true') {
         _devices.push(new OMAPIDevice(d.name, true) as Device);
@@ -37,13 +37,6 @@ export async function setupInternalDevices(resolver: any) {
     for(const r of readers) {
       _devices.push(new CCIDDevice(r) as Device);
     }
-  }
-
-  const remoteDevice = preferences.getString("remoteDevice") ?? "";
-  const useRemoteDevice = preferences.getString("useRemoteDevice") ?? "off";
-
-  if (useRemoteDevice === "on" && (remoteDevice.startsWith("http://") || remoteDevice.startsWith("https://"))) {
-    _devices.push(new RemoteDevice(remoteDevice));
   }
 
   resolver(_devices);

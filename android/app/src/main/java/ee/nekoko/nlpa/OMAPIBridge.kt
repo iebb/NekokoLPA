@@ -127,8 +127,11 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext) : 
                     Thread.sleep(300)
                 }
             }
+        } catch (e: IOException) {
+            throw e
         } catch (e: Exception) {
             Log.e(TAG, "Opening eUICC connection ${reader.name} failed.", e)
+            throw e
         }
         return null
     }
@@ -138,8 +141,7 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext) : 
         var aids = aidListDefault.split(",")
         val result = mutableListOf<Map<String, String>>()
         val signatureList = SystemInfo(context as Context).signatureList().joinToString(",")
-        Log.i(TAG,"SE List Readers:")
-        Log.e(TAG, "$channelMappings length: ${channelMappings.size}")
+        Log.e(TAG, "SE List Readers: $channelMappings length: ${channelMappings.size}")
         if (seService.isConnected) {
             Log.i(TAG,"SE List ${seService.readers.size} Readers:")
             for (reader in seService.readers) {
@@ -206,7 +208,7 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext) : 
                     // throw e
                 }
             }
-            if (seService.readers.isEmpty()) {
+            if (seService.readers.filter { it.name.startsWith("SIM") }.isEmpty()) {
                 val subscriptionManager = SubscriptionManager.from(context);
                 var simSlots = subscriptionManager.getActiveSubscriptionInfoCountMax();
                 for (i in 1..simSlots) {
@@ -222,9 +224,13 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext) : 
 
     fun connectChannel(readerName: String): Boolean {
         val aids = aidListDefault.split(",")
-        return seService.readers.find { it.name == readerName }?.let { reader ->
-            openLogicalChannel(reader, aids) != null
-        } ?: false
+        try {
+            return seService.readers.find { it.name == readerName }?.let { reader ->
+                openLogicalChannel(reader, aids) != null
+            } ?: false
+        }  catch (e: Exception) {
+            return false
+        }
     }
 
 
@@ -287,7 +293,7 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext) : 
                 } catch (e: Exception) {
                     when(e) {
                         is IllegalStateException, is IOException -> {
-                            for (i in 1..10) {
+                            for (i in 1..5) {
                                 Log.e(TAG, "Restarting Channel, count $i")
                                 val result = connectChannel(device)
                                 if (result) {

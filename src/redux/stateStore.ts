@@ -1,23 +1,9 @@
-import {Action, configureStore, createSlice, PayloadAction, ThunkAction} from '@reduxjs/toolkit';
-import {AuthenticateResult, DownloadResult, EuiccInfo2, ProfileMetadataMap, Profiles} from "@/native/types";
-import {TypedUseSelectorHook, useDispatch, useSelector} from 'react-redux';
-import {MMKV} from "react-native-mmkv";
-import {Adapter, Device} from "@/native/adapters/adapter";
+import {configureStore, createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {EuiccInfo2, ProfileMetadataMap} from "@/native/types";
 import {EuiccConfiguredAddresses, Notification} from "@/native/types/LPA";
 
 
 export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
-export type AppThunk<ReturnType = void> = ThunkAction<
-  ReturnType,
-  RootState,
-  unknown,
-  Action<string>
->;
-
-// Use throughout your app instead of plain `useDispatch` and `useSelector`
-export const useAppDispatch = () => useDispatch<AppDispatch>();
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 export interface EuiccList {
     available: boolean;
@@ -53,19 +39,9 @@ export const globalDataStore = createSlice({
     name: 'LPA',
     initialState,
     reducers: {
-        setGlobalState: (state, action: PayloadAction<object>) => {
-            for(const k of Object.keys(action.payload)) {
-                // @ts-ignore
-                state[k] = action.payload[k];
-            }
-        },
         setInternalDevices: (state, action: PayloadAction<object>) => {
             // @ts-ignore
             state.internalList = action.payload;
-        },
-        setExternalDevices: (state, action: PayloadAction<object>) => {
-            // @ts-ignore
-            state.externalList = action.payload;
         },
     },
 });
@@ -96,7 +72,6 @@ export const store = configureStore({
 
 export const selectState = (state: RootState) => state.GlobalState;
 export const selectDeviceState = (e: string) => (state: RootState) => state.DeviceState[e] || {};
-export const selectDeviceStates = (state: RootState) => state.DeviceState;
 
-export const { setGlobalState, setInternalDevices } = globalDataStore.actions;
+export const { setInternalDevices } = globalDataStore.actions;
 export const { setDeviceState } = DeviceStateDataStore.actions;

@@ -3,6 +3,7 @@ import {Colors, ThemeManager, View} from 'react-native-ui-lib';
 import {Appearance} from "react-native";
 import {initializeTheme} from "@/theme/theme";
 import {preferences} from "@/utils/mmkv";
+import Container from "@/components/common/Container";
 
 const ThemeContext = createContext();
 
@@ -19,10 +20,14 @@ export const ThemeProvider = ({children}) => {
 
   const setThemeColor = (color) => {
     initializeTheme(color);
+    _setThemeColor(color);
   };
 
+
   return (
-    <ThemeContext.Provider value={{theme, effectiveTheme, themeColor, setTheme, setThemeColor}}>
+    <ThemeContext.Provider
+      value={{theme, effectiveTheme, themeColor, setTheme, setThemeColor}}
+    >
       {children}
     </ThemeContext.Provider>
   );

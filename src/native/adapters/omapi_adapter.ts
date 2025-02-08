@@ -24,15 +24,17 @@ export class OMAPIDevice implements Device {
   }
 
   async connect(): Promise<boolean> {
-    return true;
+    return this.available;
   }
 
   async disconnect(): Promise<boolean> {
-    return true;
+    return this.available;
   }
 
   async transmit(s: string): Promise<string> {
-    const r = await OMAPIBridge.transceive(this.deviceName, s);
-    return r;
+    if (this.available) {
+      return await OMAPIBridge.transceive(this.deviceName, s);
+    }
+    return "6a00";
   }
 }

@@ -5,7 +5,7 @@ import {useAppTheme} from '@/theme/context';
 import type {RootStackParamList} from '@/screens/navigation';
 import React, {useEffect} from "react";
 import {Linking} from "react-native";
-import {LPACode} from "@/components/utils/lpaRegex";
+import {LPACode} from "@/utils/lpaRegex";
 import EuiccInfo from "@/screens/EuiccInfo";
 import Main from "@/screens/Main";
 import Scanner from "@/screens/Download";
@@ -18,10 +18,10 @@ const Stack = createStackNavigator<RootStackParamList>();
 
 
 function ApplicationNavigator() {
-	const { theme } = useAppTheme();
+	const { theme, themeColor } = useAppTheme();
 	const navigationRef = React.createRef<NavigationContainerRef<RootStackParamList>>();
 	return (
-		<SafeAreaProvider>
+		<SafeAreaProvider key={theme + "_" + themeColor}>
 			<NavigationContainer ref={navigationRef}>
 				<Stack.Navigator
 					screenOptions={{ headerShown: false }}

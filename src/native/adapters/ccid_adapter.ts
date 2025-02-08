@@ -26,6 +26,7 @@ export class CCIDDevice implements Device {
     const channel = channelResp.substring(0, 2);
     this.channel = channel.substring(1);
 
+
     for(const aid of AIDList.split(",")) {
       const aidResp = await this.transmit(channel + "A4040010" + aid);
       if (aidResp === "6a82") {

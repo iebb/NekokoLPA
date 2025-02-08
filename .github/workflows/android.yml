@@ -38,15 +38,11 @@ jobs:
 
     # Step 5: Run the build script
     - name: Build APK
-      env: # Or as an environment variable
-        SENTRY_PROJECT: react-native
-        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       run: chmod +x build_for_github.sh && bash ./build_for_github.sh
 
     # Step 5: Run the build script
     - name: Sign APK
-      env: # Or as an environment variable
-        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      env:
         SIGN_PASS_NEKOKO_BEEF: ${{ secrets.SIGN_PASS_NEKOKO_BEEF }}
         SIGN_PASS_WENZI: ${{ secrets.SIGN_PASS_WENZI }}
       run: chmod +x sign.sh && bash ./sign.sh

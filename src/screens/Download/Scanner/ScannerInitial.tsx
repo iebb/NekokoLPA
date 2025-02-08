@@ -8,7 +8,7 @@ import React, {useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {makeLoading} from "@/components/utils/loading";
 import BlockingLoader from "@/components/common/BlockingLoader";
-import {LPACode} from "@/components/utils/lpaRegex";
+import {LPACode} from "@/utils/lpaRegex";
 import {launchImageLibrary} from "react-native-image-picker";
 import QrImageReader from 'react-native-qr-image-reader';
 import {Dimensions, KeyboardAvoidingView, Platform} from "react-native";

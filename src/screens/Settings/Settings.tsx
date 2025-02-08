@@ -1,5 +1,5 @@
-import React from 'react';
-import {Alert, FlatList,} from 'react-native';
+import React, {useState} from 'react';
+import {FlatList,} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import SafeScreen from '@/theme/SafeScreen';
 import type {RootScreenProps} from "@/screens/navigation";
@@ -11,11 +11,10 @@ import {useAppTheme} from "@/theme/context";
 import i18next from "i18next";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faPaintbrush} from "@fortawesome/free-solid-svg-icons";
-import RNRestart from 'react-native-restart';
 
 export type SettingDataType = {
 	key: string;
-	options: string[];
+	options?: string[];
 	type: string;
 	defaultValue: string;
 	onChange?: (value: string) => void;
@@ -25,7 +24,7 @@ export type SettingDataType = {
 function PickerRow({row} : {row: SettingDataType}) {
 	const {t} = useTranslation(['settings']);
 	const currentValue = preferences.getString(row.key) ?? row.defaultValue;
-	const [v, setV] = React.useState<string>(currentValue);
+	const [v, setV] = useState<string>(currentValue);
 	if (row.type === 'select') {
 		return (
 			<View style={{width: "100%"}}>
@@ -39,10 +38,12 @@ function PickerRow({row} : {row: SettingDataType}) {
 					floatingPlaceholder
 					value={v}
 					onChange={(value) => {
-						setV(value);
-						preferences.set(row.key, value);
-						if (row.onChange) {
-							row.onChange(value);
+						if (typeof value === "string") {
+							setV(value);
+							preferences.set(row.key, value);
+							if (row.onChange) {
+								row.onChange(value);
+							}
 						}
 					}}
 					items={row.options?.map(opt => ({
@@ -78,7 +79,7 @@ function PickerRow({row} : {row: SettingDataType}) {
 	}
 
 	if (row.type === 'color') {
-		const [picker, showPicker] = React.useState<boolean>(false);
+		const [picker, showPicker] = useState<boolean>(false);
 		return (
 			<View style={{width: "100%"}}>
 				<Text $textNeutralLight text90L>
@@ -138,10 +139,6 @@ function Settings({ route,  navigation }: RootScreenProps<'Settings'>) {
 							type: 'select',
 							onChange: (value: string) => {
 								setTheme(value);
-								Alert.alert('Theme changed', "Restart to take effect?", [
-									{text: 'Cancel'},
-									{text: 'OK', onPress: () => RNRestart.restart()},
-								]);
 							}
 						},
 						{
@@ -174,27 +171,12 @@ function Settings({ route,  navigation }: RootScreenProps<'Settings'>) {
 							defaultValue: 'always',
 							type: 'select'
 						},
-						// {
-						// 	key: "useRemoteDevice",
-						// 	options: ['off', 'on'],
-						// 	defaultValue: 'off',
-						// 	type: 'select'
-						// },
-						// {
-						// 	key: "remoteDevice",
-						// 	defaultValue: '',
-						// 	type: 'text'
-						// },
 						{
 							key: "themeColor",
 							defaultValue: '#a575f6',
 							type: 'color',
 							onChange: (value: string) => {
 								setThemeColor(value);
-								Alert.alert('Color changed', "Restart to take effect?", [
-									{text: 'Cancel'},
-									{text: 'OK', onPress: () => RNRestart.restart()},
-								]);
 							}
 						},
 					]}
