@@ -124,7 +124,8 @@
   "profile_ui_download": "Download",
 
   "notifications_notifications": "Notifications",
-  "notifications_send_failed": "Send Failed",
+  "notifications_send_success": "Notification sent successfully",
+  "notifications_send_failed": "Notification failed to send",
   "notifications_send_failed_alert": "This notification has failed to send.",
   "notifications_delete": "Delete Notification",
   "notifications_delete_alert": "Are you sure to delete this notification? It cannot be recovered",

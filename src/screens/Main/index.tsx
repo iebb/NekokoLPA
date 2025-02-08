@@ -34,8 +34,6 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 		}
 	}, []);
 
-	console.log(release);
-
 	const getBuild = (e: string) => {
 		try {
 			const s = e.split(".");
@@ -62,7 +60,7 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 							>
 								<Image
 									source={AppLogo}
-									style={{width: 40, height: 40}}
+									style={{width: 42, height: 42}}
 								/>
 							</TouchableOpacity>
 							<View onTouchStart={() => {

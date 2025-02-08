@@ -122,7 +122,8 @@
 
 
   "notifications_notifications": "ノーティフィケーション",
-  "notifications_send_failed": "センドフェイル",
+  "notifications_send_success": "送信にサクセス",
+  "notifications_send_failed": "送信に失敗",
   "notifications_send_failed_alert": "このノーティフィケーションの送信に失敗しました。",
   "notifications_delete": "ノーティフィケーションをデリート",
   "notifications_delete_alert": "このノーティフィケーションをデリートしてもよろしいですか？復元できません。",

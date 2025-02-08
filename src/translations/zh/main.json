@@ -122,6 +122,7 @@
 
 
   "notifications_notifications": "通知",
+  "notifications_send_success": "通知发送成功",
   "notifications_send_failed": "发送失败",
   "notifications_send_failed_alert": "通知发送失败",
   "notifications_delete": "删除通知",
