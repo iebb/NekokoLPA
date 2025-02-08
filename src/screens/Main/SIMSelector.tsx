@@ -9,7 +9,7 @@ import {Dimensions, Linking, NativeModules, Platform, ScrollView, ToastAndroid} 
 import {Adapters} from "@/native/adapters/registry";
 import TabController from "../../components/ui/Tab";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
-import {faDownload, faSimCard} from "@fortawesome/free-solid-svg-icons";
+import {faFloppyDisk, faSimCard} from "@fortawesome/free-solid-svg-icons";
 import Clipboard from "@react-native-clipboard/clipboard";
 import {preferences} from "@/utils/mmkv";
 import {AppBuyLink} from "@/screens/Main/config";
@@ -87,7 +87,7 @@ export default function SIMSelector() {
               icon: (
                 <FontAwesomeIcon
                   icon={
-                    adapter.device.deviceName.startsWith("SIM") ? faSimCard : faDownload
+                    adapter.device.deviceName.startsWith("SIM") ? faSimCard : faFloppyDisk
                   }
                   style={{
                     color: Colors.$textPrimary,

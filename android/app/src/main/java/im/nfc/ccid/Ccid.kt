@@ -134,6 +134,10 @@ class Ccid(
         } while (message.isStatusTimeoutExtensionRequest)
 
         if (!message.isStatusSuccess) {
+            if (message.iccStatus == 2) {
+                throw CcidCardNotFoundException("Card error: ${message.iccStatus}")
+            }
+
             throw CcidException("Card error: ${message.iccStatus}")
         }
 
@@ -187,6 +191,7 @@ class Ccid(
 }
 
 class CcidException(message: String) : Exception(message)
+class CcidCardNotFoundException(message: String) : Exception(message)
 
 data class CcidRdrToPcMessage(
     val messageType: Byte,

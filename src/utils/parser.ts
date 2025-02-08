@@ -44,7 +44,7 @@ export function dateToDate6(d: Date): string {
   return dateToDate8(d).substring(2);
 }
 
-export function parseMetadata(metadata: ProfileMetadataMap, t: TFunction) {
+export function parseMetadata(metadata: ProfileMetadataMap, t: TFunction, parseCountry = true) {
   const tags = [];
 
   let nickname = metadata.profileNickname || metadata.profileName || metadata.serviceProviderName;
@@ -122,7 +122,9 @@ export function parseMetadata(metadata: ProfileMetadataMap, t: TFunction) {
   let countryMatch = nickname.match(/[🇦-🇿]{2}/u);
   if (countryMatch) {
     countryEmoji = emojiToCountryCode(countryMatch[0]);
-    nickname = nickname.replace(countryMatch[0], "").trim();
+    if (parseCountry) {
+      nickname = nickname.replace(countryMatch[0], "").trim();
+    }
   }
 
   return {

@@ -22,6 +22,7 @@ import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.WritableNativeArray
 import com.google.gson.Gson
 import im.nfc.ccid.Ccid
+import im.nfc.ccid.CcidCardNotFoundException
 import im.nfc.ccid.Protocol
 import kotlin.collections.get
 
@@ -192,12 +193,17 @@ class CCIDPlugin @ReactMethod constructor(private val context: ReactContext?) : 
             return
         } else {
             Log.e(TAG, "Permission OK. Connecting")
-            val _ccid = connectToInterface(device, reader.interfaceIdx)
-            if (_ccid != null) {
-                readers[name] = reader.copy(ccid = _ccid.first)
-                result.resolve(_ccid.second)
-            } else {
-                result.reject("CCID_READER_CONNECT_ERROR", "Failed to connect [c]", null)
+            try {
+
+                val _ccid = connectToInterface(device, reader.interfaceIdx)
+                if (_ccid != null) {
+                    readers[name] = reader.copy(ccid = _ccid.first)
+                    result.resolve(_ccid.second)
+                } else {
+                    result.reject("CCID_READER_CONNECT_ERROR", "Failed to connect [c]", null)
+                }
+            } catch (c: CcidCardNotFoundException) {
+                result.reject("CCID_READER_CONNECT_ERROR", "No card in reader", null)
             }
         }
     }

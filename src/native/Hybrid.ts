@@ -5,7 +5,6 @@ import {Adapter, Device} from "@/native/adapters/adapter";
 import {Adapters} from "@/native/adapters/registry";
 import {setInternalDevices} from "@/redux/stateStore";
 import {Dispatch} from "@reduxjs/toolkit";
-import {preferences} from "@/utils/mmkv";
 import {AIDList} from "@/utils/aid";
 
 const { CCIDPlugin, OMAPIBridge, CustomHttp } = NativeModules;
@@ -15,7 +14,6 @@ export async function setupInternalDevices(resolver: any) {
   const _devices = [];
   if (Platform.OS === 'android') {
     const devices = JSON.parse(await OMAPIBridge.listDevices(AIDList));
-    console.log("DEV", devices);
     for(const d of devices) {
       if (d.available === 'true') {
         _devices.push(new OMAPIDevice(d.name, true) as Device);
@@ -30,12 +28,12 @@ export async function setupInternalDevices(resolver: any) {
 
   }
 
-
-
   if (CCIDPlugin) {
     const readers = await CCIDPlugin.listReaders();
     for(const r of readers) {
-      _devices.push(new CCIDDevice(r) as Device);
+      const d = new CCIDDevice(r, readers.length > 1 ? r : "USB");
+      await d.connect();
+      _devices.push(d);
     }
   }
 

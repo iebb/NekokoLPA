@@ -21,12 +21,12 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
   const readableMccMnc = metadata.profileOwnerMccMnc.replaceAll("F", " ");
 
   return (
-    <View left flex column gap-10>
-      <View row flex-1 gap-12 fullWidth>
+    <View left flex gap-10>
+      <View row flex-1 gap-12>
         <Text $textDefault style={styles.tableHeader}>
           {t("main:profile_name")}:
         </Text>
-        <TouchableOpacity flexG 
+        <TouchableOpacity  
           onPress={() => {
             if (metadata.profileName) {
               Clipboard.setString(metadata.profileName);
@@ -39,11 +39,11 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
           </Text>
         </TouchableOpacity>
       </View>
-      <View row flex-1 gap-12 fullWidth>
+      <View row flex-1 gap-12>
         <Text $textDefault style={styles.tableHeader}>
           {t("main:profile_provider")}:
         </Text>
-        <TouchableOpacity flexG 
+        <TouchableOpacity
           onPress={() => {
             if (metadata.serviceProviderName) {
               Clipboard.setString(metadata.serviceProviderName);
@@ -56,11 +56,11 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
           </Text>
         </TouchableOpacity>
       </View>
-      <View row flex-1 gap-12 fullWidth>
+      <View row flex-1 gap-12>
         <Text $textDefault style={styles.tableHeader}>
           {t("main:profile_plmn")}:
         </Text>
-        <TouchableOpacity flexG 
+        <TouchableOpacity
           onPress={() => {
             if (readableMccMnc) {
               Clipboard.setString(readableMccMnc);
@@ -76,12 +76,12 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
       {
         resolvedMccMnc && (
           <>
-            <View row flex-1 gap-12 fullWidth>
+            <View row flex-1 gap-12>
               <Text $textDefault style={styles.tableHeader}>
                 {t("main:profile_country")}:
               </Text>
               <TouchableOpacity
-                style={{...styles.tableColumnTO, display: "flex", flexDirection: "row", gap: 5}}
+                style={{display: "flex", flexDirection: "row", gap: 5}}
                 onPress={() => {
                   if (resolvedMccMnc.Country) {
                     Clipboard.setString(resolvedMccMnc.Country);
@@ -100,11 +100,11 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
             </View>
             {
               resolvedMccMnc.Operator && (
-                <View row flex-1 gap-12 fullWidth>
+                <View row flex-1 gap-12>
                   <Text $textDefault style={styles.tableHeader}>
                     {t("main:profile_operator")}:
                   </Text>
-                  <TouchableOpacity flexG 
+                  <TouchableOpacity
                     onPress={() => {
                       if (resolvedMccMnc.Operator) {
                         Clipboard.setString(resolvedMccMnc.Operator);
@@ -121,11 +121,11 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
             }
             {
               resolvedMccMnc.Brand && (
-                <View row flex-1 gap-12 fullWidth>
+                <View row flex-1 gap-12>
                   <Text $textDefault style={styles.tableHeader}>
                     {t("main:profile_brand")}:
                   </Text>
-                  <TouchableOpacity flexG 
+                  <TouchableOpacity
                     onPress={() => {
                       if (resolvedMccMnc.Brand) {
                         Clipboard.setString(resolvedMccMnc.Brand);
@@ -143,12 +143,11 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
           </>
         )
       }
-      <View row flex-1 gap-12 fullWidth>
+      <View row flex-1 gap-12>
         <Text $textDefault style={styles.tableHeader}>
           {t("main:profile_iccid")}:
         </Text>
         <TouchableOpacity
-          flexG 
           onPress={() => {
             if (metadata.iccid) {
               Clipboard.setString(metadata.iccid);
@@ -156,7 +155,7 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
             }
           }}
         >
-          <Text $textDefault flexG text70L $textDefault adjustsFontSizeToFit>
+          <Text $textDefault flexG text70L adjustsFontSizeToFit>
             {metadata.iccid}
           </Text>
         </TouchableOpacity>

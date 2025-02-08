@@ -54,7 +54,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 	const metadata = DeviceState.profiles.find(m => m.iccid === iccid)!;
 
 	useEffect(() => {
-		const { tags, name, country } = parseMetadata(metadata, t);
+		const { tags, name, country } = parseMetadata(metadata, t, false);
 		setTags(tags as any);
 		setNickname(name);
 		setCountry(country);
