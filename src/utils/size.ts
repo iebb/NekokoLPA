@@ -32,4 +32,5 @@ export const formatSize = (bytes: number = 0): string => {
       }
       return `${numberFormat.format(bytes / 1048576)} MiB`;
   }
+  return `${numberFormat.format(bytes / 1000)} kB`;
 }

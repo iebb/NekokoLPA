@@ -67,7 +67,7 @@ export function parseMetadata(metadata: ProfileMetadataMap, t: TFunction) {
           tags.push({
             tag: 'date',
             // @ts-ignore
-            value: t('profile:date_past', {
+            value: t('main:profile_date_past', {
               date: date8,
               remaining: -days,
             }) as string,
@@ -79,7 +79,7 @@ export function parseMetadata(metadata: ProfileMetadataMap, t: TFunction) {
           tags.push({
             tag: 'date',
             // @ts-ignore
-            value: t('profile:date_remaining', {
+            value: t('main:profile_date_remaining', {
               date: date8,
               remaining: days,
             }) as string,

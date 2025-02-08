@@ -21,7 +21,7 @@ interface ProfileExt extends Profile {
 
 
 export const ProfileRow = ({profile, deviceId, isLoading, setLoading} : {profile: ProfileExt, deviceId: string, isLoading: boolean, setLoading: any}) => {
-  const { t } = useTranslation(['profile']);
+  const { t } = useTranslation(['main']);
   const adapter = Adapters[deviceId];
 
   const navigation = useNavigation();
@@ -94,22 +94,22 @@ export const ProfileRow = ({profile, deviceId, isLoading, setLoading} : {profile
         width: 60,
         background: Colors.red30,
         onPress: () => Alert.alert(
-          t('profile:delete_profile'),
-          t('profile:delete_profile_alert_body'), [
+          t('main:profile_delete_profile'),
+          t('main:profile_delete_profile_alert_body'), [
             {
-              text: t('profile:delete_tag_cancel'),
+              text: t('main:profile_delete_tag_cancel'),
               onPress: () => {},
               style: 'cancel',
             },
             {
-              text: t('profile:delete_tag_ok'),
+              text: t('main:profile_delete_tag_ok'),
               style: 'destructive',
               onPress: () => {
                 Alert.alert(
-                  t('profile:delete_profile_alert2'),
-                  t('profile:delete_profile_alert2_body'), [
+                  t('main:profile_delete_profile_alert2'),
+                  t('main:profile_delete_profile_alert2_body'), [
                     {
-                      text: t('profile:delete_tag_ok'),
+                      text: t('main:profile_delete_tag_ok'),
                       style: 'destructive',
                       onPress: () => {
                         makeLoading(setLoading, async () => {
@@ -119,7 +119,7 @@ export const ProfileRow = ({profile, deviceId, isLoading, setLoading} : {profile
                       }
                     },
                     {
-                      text: t('profile:delete_tag_cancel'),
+                      text: t('main:profile_delete_tag_cancel'),
                       onPress: () => {},
                       style: 'cancel',
                     },

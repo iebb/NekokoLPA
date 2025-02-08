@@ -8,7 +8,7 @@ import Clipboard from "@react-native-clipboard/clipboard";
 import {Flags} from "@/assets/flags";
 
 export default function MetadataView({ metadata }: { metadata?: ProfileMetadataMap }) {
-  const { t } = useTranslation(['profile']);
+  const { t } = useTranslation(['main']);
 
   const [resolvedMccMnc, setResolvedMccMnc] = useState<T_PLMN | undefined>();
   useEffect(() => {
@@ -24,7 +24,7 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
     <View left flex column gap-10>
       <View row flex-1 gap-12 fullWidth>
         <Text $textDefault style={styles.tableHeader}>
-          {t("profile:name")}:
+          {t("main:profile_name")}:
         </Text>
         <TouchableOpacity flexG 
           onPress={() => {
@@ -41,7 +41,7 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
       </View>
       <View row flex-1 gap-12 fullWidth>
         <Text $textDefault style={styles.tableHeader}>
-          {t("profile:provider")}:
+          {t("main:profile_provider")}:
         </Text>
         <TouchableOpacity flexG 
           onPress={() => {
@@ -58,7 +58,7 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
       </View>
       <View row flex-1 gap-12 fullWidth>
         <Text $textDefault style={styles.tableHeader}>
-          {t("profile:plmn")}:
+          {t("main:profile_plmn")}:
         </Text>
         <TouchableOpacity flexG 
           onPress={() => {
@@ -78,7 +78,7 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
           <>
             <View row flex-1 gap-12 fullWidth>
               <Text $textDefault style={styles.tableHeader}>
-                {t("profile:country")}:
+                {t("main:profile_country")}:
               </Text>
               <TouchableOpacity
                 style={{...styles.tableColumnTO, display: "flex", flexDirection: "row", gap: 5}}
@@ -102,7 +102,7 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
               resolvedMccMnc.Operator && (
                 <View row flex-1 gap-12 fullWidth>
                   <Text $textDefault style={styles.tableHeader}>
-                    {t("profile:operator")}:
+                    {t("main:profile_operator")}:
                   </Text>
                   <TouchableOpacity flexG 
                     onPress={() => {
@@ -123,7 +123,7 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
               resolvedMccMnc.Brand && (
                 <View row flex-1 gap-12 fullWidth>
                   <Text $textDefault style={styles.tableHeader}>
-                    {t("profile:brand")}:
+                    {t("main:profile_brand")}:
                   </Text>
                   <TouchableOpacity flexG 
                     onPress={() => {
@@ -145,7 +145,7 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
       }
       <View row flex-1 gap-12 fullWidth>
         <Text $textDefault style={styles.tableHeader}>
-          {t("profile:iccid")}:
+          {t("main:profile_iccid")}:
         </Text>
         <TouchableOpacity
           flexG 

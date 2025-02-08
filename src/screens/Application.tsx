@@ -1,20 +1,23 @@
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
+import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer, NavigationContainerRef} from '@react-navigation/native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {useAppTheme} from '@/theme/context';
 import type {RootStackParamList} from '@/screens/navigation';
-import React, {useEffect} from "react";
-import {Linking} from "react-native";
-import {LPACode} from "@/utils/lpaRegex";
+import React from "react";
 import EuiccInfo from "@/screens/EuiccInfo";
 import Main from "@/screens/Main";
 import Scanner from "@/screens/Download";
 import Profile from "@/screens/Profile";
 import Settings from "@/screens/Settings/Settings";
-import Stats from "@/screens/Stats/Stats";
+import Index from "@/screens/Stats";
 import Notifications from "@/screens/Notifications";
+import LeftSidebarDrawer from "@/screens/Drawer";
+import {Colors} from 'react-native-ui-lib';
 
 const Stack = createStackNavigator<RootStackParamList>();
+const Drawer = createDrawerNavigator();
+
 
 
 function ApplicationNavigator() {
@@ -23,17 +26,26 @@ function ApplicationNavigator() {
 	return (
 		<SafeAreaProvider key={theme + "_" + themeColor}>
 			<NavigationContainer ref={navigationRef}>
-				<Stack.Navigator
-					screenOptions={{ headerShown: false }}
+				<Drawer.Navigator
+					drawerContent={(props) => <LeftSidebarDrawer {...props} />}
+					screenOptions={{
+						headerShown: false,
+						drawerStyle: {
+							maxWidth: '67%',
+							width: 250,
+							backgroundColor: Colors.pageBackground,
+							borderTopRightRadius: 0,
+						},
+					}}
 				>
 					<Stack.Screen name="Main" component={Main} />
 					<Stack.Screen name="Scanner" component={Scanner} options={TransitionPresets.SlideFromRightIOS} />
 					<Stack.Screen name="Profile" component={Profile} options={TransitionPresets.SlideFromRightIOS} />
-					<Stack.Screen name="Stats" component={Stats} options={TransitionPresets.SlideFromRightIOS} />
+					<Stack.Screen name="Stats" component={Index} options={TransitionPresets.SlideFromRightIOS} />
 					<Stack.Screen name="EuiccInfo" component={EuiccInfo} options={TransitionPresets.SlideFromRightIOS} />
 					<Stack.Screen name="Notifications" component={Notifications} options={TransitionPresets.SlideFromRightIOS} />
 					<Stack.Screen name="Settings" component={Settings} options={TransitionPresets.SlideFromRightIOS} />
-				</Stack.Navigator>
+				</Drawer.Navigator>
 			</NavigationContainer>
 		</SafeAreaProvider>
 	);

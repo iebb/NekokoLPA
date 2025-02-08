@@ -34,6 +34,8 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 		}
 	}, []);
 
+	console.log(release);
+
 	const getBuild = (e: string) => {
 		try {
 			const s = e.split(".");
@@ -53,14 +55,18 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 				<View style={{flexDirection: 'column', display: 'flex', height: '100%', gap: 10}}>
 					<View row>
 						<View row gap-5 flexG>
-							<TouchableOpacity>
+							<TouchableOpacity
+								onPress={() => {
+									navigation.openDrawer();
+								}}
+							>
 								<Image
 									source={AppLogo}
 									style={{width: 40, height: 40}}
 								/>
 							</TouchableOpacity>
 							<View onTouchStart={() => {
-								if (Platform.OS === 'android' && !isLatest) {
+								if (Platform.OS === 'android' && !isLatest && (release as any).assets) {
 									try {
 										// @ts-ignore
 										Linking.openURL(release.assets[0].browser_download_url);
@@ -76,7 +82,7 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 									fontSize: 12 / PixelRatio.getFontScale(),
 									color: isLatest ? Colors.$textNeutralLight : Colors.red40
 								}}>
-									{version} {!isLatest && "↑"}
+									v{version} {!isLatest && "↑"}
 								</Text>
 								{
 									!isLatest && (
@@ -91,19 +97,6 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 							</View>
 						</View>
 						<View row gap-10>
-							<Button
-								size={'small'}
-								padding-10
-								iconSource={
-									style => <FontAwesomeIcon icon={faFlag} style={{color: (style as any)[0].tintColor}}/>
-								}
-								onPress={() => {
-									navigation.navigate('Stats', {});
-								}}
-								iconOnRight
-								animateLayout
-								animateTo={'left'}
-							/>
 							<Button
 								size={'small'}
 								padding-10

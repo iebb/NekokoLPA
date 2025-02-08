@@ -22,14 +22,14 @@ export function ScannerResult(
     initialConfirmationCode
   }: any
 ) {
-  const { t } = useTranslation(['profile']);
+  const { t } = useTranslation(['main']);
   const [loading, setLoading] = useState(false);
   const [confirmationCode, setConfirmationCode] = useState(initialConfirmationCode);
   const adapter = Adapters[deviceId];
 
   return (
     <View>
-      <Title>{t('profile:title_download_profile')}</Title>
+      <Title>{t('main:profile_title_download_profile')}</Title>
       {
         loading && (
           <BlockingLoader />
@@ -43,7 +43,7 @@ export function ScannerResult(
                 <FontAwesomeIcon icon={faCheckCircle} size={80} color={Colors.green30} />
               </View>
               <Text center text60>
-                {t('profile:download_success')}
+                {t('main:profile_download_success')}
               </Text>
               <MetadataView metadata={authenticateResult.profile} />
               <View left style={{
@@ -55,7 +55,7 @@ export function ScannerResult(
                   (authenticateResult.isCcRequired) && (
                     <View style={styles.tableRow}>
                       <Text style={styles.tableHeader}>
-                        {t('profile:conf_code')}:
+                        {t('main:profile_conf_code')}:
                       </Text>
                       <TextField
                         placeholder={'Activation Code'}
@@ -86,7 +86,7 @@ export function ScannerResult(
                     <Text
                       marginL-10
                       color={Colors.white}
-                    >{t('profile:ui_back')}</Text>
+                    >{t('main:profile_ui_back')}</Text>
                   </Button>
                   <Button
                     marginV-12 flex
@@ -108,7 +108,7 @@ export function ScannerResult(
                     <Text
                       marginL-10
                       color={Colors.white}
-                    >{t('profile:ui_enable')}</Text>
+                    >{t('main:profile_ui_enable')}</Text>
                   </Button>
                 </View>
               </View>
@@ -117,7 +117,7 @@ export function ScannerResult(
             <Container>
               <View flex style={{ gap: 20 }}>
                 <Text center text60>
-                  {t('profile:download_failure')}
+                  {t('main:profile_download_failure')}
                 </Text>
                 <RemoteErrorView remoteError={downloadResult} />
                 <View flex>
@@ -140,7 +140,7 @@ export function ScannerResult(
                       <Text
                         marginL-10
                         color={Colors.white}
-                      >{t('profile:ui_back')}</Text>
+                      >{t('main:profile_ui_back')}</Text>
                     </Button>
                   </View>
                 </View>

@@ -23,7 +23,7 @@ function EuiccInfo({ route,  navigation }: RootScreenProps<'EuiccInfo'>) {
 	const DeviceState = useSelector(selectDeviceState(deviceId!));
 	const adapter = Adapters[deviceId];
 
-	const { t } = useTranslation(['euiccinfo']);
+	const { t } = useTranslation(['main']);
 
 	const { eid, euiccAddress, euiccInfo2 } = DeviceState;
 
@@ -44,7 +44,7 @@ function EuiccInfo({ route,  navigation }: RootScreenProps<'EuiccInfo'>) {
 				<ListItem.Part middle column>
 					<ListItem.Part>
 						<Text $textDefault text70BL flex-1 numberOfLines={1}>
-							{t('euiccinfo:' + row.key)}
+							{t('main:euiccInfo_' + row.key)}
 						</Text>
 					</ListItem.Part>
 						<ListItem.Part>
@@ -60,7 +60,7 @@ function EuiccInfo({ route,  navigation }: RootScreenProps<'EuiccInfo'>) {
 	}
 	return (
 		<SafeScreen>
-			<Title>{t('euiccinfo:euiccinfo')}</Title>
+			<Title>{t('main:euiccInfo_euiccinfo')}</Title>
 			<FlatList
 				data={[
 					{key: "eid", rendered: `${eid}` },

@@ -17,7 +17,7 @@ import {AppBuyLink} from "@/screens/Main/config";
 export default function SIMSelector() {
   const {internalList} = useSelector((state: RootState) => state.LPA);
   const {nicknames} = useSelector(selectAppConfig);
-  const {t} = useTranslation(['main']);
+  const { t } = useTranslation(['main']);
   const showSlots = preferences.getString("showSlots");
 
   let deviceList = internalList;
@@ -39,8 +39,8 @@ export default function SIMSelector() {
   const width = Dimensions.get('window').width - 48;
   
   const deviceCount = deviceList.length;
-  const displayWidth = width / deviceList.length;
-  const displayWidth2 = (deviceList.length === 1 ? 2 : 1) * width / deviceList.length;
+  const displayWidth = width / deviceCount;
+  const displayWidth2 = (deviceCount === 1 ? 2 : 1) * width / deviceCount;
 
 
   useEffect(() => {
@@ -121,8 +121,6 @@ export default function SIMSelector() {
         onChangeIndex={setIndex}
       >
         <TabController.TabBar
-          activeColor={Colors.$textPrimary}
-          outlineColor={Colors.$textPrimary}
           backgroundColor={Colors.cardBackground}
           indicatorWidth={displayWidth2}
           indicatorStyle={{

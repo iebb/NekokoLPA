@@ -1,6 +1,8 @@
 import {EuiccInfo2} from "@/native/types";
-export function toFriendlyName(eid: string, euiccInfo2: EuiccInfo2) {
-
+export function toFriendlyName(eid: string, euiccInfo2: EuiccInfo2 | undefined) {
+  if (euiccInfo2 === undefined) {
+    return "";
+  }
   if (eid.startsWith("89044045")) {
     switch (euiccInfo2.euiccFirmwareVer) {
       case "36.7.2": return "9eSIM v2 (10P)"

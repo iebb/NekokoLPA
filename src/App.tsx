@@ -21,9 +21,6 @@ try {
 export const storage = new MMKV();
 
 function App() {
-  useEffect(() => {
-    void i18next.changeLanguage(preferences.getString("language") ?? "en");
-  }, []);
 
   return (
     <Provider store={store}>

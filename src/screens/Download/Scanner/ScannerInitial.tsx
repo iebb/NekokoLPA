@@ -26,7 +26,7 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
   const [showCamera, setShowCamera] = useState(cameraState === 'always' || !cameraState);
   const onDemandCamera = cameraState === 'ondemand' && !showCamera;
 
-  const { t } = useTranslation(['profile', 'main']);
+  const { t } = useTranslation(['main']);
   const [acToken, setAcToken] = useState("");
   const [oid, setOid] = useState("");
   const [confirmationCode, setConfirmationCode] = useState("");
@@ -80,10 +80,10 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
 
   return (
     <View>
-      <Title>{t('profile:title_download_profile')}</Title>
+      <Title>{t('main:profile_title_download_profile')}</Title>
       {
         loading && (
-          <BlockingLoader message={t('profile:loading_validating_profile')} />
+          <BlockingLoader message={t('main:profile_loading_validating_profile')} />
         )
       }
       <Container>
@@ -94,10 +94,10 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
         >
           <View center gap-5 marginV-10>
             <Text $textDefault text70M>
-              {t('profile:scan_qr_prompt')}
+              {t('main:profile_scan_qr_prompt')}
             </Text>
             <Text $textDefault text70M>
-              {t('profile:current_euicc', { device: adapter.device.deviceName })}
+              {t('main:profile_current_euicc', { device: adapter.device.deviceName })}
             </Text>
             <Text $textDefault text70M>
               {t('main:available_space', {
@@ -184,7 +184,7 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
           >
             <FontAwesomeIcon icon={faDownload} style={{ color: Colors.white }} />
             <Text style={{ marginLeft: 10, color: Colors.white }}
-            >{t('profile:ui_download')}</Text>
+            >{t('main:profile_ui_download')}</Text>
           </Button>
           <View style={{ padding: 10, display: "flex", gap: 0, paddingVertical: 10 }}>
             <TextField
@@ -217,7 +217,7 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
             {/*  style={{ borderBottomWidth: 1, marginBottom: -10, borderColor: Colors.grey40 }}*/}
             {/*/>*/}
             <Checkbox
-              label={t('profile:download_confcode_required')}
+              label={t('main:profile_download_confcode_required')}
               value={confirmationCodeReq}
               labelStyle={{
                 marginLeft: 10,

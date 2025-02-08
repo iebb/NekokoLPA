@@ -34,7 +34,7 @@ import {getUTF8Length} from "@/utils/encoding";
 
 
 function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
-	const { t } = useTranslation(['profile']);
+	const { t } = useTranslation(['main']);
 	const { deviceId, iccid } = route.params;
 
 
@@ -75,7 +75,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 					<BlockingLoader />
 				)
 			}
-			<Title>{t('profile:profile_detail')}</Title>
+			<Title>{t('main:profile_profile_detail')}</Title>
 			<Dialog
 				useSafeArea
 				bottom
@@ -93,7 +93,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 						</View>
 					);
 				}}
-				pannableHeaderProps={{ title: t('profile:add_tag')}}
+				pannableHeaderProps={{ title: t('main:profile_add_tag')}}
 				containerStyle={{
 					backgroundColor: Colors.$backgroundElevatedLight,
 					borderRadius: 12,
@@ -107,16 +107,16 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 					<View flex-1>
 						<RadioGroup initialValue={newTagType} onValueChange={setNewTagType}>
 							<View row marginT-10 gap-20>
-								<Text $textDefault>{t('profile:add_tag_type')}:</Text>
-								<RadioButton value={'date'} label={t('profile:tags_date')} />
-								<RadioButton value={'text'} label={t('profile:tags_text')} />
+								<Text $textDefault>{t('main:profile_add_tag_type')}:</Text>
+								<RadioButton value={'date'} label={t('main:profile_tags_date')} />
+								<RadioButton value={'text'} label={t('main:profile_tags_text')} />
 							</View>
 						</RadioGroup>
 						<View marginT-20>
 							{
 								newTagType === 'date' ? (
 									<DateTimePicker
-										placeholder={t('profile:tags_date_placeholder')}
+										placeholder={t('main:profile_tags_date_placeholder')}
 										mode={'date'}
 										containerStyle={{ borderBottomWidth: 1, borderBottomColor: Colors.$outlineDisabledHeavy }}
 										defaultValue={new Date().toISOString().split('T')[0]}
@@ -128,7 +128,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 									/>
 								) : newTagType === 'text' ? (
 									<TextField
-										placeholder={t('profile:tags_text_placeholder')}
+										placeholder={t('main:profile_tags_text_placeholder')}
 										containerStyle={{ borderBottomWidth: 1 }}
 										onChangeText={c => {
 											setTagValue(`t:${c.replaceAll(" ", "_")}`)
@@ -198,15 +198,15 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 											color: tag.color,
 										}}
 										onDismiss={() => Alert.alert(
-											t('profile:delete_tag'),
-											t('profile:delete_tag_alert', {tag: tag.value}), [
+											t('main:profile_delete_tag'),
+											t('main:profile_delete_tag_alert', {tag: tag.value}), [
 												{
-													text: t('profile:delete_tag_cancel'),
+													text: t('main:profile_delete_tag_cancel'),
 													onPress: () => {},
 													style: 'cancel',
 												},
 												{
-													text: t('profile:delete_tag_ok'),
+													text: t('main:profile_delete_tag_ok'),
 													style: 'destructive',
 													onPress: () => {
 														updateNickname(
@@ -250,14 +250,14 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 					<View paddingT-20>
 						<View row spread center>
 							<TextField
-								placeholder={t('profile:rename_profile')}
+								placeholder={t('main:profile_rename_profile')}
 								floatingPlaceholder
 								value={nickname}
 								onChangeText={c => setNickname(c)}
 								validate={[e => {
 									return !e || (getUTF8Length(e + tagChars) <= 64)
 								}]}
-								validationMessage={[t('profile:max_length_message')]}
+								validationMessage={[t('main:profile_max_length_message')]}
 								validateOnChange
 								// validationMessagePosition={errorPosition}
 								helperText={`${getUTF8Length(nickname + tagChars)}/64`}
@@ -286,7 +286,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 							</View>
 						</View>
 					</View>
-					<View marginT-40 $textDefault>
+					<View marginT-40>
 						<MetadataView metadata={metadata} />
 					</View>
 					{
@@ -295,25 +295,25 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 							<View flex row marginT-40>
 								<Button
 									link
-									label={t('profile:delete_profile')}
+									label={t('main:profile_delete_profile')}
 									color={Colors.$textDangerLight}
 									onPress={() => Alert.alert(
-										t('profile:delete_profile'),
-										t('profile:delete_profile_alert_body'), [
+										t('main:profile_delete_profile'),
+										t('main:profile_delete_profile_alert_body'), [
 											{
-												text: t('profile:delete_tag_cancel'),
+												text: t('main:profile_delete_tag_cancel'),
 												onPress: () => {},
 												style: 'cancel',
 											},
 											{
-												text: t('profile:delete_tag_ok'),
+												text: t('main:profile_delete_tag_ok'),
 												style: 'destructive',
 												onPress: () => {
 													Alert.alert(
-														t('profile:delete_profile_alert2'),
-														t('profile:delete_profile_alert2_body'), [
+														t('main:profile_delete_profile_alert2'),
+														t('main:profile_delete_profile_alert2_body'), [
 															{
-																text: t('profile:delete_tag_ok'),
+																text: t('main:profile_delete_tag_ok'),
 																style: 'destructive',
 																onPress: () => {
 																	makeLoading(() => {
@@ -326,7 +326,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 																}
 															},
 															{
-																text: t('profile:delete_tag_cancel'),
+																text: t('main:profile_delete_tag_cancel'),
 																onPress: () => {},
 																style: 'cancel',
 															},

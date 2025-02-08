@@ -13,7 +13,8 @@ import Clipboard from "@react-native-clipboard/clipboard";
 import prompt from "react-native-prompt-android";
 import {preferences} from "@/utils/mmkv";
 import {formatSize} from "@/utils/size";
-import {toFriendlyName, toCIName} from "@/utils/friendlyName";
+import {toCIName, toFriendlyName} from "@/utils/friendlyName";
+import {useAppTheme} from "@/theme/context";
 
 
 export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
@@ -98,11 +99,15 @@ export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
   );
 
   let supplementText = toFriendlyName(eid, DeviceState.euiccInfo2);
+  const {theme, setTheme, setThemeColor} = useAppTheme();
 
   return (
     <View>
       <ActionSheet
         title={`EID: ${DeviceState?.eid}`}
+        containerStyle={{
+          backgroundColor: Colors.cardBackground,
+        }}
         cancelButtonIndex={options.length - 1}
         options={options}
         visible={euiccMenu}

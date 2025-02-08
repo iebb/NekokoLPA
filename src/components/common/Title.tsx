@@ -7,6 +7,7 @@ export default function Title({ children }: { children: string }) {
     <View
       paddingH-20
       paddingT-20
+      paddingB-10
     >
       <Text $textDefault text40BL>
         {children}

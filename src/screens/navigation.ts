@@ -1,4 +1,5 @@
 import type {StackScreenProps} from '@react-navigation/stack';
+import type {DrawerScreenProps} from '@react-navigation/drawer';
 import {ProfileMetadataMap} from "@/native/types";
 
 export type RootStackParamList = {
@@ -24,4 +25,4 @@ export type RootStackParamList = {
 
 export type RootScreenProps<
 	S extends keyof RootStackParamList = keyof RootStackParamList,
-> = StackScreenProps<RootStackParamList, S>;
+> = DrawerScreenProps<RootStackParamList, S>;

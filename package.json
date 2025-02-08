@@ -1,7 +1,7 @@
 {
   "name": "nekokolpa",
-  "buildVersion": 336,
-  "version": "1.10.336",
+  "buildVersion": 337,
+  "version": "1.10.337",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -30,6 +30,7 @@
     "@fortawesome/react-native-fontawesome": "^0.3.2",
     "@react-native-clipboard/clipboard": "^1.16.1",
     "@react-native-community/datetimepicker": "^8.3.0",
+    "@react-navigation/drawer": "^7.1.1",
     "@react-navigation/native": "^7.0.14",
     "@react-navigation/stack": "^7.1.1",
     "@reduxjs/toolkit": "^2.5.1",
@@ -37,7 +38,6 @@
     "i18next": "^24.2.2",
     "libphonenumber-js": "^1.11.19",
     "lodash": "^4.17.21",
-    "moment": "^2.30.1",
     "react": "18.3.1",
     "react-i18next": "^14.1.0",
     "react-native": "0.76.1",

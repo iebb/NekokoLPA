@@ -11,7 +11,7 @@ import Title from "@/components/common/Title";
 import Container from "@/components/common/Container";
 import {makeLoading} from "@/components/utils/loading";
 import {Adapters} from "@/native/adapters/registry";
-import sizeFile from "@/data/sizes";
+import sizeFile, {ProfileSizes} from "@/data/sizes";
 import {useSelector} from "react-redux";
 import {selectDeviceState} from "@/redux/stateStore";
 import {formatSize} from "@/utils/size";
@@ -26,7 +26,7 @@ export function ScannerAuthentication(
     initialConfirmationCode
   }: any
 ) {
-  const { t } = useTranslation(['profile', 'main']);
+  const { t } = useTranslation(['main']);
   const [loading, setLoading] = useState(false);
   const [confirmationCode, setConfirmationCode] = useState(initialConfirmationCode);
   const DeviceState = useSelector(selectDeviceState(deviceId));
@@ -34,31 +34,33 @@ export function ScannerAuthentication(
   const adapter = Adapters[deviceId];
   const { eid, euiccAddress, euiccInfo2 } = DeviceState;
 
-
-  const sizeDelta = sizeFile.offset[eid.substring(0, 8)] ?? 0;
-  const sizeValue = sizeFile.sizes[`${authenticateResult?.profile?.profileOwnerMccMnc}|${authenticateResult?.profile?.serviceProviderName}`] ?? null;
-  const sizeData = sizeValue ? sizeValue.map(d => d + sizeDelta) : null;
+  const profileTag = `${authenticateResult?.profile?.profileOwnerMccMnc}|${authenticateResult?.profile?.serviceProviderName}`;
+  // @ts-ignore
+  const sizeDelta = (sizeFile as ProfileSizes).offset[eid.substring(0, 8)] ?? 0;
+  // @ts-ignore
+  const sizeValue = (sizeFile as ProfileSizes).sizes[profileTag] ?? null;
+  const sizeData = sizeValue ? sizeValue.map((d: number) => d + sizeDelta) : null;
   const maxSizeData = sizeData ? sizeData[2]: 10000;
   const freeSpace = Math.round((euiccInfo2?.extCardResource?.freeNonVolatileMemory || 0));
 
   return (
     <View>
-      <Title>{t('profile:title_confirm_profile')}</Title>
+      <Title>{t('main:profile_title_confirm_profile')}</Title>
       {
         loading && (
-          <BlockingLoader message={t('profile:loading_download_profile')} />
+          <BlockingLoader message={t('main:profile_loading_download_profile')} />
         )
       }
       {
         (authenticateResult?.success) ? (
           <Container>
             <MetadataView metadata={authenticateResult.profile} />
-            <View left column gap-10 style={{ marginTop: 20 }}>
+            <View left gap-10 style={{ marginTop: 20 }}>
               {
                 (authenticateResult.isCcRequired || confirmationCode) && (
-                  <View style={styles.tableRow} row flex-1 gap-12 fullWidth>
+                  <View style={styles.tableRow} row flex-1 gap-12>
                     <Text style={styles.tableHeader}>
-                      {t('profile:conf_code')}:
+                      {t('main:profile_conf_code')}:
                     </Text>
                     <View style={styles.tableColumn}>
                       <TextField
@@ -87,9 +89,9 @@ export function ScannerAuthentication(
               {
                 sizeData && (
                   <>
-                    <View style={styles.tableRow} flex-1 gap-12 fullWidth>
+                    <View style={styles.tableRow} flex-1 gap-12>
                       <Text style={styles.tableHeader}>
-                        {t('profile:size')}:
+                        {t('main:profile_size')}:
                       </Text>
                       <View style={styles.tableColumn}>
                         <Text $textDefault flexG text70L>
@@ -97,9 +99,9 @@ export function ScannerAuthentication(
                         </Text>
                       </View>
                     </View>
-                    <View style={styles.tableRow} flex-1 gap-12 fullWidth>
+                    <View style={styles.tableRow} flex-1 gap-12>
                       <Text style={styles.tableHeader}>
-                        {t('profile:available_space')}:
+                        {t('main:profile_available_space')}:
                       </Text>
                       <View style={styles.tableColumn}>
                         <Text $textDefault flexG text70L style={freeSpace <= maxSizeData ? { color: "red" } : null }>
@@ -121,8 +123,7 @@ export function ScannerAuthentication(
                     makeLoading(
                       setLoading,
                       async () => {
-                        const cancelResult = await adapter.cancelSession(authenticateResult._internal);
-                        console.log(cancelResult);
+                        await adapter.cancelSession(authenticateResult._internal);
                         goBack();
                       }
                     )
@@ -135,7 +136,7 @@ export function ScannerAuthentication(
                   <Text
                     marginL-10
                     color={Colors.white}
-                  >{t('profile:ui_cancel')}</Text>
+                  >{t('main:profile_ui_cancel')}</Text>
                 </Button>
                 <Button
                   style={{ flex: 10 }}
@@ -143,15 +144,15 @@ export function ScannerAuthentication(
                   onPress={() => {
                     if (freeSpace <= maxSizeData) {
                       Alert.alert(
-                        t('profile:title_confirm_profile'),
-                        t('profile:available_space_alert', { space: formatSize(freeSpace) }), [
+                        t('main:profile_title_confirm_profile'),
+                        t('main:profile_available_space_alert', { space: formatSize(freeSpace) }), [
                           {
-                            text: t('profile:delete_tag_cancel'),
+                            text: t('main:profile_delete_tag_cancel'),
                             onPress: () => {},
                             style: 'cancel',
                           },
                           {
-                            text: t('profile:delete_tag_ok'),
+                            text: t('main:profile_delete_tag_ok'),
                             style: 'destructive',
                             onPress: () => {
                               makeLoading(
@@ -189,7 +190,7 @@ export function ScannerAuthentication(
                   />
                   <Text
                     style={{ color: Colors.white, marginLeft: 10 }}
-                  >{t('profile:ui_download')}</Text>
+                  >{t('main:profile_ui_download')}</Text>
                 </Button>
               </View>
             </View>
@@ -198,7 +199,7 @@ export function ScannerAuthentication(
           <Container>
             <View flex style={{ gap: 20 }}>
               <Text center text60>
-                {t('profile:download_failure')}
+                {t('main:profile_download_failure')}
               </Text>
               <RemoteErrorView remoteError={authenticateResult} />
               <View flex>
@@ -217,7 +218,7 @@ export function ScannerAuthentication(
                     />
                     <Text
                       style={{ color: Colors.white, marginLeft: 10 }}
-                    >{t('profile:ui_back')}</Text>
+                    >{t('main:profile_ui_back')}</Text>
                   </Button>
                 </View>
               </View>

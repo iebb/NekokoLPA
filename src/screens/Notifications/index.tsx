@@ -17,7 +17,7 @@ import {faBan, faCircleCheck, faDownload, faPaperPlane, faTrash} from "@fortawes
 function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>) {
   const { deviceId } = route.params;
   const DeviceState = useSelector(selectDeviceState(deviceId!));
-  const { t } = useTranslation(['notifications']);
+  const { t } = useTranslation(['main']);
   const { profiles, notifications } = DeviceState;
 
   const adapter = Adapters[deviceId];
@@ -69,7 +69,7 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
           onPress: async () => {
             const result = await adapter.sendNotification(row.seqNumber);
             if (result.result !== 0) {
-              Alert.alert(t('notifications:send_failed'), t('notifications:send_failed_alert'));
+              Alert.alert(t('main:notifications_:send_failed'), t('main:notifications_:send_failed_alert'));
             }
           }
         }]}
@@ -80,22 +80,22 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
           width: 60,
           background: Colors.red30,
           onPress: () => Alert.alert(
-            t('notifications:delete'),
-            t('notifications:delete_alert'), [
+            t('main:notifications_:delete'),
+            t('main:notifications_:delete_alert'), [
               {
-                text: t('notifications:delete_cancel'),
+                text: t('main:notifications_:delete_cancel'),
                 onPress: () => {},
                 style: 'cancel',
               },
               {
-                text: t('notifications:delete_ok'),
+                text: t('main:notifications_:delete_ok'),
                 style: 'destructive',
                 onPress: async () => {
                   const result = await adapter.sendNotification(row.seqNumber);
                   if (result.result === 0) {
                     await adapter.deleteNotification(row.seqNumber);
                   } else {
-                    Alert.alert(t('notifications:send_failed'), t('notifications:send_failed_alert'));
+                    Alert.alert(t('main:notifications_:send_failed'), t('main:notifications_:send_failed_alert'));
                   }
                 }
               },
@@ -141,7 +141,7 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
   const sorted = Array.isArray(notifications) ?  [...notifications].sort((a, b) => b.seqNumber - a.seqNumber) : [];
   return (
     <SafeScreen>
-      <Title>{t('notifications:notifications')}</Title>
+      <Title>{t('main:notifications_:notifications')}</Title>
       <View paddingV-20>
         <ScrollView>
           {

@@ -6,7 +6,6 @@ import type {RootScreenProps} from "@/screens/navigation";
 import Title from "@/components/common/Title";
 import {Button, ColorPickerDialog, Colors, ListItem, Picker, Text, TextField, View} from "react-native-ui-lib";
 import {preferences} from "@/utils/mmkv";
-import {useDispatch} from "react-redux";
 import {useAppTheme} from "@/theme/context";
 import i18next from "i18next";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
@@ -22,7 +21,7 @@ export type SettingDataType = {
 }
 
 function PickerRow({row} : {row: SettingDataType}) {
-	const {t} = useTranslation(['settings']);
+	const { t } = useTranslation(['main']);
 	const currentValue = preferences.getString(row.key) ?? row.defaultValue;
 	const [v, setV] = useState<string>(currentValue);
 	if (row.type === 'select') {
@@ -30,10 +29,10 @@ function PickerRow({row} : {row: SettingDataType}) {
 			<View style={{width: "100%"}}>
 				<Picker
 					enableModalBlur
-					placeholder={t(`settings:title_${row.key}`)}
+					placeholder={t(`main:settings_title_${row.key}`)}
 					topBarProps={{
 						useSafeArea: true,
-						title: t(`settings:title_${row.key}`)
+						title: t(`main:settings_title_${row.key}`)
 					}}
 					floatingPlaceholder
 					value={v}
@@ -47,7 +46,7 @@ function PickerRow({row} : {row: SettingDataType}) {
 						}
 					}}
 					items={row.options?.map(opt => ({
-						label: t(`settings:item_${row.key}_${opt}`),
+						label: t(`main:settings_item_${row.key}_${opt}`),
 						value: opt,
 						labelStyle: {
 							color: Colors.$textDefault,
@@ -62,7 +61,7 @@ function PickerRow({row} : {row: SettingDataType}) {
 		return (
 			<View style={{width: "100%"}}>
 				<TextField
-					placeholder={t(`settings:title_${row.key}`)}
+					placeholder={t(`main:settings_title_${row.key}`)}
 					floatingPlaceholder
 					value={v}
 					onChangeText={value => {
@@ -83,7 +82,7 @@ function PickerRow({row} : {row: SettingDataType}) {
 		return (
 			<View style={{width: "100%"}}>
 				<Text $textNeutralLight text90L>
-					{t(`settings:title_${row.key}`)}
+					{t(`main:settings_title_${row.key}`)}
 				</Text>
 				<Button backgroundColor={v} onPress={() => showPicker(true)} marginT-10 style={{ maxWidth: 100 }}>
 					<FontAwesomeIcon icon={faPaintbrush} style={{ color: Colors.buttonForeground }} />
@@ -111,12 +110,11 @@ function PickerRow({row} : {row: SettingDataType}) {
 
 function Settings({ route,  navigation }: RootScreenProps<'Settings'>) {
 
-	const {t} = useTranslation(['settings']);
+	const { t } = useTranslation(['main']);
 	const {theme, setTheme, setThemeColor} = useAppTheme();
-	const dispatch = useDispatch();
 	return (
 		<SafeScreen>
-			<Title>{t('settings:settings')}</Title>
+			<Title>{t('main:settings_settings')}</Title>
 			<View
 				marginT-20
 			>
@@ -184,8 +182,10 @@ function Settings({ route,  navigation }: RootScreenProps<'Settings'>) {
 						<View
 							paddingH-20
 							key={item.key}
-							borderTopWidth={0.5}
-							borderTopColor={Colors.$outlineDisabled}
+							style={{
+								borderTopWidth: 0.5,
+								borderTopColor: Colors.$outlineDisabled,
+							}}
 						>
 							<ListItem
 								activeBackgroundColor={Colors.grey60}
