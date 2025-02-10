@@ -12,6 +12,7 @@ export interface Device {
   channel: string;
   type: string;
   deviceName: string;
+  displayName: string;
   deviceId: string;
   explicitConnectionRequired: boolean;
   // getProfiles: () => (any[]);

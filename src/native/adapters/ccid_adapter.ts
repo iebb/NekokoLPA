@@ -7,6 +7,7 @@ const { CCIDPlugin } = NativeModules;
 
 export class CCIDDevice implements Device {
   type = "ccid";
+  displayName = "";
   deviceName = "";
   deviceId = "";
   channel = "1";
@@ -15,7 +16,8 @@ export class CCIDDevice implements Device {
   explicitConnectionRequired = false;
 
   constructor(deviceName: string, altName: string) {
-    this.deviceName = altName;
+    this.deviceName = deviceName;
+    this.displayName = altName;
     this.deviceId = "ccid:" + deviceName;
   }
 

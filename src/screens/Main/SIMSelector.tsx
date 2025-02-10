@@ -82,8 +82,8 @@ export default function SIMSelector() {
             return ({
               label:
                 adapter.device.available ?
-                  ((adapter.eid && nicknames[adapter.eid]) ? nicknames[adapter.eid] + ` (${adapter.device.deviceName})` : adapter.device.deviceName)
-                : `${adapter.device.deviceName}\nunavailable`,
+                  ((adapter.eid && nicknames[adapter.eid]) ? nicknames[adapter.eid] + ` (${adapter.device.displayName})` : adapter.device.displayName)
+                : `${adapter.device.displayName}\nunavailable`,
               icon: (
                 <FontAwesomeIcon
                   icon={

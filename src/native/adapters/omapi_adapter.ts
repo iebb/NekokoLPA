@@ -9,6 +9,7 @@ const { OMAPIBridge } = NativeModules;
 export class OMAPIDevice implements Device {
   type = "omapi";
   deviceName = "";
+  displayName = "";
   deviceId = "";
   explicitConnectionRequired = false;
   available = true;
@@ -19,6 +20,7 @@ export class OMAPIDevice implements Device {
 
   constructor(deviceName: string, available: boolean = false) {
     this.deviceName = deviceName;
+    this.displayName = deviceName;
     this.deviceId = "omapi:" + deviceName;
     this.available = available;
   }

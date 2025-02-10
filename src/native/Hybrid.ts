@@ -31,7 +31,7 @@ export async function setupInternalDevices(resolver: any) {
   if (CCIDPlugin) {
     const readers = await CCIDPlugin.listReaders();
     for(const r of readers) {
-      const d = new CCIDDevice(r, readers.length > 1 ? r : "USB");
+      const d = new CCIDDevice(r, (Platform.OS === 'ios' || readers.length > 1) ? r : "USB");
       await d.connect();
       _devices.push(d);
     }
