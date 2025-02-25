@@ -1,12 +1,11 @@
 import {ActionSheet, Button, Card, Colors, Text, View} from "react-native-ui-lib";
 import {useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {selectDeviceState} from "@/redux/stateStore";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faPlus} from '@fortawesome/free-solid-svg-icons'
 import {useNavigation} from "@react-navigation/native";
 import {useTranslation} from "react-i18next";
-import {selectAppConfig, setNickname} from "@/redux/configStore";
 import {Adapters} from "@/native/adapters/registry";
 import {NativeModules, Platform, ToastAndroid} from "react-native";
 import Clipboard from "@react-native-clipboard/clipboard";
@@ -15,13 +14,12 @@ import {preferences} from "@/utils/mmkv";
 import {formatSize} from "@/utils/size";
 import {toCIName, toFriendlyName} from "@/utils/friendlyName";
 import {useAppTheme} from "@/theme/context";
+import {getNicknameByEid, setNicknameByEid} from "@/configs/configStore";
 
 
 export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
   const { t } = useTranslation(['main']);
   const navigation = useNavigation();
-  const dispatch = useDispatch();
-  const { nicknames } = useSelector(selectAppConfig);
   const [euiccMenu, setEuiccMenu] = useState(false);
   const DeviceState = useSelector(selectDeviceState(deviceId));
   const stealthMode = preferences.getString("redactMode") ?? "none";
@@ -66,13 +64,12 @@ export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
           [
             {text: 'Cancel', onPress: () => {}, style: 'cancel'},
             {text: 'OK', onPress: (nickname: string) => {
-                // @ts-ignore
-                dispatch(setNickname({ [DeviceState?.eid] : nickname}));
+              if (DeviceState!.eid) setNicknameByEid(DeviceState!.eid!, nickname);
               }},
           ],
           {
             cancelable: true,
-            defaultValue: nicknames[DeviceState.eid!],
+            defaultValue: getNicknameByEid(DeviceState.eid!),
             placeholder: 'placeholder'
           }
         );
@@ -103,17 +100,21 @@ export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
 
   return (
     <View>
-      <ActionSheet
-        title={`EID: ${DeviceState?.eid}`}
-        containerStyle={{
-          backgroundColor: Colors.cardBackground,
-        }}
-        cancelButtonIndex={options.length - 1}
-        options={options}
-        visible={euiccMenu}
-        useNativeIOS
-        onDismiss={() => setEuiccMenu(false)}
-      />
+      {
+        DeviceState?.eid && (
+          <ActionSheet
+            title={`EID: ${DeviceState?.eid}`}
+            containerStyle={{
+              backgroundColor: Colors.cardBackground,
+            }}
+            cancelButtonIndex={options.length - 1}
+            options={options}
+            visible={euiccMenu}
+            useNativeIOS
+            onDismiss={() => setEuiccMenu(false)}
+          />
+        )
+      }
       <Card
         style={{
           backgroundColor: Colors.cardBackground,

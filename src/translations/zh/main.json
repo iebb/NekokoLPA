@@ -13,12 +13,14 @@
   "manage_notifications": "通知管理",
   "eid_copy": "复制 EID",
 
+  "go_back": "返回",
+
   "euiccInfo_euiccinfo": "EUICC Info",
   "euiccInfo_sasAcreditationNumber": "SAS Accreditation",
   "euiccInfo_profileVersion": "Profile Version",
   "euiccInfo_globalplatformVersion": "Global Platform Version",
   "euiccInfo_euiccFirmwareVer": "Firmware Version",
-  "euiccInfo_svn": "Lowest Supported Version",
+  "euiccInfo_svn": "SGP.22 Version",
   "euiccInfo_eid": "EID",
   "euiccInfo_freeNonVolatileMemory": "Free Non-volatile Memory",
   "euiccInfo_aramReader": "ARA-M Reader",

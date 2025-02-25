@@ -51,13 +51,15 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 	const [tagValue, setTagValue] = useState('');
 
 	const DeviceState = useSelector(selectDeviceState(deviceId));
-	const metadata = DeviceState.profiles.find(m => m.iccid === iccid)!;
+	const metadata = DeviceState?.profiles?.find(m => m.iccid === iccid);
 
 	useEffect(() => {
-		const { tags, name, country } = parseMetadata(metadata, t, false);
-		setTags(tags as any);
-		setNickname(name);
-		setCountry(country);
+		if (metadata) {
+			const { tags, name, country } = parseMetadata(metadata, t, false);
+			setTags(tags as any);
+			setNickname(name);
+			setCountry(country);
+		}
 	}, [metadata]);
 
 	const tagChars = tags.length ? " " + (tags.map(t => t.rawValue)).join(" ") : "";
@@ -66,6 +68,10 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 		makeLoading(setLoading, async () => {
 			await adapter.setNicknameByIccId(iccid, n);
 		});
+	}
+
+	if (!metadata) {
+		return null;
 	}
 
 	return (
@@ -180,7 +186,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 							$textNeutral
 							adjustsFontSizeToFit
 						>
-							{metadata.serviceProviderName}
+							{metadata?.serviceProviderName}
 						</Text>
 					</View>
 					<View paddingT-20>

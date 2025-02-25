@@ -20,13 +20,11 @@ export interface EuiccList {
 
 
 interface LPAState {
-    internalList: string[];
-    externalList: string[];
+    deviceList: string[];
 }
 
 const initialState: LPAState = {
-    internalList: [],
-    externalList: [],
+    deviceList: [],
 };
 
 interface EUICCStateMap {
@@ -41,7 +39,7 @@ export const globalDataStore = createSlice({
     reducers: {
         setInternalDevices: (state, action: PayloadAction<object>) => {
             // @ts-ignore
-            state.internalList = action.payload;
+            state.deviceList = action.payload;
         },
     },
 });
@@ -70,7 +68,6 @@ export const store = configureStore({
     },
 });
 
-export const selectState = (state: RootState) => state.GlobalState;
 export const selectDeviceState = (e: string) => (state: RootState) => state.DeviceState[e] || {};
 
 export const { setInternalDevices } = globalDataStore.actions;

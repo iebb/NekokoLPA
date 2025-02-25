@@ -3,18 +3,19 @@ import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 import React from "react";
 import {useTranslation} from 'react-i18next';
 import {version} from '../../package.json';
-import {Colors, Text, View, Image} from 'react-native-ui-lib';
+import {Colors, Image, Text, View} from 'react-native-ui-lib';
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faCog, faFlag} from "@fortawesome/free-solid-svg-icons";
 import {AppLogo} from "@/screens/Main/config";
-import {useToast} from "@/components/common/ToastProvider";
 
 
 export default function LeftSidebarDrawer({ navigation }: DrawerContentComponentProps) {
   const { t } = useTranslation(['main']);
-
-  const { showToast } = useToast();
   const menuItems = [
+    // {
+    //   title: 'Back', label: 'main:go_back',
+    //   icon: faArrowLeft, onPress: (navigation: any) => navigation.goBack()
+    // },
     {
       title: 'Stats', label: 'main:profile_collection_stats',
       icon: faFlag, onPress: (navigation: any) => navigation.navigate('Stats', {})

@@ -41,7 +41,7 @@ export async function setupInternalDevices(resolver: any) {
 }
 
 export async function setupDevices(dispatch: Dispatch) {
-  const resolver = (internalList: Device[]) => {
+  const resolver = (deviceList: Device[]) => {
     for(const f of Object.keys(Adapters)) {
       try {
         Adapters[f].device.disconnect();
@@ -51,12 +51,12 @@ export async function setupDevices(dispatch: Dispatch) {
       }
     }
     for(const f of Object.keys(Adapters)) Adapters[f].obsolete = true;
-    for(const d of internalList) (new Adapter(d, dispatch)).initialize();
+    for(const d of deviceList) (new Adapter(d, dispatch)).initialize();
     for(const f of Object.keys(Adapters)) if (Adapters[f].obsolete) {
       Adapters[f].device.disconnect();
       delete Adapters[f];
     }
-    dispatch(setInternalDevices(internalList.map((d: Device) => d.deviceId)));
+    dispatch(setInternalDevices(deviceList.map((d: Device) => d.deviceId)));
   };
 
   setupInternalDevices(resolver);

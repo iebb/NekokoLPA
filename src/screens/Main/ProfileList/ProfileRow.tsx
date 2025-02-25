@@ -32,7 +32,7 @@ export const ProfileRow = ({profile, deviceId, isLoading, setLoading} : {profile
   const hueICCID = (parseInt(numICCID.substring(numICCID.length - 7), 10) * 17.84) % 360;
   const { tags, name, country, mccMnc } = parseMetadata(metadata, t);
 
-  const phoneNumbers = findPhoneNumbersInText(name);
+  const phoneNumbers = findPhoneNumbersInText(name, country as any);
   let replacedName = name;
   for(const p of phoneNumbers) {
     const match = name.substring(p.startsAt, p.endsAt);

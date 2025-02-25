@@ -2,7 +2,6 @@ import {Colors, Text, View} from "react-native-ui-lib";
 import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {RootState} from "@/redux/reduxDataStore";
-import {selectAppConfig} from "@/redux/configStore";
 import {EUICCPage} from "@/screens/Main/EUICCPage";
 import {useTranslation} from "react-i18next";
 import {Dimensions, Linking, NativeModules, Platform, ScrollView, ToastAndroid} from "react-native";
@@ -13,24 +12,25 @@ import {faFloppyDisk, faSimCard} from "@fortawesome/free-solid-svg-icons";
 import Clipboard from "@react-native-clipboard/clipboard";
 import {preferences} from "@/utils/mmkv";
 import {AppBuyLink} from "@/screens/Main/config";
+import {getNicknames} from "@/configs/configStore";
+import {setDeviceState} from "@/redux/stateStore";
 
 export default function SIMSelector() {
-  const {internalList} = useSelector((state: RootState) => state.LPA);
-  const {nicknames} = useSelector(selectAppConfig);
+  const {deviceList: _deviceList} = useSelector((state: RootState) => state.LPA);
+  const ds = useSelector((state: RootState) => state.DeviceState);
+  const nicknames = getNicknames();
   const { t } = useTranslation(['main']);
   const showSlots = preferences.getString("showSlots");
 
-  let deviceList = internalList;
-  if (showSlots === "all") {
-    deviceList = internalList;
-  } else if (showSlots === "possible") {
-    deviceList = internalList.filter(x => Adapters[x].device.available || Adapters[x].device.slotAvailable);
+  console.log(ds);
+  let deviceList = _deviceList;
+
+  if (showSlots === "possible") {
+    deviceList = _deviceList.filter(x => Adapters[x].device.available || Adapters[x].device.slotAvailable);
   } else if (showSlots === "available") {
-    deviceList = internalList.filter(x => Adapters[x].device.available);
-  } else {
-    deviceList = internalList;
+    deviceList = _deviceList.filter(x => Adapters[x].device.available);
   }
-  
+
   const firstAvailable = deviceList.map(x => Adapters[x].device.available).indexOf(true);
   
   const [index, setIndex] = useState(firstAvailable < 0 ? 0 : firstAvailable);
@@ -79,11 +79,14 @@ export default function SIMSelector() {
         items={
           deviceList.map((name, _idx) => {
             const adapter = Adapters[name];
+            const eid = ds[name]?.eid ?? "";
+
+            const label = adapter.device.available ?
+              ((nicknames[eid]) ? nicknames[eid] + ` (${adapter.device.displayName})` : adapter.device.displayName)
+              : `${adapter.device.displayName}\nunavailable`;
+
             return ({
-              label:
-                adapter.device.available ?
-                  ((adapter.eid && nicknames[adapter.eid]) ? nicknames[adapter.eid] + ` (${adapter.device.displayName})` : adapter.device.displayName)
-                : `${adapter.device.displayName}\nunavailable`,
+              label,
               icon: (
                 <FontAwesomeIcon
                   icon={

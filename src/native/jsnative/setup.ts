@@ -4,6 +4,8 @@ const { CustomHttp } = NativeModules;
 
 export async function setupDevice(a: Adapter): Promise<(s: string, args: any[]) => Promise<(fn: string, args: any[]) => Promise<any>>> {
   const module = await (require("./web.out"))();
+
+
   module.jsSendApdu = async (x: string) => {
     console.log(`${a.device.deviceName}`, "TX >> ", x);
     try {
@@ -39,7 +41,9 @@ export async function setupDevice(a: Adapter): Promise<(s: string, args: any[]) 
       }
       argTypes.push("number");
     }
+
     const resultPtr = await module.ccall(fn, 'number', argTypes, argPtrs, {async: true});
+
     for (var i = 0; i < args.length; i++) {
       if (typeof args[i] === "string") {
         module._free(args[i]);
@@ -51,7 +55,6 @@ export async function setupDevice(a: Adapter): Promise<(s: string, args: any[]) 
       module._free(resultPtr);
       return JSON.parse(result);
     }
-    return {};
   }
 
   return a._execute;

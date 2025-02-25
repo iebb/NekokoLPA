@@ -58,88 +58,88 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
 
     return (
       <View key={row.seqNumber} backgroundColor={Colors.pageBackground} marginB-10>
-      <Drawer
-        style={{
-          overflow: "hidden",
-        }}
-        rightItems={[{
-          customElement: (
-            <FontAwesomeIcon icon={faPaperPlane} style={{ color: Colors.buttonForeground }} />
-          ),
-          width: 60,
-          background: Colors.green30,
-          onPress: async () => {
-            const result = await adapter.sendNotification(row.seqNumber);
-            if (result.result !== 0) {
-              Alert.alert(t('main:notifications_send_failed'), t('main:notifications_send_failed_alert'));
-              showToast(t('main:notifications_send_failed'), 'error');
-            } else {
-              showToast(t('main:notifications_send_success'), 'success');
+        <Drawer
+          style={{
+            overflow: "hidden",
+          }}
+          rightItems={[{
+            customElement: (
+              <FontAwesomeIcon icon={faPaperPlane} style={{ color: Colors.buttonForeground }} />
+            ),
+            width: 60,
+            background: Colors.green30,
+            onPress: async () => {
+              const result = await adapter.sendNotification(row.seqNumber);
+              if (result.result !== 0) {
+                Alert.alert(t('main:notifications_send_failed'), t('main:notifications_send_failed_alert'));
+                showToast(t('main:notifications_send_failed'), 'error');
+              } else {
+                showToast(t('main:notifications_send_success'), 'success');
+              }
             }
-          }
-        }]}
-        leftItem={{
-          customElement: (
-            <FontAwesomeIcon icon={faTrash} style={{ color: Colors.buttonForeground }} />
-          ),
-          width: 60,
-          background: Colors.red30,
-          onPress: () => Alert.alert(
-            t('main:notifications_delete'),
-            t('main:notifications_delete_alert'), [
-              {
-                text: t('main:notifications_delete_cancel'),
-                onPress: () => {},
-                style: 'cancel',
-              },
-              {
-                text: t('main:notifications_delete_ok'),
-                style: 'destructive',
-                onPress: async () => {
-                  const result = await adapter.sendNotification(row.seqNumber);
-                  if (result.result === 0) {
-                    await adapter.deleteNotification(row.seqNumber);
-                  } else {
-                    Alert.alert(t('main:notifications_send_failed'), t('main:notifications_send_failed_alert'));
-                  }
-                }
-              },
-            ])
-        }}
-      >
-        <TouchableOpacity>
-        <View flex row backgroundColor={Colors.pageBackground} paddingH-20 paddingV-10 >
-          <View flexG>
-            <View row>
-              <Text $textDefault text70BL numberOfLines={1} marginR-10>
-                #{row.seqNumber}
-              </Text>
-              <Text $textDefault text70BL numberOfLines={1}>
-                <Image
-                  style={{width: 20 * PixelRatio.getFontScale(), height: 20 * PixelRatio.getFontScale()}}
-                  source={Flags[country] || Flags.UN}
-                />
+          }]}
+          leftItem={{
+            customElement: (
+              <FontAwesomeIcon icon={faTrash} style={{ color: Colors.buttonForeground }} />
+            ),
+            width: 60,
+            background: Colors.red30,
+            onPress: () => Alert.alert(
+              t('main:notifications_delete'),
+              t('main:notifications_delete_alert'), [
                 {
-                  metadata ? ` [${country}] ${name}` : ` ${row.iccid}`
-                }
-              </Text>
+                  text: t('main:notifications_delete_cancel'),
+                  onPress: () => {},
+                  style: 'cancel',
+                },
+                {
+                  text: t('main:notifications_delete_ok'),
+                  style: 'destructive',
+                  onPress: async () => {
+                    const result = await adapter.sendNotification(row.seqNumber);
+                    if (result.result === 0) {
+                      await adapter.deleteNotification(row.seqNumber);
+                    } else {
+                      Alert.alert(t('main:notifications_send_failed'), t('main:notifications_send_failed_alert'));
+                    }
+                  }
+                },
+              ])
+          }}
+        >
+          <TouchableOpacity>
+            <View flex row backgroundColor={Colors.pageBackground} paddingH-20 paddingV-10 >
+              <View flexG>
+                <View row>
+                  <Text $textDefault text70BL numberOfLines={1} marginR-10>
+                    #{row.seqNumber}
+                  </Text>
+                  <Text $textDefault text70BL numberOfLines={1}>
+                    <Image
+                      style={{width: 20 * PixelRatio.getFontScale(), height: 20 * PixelRatio.getFontScale()}}
+                      source={Flags[country] || Flags.UN}
+                    />
+                    {
+                      metadata ? ` [${country}] ${name}` : ` ${row.iccid}`
+                    }
+                  </Text>
+                </View>
+                <View>
+                  <Text $textNeutral text90L>RSP: {row.notificationAddress}</Text>
+                  <Text $textNeutral text90L>ICCID: {row.iccid}</Text>
+                </View>
+              </View>
+              <View>
+                <View>
+                  <Text style={{ textAlign: 'right', height: 20 }}>
+                    <FontAwesomeIcon icon={iconType} style={{ color: Colors.$iconNeutral }} size={20} />
+                  </Text>
+                  <Text marginT-5 text90L style={{ textAlign: 'right', color: Colors.$iconNeutral }}>{type}</Text>
+                </View>
+              </View>
             </View>
-            <View>
-              <Text $textNeutral text90L>RSP: {row.notificationAddress}</Text>
-              <Text $textNeutral text90L>ICCID: {row.iccid}</Text>
-            </View>
-          </View>
-          <View>
-            <View>
-              <Text style={{ textAlign: 'right', height: 20 }}>
-                <FontAwesomeIcon icon={iconType} style={{ color: Colors.$iconNeutral }} size={20} />
-              </Text>
-              <Text marginT-5 text90L style={{ textAlign: 'right', color: Colors.$iconNeutral }}>{type}</Text>
-            </View>
-          </View>
-        </View>
-        </TouchableOpacity>
-      </Drawer>
+          </TouchableOpacity>
+        </Drawer>
       </View>
     );
   }

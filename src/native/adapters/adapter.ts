@@ -29,7 +29,7 @@ export class Adapter {
   eid: string = '';
   deviceId: string = '';
   device: Device;
-  profiles: string = '';
+  profiles: any[] = [];
   smdp: string = '';
   notifications: Notification[] = [];
   dispatch: Dispatch;
@@ -79,8 +79,8 @@ export class Adapter {
 
   async initialize() {
     await this.connect();
-    await this.get_profiles();
     await this.get_euicc_info();
+    await this.get_profiles();
   }
 
   async _execute(s: string, args: any[]): Promise<any> {
@@ -127,11 +127,14 @@ export class Adapter {
 
   async get_profiles() {
     const profiles = await this.execute('get_profiles', []);
-    this.profiles = profiles;
-    this.setState({
-      profiles,
-    });
-    return profiles;
+    if (profiles.constructor == Array) {
+      this.profiles = profiles;
+      this.setState({
+        profiles,
+      });
+      return profiles;
+    }
+    return [];
   }
 
   async getNotifications() {
@@ -152,13 +155,12 @@ export class Adapter {
   }
 
   async sendNotification(id: number) {
-    const result = await this.execute('process_notification_single', [id]);
-    return result;
+    return await this.execute('process_notification_single', [id]);
   }
 
 
   async disableProfileByIccId(iccid: string) {
-    const result = await this.execute('disable_profile', [iccid, this.device.type == 'omapi' ? '1': '0']);
+    const result = await this.execute('disable_profile', [iccid, this.device.type == 'omapi' ? '1' : '0']);
     if (this.device.type == 'omapi') {
       await new Promise(res => setTimeout(res, 1000));
     }
@@ -167,7 +169,7 @@ export class Adapter {
   }
 
   async enableProfileByIccId(iccid: string) {
-    const result = await this.execute('enable_profile', [iccid, this.device.type == 'omapi' ? '1': '0']);
+    const result = await this.execute('enable_profile', [iccid, this.device.type == 'omapi' ? '1' : '0']);
     if (this.device.type == 'omapi') {
       await new Promise(res => setTimeout(res, 1000));
     }

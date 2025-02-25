@@ -33,6 +33,7 @@ function ApplicationNavigator() {
 						drawerContent={(props) => <LeftSidebarDrawer {...props} />}
 						screenOptions={{
 							headerShown: false,
+							swipeEnabled: false,
 							drawerStyle: {
 								maxWidth: '67%',
 								width: 250,

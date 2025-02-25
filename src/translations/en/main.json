@@ -30,6 +30,8 @@
   "euiccInfo_defaultDpAddress": "Default SM-DP+ Address",
   "euiccInfo_rootDsAddress": "Root SM-DS Address",
 
+  "go_back": "Back",
+
 
   "settings_settings": "Settings",
   "settings_title_showSlots": "SIM Slot display rules",
