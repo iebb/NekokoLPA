@@ -1738,8 +1738,32 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - RNSentry (6.9.0):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-hermes
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Sentry/HybridSDK (= 8.45.0)
+    - Yoga
   - RNSVG (15.11.1):
     - React-Core
+  - Sentry/HybridSDK (8.45.0)
   - SocketRocket (0.7.1)
   - VisionCamera (4.6.3):
     - VisionCamera/Core (= 4.6.3)
@@ -1828,6 +1852,7 @@ DEPENDENCIES:
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - "RNSentry (from `../node_modules/@sentry/react-native`)"
   - RNSVG (from `../node_modules/react-native-svg`)
   - VisionCamera (from `../node_modules/react-native-vision-camera`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -1839,6 +1864,7 @@ SPEC REPOS:
     - MMKVCore
     - MultiplatformBleAdapter
     - Reachability
+    - Sentry
     - SocketRocket
 
 EXTERNAL SOURCES:
@@ -1993,6 +2019,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNSentry:
+    :path: "../node_modules/@sentry/react-native"
   RNSVG:
     :path: "../node_modules/react-native-svg"
   VisionCamera:
@@ -2081,7 +2109,9 @@ SPEC CHECKSUMS:
   RNGestureHandler: 6837a00e3da22953ea8817864a111f5c9ac574d1
   RNReanimated: 66cf0f600a26d2b5e74c6e0b1c77c1ab1f62fc05
   RNScreens: dca75d1e90a03d2b0229462f3d5a75880e30885d
+  RNSentry: da3f40cafc2f30fa36a91aa8b0a1c0115876dde0
   RNSVG: 86fecdfc637614ba9def63f7f3f2e7795e018356
+  Sentry: f7c0c4b82e2f7e5909a660544dfaff84e35d5e03
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   VisionCamera: 030bcbf22791d698926e7c0e3b804126165e62e3
   Yoga: db69236006b8b1c6d55ab453390c882306cbf219

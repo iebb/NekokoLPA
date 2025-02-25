@@ -1,8 +1,8 @@
 import Reactotron, { ReactotronReactNative } from 'reactotron-react-native';
 import mmkvPlugin from 'reactotron-react-native-mmkv';
 
-import { storage } from './App';
 import config from '../app.json';
+import {storage} from "@/configs/store";
 
 Reactotron.configure({
 	name: config.name,

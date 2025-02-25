@@ -150,12 +150,30 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext) : 
                     continue
                 }
                 try {
-                    val chan = channelMappings[reader.name] ?: openLogicalChannel(reader, aids)
+                    var chan = channelMappings[reader.name] ?: openLogicalChannel(reader, aids)
                     if (chan == null) {
                         result.add(mapOf("name" to reader.name, "available" to "false", "description" to "Open Channel Failed"))
                         continue
                     }
-                    val resp1 = chan.transmit(hexStringToByteArray("81E2910006BF3E035C015A"))
+
+                    var resp1 : ByteArray
+                    try {
+                        resp1 = chan.transmit(hexStringToByteArray("81E2910006BF3E035C015A"))
+                    } catch (e: IllegalStateException) {
+                        Log.e(
+                            TAG,
+                            "Channel is closed. Reopen it now.",
+                            e
+                        )
+                        chan = openLogicalChannel(reader, aids)
+                        if (chan == null) {
+                            result.add(mapOf("name" to reader.name, "available" to "false", "description" to "Open Channel Failed"))
+                            continue
+                        }
+                        resp1 = chan.transmit(hexStringToByteArray("81E2910006BF3E035C015A"))
+                    }
+
+
                     Log.i(TAG,"Transmit Response: ${resp1.toHex()}")
                     if (resp1[0] == 0xbf.toByte()) {
                         val eid = resp1.toHex().substring(10, 10 + 32)
@@ -289,6 +307,10 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext) : 
             } else {
                 try {
                     val resp = chan.transmit(hexStringToByteArray(apdu))
+                    if (resp.toHex() == "6881") {
+                        Log.e(TAG, "Channel is actually closed.")
+                        throw IOException()
+                    }
                     promise.resolve(resp.toHex())
                 } catch (e: Exception) {
                     when(e) {

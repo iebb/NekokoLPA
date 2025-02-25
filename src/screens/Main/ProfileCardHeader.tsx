@@ -14,7 +14,7 @@ import {preferences} from "@/utils/mmkv";
 import {formatSize} from "@/utils/size";
 import {toCIName, toFriendlyName} from "@/utils/friendlyName";
 import {useAppTheme} from "@/theme/context";
-import {getNicknameByEid, setNicknameByEid} from "@/configs/configStore";
+import {getNicknameByEid, setNicknameByEid} from "@/configs/store";
 
 
 export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {

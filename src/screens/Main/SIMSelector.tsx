@@ -12,7 +12,7 @@ import {faFloppyDisk, faSimCard} from "@fortawesome/free-solid-svg-icons";
 import Clipboard from "@react-native-clipboard/clipboard";
 import {preferences} from "@/utils/mmkv";
 import {AppBuyLink} from "@/screens/Main/config";
-import {getNicknames} from "@/configs/configStore";
+import {getNicknames} from "@/configs/store";
 import {setDeviceState} from "@/redux/stateStore";
 
 export default function SIMSelector() {
