@@ -13,82 +13,86 @@ jobs:
     environment: Android auto-builder
 
     steps:
-    - uses: actions/checkout@v4
-    - name: set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: gradle
-        
-    # Step 2: Set up Node.js (required for package.json)
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'  # You can adjust the version as needed
+      - uses: actions/checkout@v4
+      - name: set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
 
-    # Step 3: Install dependencies (if necessary)
-    - name: Install dependencies
-      run: npm install
+      # Step 2: Set up Node.js (required for package.json)
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'  # You can adjust the version as needed
 
-    # Step 4: Get version from package.json
-    - name: Extract version from package.json
-      id: extract_version
-      run: echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
+      # Step 3: Install dependencies (if necessary)
+      - name: Install dependencies
+        run: npm install
 
-    # Step 5: Run the build script
-    - name: Build APK
-      run: chmod +x build_for_github.sh && bash ./build_for_github.sh
+      # Step 4: Get version from package.json
+      - name: Extract version from package.json
+        id: extract_version
+        run: echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
 
-    # Step 5: Run the build script
-    - name: Sign APK
-      env:
-        SIGN_PASS_NEKOKO_BEEF: ${{ secrets.SIGN_PASS_NEKOKO_BEEF }}
-        SIGN_PASS_WENZI: ${{ secrets.SIGN_PASS_WENZI }}
-      run: chmod +x sign.sh && bash ./sign.sh
+      # Step 5: Run the build script
+      - name: Build APK
+        env: # Or as an environment variable
+          SENTRY_PROJECT: react-native
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        run: chmod +x build_for_github.sh && bash ./build_for_github.sh
 
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: v${{ env.VERSION }}
-        release_name: Release ${{ env.VERSION }}
-        draft: false
-        prerelease: false
-        body: |
-          Auto-Release for version ${{ env.VERSION }}.
+      # Step 5: Run the build script
+      - name: Sign APK
+        env: # Or as an environment variable
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SIGN_PASS_NEKOKO_BEEF: ${{ secrets.SIGN_PASS_NEKOKO_BEEF }}
+          SIGN_PASS_WENZI: ${{ secrets.SIGN_PASS_WENZI }}
+        run: chmod +x sign.sh && bash ./sign.sh
 
-    # Step 4: Upload APK to the release
-    - name: Upload APK to Release
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./outputs/ee.nekoko.nlpa.multisign-arm64-v8a-${{ env.VERSION }}.apk
-        asset_name: ee.nekoko.nlpa.multisign-arm64-v8a-${{ env.VERSION }}.apk
-        asset_content_type: application/vnd.android.package-archive
-#
-#    # Step 4: Upload APK to the release
-#    - name: Upload APK to Release
-#      uses: actions/upload-release-asset@v1
-#      env:
-#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#      with:
-#        upload_url: ${{ steps.create_release.outputs.upload_url }}
-#        asset_path: ./outputs/ee.nekoko.nlpa.flavor1-arm64-v8a-${{ env.VERSION }}.apk
-#        asset_name: ee.nekoko.nlpa.flavor1-arm64-v8a-${{ env.VERSION }}.apk
-#        asset_content_type: application/vnd.android.package-archive
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ env.VERSION }}
+          release_name: Release ${{ env.VERSION }}
+          draft: false
+          prerelease: false
+          body: |
+            Auto-Release for version ${{ env.VERSION }}.
 
-    - name: Upload files to Telegram
-      uses: xz-dev/TelegramFileUploader@v1.1.1
-      with:
-        to-who: 'NekokoLPA'
-        message: 'Version ${{ env.VERSION }} (Github: https://github.com/iebb/NekokoLPA/releases/tag/v${{ env.VERSION }})'
-        files: ./outputs/ee.nekoko.nlpa.multisign-arm64-v8a-${{ env.VERSION }}.apk
-      env:
-        API_ID: ${{ secrets.API_ID }}
-        API_HASH: ${{ secrets.API_HASH }}
-        BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+      # Step 4: Upload APK to the release
+      - name: Upload APK to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./outputs/ee.nekoko.nlpa.multisign-arm64-v8a-${{ env.VERSION }}.apk
+          asset_name: ee.nekoko.nlpa.multisign-arm64-v8a-${{ env.VERSION }}.apk
+          asset_content_type: application/vnd.android.package-archive
+      #
+      #    # Step 4: Upload APK to the release
+      #    - name: Upload APK to Release
+      #      uses: actions/upload-release-asset@v1
+      #      env:
+      #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #      with:
+      #        upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #        asset_path: ./outputs/ee.nekoko.nlpa.flavor1-arm64-v8a-${{ env.VERSION }}.apk
+      #        asset_name: ee.nekoko.nlpa.flavor1-arm64-v8a-${{ env.VERSION }}.apk
+      #        asset_content_type: application/vnd.android.package-archive
+
+      - name: Upload files to Telegram
+        uses: xz-dev/TelegramFileUploader@v1.1.1
+        with:
+          to-who: 'NekokoLPA'
+          message: 'Version ${{ env.VERSION }} (Github: https://github.com/iebb/NekokoLPA/releases/tag/v${{ env.VERSION }})'
+          files: ./outputs/ee.nekoko.nlpa.multisign-arm64-v8a-${{ env.VERSION }}.apk
+        env:
+          API_ID: ${{ secrets.API_ID }}
+          API_HASH: ${{ secrets.API_HASH }}
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
