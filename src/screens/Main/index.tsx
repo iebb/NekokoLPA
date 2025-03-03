@@ -55,7 +55,7 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 						<View row gap-5 flexG>
 							<TouchableOpacity
 								onPress={() => {
-									navigation.openDrawer();
+									(navigation as any).openDrawer();
 								}}
 							>
 								<Image

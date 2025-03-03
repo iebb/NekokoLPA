@@ -25,4 +25,4 @@ export type RootStackParamList = {
 
 export type RootScreenProps<
 	S extends keyof RootStackParamList = keyof RootStackParamList,
-> = DrawerScreenProps<RootStackParamList, S>;
+> = StackScreenProps<RootStackParamList, S>;

@@ -5,24 +5,24 @@ import {useTranslation} from 'react-i18next';
 import {version} from '../../package.json';
 import {Colors, Image, Text, View} from 'react-native-ui-lib';
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
-import {faCog, faFlag} from "@fortawesome/free-solid-svg-icons";
+import {faCog, faFlag, faArrowLeft} from "@fortawesome/free-solid-svg-icons";
 import {AppLogo} from "@/screens/Main/config";
 
 
 export default function LeftSidebarDrawer({ navigation }: DrawerContentComponentProps) {
   const { t } = useTranslation(['main']);
   const menuItems = [
-    // {
-    //   title: 'Back', label: 'main:go_back',
-    //   icon: faArrowLeft, onPress: (navigation: any) => navigation.goBack()
-    // },
     {
       title: 'Stats', label: 'main:profile_collection_stats',
-      icon: faFlag, onPress: (navigation: any) => navigation.navigate('Stats', {})
+      icon: faFlag, onPress: (navigation: any) => navigation.navigate('Stack', { screen: 'Stats' })
     },
     {
       title: 'Settings', label: 'main:settings_settings',
-      icon: faCog, onPress: (navigation: any) => navigation.navigate('Settings', {})
+      icon: faCog, onPress: (navigation: any) => navigation.navigate('Stack', { screen: 'Settings' })
+    },
+    {
+      title: 'Main', label: 'main:main_screen',
+      icon: faArrowLeft, onPress: (navigation: any) => navigation.navigate('Stack', { screen: 'Main' })
     },
   ]
 

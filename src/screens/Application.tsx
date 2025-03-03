@@ -19,15 +19,30 @@ import {ToastProvider} from "@/components/common/ToastProvider";
 const Stack = createStackNavigator<RootStackParamList>();
 const Drawer = createDrawerNavigator();
 
-
-
+function StackNavigator() {
+	return (
+		<Stack.Navigator
+			screenOptions={{
+				headerShown: false,
+			}}
+		>
+			<Stack.Screen name="Main" component={Main} />
+			<Stack.Screen name="Scanner" component={Scanner} options={TransitionPresets.SlideFromRightIOS} />
+			<Stack.Screen name="Profile" component={Profile} options={TransitionPresets.SlideFromRightIOS} />
+			<Stack.Screen name="Stats" component={Index} options={TransitionPresets.SlideFromRightIOS} />
+			<Stack.Screen name="EuiccInfo" component={EuiccInfo} options={TransitionPresets.SlideFromRightIOS} />
+			<Stack.Screen name="Notifications" component={Notifications} options={TransitionPresets.SlideFromRightIOS} />
+			<Stack.Screen name="Settings" component={Settings} options={TransitionPresets.SlideFromRightIOS} />
+		</Stack.Navigator>
+	)
+}
 function ApplicationNavigator() {
 	const { theme, themeColor } = useAppTheme();
 	const navigationRef = React.createRef<NavigationContainerRef<RootStackParamList>>();
+
 	return (
 		<SafeAreaProvider key={theme + "_" + themeColor}>
 			<NavigationContainer ref={navigationRef}>
-
 				<ToastProvider>
 					<Drawer.Navigator
 						drawerContent={(props) => <LeftSidebarDrawer {...props} />}
@@ -42,13 +57,7 @@ function ApplicationNavigator() {
 							},
 						}}
 					>
-						<Stack.Screen name="Main" component={Main} />
-						<Stack.Screen name="Scanner" component={Scanner} options={TransitionPresets.SlideFromRightIOS} />
-						<Stack.Screen name="Profile" component={Profile} options={TransitionPresets.SlideFromRightIOS} />
-						<Stack.Screen name="Stats" component={Index} options={TransitionPresets.SlideFromRightIOS} />
-						<Stack.Screen name="EuiccInfo" component={EuiccInfo} options={TransitionPresets.SlideFromRightIOS} />
-						<Stack.Screen name="Notifications" component={Notifications} options={TransitionPresets.SlideFromRightIOS} />
-						<Stack.Screen name="Settings" component={Settings} options={TransitionPresets.SlideFromRightIOS} />
+						<Drawer.Screen name="Stack" component={StackNavigator} />
 					</Drawer.Navigator>
 				</ToastProvider>
 			</NavigationContainer>

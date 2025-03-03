@@ -18,7 +18,6 @@ export const getNicknameByEid = (eid: string) => {
 export const getNicknames = () => {
     try {
         const v = JSON.parse(storage.getString("nickname") ?? '{}');
-        console.log("v is", typeof v, v);
         if (typeof v !== "undefined") {
             return v;
         }
