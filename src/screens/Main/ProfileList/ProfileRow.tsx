@@ -4,7 +4,7 @@ import {preferences, sizeStats} from "@/utils/mmkv";
 import {Card, Colors, Drawer, Switch, Text, View} from "react-native-ui-lib";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faPencil, faTrash} from "@fortawesome/free-solid-svg-icons";
-import {Alert, Image, PixelRatio, TouchableOpacity} from "react-native";
+import {Alert, Image, PixelRatio, ToastAndroid, TouchableOpacity} from "react-native";
 import {makeLoading} from "@/components/utils/loading";
 import {Flags} from "@/assets/flags";
 import {formatSize} from "@/utils/size";
@@ -13,7 +13,6 @@ import {useTranslation} from "react-i18next";
 import {useNavigation} from "@react-navigation/native";
 import {Profile} from "@/native/types";
 import {Adapters} from "@/native/adapters/registry";
-
 
 interface ProfileExt extends Profile {
   selected: boolean;
@@ -238,7 +237,11 @@ export const ProfileRow = ({profile, deviceId, isLoading, setLoading} : {profile
                 onValueChange={async (value2: boolean) => {
                   makeLoading(setLoading, async () => {
                     if (profile.selected) {
-                      await adapter.disableProfileByIccId(metadata.iccid);
+                      if (adapter.device.type !== "omapi") {
+                        await adapter.disableProfileByIccId(metadata.iccid);
+                      } else {
+                        ToastAndroid.show(`Disabling Profile on Android may have unintended effects.`, ToastAndroid.SHORT);
+                      }
                     } else {
                       await adapter.enableProfileByIccId(metadata.iccid);
                     }

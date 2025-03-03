@@ -68,11 +68,6 @@ function EuiccInfo({ route,  navigation }: RootScreenProps<'EuiccInfo'>) {
 					{key: "svn", rendered: euiccInfo2?.svn },
 					{key: "freeNonVolatileMemory", rendered: formatSize(euiccInfo2?.extCardResource.freeNonVolatileMemory) },
 					{key: "freeVolatileMemory", rendered: formatSize(euiccInfo2?.extCardResource.freeVolatileMemory) },
-					// {key: "aramReader", element: (
-					// 	<Button onPress={() => {
-					// 		adapter.device.accessRule && adapter.device.accessRule();
-					// 	}}><Text>11</Text></Button>
-					// 	) },
 					{key: "defaultDpAddress", rendered: euiccAddress?.defaultDpAddress },
 					{key: "rootDsAddress", rendered: euiccAddress?.rootDsAddress },
 					{key: "euiccCiPKIdListForSigning", rendered: euiccInfo2?.euiccCiPKIdListForSigning.map(x => x.substr(0, 16)).join(", "), raw: euiccInfo2?.euiccCiPKIdListForSigning.join("\n") },

@@ -35,6 +35,7 @@
       android:allowBackup="true"
       android:theme="@style/AppTheme"
       android:hasFragileUserData="true"
+      android:dataExtractionRules="@xml/backup_rules"
       >
     <activity
         android:name=".MainActivity"
