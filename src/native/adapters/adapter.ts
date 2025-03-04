@@ -35,10 +35,14 @@ export class Adapter {
   dispatch: Dispatch;
   isLocked = false;
 
+
   setState = (state: object) => {
     this.dispatch(setDeviceState([state, this.deviceId]));
   }
 
+  callback = (state: object) => {
+    console.log(state);
+  }
 
   constructor(device: Device, dispatcher: Dispatch) {
     this.obsolete = false;
@@ -80,7 +84,7 @@ export class Adapter {
   async initialize() {
     await this.connect();
     await this.get_euicc_info();
-    await this.get_profiles();
+    await this.getProfiles();
   }
 
   async _execute(s: string, args: any[]): Promise<any> {
@@ -113,21 +117,22 @@ export class Adapter {
 
   async get_euicc_info() {
     const euicc_info = await this.execute('get_euicc_info', []);
-
-    this.eid = euicc_info.eidValue;
-    this.smdp = euicc_info?.EuiccConfiguredAddresses?.defaultDpAddress;
-    this.setState({
-      eid: euicc_info.eidValue,
-      euiccInfo2: euicc_info.EUICCInfo2,
-      euiccAddress: euicc_info.EuiccConfiguredAddresses,
-      bytesFree: euicc_info.EUICCInfo2?.extCardResource.freeNonVolatileMemory,
-    });
-    return await euicc_info;
+    if (euicc_info) {
+      this.eid = euicc_info.eidValue;
+      this.smdp = euicc_info?.EuiccConfiguredAddresses?.defaultDpAddress;
+      this.setState({
+        eid: euicc_info.eidValue,
+        euiccInfo2: euicc_info.EUICCInfo2,
+        euiccAddress: euicc_info.EuiccConfiguredAddresses,
+        bytesFree: euicc_info.EUICCInfo2?.extCardResource.freeNonVolatileMemory,
+      });
+    }
+    return euicc_info;
   }
 
-  async get_profiles() {
+  async getProfiles() {
     const profiles = await this.execute('get_profiles', []);
-    if (profiles.constructor == Array) {
+    if (profiles && (profiles.constructor == Array)) {
       this.profiles = profiles;
       this.setState({
         profiles,
@@ -164,7 +169,7 @@ export class Adapter {
     if (this.device.type == 'omapi') {
       await new Promise(res => setTimeout(res, 1000));
     }
-    await this.get_profiles();
+    await this.getProfiles();
     return result;
   }
 
@@ -173,13 +178,13 @@ export class Adapter {
     if (this.device.type == 'omapi') {
       await new Promise(res => setTimeout(res, 1000));
     }
-    await this.get_profiles();
+    await this.getProfiles();
     return result;
   }
 
   async setNicknameByIccId(iccid: string, nickname: string) {
     const result = await this.execute('rename_profile', [iccid, nickname]);
-    await this.get_profiles();
+    await this.getProfiles();
     return result;
   }
 
@@ -188,12 +193,13 @@ export class Adapter {
     if (this.device.type == 'omapi') {
       await new Promise(res => setTimeout(res, 1000));
     }
-    await this.get_profiles();
+    await this.getProfiles();
     await this.get_euicc_info();
     return result;
   }
 
-  async authenticateProfile(smdp: string, matchingId: string, imei: string = "356726381389691") {
+  async authenticateProfile(smdp: string, matchingId: string, callback: (obj: object) => any, imei: string = "") {
+    this.callback = callback;
     return await this.execute('authenticate_profile', [smdp, matchingId, imei]);
   }
 
@@ -201,10 +207,11 @@ export class Adapter {
     return await this.execute('cancel_download', [internal_state]);
   }
 
-  async downloadProfile(internal_state: string, confirmation_code: string = "") {
+  async downloadProfile(internal_state: string, confirmation_code: string = "", callback: (obj: object) => any) {
+    this.callback = callback;
     const result = await this.execute('download_profile', [internal_state, confirmation_code]);
     if (result.success) {
-      await this.get_profiles();
+      await this.getProfiles();
       await this.get_euicc_info();
     }
     return result;

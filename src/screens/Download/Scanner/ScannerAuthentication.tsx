@@ -28,11 +28,12 @@ export function ScannerAuthentication(
 ) {
   const { t } = useTranslation(['main']);
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState({} as any);
   const [confirmationCode, setConfirmationCode] = useState(initialConfirmationCode);
   const DeviceState = useSelector(selectDeviceState(deviceId));
 
   const adapter = Adapters[deviceId];
-  const { eid, euiccAddress, euiccInfo2 } = DeviceState;
+  const { eid, euiccInfo2 } = DeviceState;
 
   const profileTag = `${authenticateResult?.profile?.profileOwnerMccMnc}|${authenticateResult?.profile?.serviceProviderName}`;
   // @ts-ignore
@@ -43,12 +44,21 @@ export function ScannerAuthentication(
   const maxSizeData = sizeData ? sizeData[2]: 10000;
   const freeSpace = Math.round((euiccInfo2?.extCardResource?.freeNonVolatileMemory || 0));
 
+
   return (
     <View>
       <Title>{t('main:profile_title_confirm_profile')}</Title>
       {
         loading && (
-          <BlockingLoader message={t('main:profile_loading_download_profile')} />
+          <BlockingLoader
+            message={
+              ((progress?.progress > 0) ? (
+                t('main:progress_' + progress.message, progress)
+              ) : (
+                t('main:profile_loading_download_profile')
+              )) as string
+            }
+          />
         )
       }
       {
@@ -158,7 +168,7 @@ export function ScannerAuthentication(
                               makeLoading(
                                 setLoading,
                                 async () => {
-                                  const downloadResult = await adapter.downloadProfile(authenticateResult._internal, confirmationCode);
+                                  const downloadResult = await adapter.downloadProfile(authenticateResult._internal, confirmationCode, setProgress);
                                   await adapter.processNotifications(authenticateResult.profile.iccid);
                                   // InfiLPA.refreshProfileList(device);
                                   confirmDownload({
@@ -173,7 +183,7 @@ export function ScannerAuthentication(
                       makeLoading(
                         setLoading,
                         async () => {
-                          const downloadResult = await adapter.downloadProfile(authenticateResult._internal, confirmationCode);
+                          const downloadResult = await adapter.downloadProfile(authenticateResult._internal, confirmationCode, setProgress);
                           await adapter.processNotifications(authenticateResult.profile.iccid);
                           // InfiLPA.refreshProfileList(device);
                           confirmDownload({

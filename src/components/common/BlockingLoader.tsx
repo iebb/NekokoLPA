@@ -17,8 +17,8 @@ export default function BlockingLoader({ message }: { message?: string }) {
     >
       <View
         style={{
-          minHeight: 100,
-          minWidth: 150,
+          minHeight: 130,
+          minWidth: 250,
           backgroundColor: Colors.$backgroundNeutral,
           borderRadius: 10,
           shadowColor: Colors.$backgroundNeutralHeavy,
@@ -33,7 +33,7 @@ export default function BlockingLoader({ message }: { message?: string }) {
       >
         <LoaderScreen color={Colors.blue30} size="large" loaderColor={Colors.$backgroundNeutral} />
         {message && (
-          <Text $textDefault marginT-10>
+          <Text $textDefault text70L marginT-10>
             {message}
           </Text>
         )}

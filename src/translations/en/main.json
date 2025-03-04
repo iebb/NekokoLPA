@@ -133,6 +133,23 @@
   "notifications_delete": "Delete Notification",
   "notifications_delete_alert": "Are you sure to delete this notification? It cannot be recovered",
   "notifications_delete_ok": "OK",
-  "notifications_delete_cancel": "Cancel"
+  "notifications_delete_cancel": "Cancel",
+
+
+  "progress_download.step1.es10b_get_euicc_challenge_and_info": "(1/4) Checking card",
+  "progress_download.step2.es9p_initiate_authentication": "(2/4) Communicating with Server",
+  "progress_download.step3.es10b_authenticate_server": "(3/4) Check Server Response",
+  "progress_download.step4.es9p_authenticate_client": "(4/4) Requesting Metadata",
+
+  "progress_download.step5.es10b_prepare_download": "(1/5) Confirming Download",
+  "progress_download.step6.es9p_get_bound_profile_package": "(2/5) Requesting Profile from Server",
+  "progress_download.step7.es10b_load_bound_profile_package": "(3/5) Processing Profile Package",
+  "progress_download.step7.es10b_load_bound_profile_package_tx_1": "(3/5) Processing Profile Package {{total}}/6",
+  "progress_download.step8.load_bpp": "(4/5) Writing Profile {{progress}}/{{total}}B",
+  "progress_download.step9.finalize": "(5/5) Finalize Download",
+
+
+
+  "_": ""
 }
 

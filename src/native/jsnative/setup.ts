@@ -1,5 +1,6 @@
 import {NativeModules, Platform} from "react-native";
 import {Adapter, Device} from "@/native/adapters/adapter";
+import {Adapters} from "@/native/adapters/registry";
 const { CustomHttp } = NativeModules;
 
 export async function setupDevice(a: Adapter): Promise<(s: string, args: any[]) => Promise<(fn: string, args: any[]) => Promise<any>>> {
@@ -28,6 +29,12 @@ export async function setupDevice(a: Adapter): Promise<(s: string, args: any[]) 
     } catch (error) {
       return [false, 500, ""];
     }
+  };
+
+
+  module.jsCallback = async (message: string, progress: number, total: number) => {
+    console.log("jsCallback", message, progress, total);
+    Adapters[a.device.deviceId].callback({message, progress, total});
   };
 
   a._execute = async (fn: string, args: any[]) => {

@@ -83,7 +83,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./outputs/ee.nekoko.nlpa.multisign-4signers-arm64-v8a-${{ env.VERSION }}.apk
-          asset_name: ee.nekoko.nlpa.multisign-4signers-arm64-v8a-${{ env.VERSION }}.apk
+          asset_name: ee.nekoko.nlpa.multisign-signers4-arm64-v8a-${{ env.VERSION }}.apk
           asset_content_type: application/vnd.android.package-archive
 
       - name: Upload files to Telegram

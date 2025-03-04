@@ -29,6 +29,7 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
   const { t } = useTranslation(['main']);
   const [acToken, setAcToken] = useState("");
   const [oid, setOid] = useState("");
+  const [progress, setProgress] = useState({} as any);
   const [confirmationCode, setConfirmationCode] = useState("");
   const [confirmationCodeReq, setConfirmationCodeReq] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -83,7 +84,15 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
       <Title>{t('main:profile_title_download_profile')}</Title>
       {
         loading && (
-          <BlockingLoader message={t('main:profile_loading_validating_profile')} />
+          <BlockingLoader
+            message={
+              ((progress?.progress > 0) ? (
+                t('main:progress_' + progress.message, progress)
+              ) : (
+                t('main:profile_loading_validating_profile')
+              )) as string
+            }
+          />
         )
       }
       <Container>
@@ -170,7 +179,7 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
                     setSmdp(euiccAddress?.defaultDpAddress);
                   } else if (smdp.length > 0) {
                     const authenticateResult = await adapter.authenticateProfile(
-                      smdp, acToken
+                      smdp, acToken, (e) => setProgress(e), ""
                     );
                     finishAuthenticate({
                       authenticateResult,

@@ -133,6 +133,18 @@
   "notifications_delete": "通知を削除",
   "notifications_delete_alert": "この通知を削除してもよろしいですか？ 復元はできません。",
   "notifications_delete_ok": "OK",
-  "notifications_delete_cancel": "キャンセル"
+  "notifications_delete_cancel": "キャンセル",
+
+  "progress_download.step1.es10b_get_euicc_challenge_and_info": "(1/4) カードの状態を検出",
+  "progress_download.step2.es9p_initiate_authentication": "(2/4) サーバーと通信",
+  "progress_download.step3.es10b_authenticate_server": "(3/4) サーバー要求を検証",
+  "progress_download.step4.es9p_authenticate_client": "(4/4) プロファイル情報を取得",
+
+  "progress_download.step5.es10b_prepare_download": "(1/5) ダウンロード確認の準備",
+  "progress_download.step6.es9p_get_bound_profile_package": "(2/5) サーバーからプロファイルパッケージを取得",
+  "progress_download.step7.es10b_load_bound_profile_package": "(3/5) プロファイルパッケージの書き込み準備",
+  "progress_download.step7.es10b_load_bound_profile_package_tx_1": "(3/5) プロファイルパッケージの書き込み準備 {{total}}/6",
+  "progress_download.step8.load_bpp": "(4/5) プロファイルパッケージを書き込み中 {{progress}}/{{total}}",
+  "progress_download.step9.finalize": "(5/5) ダウンロード完了"
 }
 

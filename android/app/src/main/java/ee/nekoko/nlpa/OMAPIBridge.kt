@@ -98,11 +98,9 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext) : 
 
     override fun onHostResume() {
         Log.e(TAG, "$channelMappings length: ${channelMappings.size}")
-        // Called when the host (e.g., an activity) resumes
         Log.e(TAG, "Host resumed")
     }
     override fun onHostDestroy() {
-        // Called when the host is destroyed
         Log.e(TAG, "Host destroyed")
     }
 
@@ -115,7 +113,7 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext) : 
             sessionMappings[reader.name] = session
             Log.i(TAG, "${reader.name} ATR: ${session.getATR()} Session: $session")
 
-            for (aid in aids + aids) {
+            for (aid in aids) {
                 try {
                     Log.i(TAG, "Opening eUICC connection ${reader.name} with AID $aid")
                     return session.openLogicalChannel(hexStringToByteArray(aid))?.also {
@@ -146,9 +144,7 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext) : 
             Log.i(TAG,"SE List ${seService.readers.size} Readers:")
             for (reader in seService.readers) {
                 Log.i(TAG, "SE Reader: " + reader.name)
-                if (!reader.name.startsWith("SIM")) {
-                    continue
-                }
+                if (!reader.name.startsWith("SIM")) continue
                 try {
                     var chan = channelMappings[reader.name] ?: openLogicalChannel(reader, aids)
                     if (chan == null) {
@@ -177,7 +173,7 @@ class OMAPIBridge @ReactMethod constructor(private val context: ReactContext) : 
                     Log.i(TAG,"Transmit Response: ${resp1.toHex()}")
                     if (resp1[0] == 0xbf.toByte()) {
                         val eid = resp1.toHex().substring(10, 10 + 32)
-                        Log.i(TAG,"EID: ${eid}")
+                        Log.i(TAG, "EID: ${eid}")
                         result.add(hashMapOf("name" to reader.name, "eid" to eid, "slotAvailable" to "true", "available" to "true"))
                     } else {
                         result.add(hashMapOf("name" to reader.name, "available" to "false", "slotAvailable" to "true", "description" to "No EID Found", "signatures" to signatureList))

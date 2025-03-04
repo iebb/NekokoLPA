@@ -4,12 +4,11 @@ import {useTranslation} from 'react-i18next';
 import SafeScreen from '@/theme/SafeScreen';
 import type {RootScreenProps} from "@/screens/navigation";
 import Title from "@/components/common/Title";
-import {Button, Colors, ListItem, Text} from "react-native-ui-lib";
+import {Colors, ListItem, Text} from "react-native-ui-lib";
 import {useSelector} from "react-redux";
 import {selectDeviceState} from "@/redux/stateStore";
 import Clipboard from "@react-native-clipboard/clipboard";
 import {formatSize} from "@/utils/size";
-import {Adapters} from "@/native/adapters/registry";
 
 export type EuiccInfoDataType = {
 	key: string;
@@ -21,13 +20,8 @@ export type EuiccInfoDataType = {
 function EuiccInfo({ route,  navigation }: RootScreenProps<'EuiccInfo'>) {
 	const { deviceId } = route.params;
 	const DeviceState = useSelector(selectDeviceState(deviceId!));
-	const adapter = Adapters[deviceId];
-
 	const { t } = useTranslation(['main']);
-
 	const { eid, euiccAddress, euiccInfo2 } = DeviceState;
-
-
 	const renderRow = (row: EuiccInfoDataType, id: number, t: any) => {
 		return (
 			<ListItem

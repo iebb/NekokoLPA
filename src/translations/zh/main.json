@@ -131,6 +131,19 @@
   "notifications_delete": "删除通知",
   "notifications_delete_alert": "确认删除通知？此操作不可逆。",
   "notifications_delete_ok": "确认删除",
-  "notifications_delete_cancel": "取消"
+  "notifications_delete_cancel": "取消",
+
+
+  "progress_download.step1.es10b_get_euicc_challenge_and_info": "(1/4) 检测卡片状态",
+  "progress_download.step2.es9p_initiate_authentication": "(2/4) 与服务器通信",
+  "progress_download.step3.es10b_authenticate_server": "(3/4) 校验服务器请求",
+  "progress_download.step4.es9p_authenticate_client": "(4/4) 获取配置信息",
+
+  "progress_download.step5.es10b_prepare_download": "(1/5) 准备确认下载",
+  "progress_download.step6.es9p_get_bound_profile_package": "(2/5) 从服务器获取配置包",
+  "progress_download.step7.es10b_load_bound_profile_package": "(3/5) 准备写入配置包",
+  "progress_download.step7.es10b_load_bound_profile_package_tx_1": "(3/5) 准备写入配置包 {{total}}/6",
+  "progress_download.step8.load_bpp": "(4/5) 写入配置包 {{progress}}/{{total}}",
+  "progress_download.step9.finalize": "(5/5) 下载完成"
 }
 

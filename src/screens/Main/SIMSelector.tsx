@@ -13,7 +13,6 @@ import Clipboard from "@react-native-clipboard/clipboard";
 import {preferences} from "@/utils/mmkv";
 import {AppBuyLink} from "@/screens/Main/config";
 import {getNicknames} from "@/configs/store";
-import {setDeviceState} from "@/redux/stateStore";
 
 export default function SIMSelector() {
   const {deviceList: _deviceList} = useSelector((state: RootState) => state.LPA);
@@ -22,7 +21,6 @@ export default function SIMSelector() {
   const { t } = useTranslation(['main']);
   const showSlots = preferences.getString("showSlots");
 
-  console.log(ds);
   let deviceList = _deviceList;
 
   if (showSlots === "possible") {
