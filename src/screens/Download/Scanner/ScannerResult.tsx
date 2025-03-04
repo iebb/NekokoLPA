@@ -128,7 +128,7 @@ export function ScannerResult(
                       onPress={() => {
                         makeLoading(setLoading,
                           async () => {
-                            await adapter.get_profiles();
+                            await adapter.getProfiles();
                             goBack();
                           });
                       }}

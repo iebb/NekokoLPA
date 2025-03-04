@@ -11,7 +11,7 @@ import BlockingLoader from "@/components/common/BlockingLoader";
 import {LPACode} from "@/utils/lpaRegex";
 import {launchImageLibrary} from "react-native-image-picker";
 import QrImageReader from 'react-native-qr-image-reader';
-import {Dimensions, KeyboardAvoidingView, Platform} from "react-native";
+import {Dimensions, KeyboardAvoidingView, Platform, TouchableOpacity} from "react-native";
 import {Adapters} from "@/native/adapters/registry";
 import {useSelector} from "react-redux";
 import {selectDeviceState} from "@/redux/stateStore";
@@ -23,8 +23,7 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
   const cameraState = preferences.getString("useCamera");
 
 
-  const [showCamera, setShowCamera] = useState(cameraState === 'always' || !cameraState);
-  const onDemandCamera = cameraState === 'ondemand' && !showCamera;
+  const [showCamera, setShowCamera] = useState(cameraState === 'always');
 
   const { t } = useTranslation(['main']);
   const [acToken, setAcToken] = useState("");
@@ -78,6 +77,7 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
   const cameraDevice = useCameraDevice('back');
 
   const size = Math.min(250, Dimensions.get('window').width - 50);
+  const sizeW = Math.min(size * 4/3, Dimensions.get('window').width - 50);
 
   return (
     <View>
@@ -106,67 +106,74 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
               {t('main:profile_scan_qr_prompt')}
             </Text>
             <Text $textDefault text70M>
-              {t('main:profile_current_euicc', { device: adapter.device.deviceName })}
-            </Text>
-            <Text $textDefault text70M>
-              {t('main:available_space', {
-                size: formatSize(euiccInfo2?.extCardResource?.freeNonVolatileMemory),
-              })}
+              {t('main:profile_current_euicc', { device: adapter.device.deviceName })} ({t('main:available_space', {
+              size: formatSize(euiccInfo2?.extCardResource?.freeNonVolatileMemory),
+            })})
             </Text>
           </View>
           <View center style={{ borderRadius: 30 }}>
-            <View style={{ width: cameraDevice && hasPermission && showCamera ? size : 80, height: cameraDevice && hasPermission && showCamera ? size : 40, borderRadius: 20, overflow: "hidden" }}>
-              <Button
-                round
-                style={{ borderRadius: 20, position: "absolute", top: 0, right: 0, zIndex: 100 }}
-                onPress={() => {
-                  launchImageLibrary({
-                    mediaType: "photo",
-                  }, (result) => {
-                    if (result.assets) {
-                      for(const a of result.assets) {
-                        QrImageReader.decode({ path: a.uri })
-                          .then(({result}) => {
-                            processLPACode(result!);
-                          })
-                          .catch(error => console.log(error || 'No QR code found.'));
-                      }
-                    }
-                  });
-                }}
-                $textPrimary
-                bg-$backgroundPrimary
-              >
-                <FontAwesomeIcon icon={faPhotoFilm} style={{ color: Colors.white }} />
-              </Button>
-              {
-                onDemandCamera && (
-                  <Button
-                    round
-                    style={{ borderRadius: 20, position: "absolute", top: 0, left: 0, zIndex: 100 }}
-                    onPress={() => {
-                      setShowCamera(true);
-                    }}
-                    $textPrimary
-                    bg-$backgroundPrimary
-                  >
-                    <FontAwesomeIcon icon={faCamera} style={{ color: Colors.white }} />
-                  </Button>
-                )
-              }
+            <View
+              style={{
+              width: sizeW,
+              height: size,
+              borderRadius: 20,
+              overflow: "hidden",
+              borderColor: Colors.$textNeutralLight,
+              borderWidth: showCamera ? 0 : 2,
+              borderStyle: 'dashed',
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}
+            >
+                {
+                  !showCamera && (
+                    <View row gap-40>
+                      <TouchableOpacity
+                        onPress={() => {
+                          if (!showCamera)
+                            setShowCamera(true);
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faCamera} size={40} style={{ color: Colors.$textNeutralLight }} />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => {
+                          launchImageLibrary({
+                            mediaType: "photo",
+                          }, (result) => {
+                            if (result.assets) {
+                              for(const a of result.assets) {
+                                QrImageReader.decode({ path: a.uri })
+                                  .then(({result}) => {
+                                    processLPACode(result!);
+                                  })
+                                  .catch(error => console.log(error || 'No QR code found.'));
+                                break;
+                              }
+                            }
+                          });
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faPhotoFilm} size={40} style={{ color: Colors.$textNeutralLight }} />
+                      </TouchableOpacity>
+                    </View>
+                  )
+                }
               {
                 cameraDevice && hasPermission && showCamera && (
                   <Camera
                     device={cameraDevice}
                     isActive
                     codeScanner={codeScanner}
-                    style={{ width: size, height: size}}
+                    style={{ width: sizeW, height: size}}
                   />
                 )
               }
             </View>
           </View>
           <Button
+            marginT-36
             marginV-12
             borderRadius={210}
             bg-$backgroundPrimary

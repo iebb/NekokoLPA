@@ -83,7 +83,7 @@ export class Adapter {
 
   async initialize() {
     await this.connect();
-    await this.get_euicc_info();
+    await this.getEuiccInfo();
     await this.getProfiles();
   }
 
@@ -115,7 +115,7 @@ export class Adapter {
   }
 
 
-  async get_euicc_info() {
+  async getEuiccInfo() {
     const euicc_info = await this.execute('get_euicc_info', []);
     if (euicc_info) {
       this.eid = euicc_info.eidValue;
@@ -134,9 +134,7 @@ export class Adapter {
     const profiles = await this.execute('get_profiles', []);
     if (profiles && (profiles.constructor == Array)) {
       this.profiles = profiles;
-      this.setState({
-        profiles,
-      });
+      this.setState({ profiles });
       return profiles;
     }
     return [];
@@ -144,7 +142,6 @@ export class Adapter {
 
   async getNotifications() {
     const notifications = await this.execute('get_notifications', []);
-    console.log('notifications', notifications);
     this.notifications = notifications;
     this.setState({ notifications });
     return notifications;
@@ -152,7 +149,6 @@ export class Adapter {
 
   async deleteNotification(id: number) {
     const result = await this.execute('delete_notification_single', [id]);
-    console.log('deleteNotification result', result);
     const notifications = await this.execute('get_notifications', []);
     this.notifications = notifications;
     this.setState({ notifications });
@@ -194,7 +190,7 @@ export class Adapter {
       await new Promise(res => setTimeout(res, 1000));
     }
     await this.getProfiles();
-    await this.get_euicc_info();
+    await this.getEuiccInfo();
     return result;
   }
 
@@ -212,7 +208,7 @@ export class Adapter {
     const result = await this.execute('download_profile', [internal_state, confirmation_code]);
     if (result.success) {
       await this.getProfiles();
-      await this.get_euicc_info();
+      await this.getEuiccInfo();
     }
     return result;
   }
