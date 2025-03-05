@@ -1,4 +1,5 @@
 # Nekoko LPA
+[日本語](./README_ja.md)
 
 Android and iOS LPA App.
 
