@@ -164,7 +164,10 @@ export class Adapter {
     const result = await this.execute('disable_profile', [iccid, this.device.type == 'omapi' ? '1' : '0']);
     if (this.device.type == 'omapi') {
       await new Promise(res => setTimeout(res, 1000));
+    } else if (this.device.type == 'ble') {
+      await new Promise(res => setTimeout(res, 300));
     }
+    await this.getEuiccInfo();
     await this.getProfiles();
     return result;
   }
@@ -172,8 +175,11 @@ export class Adapter {
   async enableProfileByIccId(iccid: string) {
     const result = await this.execute('enable_profile', [iccid, this.device.type == 'omapi' ? '1' : '0']);
     if (this.device.type == 'omapi') {
-      await new Promise(res => setTimeout(res, 1000));
+      await new Promise(res => setTimeout(res, 500));
+    } else if (this.device.type == 'ble') {
+      await new Promise(res => setTimeout(res, 200));
     }
+    await this.getEuiccInfo();
     await this.getProfiles();
     return result;
   }
@@ -187,10 +193,12 @@ export class Adapter {
   async deleteProfileByIccId(iccid: string) {
     const result = await this.execute('delete_profile', [iccid]);
     if (this.device.type == 'omapi') {
-      await new Promise(res => setTimeout(res, 1000));
+      await new Promise(res => setTimeout(res, 500));
+    } else if (this.device.type == 'ble') {
+      await new Promise(res => setTimeout(res, 200));
     }
-    await this.getProfiles();
     await this.getEuiccInfo();
+    await this.getProfiles();
     return result;
   }
 

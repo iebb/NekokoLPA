@@ -1,6 +1,6 @@
 import {useEffect} from "react";
 import {useDispatch} from "react-redux";
-import {setupDevices} from "@/native/Hybrid";
+import {setupDevices} from "@/native/setup";
 import {useTranslation} from 'react-i18next';
 
 

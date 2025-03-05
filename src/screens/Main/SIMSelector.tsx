@@ -1,6 +1,6 @@
 import {Colors, Text, View} from "react-native-ui-lib";
 import React, {useEffect, useState} from "react";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/redux/reduxDataStore";
 import {EUICCPage} from "@/screens/Main/EUICCPage";
 import {useTranslation} from "react-i18next";
@@ -13,11 +13,13 @@ import Clipboard from "@react-native-clipboard/clipboard";
 import {preferences} from "@/utils/mmkv";
 import {AppBuyLink} from "@/screens/Main/config";
 import {getNicknames} from "@/configs/store";
+import {setTargetDevice} from "@/redux/stateStore";
 
 export default function SIMSelector() {
-  const {deviceList: _deviceList} = useSelector((state: RootState) => state.LPA);
   const ds = useSelector((state: RootState) => state.DeviceState);
+  const {deviceList: _deviceList, targetDevice} = useSelector((state: RootState) => state.LPA);
   const nicknames = getNicknames();
+  const dispatch = useDispatch();
   const { t } = useTranslation(['main']);
   const showSlots = preferences.getString("showSlots");
 
@@ -46,6 +48,15 @@ export default function SIMSelector() {
       setIndex(firstAvailable < 0 ? 0 : firstAvailable);
     }
   }, [firstAvailable]);
+
+  useEffect(() => {
+    if (targetDevice) {
+      if (deviceList.indexOf(targetDevice) !== -1) {
+        setIndex(deviceList.indexOf(targetDevice));
+        dispatch(setTargetDevice(null));
+      }
+    }
+  }, [targetDevice]);
 
   if (width <= 0) return null;
   if (deviceList.length == 0) return (

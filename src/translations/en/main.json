@@ -12,8 +12,10 @@
   "download_profile": "Download Profile",
   "manage_notifications": "Manage Notifications",
   "eid_copy": "Copy EID",
+  "github": "GitHub",
   "remote_device": "PIN for Remote Device",
   "remote_device_pin": "Remote Endpoint\n{{remote}}\nrequires a PIN to connect to.",
+  "bluetooth_scan": "Bluetooth",
 
   "euiccInfo_euiccinfo": "EUICC Info",
   "euiccInfo_sasAcreditationNumber": "SAS Accreditation",

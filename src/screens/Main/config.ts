@@ -18,5 +18,6 @@ const flavorLinks = {
 export const AppLogo = (flavorImages as any)[Config.FLAVOR || 'store'];
 export const AppBuyLink = (flavorLinks as any)[Config.FLAVOR || 'store'];
 export const AppCheckForUpdates = Config.CHECK_FOR_UPDATES === "1";
+export const GithubLink = "https://github.com/iebb/NekokoLPA/";
 
 console.log("Cfg", Config);

@@ -4,10 +4,11 @@ import {Colors, LoaderScreen, View} from "react-native-ui-lib";
 import React from "react";
 import {useSelector} from "react-redux";
 import {selectDeviceState} from "@/redux/stateStore";
+import {RootState} from "@/redux/reduxDataStore";
 
 export function EUICCPage({ deviceId } : { deviceId: string }) {
   if (!deviceId) return null;
-  const DeviceState = useSelector(selectDeviceState(deviceId));
+  const DeviceState = useSelector((state: RootState) => state.DeviceState[deviceId]);
 
   if (!DeviceState) {
     return (

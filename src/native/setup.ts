@@ -2,15 +2,18 @@ import {NativeModules, Platform} from "react-native";
 import {CCIDDevice} from "@/native/adapters/ccid_adapter";
 import {OMAPIDevice} from "@/native/adapters/omapi_adapter";
 import {Adapter, Device} from "@/native/adapters/adapter";
-import {Adapters} from "@/native/adapters/registry";
-import {setInternalDevices} from "@/redux/stateStore";
+import {Adapters, ConnectedBluetoothDevices} from "@/native/adapters/registry";
+import {setInternalDevices, setTargetDevice} from "@/redux/stateStore";
 import {Dispatch} from "@reduxjs/toolkit";
 import {AIDList} from "@/utils/aid";
+import {ESTKmeRED} from "@/native/adapters/estk_red_adapter";
+import {SimLinkAdapter} from "@/native/adapters/9esim_adapter";
 
-const { CCIDPlugin, OMAPIBridge, CustomHttp } = NativeModules;
+const { CCIDPlugin, OMAPIBridge } = NativeModules;
 
 
-export async function setupInternalDevices(resolver: any) {
+export async function setupDevices(dispatch: Dispatch, targetDevice: string | null = null) {
+
   const _devices = [];
   if (Platform.OS === 'android') {
     const devices = JSON.parse(await OMAPIBridge.listDevices(AIDList));
@@ -32,33 +35,42 @@ export async function setupInternalDevices(resolver: any) {
     const readers = await CCIDPlugin.listReaders();
     for(const r of readers) {
       const d = new CCIDDevice(r, (Platform.OS === 'ios' || readers.length > 1) ? r : "USB");
-      await d.connect();
       _devices.push(d);
     }
   }
 
-  resolver(_devices);
-}
 
-export async function setupDevices(dispatch: Dispatch) {
-  const resolver = (deviceList: Device[]) => {
-    for(const f of Object.keys(Adapters)) {
+  for(const r of ConnectedBluetoothDevices) {
+    if (r.name) {
+      const d = r.name.startsWith("ESTKme-RED") ?
+        new ESTKmeRED(r) :
+        r.name.startsWith("eSIM_Writer") ?
+          new SimLinkAdapter(r) :
+          null;
+      if (d) _devices.push(d);
+    }
+  }
+
+
+
+  for(const f of Object.keys(Adapters)) {
+    if (!_devices.map(d => d.deviceId).includes(f)) {
       try {
         Adapters[f].device.disconnect();
-        delete Adapters[f];
-      } catch (e) {
-
-      }
-    }
-    for(const f of Object.keys(Adapters)) Adapters[f].obsolete = true;
-    for(const d of deviceList) (new Adapter(d, dispatch)).initialize();
-    for(const f of Object.keys(Adapters)) if (Adapters[f].obsolete) {
-      Adapters[f].device.disconnect();
+      } catch (e) {}
       delete Adapters[f];
     }
-    dispatch(setInternalDevices(deviceList.map((d: Device) => d.deviceId)));
-  };
+  }
 
-  setupInternalDevices(resolver);
+  for(const d of _devices) {
+    if (!Object.keys(Adapters).includes(d.deviceId)) {
+      await (new Adapter(d, dispatch)).initialize();
+    }
+  }
+
+  dispatch(setInternalDevices(_devices.map((d: Device) => d.deviceId)));
+  if (targetDevice) {
+    dispatch(setTargetDevice(targetDevice));
+  }
 }
 

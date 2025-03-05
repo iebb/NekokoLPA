@@ -14,6 +14,7 @@
   "eid_copy": "EID をコピー",
   "remote_device": "リモートデバイスの PIN",
   "remote_device_pin": "リモートエンドポイント\n{{remote}}\n接続には PIN が必要です。",
+  "bluetooth_scan": "Bluetooth",
 
   "euiccInfo_euiccinfo": "EUICC 情報",
   "euiccInfo_sasAcreditationNumber": "SAS 認定",

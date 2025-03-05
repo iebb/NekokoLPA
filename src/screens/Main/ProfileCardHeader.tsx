@@ -15,13 +15,14 @@ import {formatSize} from "@/utils/size";
 import {toCIName, toFriendlyName} from "@/utils/friendlyName";
 import {useAppTheme} from "@/theme/context";
 import {getNicknameByEid, setNicknameByEid} from "@/configs/store";
+import {RootState} from "@/redux/reduxDataStore";
 
 
 export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
   const { t } = useTranslation(['main']);
   const navigation = useNavigation();
   const [euiccMenu, setEuiccMenu] = useState(false);
-  const DeviceState = useSelector(selectDeviceState(deviceId));
+  const DeviceState = useSelector((state: RootState) => state.DeviceState[deviceId]) ?? {};
   const stealthMode = preferences.getString("redactMode") ?? "none";
   const adapter = Adapters[deviceId];
 

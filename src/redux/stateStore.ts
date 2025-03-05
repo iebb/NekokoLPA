@@ -21,6 +21,7 @@ export interface EuiccList {
 
 interface LPAState {
     deviceList: string[];
+    targetDevice?: string;
 }
 
 const initialState: LPAState = {
@@ -40,6 +41,10 @@ export const globalDataStore = createSlice({
         setInternalDevices: (state, action: PayloadAction<object>) => {
             // @ts-ignore
             state.deviceList = action.payload;
+        },
+        setTargetDevice: (state, action: PayloadAction<string | null>) => {
+            // @ts-ignore
+            state.targetDevice = action.payload;
         },
     },
 });
@@ -70,5 +75,5 @@ export const store = configureStore({
 
 export const selectDeviceState = (e: string) => (state: RootState) => state.DeviceState[e] || {};
 
-export const { setInternalDevices } = globalDataStore.actions;
+export const { setInternalDevices, setTargetDevice } = globalDataStore.actions;
 export const { setDeviceState } = DeviceStateDataStore.actions;

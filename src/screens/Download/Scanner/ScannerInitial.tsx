@@ -69,6 +69,7 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
     onCodeScanned: (codes) => {
       for(const code of codes) {
         processLPACode(code.value!);
+        break;
       }
     }
   })
@@ -121,9 +122,9 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
               borderColor: Colors.$textNeutralLight,
               borderWidth: showCamera ? 0 : 2,
               borderStyle: 'dashed',
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center'
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center'
             }}
             >
                 {

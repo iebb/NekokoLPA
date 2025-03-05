@@ -165,7 +165,7 @@ function Settings({ route,  navigation }: RootScreenProps<'Settings'>) {
 						},
 						{
 							key: "useCamera",
-							options: ['always', 'ondemand', 'never'],
+							options: ['always', 'ondemand'],
 							defaultValue: 'always',
 							type: 'select'
 						},

@@ -1,7 +1,17 @@
 # Nekoko LPA
 
+Android and iOS LPA App.
+
 *super unstable, use at your own risk*
 
-a **not-so-cross-platform** LPA with a React Native frontend.
+## Currently Supported Card Readers:
+* Internal OMAPI Slot on Android
+* USD CCID readers on Android 
+* USD CCID readers through CryptoTokenKit on iOS
+* [ESTKme-RED dual-mode Card Reader](https://www.estk.me/product/estkme-red/?aid=nekoko)
+* 9eSIM Legacy Bluetooth Card Reader (Firmware > 2.3.1)
 
-based on [Infineon Android LPA](https://softwaretools.infineon.com/tools/com.ifx.tb.tool.infineonandroidlpa) by Infineon Technologies AG
+## Google Play Variants:
+
+* [NekokoLPA App](https://play.google.com/store/apps/details?id=ee.nekoko.nlpa) for ShiinaSekiu's Community Key
+* [9eSIM App](https://play.google.com/store/apps/details?id=ee.nekoko.nlpa.flavor1) for [9eSIM removable cards](https://9es.im/)

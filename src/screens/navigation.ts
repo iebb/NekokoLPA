@@ -1,11 +1,11 @@
 import type {StackScreenProps} from '@react-navigation/stack';
-import type {DrawerScreenProps} from '@react-navigation/drawer';
 import {ProfileMetadataMap} from "@/native/types";
 
 export type RootStackParamList = {
 	Main: {};
 	Stats: {};
 	Settings: {};
+	BluetoothScan: {};
 	Notifications: {
 		deviceId: string,
 	};

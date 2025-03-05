@@ -6,7 +6,7 @@ import React, {useState} from "react";
 import BlockingLoader from "@/components/common/BlockingLoader";
 import {Adapters} from "@/native/adapters/registry";
 import {selectDeviceState} from "@/redux/stateStore";
-import {ProfileRow} from "@/screens/Main/ProfileList/ProfileRow";
+import {ProfileRow} from "@/screens/Main/ProfileRow";
 
 export default function ProfileSelector({ deviceId } : { deviceId: string }) {
 

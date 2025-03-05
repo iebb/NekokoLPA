@@ -15,6 +15,7 @@
 
   "go_back": "返回",
   "main_screen": "主界面",
+  "bluetooth_scan": "Bluetooth",
 
   "euiccInfo_euiccinfo": "EUICC Info",
   "euiccInfo_sasAcreditationNumber": "SAS Accreditation",

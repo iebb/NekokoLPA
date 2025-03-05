@@ -15,6 +15,7 @@ import Notifications from "@/screens/Notifications";
 import LeftSidebarDrawer from "@/screens/Drawer";
 import {Colors} from 'react-native-ui-lib';
 import {ToastProvider} from "@/components/common/ToastProvider";
+import BluetoothScan from "@/screens/Bluetooth";
 
 const Stack = createStackNavigator<RootStackParamList>();
 const Drawer = createDrawerNavigator();
@@ -33,6 +34,7 @@ function StackNavigator() {
 			<Stack.Screen name="EuiccInfo" component={EuiccInfo} options={TransitionPresets.SlideFromRightIOS} />
 			<Stack.Screen name="Notifications" component={Notifications} options={TransitionPresets.SlideFromRightIOS} />
 			<Stack.Screen name="Settings" component={Settings} options={TransitionPresets.SlideFromRightIOS} />
+			<Stack.Screen name="BluetoothScan" component={BluetoothScan} options={TransitionPresets.SlideFromRightIOS} />
 		</Stack.Navigator>
 	)
 }

@@ -5,24 +5,38 @@ import {useTranslation} from 'react-i18next';
 import {version} from '../../package.json';
 import {Colors, Image, Text, View} from 'react-native-ui-lib';
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
-import {faCog, faFlag, faArrowLeft} from "@fortawesome/free-solid-svg-icons";
-import {AppLogo} from "@/screens/Main/config";
+import {faArrowLeft, faCode, faCog, faFlag, faShoppingCart} from "@fortawesome/free-solid-svg-icons";
+import {faBluetooth} from "@fortawesome/free-brands-svg-icons";
+import {AppBuyLink, AppLogo, GithubLink} from "@/screens/Main/config";
+import {Linking} from 'react-native';
 
 
 export default function LeftSidebarDrawer({ navigation }: DrawerContentComponentProps) {
   const { t } = useTranslation(['main']);
   const menuItems = [
     {
+      title: 'Main', label: 'main:main_screen',
+      icon: faArrowLeft, onPress: (navigation: any) => navigation.navigate('Stack', { screen: 'Main' })
+    },
+    {
+      title: 'Bluetooth', label: 'main:bluetooth_scan',
+      icon: faBluetooth, onPress: (navigation: any) => navigation.navigate('Stack', { screen: 'BluetoothScan' })
+    },
+    {
       title: 'Stats', label: 'main:profile_collection_stats',
       icon: faFlag, onPress: (navigation: any) => navigation.navigate('Stack', { screen: 'Stats' })
     },
     {
-      title: 'Settings', label: 'main:settings_settings',
-      icon: faCog, onPress: (navigation: any) => navigation.navigate('Stack', { screen: 'Settings' })
+      title: 'Devices', label: 'main:purchase_note',
+      icon: faShoppingCart, onPress: (navigation: any) => Linking.openURL(AppBuyLink)
     },
     {
-      title: 'Main', label: 'main:main_screen',
-      icon: faArrowLeft, onPress: (navigation: any) => navigation.navigate('Stack', { screen: 'Main' })
+      title: 'Github', label: 'main:github',
+      icon: faCode, onPress: (navigation: any) => Linking.openURL(GithubLink)
+    },
+    {
+      title: 'Settings', label: 'main:settings_settings',
+      icon: faCog, onPress: (navigation: any) => navigation.navigate('Stack', { screen: 'Settings' })
     },
   ]
 
@@ -51,7 +65,7 @@ export default function LeftSidebarDrawer({ navigation }: DrawerContentComponent
                 inactiveTintColor={Colors.$iconPrimary}
                 activeTintColor={Colors.$iconPrimaryLight}
                 icon={
-                  ({focused, size, color}) => <FontAwesomeIcon icon={item.icon} style={{color}}/>
+                  ({focused, size, color}) => <FontAwesomeIcon icon={item.icon as any} style={{color}}/>
                 }
                 label={t(item.label)}
                 labelStyle={{
