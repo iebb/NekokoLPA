@@ -1,4 +1,5 @@
 # Nekoko LPA
+[日本語](./README_ja.md)
 
 Android and iOS LPA App.
 
@@ -13,5 +14,5 @@ Android and iOS LPA App.
 
 ## Google Play Variants:
 
-* [NekokoLPA App](https://play.google.com/store/apps/details?id=ee.nekoko.nlpa) for ShiinaSekiu's Community Key
+* [NekokoLPA App](https://play.google.com/store/apps/details?id=ee.nekoko.nlpa) for [ShiinaSekiu](https://github.com/ShiinaSekiu)'s Community Key
 * [9eSIM App](https://play.google.com/store/apps/details?id=ee.nekoko.nlpa.flavor1) for [9eSIM removable cards](https://9es.im/)
