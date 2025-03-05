@@ -22,11 +22,6 @@ export class SimLinkAdapter implements Device {
     this.device = device;
   }
 
-  async refresh(): Promise<boolean> {
-    await this.disconnect();
-    return await this.connect();
-  }
-
   async connect(): Promise<boolean> {
     try {
       if (!await this.device.isConnected()) {
@@ -36,37 +31,36 @@ export class SimLinkAdapter implements Device {
       } else {
         console.log("already connected...");
       }
-
-      const resp = await this.transmitRaw({cmd: "getElpaInfo"});
-      if ((resp as any).software.localeCompare("2.3.1") <= 0) {
-        this.description = "Minimum firmware v2.3.1 required";
-        return false;
-      }
-
+      await this.transmitRaw({cmd: "APDU", action: 2});
       await this.transmitRaw({cmd: "APDU", action: 0});
       await this.transmit("80AA00000AA9088100820101830107"); // APDU_TERMINAL_CAPABILITIES
       const channelResp = await this.transmit("0070000001");
       const channel = channelResp.substring(0, 2);
       this.channel = channel[1];
-      if (parseInt(channel) > 3) {
-        this.description = "Too many opened channels";
+      if (channelResp[0] == "6" && channelResp[1] != "1") {
+        this.description = `Failed to open channel`;
+        this.available = false;
         return false;
       }
-
-
+      if (parseInt(channel, 10) > 3) {
+        this.description = `Too many opened channels, ${channel}`;
+        this.available = false;
+        return false;
+      }
 
       for(const aid of AIDList.split(",")) {
         try {
           const aidResp = await this.transmit(channel + "A4040010" + aid);
-          if (aidResp === "6a82") {
-          } else {
+          if (aidResp.startsWith("61")) {
             this.available = true;
             return true;
+          } else {
           }
         } catch (e) {
 
         }
       }
+      this.description = "No supported AID found";
       return false;
     } catch (error: any) {
       console.log("CCID Connect Err", error);
@@ -76,8 +70,10 @@ export class SimLinkAdapter implements Device {
   }
 
   async disconnect(): Promise<boolean> {
-    await this.transmitRaw({cmd: "APDU", action: 2});
-    await this.device.cancelConnection();
+    try {
+      await this.transmitRaw({cmd: "APDU", action: 2});
+      await this.device.cancelConnection();
+    } catch (error) {}
     return true;
   }
 

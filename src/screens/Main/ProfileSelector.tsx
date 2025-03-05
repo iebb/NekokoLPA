@@ -36,7 +36,7 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={() => {
             setRefreshing(true);
-            adapter.initialize();
+            adapter.refresh();
             setRefreshing(false);
           }} />
         }

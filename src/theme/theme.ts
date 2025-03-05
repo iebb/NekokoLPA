@@ -35,7 +35,7 @@ export function initializeTheme(primaryColor: string) {
     }
   });
 
-  ThemeManager.setComponentTheme('Button', (props, context) => {
+  ThemeManager.setComponentTheme('Button', (props: any, context: any) => {
     return {
       backgroundColor: Colors.buttonBackground,
       color: Colors.buttonForeground,

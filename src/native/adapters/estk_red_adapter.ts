@@ -52,11 +52,6 @@ export class ESTKmeRED implements Device {
     this.device = device;
   }
 
-  async refresh(): Promise<boolean> {
-    await this.disconnect();
-    return await this.connect();
-  }
-
   async connect(): Promise<boolean> {
     try {
       if (!await this.device.isConnected()) {
@@ -78,15 +73,16 @@ export class ESTKmeRED implements Device {
       for(const aid of AIDList.split(",")) {
         try {
           const aidResp = await this.transmit(channel + "A4040010" + aid);
-          if (aidResp === "6a82") {
-          } else {
+          if (aidResp.startsWith("61")) {
             this.available = true;
             return true;
+          } else {
           }
         } catch (e) {
 
         }
       }
+      this.description = "No supported AID found";
       return false;
     } catch (error: any) {
       console.log("CCID Connect Err", error);

@@ -21,6 +21,7 @@ export interface Device {
   accessRule?: () => Promise<boolean>;
   disconnect: () => Promise<boolean>;
   refresh: () => Promise<boolean>;
+  reconnect: () => Promise<boolean>;
   transmit: (s: string) => Promise<string>;
 }
 
@@ -58,7 +59,7 @@ export class Adapter {
     Adapters[device.deviceId] = this;
   }
 
-  async refresh(): Promise<boolean> {
+  async reconnect(): Promise<boolean> {
     await this.disconnect();
     return await this.connect();
   }
@@ -66,14 +67,17 @@ export class Adapter {
   async connect() {
     try {
       if (!this.connected) {
-        await this.device.connect();
+        if (await this.device.connect()) {
+          this.connected = true;
+          return true;
+        }
       }
-      this.connected = true;
-      return true;
     } catch {
       this.connected = false;
       return false;
     }
+    this.connected = false;
+    return false;
   }
 
   async disconnect() {
@@ -89,9 +93,19 @@ export class Adapter {
   }
 
   async initialize() {
-    await this.connect();
-    await this.getEuiccInfo();
-    await this.getProfiles();
+    if (await this.connect()) {
+      await this.getEuiccInfo();
+      await this.getProfiles();
+    }
+  }
+
+  async refresh() {
+    try {
+      await this.getEuiccInfo();
+      await this.getProfiles();
+    } catch {
+      await this.initialize();
+    }
   }
 
   async _execute(s: string, args: any[]): Promise<any> {

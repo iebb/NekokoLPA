@@ -34,13 +34,16 @@ export class CCIDDevice implements Device {
         this.description = "Channel cannot be opened";
         return false;
       }
-
       for(const aid of AIDList.split(",")) {
-        const aidResp = await this.transmit(channel + "A4040010" + aid);
-        if (aidResp === "6a82") {
-        } else {
-          this.available = true;
-          return true;
+        try {
+          const aidResp = await this.transmit(channel + "A4040010" + aid);
+          if (aidResp.startsWith("61")) {
+            this.available = true;
+            return true;
+          } else {
+          }
+        } catch (e) {
+
         }
       }
       this.description = "No supported AID found";
@@ -63,11 +66,6 @@ export class CCIDDevice implements Device {
 
   async transmit(s: string): Promise<string> {
     return await CCIDPlugin.transceive(this.deviceName, s);
-  }
-
-  async refresh(): Promise<boolean> {
-    await this.disconnect();
-    return await this.connect();
   }
 
 
