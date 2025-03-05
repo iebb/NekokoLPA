@@ -19,7 +19,7 @@ interface ProfileExt extends Profile {
 }
 
 
-export const ProfileRow = ({profile, deviceId, isLoading, setLoading} : {profile: ProfileExt, deviceId: string, isLoading: boolean, setLoading: any}) => {
+export const ProfileRow = ({profile, deviceId, isLoading, setLoading} : {profile: ProfileExt, deviceId: string, isLoading: boolean | string, setLoading: any}) => {
   const { t } = useTranslation(['main']);
   const adapter = Adapters[deviceId];
 
@@ -55,30 +55,6 @@ export const ProfileRow = ({profile, deviceId, isLoading, setLoading} : {profile
     Size = sizeStats.getNumber(metadata?.iccid) || 0;
   }
 
-  // useEffect(() => {
-  //
-  //   const searchString = (displaySubtitle === "provider") ? (
-  //     `${metadata?.serviceProviderName} - ${mccMnc.Brand ?? mccMnc.Operator}`
-  //   ) : (displaySubtitle === "operator") ? (
-  //     `${mccMnc.Brand ?? mccMnc.Operator}`
-  //   ) : (displaySubtitle === "code") ? (
-  //     `${mccMnc.Brand ?? mccMnc.Operator}`
-  //   ) : (displaySubtitle === "country") ? (
-  //     null
-  //   ) : (displaySubtitle === "iccid") ? (
-  //     null
-  //   ) : (
-  //     `${metadata?.serviceProviderName}`
-  //   )
-  //
-  //
-  //   // if (searchString != null) {
-  //   //   getUri(searchString).then(
-  //   //     uri => setImageUri(uri)
-  //   //   );
-  //   // }
-  // }, [mccMnc, metadata, displaySubtitle]);
-
   return (
     <Drawer
       key={`${metadata.iccid}`}
@@ -112,8 +88,11 @@ export const ProfileRow = ({profile, deviceId, isLoading, setLoading} : {profile
                       style: 'destructive',
                       onPress: () => {
                         makeLoading(setLoading, async () => {
+                          setLoading("Deleting Profile");
                           await adapter.deleteProfileByIccId(metadata.iccid);
+                          setLoading("Processing Notifications");
                           await adapter.processNotifications(metadata.iccid);
+                          setLoading(false);
                         })
                       }
                     },
@@ -231,7 +210,7 @@ export const ProfileRow = ({profile, deviceId, isLoading, setLoading} : {profile
             >
               <Switch
                 value={profile.selected}
-                disabled={isLoading}
+                disabled={isLoading !== false}
                 style={{ marginTop: -5 }}
                 padding-5
                 onValueChange={async (value2: boolean) => {

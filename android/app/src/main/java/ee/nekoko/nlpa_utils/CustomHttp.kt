@@ -60,6 +60,7 @@ class CustomHttp @ReactMethod constructor(private val context: ReactContext?) : 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace()
+                promise.reject("0", e.toString())
             }
 
             override fun onResponse(call: Call, response: Response) {

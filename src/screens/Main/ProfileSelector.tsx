@@ -11,7 +11,7 @@ import {ProfileRow} from "@/screens/Main/ProfileRow";
 export default function ProfileSelector({ deviceId } : { deviceId: string }) {
 
   const DeviceState = useSelector(selectDeviceState(deviceId));
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean | string>(false);
   const [refreshing, setRefreshing] = useState(false);
 
   const profileList = DeviceState.profiles;
@@ -33,7 +33,9 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
     >
       {
         (loading || refreshing) && (
-          <BlockingLoader />
+          <BlockingLoader
+            message={loading ? loading === true ? "" : loading.toString() : ""}
+          />
         )
       }
       <ScrollView
