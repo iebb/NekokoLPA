@@ -22,6 +22,15 @@ export class SimLinkAdapter implements Device {
     this.device = device;
   }
 
+  async reconnect(): Promise<boolean> {
+    await this.disconnect();
+    return await this.connect();
+  }
+
+  async refresh(): Promise<boolean> {
+    return (await this.device.isConnected()) ? true : await this.connect();
+  }
+
   async connect(): Promise<boolean> {
     try {
       if (!await this.device.isConnected()) {
@@ -51,7 +60,7 @@ export class SimLinkAdapter implements Device {
       for(const aid of AIDList.split(",")) {
         try {
           const aidResp = await this.transmit(channel + "A4040010" + aid);
-          if (aidResp.startsWith("61")) {
+          if (aidResp.startsWith("61") || aidResp.startsWith("90")) {
             this.available = true;
             return true;
           } else {
