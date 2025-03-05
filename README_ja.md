@@ -1,4 +1,5 @@
 # Nekoko LPA
+[English](./README.md)
 
 Android と iOS の LPA アプリ。
 
