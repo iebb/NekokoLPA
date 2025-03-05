@@ -6,7 +6,7 @@ import {version} from '../../package.json';
 import {Colors, Image, Text, View} from 'react-native-ui-lib';
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faArrowLeft, faCode, faCog, faFlag, faShoppingCart} from "@fortawesome/free-solid-svg-icons";
-import {faBluetooth} from "@fortawesome/free-brands-svg-icons";
+import {faBluetoothB} from "@fortawesome/free-brands-svg-icons";
 import {AppBuyLink, AppLogo, GithubLink} from "@/screens/Main/config";
 import {Linking} from 'react-native';
 
@@ -20,7 +20,7 @@ export default function LeftSidebarDrawer({ navigation }: DrawerContentComponent
     },
     {
       title: 'Bluetooth', label: 'main:bluetooth_scan',
-      icon: faBluetooth, onPress: (navigation: any) => navigation.navigate('Stack', { screen: 'BluetoothScan' })
+      icon: faBluetoothB, onPress: (navigation: any) => navigation.navigate('Stack', { screen: 'BluetoothScan' })
     },
     {
       title: 'Stats', label: 'main:profile_collection_stats',

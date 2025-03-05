@@ -14,7 +14,7 @@
   "eid_copy": "EID をコピー",
   "remote_device": "リモートデバイスの PIN",
   "remote_device_pin": "リモートエンドポイント\n{{remote}}\n接続には PIN が必要です。",
-  "bluetooth_scan": "Bluetooth",
+  "bluetooth_scan": "ブルートゥース",
 
   "euiccInfo_euiccinfo": "EUICC 情報",
   "euiccInfo_sasAcreditationNumber": "SAS 認定",
@@ -128,6 +128,7 @@
   "profile_ui_download": "ダウンロード",
 
   "notifications_notifications": "通知",
+  "notifications_send": "通知を送信する",
   "notifications_send_success": "通知が正常に送信されました",
   "notifications_send_failed": "通知の送信に失敗しました",
   "notifications_send_failed_alert": "この通知を送信できませんでした。",

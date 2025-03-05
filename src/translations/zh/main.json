@@ -15,7 +15,7 @@
 
   "go_back": "返回",
   "main_screen": "主界面",
-  "bluetooth_scan": "Bluetooth",
+  "bluetooth_scan": "蓝牙",
 
   "euiccInfo_euiccinfo": "EUICC Info",
   "euiccInfo_sasAcreditationNumber": "SAS Accreditation",
@@ -126,6 +126,7 @@
 
 
   "notifications_notifications": "通知",
+  "notifications_send": "发送通知",
   "notifications_send_success": "通知发送成功",
   "notifications_send_failed": "发送失败",
   "notifications_send_failed_alert": "通知发送失败",

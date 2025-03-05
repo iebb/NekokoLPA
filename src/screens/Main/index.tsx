@@ -10,7 +10,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faCog, faFlag, faRefresh} from "@fortawesome/free-solid-svg-icons";
 import {setupDevices} from "@/native/setup";
 import {AppCheckForUpdates, AppLogo, AppTitle} from "@/screens/Main/config";
-import { faBluetooth } from '@fortawesome/free-brands-svg-icons';
+import { faBluetoothB } from '@fortawesome/free-brands-svg-icons';
 
 function Main({ navigation }: RootScreenProps<'Main'>) {
 
@@ -100,7 +100,7 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 								size={'small'}
 								padding-10
 								iconSource={
-									style => <FontAwesomeIcon icon={faBluetooth as any} style={{color: (style as any)[0].tintColor}}/>
+									style => <FontAwesomeIcon icon={faBluetoothB as any} style={{color: (style as any)[0].tintColor}}/>
 								}
 								onPress={() => {
 									navigation.navigate('BluetoothScan', {});

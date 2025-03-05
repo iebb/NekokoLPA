@@ -6,7 +6,7 @@
   "insert_supported_sim": "Try insert a supported SIM card or relaunch the app.",
   "open_stk_menu": "Open STK Menu",
   "android_aram": "This application supports following ARA-Ms.",
-  "purchase_note": "Buy supported devices",
+  "purchase_note": "Supported devices",
   "set_nickname": "Set Nickname",
   "set_nickname_prompt": "Set a nickname for this card. Works locally only",
   "download_profile": "Download Profile",
@@ -129,6 +129,7 @@
   "profile_ui_download": "Download",
 
   "notifications_notifications": "Notifications",
+  "notifications_send": "Send Notifications",
   "notifications_send_success": "Notification sent successfully",
   "notifications_send_failed": "Notification failed to send",
   "notifications_send_failed_alert": "This notification has failed to send.",

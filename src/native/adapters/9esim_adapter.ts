@@ -106,6 +106,8 @@ export class SimLinkAdapter implements Device {
           } catch (e) {
             console.log(resultArray, "cannot be parsed");
           }
+        } else {
+          console.log("what", error);
         }
       });
 
@@ -121,6 +123,8 @@ export class SimLinkAdapter implements Device {
           btoa(subarray)
         );
       }
+
+
 
     })
 
