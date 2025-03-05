@@ -31,7 +31,7 @@ function PickerRow({row} : {row: SettingDataType}) {
 					enableModalBlur
 					placeholder={t(`main:settings_title_${row.key}`)}
 					topBarProps={{
-						useSafeArea: true,
+						useSafeArea: false,
 						title: t(`main:settings_title_${row.key}`)
 					}}
 					floatingPlaceholder

@@ -17,7 +17,6 @@ import {
 	View
 } from "react-native-ui-lib";
 import {useSelector} from "react-redux";
-import BlockingLoader from "@/components/common/BlockingLoader";
 import MetadataView from "@/components/common/MetadataView";
 import Title from "@/components/common/Title";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
@@ -31,6 +30,7 @@ import {makeLoading} from "@/components/utils/loading";
 import {Adapters} from "@/native/adapters/registry";
 import {selectDeviceState} from "@/redux/stateStore";
 import {getUTF8Length} from "@/utils/encoding";
+import {useLoading} from "@/components/common/LoadingProvider";
 
 
 function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
@@ -41,7 +41,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 	const adapter = Adapters[deviceId];
 
 	const [tags, setTags] = useState<Tag[]>([]);
-	const [loading, setLoading] = useState(false);
+	const { isLoading, setLoading } = useLoading();
 	const [nickname, setNickname] = useState('');
 	const [country, setCountry] = useState('');
 
@@ -76,11 +76,6 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 
 	return (
 		<SafeScreen>
-			{
-				loading && (
-					<BlockingLoader />
-				)
-			}
 			<Title>{t('main:profile_profile_detail')}</Title>
 			<Dialog
 				useSafeArea
@@ -274,7 +269,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 							/>
 							<View>
 								<Button
-									disabled={loading}
+									disabled={isLoading}
 									marginL-10
 									style={{ borderRadius: 5, paddingHorizontal: 0, width: 50, height: 50, padding: 0 }}
 									$iconDefault
@@ -283,7 +278,6 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 									}}
 									round
 									onPress={() => {
-										setLoading(true);
 										updateNickname(nickname + tagChars);
 									}}
 								>

@@ -5,7 +5,7 @@ import {Device} from "@/native/adapters/adapter";
 
 
 export class SimLinkAdapter implements Device {
-  type = "ble";
+  type = "ble_9el";
   displayName = "";
   deviceName = "";
   deviceId = "";
@@ -22,12 +22,17 @@ export class SimLinkAdapter implements Device {
     this.device = device;
   }
 
+  async refresh(): Promise<boolean> {
+    await this.disconnect();
+    return await this.connect();
+  }
+
   async connect(): Promise<boolean> {
     try {
       if (!await this.device.isConnected()) {
-        this.device = await this.device.connect({requestMTU: 233});
+        this.device = await this.device.connect({requestMTU: 185});
         this.device = await this.device.discoverAllServicesAndCharacteristics();
-        console.log("connected, negotiated mtu of ", this.device.mtu);
+        console.log("connected, negotiated mtu of", this.device.mtu);
       } else {
         console.log("already connected...");
       }
@@ -48,7 +53,6 @@ export class SimLinkAdapter implements Device {
         return false;
       }
 
-      this.available = true;
 
 
       for(const aid of AIDList.split(",")) {
@@ -56,6 +60,7 @@ export class SimLinkAdapter implements Device {
           const aidResp = await this.transmit(channel + "A4040010" + aid);
           if (aidResp === "6a82") {
           } else {
+            this.available = true;
             return true;
           }
         } catch (e) {
@@ -107,17 +112,19 @@ export class SimLinkAdapter implements Device {
             console.log(resultArray, "cannot be parsed");
           }
         } else {
-          console.log("what", error);
+          if (error && (error?.errorCode !== 2)) {
+            console.log("what", error);
+            reject(error);
+          }
         }
       });
 
 
       const mtu = this.device.mtu - 10;
       const text = typeof obj === "string" ? obj : JSON.stringify(obj);
-      console.log("tx:", text);
       for(let i = 0; i < text.length; i += mtu) {
         let subarray = text.substring(i, text.length < i + mtu ? text.length : i + mtu);
-        await this.device.writeCharacteristicWithoutResponseForService(
+        let resp = await this.device.writeCharacteristicWithResponseForService(
           "6E400001-B5A3-F393-E0A9-E50E24DCCA9E",
           "6E400002-B5A3-F393-E0A9-E50E24DCCA9E",
           btoa(subarray)

@@ -20,6 +20,7 @@ export interface Device {
   connect: () => Promise<boolean>;
   accessRule?: () => Promise<boolean>;
   disconnect: () => Promise<boolean>;
+  refresh: () => Promise<boolean>;
   transmit: (s: string) => Promise<string>;
 }
 
@@ -34,6 +35,7 @@ export class Adapter {
   notifications: Notification[] = [];
   dispatch: Dispatch;
   isLocked = false;
+  _set_mtu = false;
 
 
   setState = (state: object) => {
@@ -54,6 +56,11 @@ export class Adapter {
       return Adapters[device.deviceId];
     }
     Adapters[device.deviceId] = this;
+  }
+
+  async refresh(): Promise<boolean> {
+    await this.disconnect();
+    return await this.connect();
   }
 
   async connect() {

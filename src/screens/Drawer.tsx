@@ -49,7 +49,7 @@ export default function LeftSidebarDrawer({ navigation }: DrawerContentComponent
         />
         <View>
           <View>
-            <Text $textDefault text70BL>NekokoLPA</Text>
+            <Text $textDefault text70BO>NekokoLPA</Text>
           </View>
           <View>
             <Text $textNeutralLight text90L>v{version}</Text>

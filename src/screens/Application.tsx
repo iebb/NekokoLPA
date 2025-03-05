@@ -16,6 +16,7 @@ import LeftSidebarDrawer from "@/screens/Drawer";
 import {Colors} from 'react-native-ui-lib';
 import {ToastProvider} from "@/components/common/ToastProvider";
 import BluetoothScan from "@/screens/Bluetooth";
+import {LoadingProvider} from "@/components/common/LoadingProvider";
 
 const Stack = createStackNavigator<RootStackParamList>();
 const Drawer = createDrawerNavigator();
@@ -45,23 +46,25 @@ function ApplicationNavigator() {
 	return (
 		<SafeAreaProvider key={theme + "_" + themeColor}>
 			<NavigationContainer ref={navigationRef}>
-				<ToastProvider>
-					<Drawer.Navigator
-						drawerContent={(props) => <LeftSidebarDrawer {...props} />}
-						screenOptions={{
-							headerShown: false,
-							swipeEnabled: false,
-							drawerStyle: {
-								maxWidth: '67%',
-								width: 250,
-								backgroundColor: Colors.pageBackground,
-								borderTopRightRadius: 0,
-							},
-						}}
-					>
-						<Drawer.Screen name="Stack" component={StackNavigator} />
-					</Drawer.Navigator>
-				</ToastProvider>
+				<LoadingProvider>
+					<ToastProvider>
+						<Drawer.Navigator
+							drawerContent={(props) => <LeftSidebarDrawer {...props} />}
+							screenOptions={{
+								headerShown: false,
+								swipeEnabled: false,
+								drawerStyle: {
+									maxWidth: '67%',
+									width: 250,
+									backgroundColor: Colors.pageBackground,
+									borderTopRightRadius: 0,
+								},
+							}}
+						>
+							<Drawer.Screen name="Stack" component={StackNavigator} />
+						</Drawer.Navigator>
+					</ToastProvider>
+				</LoadingProvider>
 			</NavigationContainer>
 		</SafeAreaProvider>
 	);

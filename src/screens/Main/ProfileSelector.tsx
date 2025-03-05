@@ -3,7 +3,6 @@ import {useSelector} from "react-redux";
 import {Profile} from "@/native/types";
 import {RefreshControl, ScrollView} from "react-native";
 import React, {useState} from "react";
-import BlockingLoader from "@/components/common/BlockingLoader";
 import {Adapters} from "@/native/adapters/registry";
 import {selectDeviceState} from "@/redux/stateStore";
 import {ProfileRow} from "@/screens/Main/ProfileRow";
@@ -11,7 +10,6 @@ import {ProfileRow} from "@/screens/Main/ProfileRow";
 export default function ProfileSelector({ deviceId } : { deviceId: string }) {
 
   const DeviceState = useSelector(selectDeviceState(deviceId));
-  const [loading, setLoading] = useState<boolean | string>(false);
   const [refreshing, setRefreshing] = useState(false);
 
   const profileList = DeviceState.profiles;
@@ -31,13 +29,6 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
       flexG-1
       paddingB-10
     >
-      {
-        (loading || refreshing) && (
-          <BlockingLoader
-            message={loading ? loading === true ? "" : loading.toString() : ""}
-          />
-        )
-      }
       <ScrollView
         bounces
         alwaysBounceVertical
@@ -53,7 +44,7 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
         <View gap-10>
           {
             profiles.map((p, i) => <ProfileRow
-              deviceId={deviceId} profile={p} key={i} isLoading={loading} setLoading={setLoading}
+              deviceId={deviceId} profile={p} key={i}
             />)
           }
         </View>

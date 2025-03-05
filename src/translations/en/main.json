@@ -58,7 +58,7 @@
   "settings_item_theme_light": "Light",
   "settings_item_theme_dark": "Dark",
   "settings_title_useCamera": "Camera behaviour",
-  "settings_item_useCamera_always": "Always turn camera on start",
+  "settings_item_useCamera_always": "Always turn camera on scan",
   "settings_item_useCamera_ondemand": "Manually turn camera on",
   "settings_item_useCamera_never": "Disable camera",
   "settings_title_redactMode": "Redactions",

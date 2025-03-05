@@ -25,6 +25,10 @@ export class OMAPIDevice implements Device {
     this.available = available;
   }
 
+  async refresh(): Promise<boolean> {
+    return this.available;
+  }
+
   async connect(): Promise<boolean> {
     return this.available;
   }

@@ -14,6 +14,7 @@ import {Flags} from "@/assets/flags";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faBan, faCircleCheck, faDownload, faPaperPlane, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {useToast} from "@/components/common/ToastProvider";
+import {useLoading} from "@/components/common/LoadingProvider";
 
 function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>) {
   const { deviceId } = route.params;
@@ -21,11 +22,13 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
   const { showToast } = useToast();
   const { t } = useTranslation(['main']);
   const { profiles, notifications } = DeviceState;
+  const { setLoading } = useLoading();
 
   const adapter = Adapters[deviceId];
 
   useEffect(() => {
-    adapter.getNotifications();
+    setLoading(true);
+    adapter.getNotifications().then(() => setLoading(false));
   }, []);
 
   const renderRow = (row: Notification) => {
@@ -111,10 +114,10 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
             <View flex row backgroundColor={Colors.pageBackground} paddingH-20 paddingV-10 >
               <View flexG>
                 <View row>
-                  <Text $textDefault text70BL numberOfLines={1} marginR-10>
+                  <Text $textDefault text70BO numberOfLines={1} marginR-10>
                     #{row.seqNumber}
                   </Text>
-                  <Text $textDefault text70BL numberOfLines={1}>
+                  <Text $textDefault text70BO numberOfLines={1}>
                     <Image
                       style={{width: 20 * PixelRatio.getFontScale(), height: 20 * PixelRatio.getFontScale()}}
                       source={Flags[country] || Flags.UN}

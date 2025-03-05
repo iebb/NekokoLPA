@@ -1,7 +1,7 @@
 {
   "name": "nekokolpa",
-  "buildVersion": 348,
-  "version": "1.10.348",
+  "buildVersion": 349,
+  "version": "1.11.349",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -30,6 +30,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-native-fontawesome": "^0.3.2",
     "@react-native-clipboard/clipboard": "^1.16.1",
+    "@react-native-community/blur": "^4.4.1",
     "@react-native-community/datetimepicker": "^8.3.0",
     "@react-navigation/drawer": "^7.1.1",
     "@react-navigation/native": "^7.0.14",

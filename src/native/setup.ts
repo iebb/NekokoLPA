@@ -65,6 +65,8 @@ export async function setupDevices(dispatch: Dispatch, targetDevice: string | nu
   for(const d of _devices) {
     if (!Object.keys(Adapters).includes(d.deviceId)) {
       await (new Adapter(d, dispatch)).initialize();
+    } else {
+      Adapters[d.deviceId].device.refresh();
     }
   }
 

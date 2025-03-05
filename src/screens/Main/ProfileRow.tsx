@@ -13,16 +13,18 @@ import {useTranslation} from "react-i18next";
 import {useNavigation} from "@react-navigation/native";
 import {Profile} from "@/native/types";
 import {Adapters} from "@/native/adapters/registry";
+import {useLoading} from "@/components/common/LoadingProvider";
 
 interface ProfileExt extends Profile {
   selected: boolean;
 }
 
 
-export const ProfileRow = ({profile, deviceId, isLoading, setLoading} : {profile: ProfileExt, deviceId: string, isLoading: boolean | string, setLoading: any}) => {
+export const ProfileRow = ({profile, deviceId} : {profile: ProfileExt, deviceId: string}) => {
   const { t } = useTranslation(['main']);
   const adapter = Adapters[deviceId];
 
+  const { setLoading, isLoading } = useLoading();
   const navigation = useNavigation();
   const stealthMode = preferences.getString("redactMode") ?? "none";
   const displaySubtitle = preferences.getString("displaySubtitle") ?? "profileProvider";
@@ -149,7 +151,7 @@ export const ProfileRow = ({profile, deviceId, isLoading, setLoading} : {profile
                   style={{width: 20 * PixelRatio.getFontScale(), height: 20 * PixelRatio.getFontScale()}}
                   source={Flags[country] || Flags.UN}
                 />
-                <Text marginL-5 text70L $textDefault style={{ marginTop: -2 }}>
+                <Text marginL-5 text70 $textDefault style={{ marginTop: -2 }}>
                   {
                     (stealthMode === 'none' || stealthMode === 'medium') ? replacedName : (
                       metadata?.serviceProviderName

@@ -1,8 +1,9 @@
-import {Colors, SchemeType, ThemeManager} from "react-native-ui-lib";
+import {Colors, SchemeType, TextProps, ThemeManager} from "react-native-ui-lib";
 import {preferences} from "@/utils/mmkv";
-import {Appearance} from "react-native";
+import {Appearance, StyleProp, TextStyle} from "react-native";
+import Animated from "react-native-reanimated";
 
-export function initializeTheme(primaryColor) {
+export function initializeTheme(primaryColor: string) {
   Colors.loadDesignTokens({
     primaryColor
   });
@@ -40,6 +41,16 @@ export function initializeTheme(primaryColor) {
       color: Colors.buttonForeground,
     };
   });
+  // ThemeManager.setComponentForcedTheme('Text', (props: TextProps & CustomFamilyProps) => {
+  //   return {
+  //     ...props,
+  //     style: combineStyles<StyleProp<TextStyle | Animated.AnimatedProps<TextStyle>>>(
+  //       { fontFamily: fonts.fig3 }, // <--- Default font family for all my text components
+  //       props.style,
+  //       props.family && fonts[props.family] ? { fontFamily: fonts[props.family] } : {}
+  // ),
+  // }
+  // })
 
   if (preferences.getString("theme") !== undefined) {
     Colors.setScheme((preferences.getString("theme") as SchemeType) ?? Appearance.getColorScheme() ?? "light");

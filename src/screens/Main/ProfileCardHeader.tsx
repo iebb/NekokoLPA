@@ -1,7 +1,6 @@
 import {ActionSheet, Button, Card, Colors, Text, View} from "react-native-ui-lib";
 import {useState} from "react";
 import {useSelector} from "react-redux";
-import {selectDeviceState} from "@/redux/stateStore";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faPlus} from '@fortawesome/free-solid-svg-icons'
 import {useNavigation} from "@react-navigation/native";
@@ -13,21 +12,22 @@ import prompt from "react-native-prompt-android";
 import {preferences} from "@/utils/mmkv";
 import {formatSize} from "@/utils/size";
 import {toCIName, toFriendlyName} from "@/utils/friendlyName";
-import {useAppTheme} from "@/theme/context";
 import {getNicknameByEid, setNicknameByEid} from "@/configs/store";
 import {RootState} from "@/redux/reduxDataStore";
 import {makeLoading} from "@/components/utils/loading";
-import BlockingLoader from "@/components/common/BlockingLoader";
+import {useToast} from "@/components/common/ToastProvider";
+import {useLoading} from "@/components/common/LoadingProvider";
 
 
 export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
   const { t } = useTranslation(['main']);
   const navigation = useNavigation();
   const [euiccMenu, setEuiccMenu] = useState(false);
-  const [loading, setLoading] = useState(false);
   const DeviceState = useSelector((state: RootState) => state.DeviceState[deviceId]) ?? {};
   const stealthMode = preferences.getString("redactMode") ?? "none";
   const adapter = Adapters[deviceId];
+  const { showToast } = useToast();
+  const { setLoading } = useLoading();
 
   const options = [
     {
@@ -93,7 +93,9 @@ export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
         makeLoading(
           setLoading,
           async () => {
+            showToast('Processing Notifications. This may take some time.', 'success');
             await adapter.processNotifications('');
+            showToast('Processing Notifications. This may take some time.', 'success');
           }
         )
       }
@@ -114,11 +116,6 @@ export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
 
   return (
     <View>
-      {
-        loading && (
-          <BlockingLoader />
-        )
-      }
       {
         DeviceState?.eid && (
           <ActionSheet

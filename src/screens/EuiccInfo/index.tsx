@@ -37,7 +37,7 @@ function EuiccInfo({ route,  navigation }: RootScreenProps<'EuiccInfo'>) {
 			>
 				<ListItem.Part middle column>
 					<ListItem.Part>
-						<Text $textDefault text70BL flex-1 numberOfLines={1}>
+						<Text $textDefault text70BO flex-1 numberOfLines={1}>
 							{t('main:euiccInfo_' + row.key)}
 						</Text>
 					</ListItem.Part>

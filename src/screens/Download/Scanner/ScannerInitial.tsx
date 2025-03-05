@@ -17,6 +17,7 @@ import {useSelector} from "react-redux";
 import {selectDeviceState} from "@/redux/stateStore";
 import {preferences} from "@/utils/mmkv";
 import {formatSize} from "@/utils/size";
+import {useLoading} from "@/components/common/LoadingProvider";
 
 export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
   const DeviceState = useSelector(selectDeviceState(deviceId));
@@ -28,12 +29,11 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
   const { t } = useTranslation(['main']);
   const [acToken, setAcToken] = useState("");
   const [oid, setOid] = useState("");
-  const [progress, setProgress] = useState({} as any);
   const [confirmationCode, setConfirmationCode] = useState("");
   const [confirmationCodeReq, setConfirmationCodeReq] = useState(false);
-  const [loading, setLoading] = useState(false);
   const { hasPermission, requestPermission } = useCameraPermission();
   const { eid, euiccAddress, euiccInfo2 } = DeviceState;
+  const { setLoading } = useLoading();
   const adapter = Adapters[deviceId];
   const [smdp, setSmdp] = useState('');
 
@@ -83,19 +83,6 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
   return (
     <View>
       <Title>{t('main:profile_title_download_profile')}</Title>
-      {
-        loading && (
-          <BlockingLoader
-            message={
-              ((progress?.progress > 0) ? (
-                t('main:progress_' + progress.message, progress)
-              ) : (
-                t('main:profile_loading_validating_profile')
-              )) as string
-            }
-          />
-        )
-      }
       <Container>
         <KeyboardAvoidingView
           behavior='position'
@@ -187,7 +174,9 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
                     setSmdp(euiccAddress?.defaultDpAddress);
                   } else if (smdp.length > 0) {
                     const authenticateResult = await adapter.authenticateProfile(
-                      smdp, acToken, (e) => setProgress(e), ""
+                      smdp, acToken, (e: any) => setLoading(
+                        t(`main:progress_${e.message}`, e) as string ?? t('main:profile_loading_validating_profile')
+                      ), ""
                     );
                     finishAuthenticate({
                       authenticateResult,

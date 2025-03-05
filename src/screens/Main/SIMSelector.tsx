@@ -9,6 +9,7 @@ import {Adapters} from "@/native/adapters/registry";
 import TabController from "../../components/ui/Tab";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faFloppyDisk, faSimCard} from "@fortawesome/free-solid-svg-icons";
+import {faBluetooth, faUsb} from "@fortawesome/free-brands-svg-icons";
 import Clipboard from "@react-native-clipboard/clipboard";
 import {preferences} from "@/utils/mmkv";
 import {AppBuyLink} from "@/screens/Main/config";
@@ -23,7 +24,7 @@ export default function SIMSelector() {
   const { t } = useTranslation(['main']);
   const showSlots = preferences.getString("showSlots");
 
-  let deviceList = _deviceList;
+  let deviceList = _deviceList ?? [];
 
   if (showSlots === "possible") {
     deviceList = _deviceList.filter(x => Adapters[x].device.available || Adapters[x].device.slotAvailable);
@@ -99,14 +100,15 @@ export default function SIMSelector() {
               icon: (
                 <FontAwesomeIcon
                   icon={
-                    adapter.device.deviceName.startsWith("SIM") ? faSimCard : faFloppyDisk
+                    adapter.device.deviceId.startsWith("omapi") ? faSimCard :
+                    adapter.device.deviceId.startsWith("ble") ? (faBluetooth as any) : (faUsb as any)
                   }
                   style={{
                     color: Colors.$textPrimary,
                     marginRight: 4,
                     marginTop: -2,
                   }}
-                  size={12}
+                  size={15}
                 />
               ),
               labelStyle: {

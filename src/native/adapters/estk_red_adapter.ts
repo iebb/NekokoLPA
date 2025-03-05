@@ -52,6 +52,11 @@ export class ESTKmeRED implements Device {
     this.device = device;
   }
 
+  async refresh(): Promise<boolean> {
+    await this.disconnect();
+    return await this.connect();
+  }
+
   async connect(): Promise<boolean> {
     try {
       if (!await this.device.isConnected()) {
@@ -64,8 +69,6 @@ export class ESTKmeRED implements Device {
         console.log("already connected...");
       }
 
-      this.available = true;
-
       await this.transmit("80AA00000AA9088100820101830107"); // APDU_TERMINAL_CAPABILITIES
       const channelResp = await this.transmit("0070000001");
       const channel = channelResp.substring(0, 2);
@@ -77,6 +80,7 @@ export class ESTKmeRED implements Device {
           const aidResp = await this.transmit(channel + "A4040010" + aid);
           if (aidResp === "6a82") {
           } else {
+            this.available = true;
             return true;
           }
         } catch (e) {

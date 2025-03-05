@@ -11,6 +11,7 @@ import Container from "@/components/common/Container";
 import {makeLoading} from "@/components/utils/loading";
 import BlockingLoader from "@/components/common/BlockingLoader";
 import {Adapters} from "@/native/adapters/registry";
+import {useLoading} from "@/components/common/LoadingProvider";
 
 
 export function ScannerResult(
@@ -23,18 +24,13 @@ export function ScannerResult(
   }: any
 ) {
   const { t } = useTranslation(['main']);
-  const [loading, setLoading] = useState(false);
+  const { setLoading } = useLoading();
   const [confirmationCode, setConfirmationCode] = useState(initialConfirmationCode);
   const adapter = Adapters[deviceId];
 
   return (
     <View>
       <Title>{t('main:profile_title_download_profile')}</Title>
-      {
-        loading && (
-          <BlockingLoader />
-        )
-      }
       {
         (downloadResult?.success) ?
           (

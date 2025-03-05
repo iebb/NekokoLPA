@@ -9,19 +9,19 @@ import {Colors, LoaderScreen, Text, TouchableOpacity, View} from "react-native-u
 import {bleManager, requestBluetoothPermission} from "@/utils/blue";
 import {Device} from 'react-native-ble-plx';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {fa9, faE, faMattressPillow, faSdCard} from '@fortawesome/free-solid-svg-icons';
+import {fa9, faMattressPillow, faSdCard} from '@fortawesome/free-solid-svg-icons';
 import {connectDevice} from "@/screens/Bluetooth/connection";
 import {setupDevices} from "@/native/setup";
-import { useDispatch } from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {makeLoading} from "@/components/utils/loading";
-import BlockingLoader from "@/components/common/BlockingLoader";
+import {useLoading} from "@/components/common/LoadingProvider";
 
 function BluetoothScan({ route,  navigation }: RootScreenProps<'BluetoothScan'>) {
 
 	const { t } = useTranslation(['main']);
 	const [devices, setDevices] = useState<Device[]>([]);
 	const dispatch = useDispatch();
-	const [loading, setLoading] = useState(false);
+	const { setLoading } = useLoading();
 	const [scanning, setScanning] = useState(false);
 
 
@@ -66,11 +66,6 @@ function BluetoothScan({ route,  navigation }: RootScreenProps<'BluetoothScan'>)
 	return (
 		<SafeScreen>
 			<Title>{t('main:bluetooth_scan')}</Title>
-			{
-				loading && (
-					<BlockingLoader />
-				)
-			}
 			<Container>
 				<ScrollView>
 					<View flex flexG style={{ gap: 10 }}>
