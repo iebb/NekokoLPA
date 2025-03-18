@@ -29,6 +29,7 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
   const { t } = useTranslation(['main']);
   const [acToken, setAcToken] = useState("");
   const [oid, setOid] = useState("");
+  const [imei, setImei] = useState("");
   const [confirmationCode, setConfirmationCode] = useState("");
   const [confirmationCodeReq, setConfirmationCodeReq] = useState(false);
   const { hasPermission, requestPermission } = useCameraPermission();
@@ -176,7 +177,7 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
                     const authenticateResult = await adapter.authenticateProfile(
                       smdp, acToken, (e: any) => setLoading(
                         t(`main:progress_${e.message}`, e) as string ?? t('main:profile_loading_validating_profile')
-                      ), ""
+                      ), imei.length === 15 ? imei : "356303455555555"
                     );
                     finishAuthenticate({
                       authenticateResult,
@@ -209,6 +210,15 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
               floatingPlaceholder
               value={acToken}
               onChangeText={c => c.includes('$') ? processLPACode(c) : setAcToken(c)}
+              enableErrors
+
+              style={{ borderBottomWidth: 0.5, borderColor: Colors.$outlineDisabledHeavy }}
+            />
+            <TextField
+              placeholder={'IMEI'}
+              floatingPlaceholder
+              value={imei}
+              onChangeText={c => setImei(c)}
               enableErrors
 
               style={{ borderBottomWidth: 0.5, borderColor: Colors.$outlineDisabledHeavy }}

@@ -10,7 +10,6 @@ class Ccid(
     private var currentSeq = 0.toByte()
 
     fun iccPowerOn(voltage: Byte = 0): ByteArray {
-        Log.d("CCID", "sending power on");
         val seq = currentSeq++
         val command = byteArrayOf(
             MESSAGE_TYPE_PC_TO_RDR_ICCPOWERON,
@@ -22,8 +21,6 @@ class Ccid(
         )
         sendCcidPcToRdrMessage(command)
         val response = receiveCcidRdrToPcMessage(seq)
-        Log.d("CCID", "sending power on result");
-        Log.d("CCID", response.data.toString());
         return response.data
     }
 
@@ -34,7 +31,8 @@ class Ccid(
             0x00, 0x00, 0x00, 0x00,
             0x00,
             seq,
-            0x00, 0x00, 0x00
+            0x00,
+            0x00, 0x00
         )
         sendCcidPcToRdrMessage(command)
     }

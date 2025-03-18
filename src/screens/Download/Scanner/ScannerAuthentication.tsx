@@ -74,7 +74,7 @@ export function ScannerAuthentication(
                     </Text>
                     <View style={styles.tableColumn}>
                       <TextField
-                        placeholder={'Activation Code'}
+                        placeholder={'Confirmation Code'}
                         value={confirmationCode}
                         onChangeText={c => setConfirmationCode(c)}
                         enableErrors
