@@ -3,7 +3,7 @@ import {useTranslation} from 'react-i18next';
 import {Button, Colors, Text, View} from "react-native-ui-lib";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faArrowLeftLong, faCancel, faCheck, faCheckCircle} from "@fortawesome/free-solid-svg-icons";
-import RemoteErrorView from "@/components/common/RemoteErrorView";
+import RemoteErrorView from "@/screens/Download/RemoteErrorView";
 import MetadataView from "@/components/common/MetadataView";
 import Title from "@/components/common/Title";
 import Container from "@/components/common/Container";

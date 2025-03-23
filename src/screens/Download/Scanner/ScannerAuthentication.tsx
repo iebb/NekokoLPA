@@ -5,7 +5,7 @@ import {Button, Colors, Text, TextField, View} from "react-native-ui-lib";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faCancel, faDownload} from "@fortawesome/free-solid-svg-icons";
 import BlockingLoader from "@/components/common/BlockingLoader";
-import RemoteErrorView from "@/components/common/RemoteErrorView";
+import RemoteErrorView from "@/screens/Download/RemoteErrorView";
 import MetadataView from "@/components/common/MetadataView";
 import Title from "@/components/common/Title";
 import Container from "@/components/common/Container";

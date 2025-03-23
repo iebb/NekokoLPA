@@ -9,28 +9,28 @@ export default function RemoteErrorView({ remoteError }: { remoteError?: RemoteE
   return (
     <View flex style={{ gap: 5 }}>
       <Text
-        color={Colors.white}
+        $textDefault
         center
         text70
       >
         Status: {remoteError.status}
       </Text>
       <Text
-        color={Colors.white}
+        $textDefault
         center
         text70
       >
         {remoteError.message}
       </Text>
       <Text
-        color={Colors.white}
+        $textDefault
         center
         text80
       >
         Reason: {remoteError.reasonCode}
       </Text>
       <Text
-        color={Colors.white}
+        $textDefault
         center
         text80
       >
