@@ -4,6 +4,9 @@ import {initReactI18next} from 'react-i18next';
 import * as en from './en';
 import * as zh from './zh';
 import * as ja from './ja';
+import * as es from './es';
+import * as ar from './ar';
+import * as ru from './ru';
 import {NativeModules, Platform} from 'react-native';
 import {preferences} from "@/utils/mmkv";
 
@@ -32,6 +35,9 @@ void i18n.use(initReactI18next).init({
 		en,
 		zh,
 		ja,
+		es,
+		ar,
+		ru
 	},
 	lng: locale,
 	fallbackLng: 'en',

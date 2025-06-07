@@ -8,13 +8,14 @@ import {Dimensions, Linking, NativeModules, Platform, ScrollView, ToastAndroid} 
 import {Adapters} from "@/native/adapters/registry";
 import TabController from "../../components/ui/Tab";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
-import {faFloppyDisk, faSimCard} from "@fortawesome/free-solid-svg-icons";
+import {faSimCard} from "@fortawesome/free-solid-svg-icons";
 import {faBluetooth, faUsb} from "@fortawesome/free-brands-svg-icons";
 import Clipboard from "@react-native-clipboard/clipboard";
 import {preferences} from "@/utils/mmkv";
 import {AppBuyLink} from "@/screens/Main/config";
 import {getNicknames} from "@/configs/store";
 import {setTargetDevice} from "@/redux/stateStore";
+import Config from 'react-native-config';
 
 export default function SIMSelector() {
   const ds = useSelector((state: RootState) => state.DeviceState);
@@ -33,12 +34,12 @@ export default function SIMSelector() {
   }
 
   const firstAvailable = deviceList.map(x => Adapters[x].device.available).indexOf(true);
-  
+
   const [index, setIndex] = useState(firstAvailable < 0 ? 0 : firstAvailable);
   const selected = index < deviceList.length ? deviceList[index] : null;
   const adapter = selected ? Adapters[selected] : null;
   const width = Dimensions.get('window').width - 48;
-  
+
   const deviceCount = deviceList.length;
   const displayWidth = width / deviceCount;
   const displayWidth2 = (deviceCount === 1 ? 2 : 1) * width / deviceCount;

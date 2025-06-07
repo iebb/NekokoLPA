@@ -10,9 +10,9 @@ project.ext.envConfigFiles = [
    flavor1release: "env.release.flavor1.env",
    multisignrelease: "env.release.multisign.env",
 
-   storedebug: "env.debug.store.env",
-   flavor1debug: "env.debug.flavor1.env",
-   multisigndebug: "env.debug.multisign.env",
+   storedebug: "env.release.store.env",
+   flavor1debug: "env.release.flavor1.env",
+   multisigndebug: "env.release.multisign.env",
 ]
 
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"

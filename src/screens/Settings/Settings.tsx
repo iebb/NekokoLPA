@@ -29,14 +29,17 @@ function PickerRow({row} : {row: SettingDataType}) {
 			<View style={{width: "100%"}}>
 				<Picker
 					enableModalBlur
+					floatingPlaceholder
 					placeholder={t(`main:settings_title_${row.key}`)}
+					floatingPlaceholderStyle={{
+						paddingBottom: 5
+					}}
 					topBarProps={{
 						useSafeArea: false,
 						title: t(`main:settings_title_${row.key}`)
 					}}
-					floatingPlaceholder
 					value={v}
-					onChange={(value) => {
+		      onChange={(value) => {
 						if (typeof value === "string") {
 							setV(value);
 							preferences.set(row.key, value);
@@ -108,7 +111,7 @@ function PickerRow({row} : {row: SettingDataType}) {
 }
 
 
-function Settings({ route,  navigation }: RootScreenProps<'Settings'>) {
+export default function Settings({ route,  navigation }: RootScreenProps<'Settings'>) {
 
 	const { t } = useTranslation(['main']);
 	const {theme, setTheme, setThemeColor} = useAppTheme();
@@ -123,7 +126,7 @@ function Settings({ route,  navigation }: RootScreenProps<'Settings'>) {
 					data={[
 						{
 							key: "language",
-							options: ['en', 'ja', 'zh'],
+							options: ['en', 'ja', 'zh', 'es', 'ru', 'ar'],
 							defaultValue: 'en',
 							type: 'select',
 							onChange: (value: string) => {
@@ -182,10 +185,6 @@ function Settings({ route,  navigation }: RootScreenProps<'Settings'>) {
 						<View
 							paddingH-20
 							key={item.key}
-							style={{
-								borderTopWidth: 0.5,
-								borderTopColor: Colors.$outlineDisabled,
-							}}
 						>
 							<ListItem
 								activeBackgroundColor={Colors.grey60}
@@ -201,5 +200,3 @@ function Settings({ route,  navigation }: RootScreenProps<'Settings'>) {
 		</SafeScreen>
 	);
 }
-
-export default Settings;

@@ -3431,10 +3431,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/babel-plugin-component-annotate@npm:3.2.0":
-  version: 3.2.0
-  resolution: "@sentry/babel-plugin-component-annotate@npm:3.2.0"
-  checksum: 5b1a368a3e38486fde0a89d1604fe0881b2af1008354ba9337640325522e23059e7322cb3cef406a69237b9f4678afce1142f7cb320e5f14cb4ca919f423e78d
+"@sentry/babel-plugin-component-annotate@npm:3.5.0":
+  version: 3.5.0
+  resolution: "@sentry/babel-plugin-component-annotate@npm:3.5.0"
+  checksum: c5dd3c572e4ca83db859bf3d8ba976393361631f30eb977bc00a572d9981ccaae84f42cce5bf85bc425544245ad22923a66fe96bc2355d339e12ea3aa72d3b82
   languageName: node
   linkType: hard
 
@@ -3451,66 +3451,74 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/cli-darwin@npm:2.42.1":
-  version: 2.42.1
-  resolution: "@sentry/cli-darwin@npm:2.42.1"
+"@sentry/cli-darwin@npm:2.46.0":
+  version: 2.46.0
+  resolution: "@sentry/cli-darwin@npm:2.46.0"
   conditions: os=darwin
   languageName: node
   linkType: hard
 
-"@sentry/cli-linux-arm64@npm:2.42.1":
-  version: 2.42.1
-  resolution: "@sentry/cli-linux-arm64@npm:2.42.1"
-  conditions: (os=linux | os=freebsd) & cpu=arm64
+"@sentry/cli-linux-arm64@npm:2.46.0":
+  version: 2.46.0
+  resolution: "@sentry/cli-linux-arm64@npm:2.46.0"
+  conditions: (os=linux | os=freebsd | os=android) & cpu=arm64
   languageName: node
   linkType: hard
 
-"@sentry/cli-linux-arm@npm:2.42.1":
-  version: 2.42.1
-  resolution: "@sentry/cli-linux-arm@npm:2.42.1"
-  conditions: (os=linux | os=freebsd) & cpu=arm
+"@sentry/cli-linux-arm@npm:2.46.0":
+  version: 2.46.0
+  resolution: "@sentry/cli-linux-arm@npm:2.46.0"
+  conditions: (os=linux | os=freebsd | os=android) & cpu=arm
   languageName: node
   linkType: hard
 
-"@sentry/cli-linux-i686@npm:2.42.1":
-  version: 2.42.1
-  resolution: "@sentry/cli-linux-i686@npm:2.42.1"
-  conditions: (os=linux | os=freebsd) & (cpu=x86 | cpu=ia32)
+"@sentry/cli-linux-i686@npm:2.46.0":
+  version: 2.46.0
+  resolution: "@sentry/cli-linux-i686@npm:2.46.0"
+  conditions: (os=linux | os=freebsd | os=android) & (cpu=x86 | cpu=ia32)
   languageName: node
   linkType: hard
 
-"@sentry/cli-linux-x64@npm:2.42.1":
-  version: 2.42.1
-  resolution: "@sentry/cli-linux-x64@npm:2.42.1"
-  conditions: (os=linux | os=freebsd) & cpu=x64
+"@sentry/cli-linux-x64@npm:2.46.0":
+  version: 2.46.0
+  resolution: "@sentry/cli-linux-x64@npm:2.46.0"
+  conditions: (os=linux | os=freebsd | os=android) & cpu=x64
   languageName: node
   linkType: hard
 
-"@sentry/cli-win32-i686@npm:2.42.1":
-  version: 2.42.1
-  resolution: "@sentry/cli-win32-i686@npm:2.42.1"
+"@sentry/cli-win32-arm64@npm:2.46.0":
+  version: 2.46.0
+  resolution: "@sentry/cli-win32-arm64@npm:2.46.0"
+  conditions: os=win32 & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@sentry/cli-win32-i686@npm:2.46.0":
+  version: 2.46.0
+  resolution: "@sentry/cli-win32-i686@npm:2.46.0"
   conditions: os=win32 & (cpu=x86 | cpu=ia32)
   languageName: node
   linkType: hard
 
-"@sentry/cli-win32-x64@npm:2.42.1":
-  version: 2.42.1
-  resolution: "@sentry/cli-win32-x64@npm:2.42.1"
+"@sentry/cli-win32-x64@npm:2.46.0":
+  version: 2.46.0
+  resolution: "@sentry/cli-win32-x64@npm:2.46.0"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
-"@sentry/cli@npm:2.42.1":
-  version: 2.42.1
-  resolution: "@sentry/cli@npm:2.42.1"
+"@sentry/cli@npm:2.46.0":
+  version: 2.46.0
+  resolution: "@sentry/cli@npm:2.46.0"
   dependencies:
-    "@sentry/cli-darwin": 2.42.1
-    "@sentry/cli-linux-arm": 2.42.1
-    "@sentry/cli-linux-arm64": 2.42.1
-    "@sentry/cli-linux-i686": 2.42.1
-    "@sentry/cli-linux-x64": 2.42.1
-    "@sentry/cli-win32-i686": 2.42.1
-    "@sentry/cli-win32-x64": 2.42.1
+    "@sentry/cli-darwin": 2.46.0
+    "@sentry/cli-linux-arm": 2.46.0
+    "@sentry/cli-linux-arm64": 2.46.0
+    "@sentry/cli-linux-i686": 2.46.0
+    "@sentry/cli-linux-x64": 2.46.0
+    "@sentry/cli-win32-arm64": 2.46.0
+    "@sentry/cli-win32-i686": 2.46.0
+    "@sentry/cli-win32-x64": 2.46.0
     https-proxy-agent: ^5.0.0
     node-fetch: ^2.6.7
     progress: ^2.0.3
@@ -3527,13 +3535,15 @@ __metadata:
       optional: true
     "@sentry/cli-linux-x64":
       optional: true
+    "@sentry/cli-win32-arm64":
+      optional: true
     "@sentry/cli-win32-i686":
       optional: true
     "@sentry/cli-win32-x64":
       optional: true
   bin:
     sentry-cli: bin/sentry-cli
-  checksum: 91a7c07041b96e18776ef7695ef74a080f5b67de67b0018a0c4b337b71a7f5f65aa98779b8db418973a4ca1df905098b9d8c1b8ec4e352fe35f752fe93232d04
+  checksum: b4308c5746619f6a42af48f83b03592c9887cddbca242bce6a0adc28d6e1484601d110e3ee0af666046e445769780889b3c5a2dfceb4833b13309f907483085c
   languageName: node
   linkType: hard
 
@@ -3544,13 +3554,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/react-native@npm:^6.9.0":
-  version: 6.9.0
-  resolution: "@sentry/react-native@npm:6.9.0"
+"@sentry/react-native@npm:^6.15.0":
+  version: 6.15.0
+  resolution: "@sentry/react-native@npm:6.15.0"
   dependencies:
-    "@sentry/babel-plugin-component-annotate": 3.2.0
+    "@sentry/babel-plugin-component-annotate": 3.5.0
     "@sentry/browser": 8.54.0
-    "@sentry/cli": 2.42.1
+    "@sentry/cli": 2.46.0
     "@sentry/core": 8.54.0
     "@sentry/react": 8.54.0
     "@sentry/types": 8.54.0
@@ -3564,7 +3574,7 @@ __metadata:
       optional: true
   bin:
     sentry-expo-upload-sourcemaps: scripts/expo-upload-sourcemaps.js
-  checksum: a15f84526b5f55fc5790a23e90f8a8c72986244b7e9186800713d8248763d5ce62db029a4f85f5d3e8f1e705a026a520e5c200db23e39b035e1a6b6c302306cb
+  checksum: bc6d5b9ec8d55a101425f4da7733613aa9a04515807a94b254111e03fb8ef048fd4dc9e0ccb694f611fd3a291e3de0fec9d5730e665318924236848d9e87943c
   languageName: node
   linkType: hard
 
@@ -10237,7 +10247,7 @@ __metadata:
     "@react-navigation/native": ^7.0.14
     "@react-navigation/stack": ^7.1.1
     "@reduxjs/toolkit": ^2.5.1
-    "@sentry/react-native": ^6.9.0
+    "@sentry/react-native": ^6.15.0
     "@testing-library/jest-native": ^5.4.2
     "@testing-library/react-native": ^12.1.2
     "@types/jest": ^29.4.0
