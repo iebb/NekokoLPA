@@ -4891,6 +4891,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"base-64@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "base-64@npm:0.1.0"
+  checksum: 5a42938f82372ab5392cbacc85a5a78115cbbd9dbef9f7540fa47d78763a3a8bd7d598475f0d92341f66285afd377509851a9bb5c67bbecb89686e9255d5b3eb
+  languageName: node
+  linkType: hard
+
 "base64-js@npm:^1.2.3, base64-js@npm:^1.3.1, base64-js@npm:^1.5.1":
   version: 1.5.1
   resolution: "base64-js@npm:1.5.1"
@@ -10261,6 +10268,8 @@ __metadata:
     react-native: 0.76.1
     react-native-ble-plx: ^3.2.1
     react-native-config: 1.4.6
+    react-native-document-picker: ^9.3.1
+    react-native-fs: ^2.20.0
     react-native-gesture-handler: ^2.23.0
     react-native-image-picker: ^7.1.2
     react-native-mmkv: 2.12.2
@@ -10270,6 +10279,7 @@ __metadata:
     react-native-restart: ^0.0.27
     react-native-safe-area-context: ^4.14.0
     react-native-screens: ^4.0.0
+    react-native-share: ^12.0.11
     react-native-svg: ^15.11.1
     react-native-ui-lib: ^7.38.1
     react-native-vision-camera: ^4.6.4
@@ -11343,6 +11353,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-document-picker@npm:^9.3.1":
+  version: 9.3.1
+  resolution: "react-native-document-picker@npm:9.3.1"
+  dependencies:
+    invariant: ^2.2.4
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+    react-native-windows: "*"
+  peerDependenciesMeta:
+    react-native-windows:
+      optional: true
+  checksum: 5979e4b93f15e0568ae70b70cc2304cd727f20939a58412d483517942df6d3cf3821319b3b7934bcaa2866ed1918ef9e8de9933ce6953209340abe3455403e0d
+  languageName: node
+  linkType: hard
+
 "react-native-drawer-layout@npm:^4.1.1":
   version: 4.1.1
   resolution: "react-native-drawer-layout@npm:4.1.1"
@@ -11364,6 +11390,22 @@ __metadata:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
     react-native: ">0.62.0"
   checksum: 8730d7349bec27a23558760320082bd89b07fb404a87bf039a8d852455f28e4d5419f093bb7900ff5f6d85488274cfb246278b6700878bcabe574d5aacd88dac
+  languageName: node
+  linkType: hard
+
+"react-native-fs@npm:^2.20.0":
+  version: 2.20.0
+  resolution: "react-native-fs@npm:2.20.0"
+  dependencies:
+    base-64: ^0.1.0
+    utf8: ^3.0.0
+  peerDependencies:
+    react-native: "*"
+    react-native-windows: "*"
+  peerDependenciesMeta:
+    react-native-windows:
+      optional: true
+  checksum: 0be9bb9a5c13b501d0a3006efc3aa5c0b5b211456ee04718297f4e522532f3527f1daa220bd67d3b82d819ed8fdab8f64b7d6e0d7b768c1fd1d8ec9122d94316
   languageName: node
   linkType: hard
 
@@ -11488,6 +11530,13 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 9da0f394fa26b7ec30f52fc758d6289b7e5123c7e6446bbce654ae31e07ab6d5488e51c0882a906cddc305b18e3cc96f9bc5631671f4fded38da5ef138b53cfa
+  languageName: node
+  linkType: hard
+
+"react-native-share@npm:^12.0.11":
+  version: 12.0.11
+  resolution: "react-native-share@npm:12.0.11"
+  checksum: 5b6fcd3391483906784d499b4c025e2238f2af2876bd7a8577edfdb7c2f12a1b46558a00c3a9050e3189394f8cc1a4b5d9864ce0c4e67f47707c54560de52815
   languageName: node
   linkType: hard
 
@@ -13596,6 +13645,13 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
   checksum: dc3843a1b59ac8bd01417bd79498d4c688d5df8bf4801be50008ef4bfaacb349058c0b1605b5b43c828e0a2d62722d7e861573b3f31cea77a7f23e8b0fc2f7e3
+  languageName: node
+  linkType: hard
+
+"utf8@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "utf8@npm:3.0.0"
+  checksum: cb89a69ad9ab393e3eae9b25305b3ff08bebca9adc839191a34f90777eb2942f86a96369d2839925fea58f8f722f7e27031d697f10f5f39690f8c5047303e62d
   languageName: node
   linkType: hard
 

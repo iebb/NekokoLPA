@@ -35,6 +35,10 @@
   "go_back": "Back",
   "main_screen": "Main Screen",
 
+  "backup": "Backup",
+  "backup_export": "Export Sizes",
+  "backup_import": "Import Sizes",
+
 
   "settings_settings": "Settings",
   "settings_title_showSlots": "SIM Slot display rules",
