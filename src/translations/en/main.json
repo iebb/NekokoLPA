@@ -81,6 +81,9 @@
   "settings_title_useRemoteDevice": "Remote Reader",
   "settings_item_useRemoteDevice_on": "On",
   "settings_item_useRemoteDevice_off": "Off",
+  "settings_title_disableProtection": "Profile Disable Protection",
+  "settings_item_disableProtection_on": "On",
+  "settings_item_disableProtection_off": "Off",
   "settings_title_remoteDevice": "Remote Reader URL",
   "settings_text_remoteDevice": "Connect to a remote reader with HTTPS",
   "settings_title_themeColor": "Theme Color (restart to take effect)",
@@ -150,6 +153,8 @@
   "progress_download.step2.es9p_initiate_authentication": "(2/4) Communicating with Server",
   "progress_download.step3.es10b_authenticate_server": "(3/4) Check Server Response",
   "progress_download.step4.es9p_authenticate_client": "(4/4) Requesting Metadata",
+  "progress_download.step4.es11_authenticate_client": "(4/4) Requesting Servers",
+  "progress_download.step5.finished": "(4/4) Finished",
 
   "progress_download.step5.es10b_prepare_download": "(1/5) Confirming Download",
   "progress_download.step6.es9p_get_bound_profile_package": "(2/5) Requesting Profile from Server",

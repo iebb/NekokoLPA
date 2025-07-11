@@ -12,8 +12,8 @@ const flavorImages = {
   multisign: multisignImage,
 }
 const flavorLinks = {
-  flavor1: "https://9es.im/",
-  esim9: "https://www.9esim.com/",
+  flavor1: "https://www.9esim.com/?coupon=apple&src=LPA",
+  esim9: "https://www.9esim.com/?coupon=apple&src=LPA",
   store: "https://lpa.nekoko.ee/products",
   multisign: "https://lpa.nekoko.ee/products",
 }

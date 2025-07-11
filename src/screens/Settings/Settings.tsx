@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {FlatList,} from 'react-native';
+import {FlatList, Platform,} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import SafeScreen from '@/theme/SafeScreen';
 import type {RootScreenProps} from "@/screens/navigation";
@@ -166,6 +166,12 @@ export default function Settings({ route,  navigation }: RootScreenProps<'Settin
 							defaultValue: 'provider',
 							type: 'select'
 						},
+						(Platform.OS === 'android') ? {
+							key: "disableProtection",
+							options: ['on', 'off'],
+							defaultValue: 'on',
+							type: 'select'
+						} : null,
 						{
 							key: "useCamera",
 							options: ['always', 'ondemand'],
@@ -180,7 +186,7 @@ export default function Settings({ route,  navigation }: RootScreenProps<'Settin
 								setThemeColor(value);
 							}
 						},
-					]}
+					].filter(Boolean)}
 					renderItem={({item, index}) => (
 						<View
 							paddingH-20

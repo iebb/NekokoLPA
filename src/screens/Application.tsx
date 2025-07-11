@@ -48,8 +48,8 @@ function ApplicationNavigator() {
 	return (
 		<SafeAreaProvider key={theme + "_" + themeColor}>
 			<NavigationContainer ref={navigationRef}>
-				<LoadingProvider>
-					<ToastProvider>
+				<ToastProvider>
+					<LoadingProvider>
 						<Drawer.Navigator
 							drawerContent={(props) => <LeftSidebarDrawer {...props} />}
 							screenOptions={{
@@ -65,8 +65,8 @@ function ApplicationNavigator() {
 						>
 							<Drawer.Screen name="Stack" component={StackNavigator} />
 						</Drawer.Navigator>
-					</ToastProvider>
-				</LoadingProvider>
+					</LoadingProvider>
+				</ToastProvider>
 			</NavigationContainer>
 		</SafeAreaProvider>
 	);

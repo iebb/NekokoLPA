@@ -228,6 +228,12 @@ export class Adapter {
     return await this.execute('authenticate_profile', [smdp, matchingId, imei]);
   }
 
+
+  async smdsDiscovery(callback: (obj: object) => any) { // , smds: string, imei: string = ""
+    this.callback = callback;
+    return await this.execute('discover_profile', ["lpa.ds.gsma.com", "356303455555555"]);
+  }
+
   async cancelSession(internal_state: string) {
     return await this.execute('cancel_download', [internal_state]);
   }

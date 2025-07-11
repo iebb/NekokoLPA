@@ -31,7 +31,7 @@ function Scanner({ route,  navigation }: RootScreenProps<'Scanner'>) {
 		<SafeScreen>
 				<ScrollView>
 					{
-						scanState === 0 ? (
+						scanState === 0 && (
 							<ScannerInitial
 								appLink={appLink}
 								adapter={adapter}
@@ -43,7 +43,10 @@ function Scanner({ route,  navigation }: RootScreenProps<'Scanner'>) {
 									setScanState(1);
 								}}
 							/>
-						) : scanState === 1 ? (
+						)
+					}
+					{
+						scanState === 1 && (
 							<ScannerAuthentication
 								eUICC={DeviceState}
 								adapter={adapter}
@@ -81,7 +84,10 @@ function Scanner({ route,  navigation }: RootScreenProps<'Scanner'>) {
 									setScanState(3);
 								}}
 							/>
-						) : scanState === 3 ? (
+						)
+					}
+					{
+						scanState === 2 && (
 							<ScannerResult
 								eUICC={DeviceState}
 								adapter={adapter}
@@ -96,8 +102,6 @@ function Scanner({ route,  navigation }: RootScreenProps<'Scanner'>) {
 									navigation.goBack();
 								}}
 							/>
-						) : (
-							<Text>Unknown</Text>
 						)
 					}
 				</ScrollView>
