@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0C80B921A6F3F58F76C31292 /* libPods-NekokoLPA.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-NekokoLPA.a */; };
+		0C80B921A6F3F58F76C31292 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -19,7 +19,6 @@
 		8CC464DB2DF47FDB00DF2CFF /* CCIDPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC7D2D02CDBE3EB00EE91E7 /* CCIDPlugin.m */; };
 		8CC464DC2DF47FDB00DF2CFF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		8CC464DD2DF47FDB00DF2CFF /* CCIDPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC7D2CE2CDBE2C900EE91E7 /* CCIDPlugin.swift */; };
-		8CC464DF2DF47FDB00DF2CFF /* BuildFile in Frameworks */ = {isa = PBXBuildFile; };
 		8CC464E32DF47FDB00DF2CFF /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F571B3872BD7A3F80014213C /* PrivacyInfo.xcprivacy */; };
 		8CC464E42DF47FDB00DF2CFF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		8CC464EF2DF4805400DF2CFF /* AsyncHTTPClient in Frameworks */ = {isa = PBXBuildFile; productRef = 8CC464EE2DF4805400DF2CFF /* AsyncHTTPClient */; };
@@ -27,7 +26,7 @@
 		8CC7D2D12CDBE3EB00EE91E7 /* CCIDPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC7D2D02CDBE3EB00EE91E7 /* CCIDPlugin.m */; };
 		8CC7D2DA2CDC9D5A00EE91E7 /* CustomHttp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC7D2D92CDC9D5A00EE91E7 /* CustomHttp.swift */; };
 		8CC7D2DC2CDC9D7600EE91E7 /* CustomHttp.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC7D2DB2CDC9D7600EE91E7 /* CustomHttp.m */; };
-		984F582519C4230BA4307B6C /* libPods-NekokoLPA.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-NekokoLPA.a */; };
+		984F582519C4230BA4307B6C /* (null) in Frameworks */ = {isa = PBXBuildFile; };
 		F571B3882BD7A3F80014213C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F571B3872BD7A3F80014213C /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
@@ -47,7 +46,7 @@
 		5FE7F0A3B73D3051C94B0584 /* Pods-NekokoLPA.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NekokoLPA.debug.xcconfig"; path = "Target Support Files/Pods-NekokoLPA/Pods-NekokoLPA.debug.xcconfig"; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-NekokoLPA-NekokoLPATests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NekokoLPA-NekokoLPATests.release.xcconfig"; path = "Target Support Files/Pods-NekokoLPA-NekokoLPATests/Pods-NekokoLPA-NekokoLPATests.release.xcconfig"; sourceTree = "<group>"; };
 		8CC464EC2DF47FDB00DF2CFF /* 9eSIM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 9eSIM.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		8CC464ED2DF47FDB00DF2CFF /* 9eSIM.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = 9eSIM.plist; path = /Users/ieb/App/NekokoLPA/ios/9eSIM.plist; sourceTree = "<absolute>"; };
+		8CC464ED2DF47FDB00DF2CFF /* 9eSIM.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = 9eSIM.plist; path = /Users/ieb/App/NekokoLPA/ios/NekokoLPA/9eSIM.plist; sourceTree = "<absolute>"; };
 		8CC7D2CD2CDBE2C900EE91E7 /* NekokoLPA-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NekokoLPA-Bridging-Header.h"; sourceTree = "<group>"; };
 		8CC7D2CE2CDBE2C900EE91E7 /* CCIDPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CCIDPlugin.swift; sourceTree = "<group>"; };
 		8CC7D2D02CDBE3EB00EE91E7 /* CCIDPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CCIDPlugin.m; sourceTree = "<group>"; };
@@ -65,8 +64,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				8C5BB0FF2CEB583A0089737C /* AsyncHTTPClient in Frameworks */,
-				0C80B921A6F3F58F76C31292 /* libPods-NekokoLPA.a in Frameworks */,
-				984F582519C4230BA4307B6C /* libPods-NekokoLPA.a in Frameworks */,
+				0C80B921A6F3F58F76C31292 /* (null) in Frameworks */,
+				984F582519C4230BA4307B6C /* (null) in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,6 +101,7 @@
 		13B07FAE1A68108700A75B9A /* NekokoLPA */ = {
 			isa = PBXGroup;
 			children = (
+				8CC464ED2DF47FDB00DF2CFF /* 9eSIM.plist */,
 				8CC7D2D92CDC9D5A00EE91E7 /* CustomHttp.swift */,
 				8CC7D2DB2CDC9D7600EE91E7 /* CustomHttp.m */,
 				F571B3872BD7A3F80014213C /* PrivacyInfo.xcprivacy */,
@@ -144,7 +144,6 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
 				B5CD4459AA2E42B0A4CCF157 /* Resources */,
-				8CC464ED2DF47FDB00DF2CFF /* 9eSIM.plist */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -382,9 +381,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-NekokoLPA-9eSIM/Pods-NekokoLPA-9eSIM-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-NekokoLPA-9eSIM/Pods-NekokoLPA-9eSIM-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -399,9 +402,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-NekokoLPA-9eSIM/Pods-NekokoLPA-9eSIM-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-NekokoLPA-9eSIM/Pods-NekokoLPA-9eSIM-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -430,9 +437,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-NekokoLPA/Pods-NekokoLPA-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-NekokoLPA/Pods-NekokoLPA-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -469,9 +480,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-NekokoLPA/Pods-NekokoLPA-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-NekokoLPA/Pods-NekokoLPA-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -537,7 +552,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 303;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = 465NH4KUMT;
+				DEVELOPMENT_TEAM = 9733K94JUG;
 				ENABLE_BITCODE = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				EXCLUDED_ARCHS = "";
@@ -784,7 +799,7 @@
 				ENABLE_BITCODE = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				EXCLUDED_ARCHS = "";
-				INFOPLIST_FILE = 9eSIM.plist;
+				INFOPLIST_FILE = NekokoLPA/9eSIM.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = 9eSIM;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
@@ -822,7 +837,7 @@
 				DEVELOPMENT_TEAM = 465NH4KUMT;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				EXCLUDED_ARCHS = "";
-				INFOPLIST_FILE = 9eSIM.plist;
+				INFOPLIST_FILE = NekokoLPA/9eSIM.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = 9eSIM;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
