@@ -69,7 +69,7 @@ export function ScannerAuthentication(
               {
                 (authenticateResult.isCcRequired || confirmationCode) && (
                   <View style={styles.tableRow} row flex-1 gap-12>
-                    <Text style={styles.tableHeader}>
+                    <Text $textDefault style={styles.tableHeader}>
                       {t('main:profile_conf_code')}:
                     </Text>
                     <View style={styles.tableColumn}>
@@ -100,7 +100,7 @@ export function ScannerAuthentication(
                 sizeData && (
                   <>
                     <View style={styles.tableRow} flex-1 gap-12>
-                      <Text style={styles.tableHeader}>
+                      <Text $textDefault style={styles.tableHeader}>
                         {t('main:profile_size')}:
                       </Text>
                       <View style={styles.tableColumn}>
@@ -110,7 +110,7 @@ export function ScannerAuthentication(
                       </View>
                     </View>
                     <View style={styles.tableRow} flex-1 gap-12>
-                      <Text style={styles.tableHeader}>
+                      <Text $textDefault style={styles.tableHeader}>
                         {t('main:profile_available_space')}:
                       </Text>
                       <View style={styles.tableColumn}>
