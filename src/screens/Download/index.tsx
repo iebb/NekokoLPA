@@ -87,7 +87,7 @@ function Scanner({ route,  navigation }: RootScreenProps<'Scanner'>) {
 						)
 					}
 					{
-						scanState === 2 && (
+						scanState === 3 && (
 							<ScannerResult
 								eUICC={DeviceState}
 								adapter={adapter}
