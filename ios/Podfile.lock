@@ -1260,7 +1260,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-ble-plx (3.2.1):
+  - react-native-ble-plx (3.5.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1303,9 +1303,9 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-config (1.4.6):
-    - react-native-config/App (= 1.4.6)
-  - react-native-config/App (1.4.6):
+  - react-native-config (1.5.5):
+    - react-native-config/App (= 1.5.5)
+  - react-native-config/App (1.5.5):
     - React-Core
   - react-native-document-picker (9.3.1):
     - DoubleConversion
@@ -1372,8 +1372,6 @@ PODS:
     - ReactCommon/turbomodule/core
     - Yoga
   - react-native-qr-image-reader (1.0.5):
-    - React-Core
-  - react-native-restart (0.0.27):
     - React-Core
   - react-native-safe-area-context (4.14.0):
     - React-Core
@@ -1652,7 +1650,7 @@ PODS:
     - React-Core
   - RNFS (2.20.0):
     - React-Core
-  - RNGestureHandler (2.23.0):
+  - RNGestureHandler (2.25.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1884,7 +1882,6 @@ DEPENDENCIES:
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-mmkv (from `../node_modules/react-native-mmkv`)
   - react-native-qr-image-reader (from `../node_modules/react-native-qr-image-reader`)
-  - react-native-restart (from `../node_modules/react-native-restart`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - React-nativeconfig (from `../node_modules/react-native/ReactCommon`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
@@ -2022,8 +2019,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-mmkv"
   react-native-qr-image-reader:
     :path: "../node_modules/react-native-qr-image-reader"
-  react-native-restart:
-    :path: "../node_modules/react-native-restart"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   React-nativeconfig:
@@ -2146,14 +2141,13 @@ SPEC CHECKSUMS:
   React-logger: 7b5b458327a1ff0d7e5a349430d1ed133dcebaa3
   React-Mapbuffer: 0d88ad9afa9e195dd7634424bde1d38e4129e646
   React-microtasksnativemodule: 7198aff94d07184642b452007fe7166399fb47d6
-  react-native-ble-plx: 2fbeb53a96e82548ef8d0dace4caeaf6651aaaa9
+  react-native-ble-plx: bb7ddbe406c7f723ea1ed90bd4b09103f5085b5f
   react-native-blur: 3d5dd1ed2dd810b304ac3bcee9cf7d460757c89b
-  react-native-config: 8e425892a531627c52db765be3088185cb871e19
+  react-native-config: 644074ab88db883fcfaa584f03520ec29589d7df
   react-native-document-picker: 530879d9e89b490f0954bcc4ab697c5b5e35d659
   react-native-image-picker: bbb75c48aa8514be4659cafd6df65932556bee13
   react-native-mmkv: f84bf6f48c906911695f9cd16d39d4fb78fcd5a4
   react-native-qr-image-reader: 19ccbb787a28eca2e7977fa0431dab69b1740392
-  react-native-restart: 0bc732f4461709022a742bb29bcccf6bbc5b4863
   react-native-safe-area-context: b13be9714d9771fbde0120bc519c963484de3a71
   React-nativeconfig: 93fe8c85a8c40820c57814e30f3e44b94c995a7b
   React-NativeModulesApple: a4457b73e63e983db66d66612160006bccb00ad5
@@ -2186,7 +2180,7 @@ SPEC CHECKSUMS:
   RNCClipboard: ee059e6006b137e369caed5eb852b4aad9f5d886
   RNDateTimePicker: 29264364ea7b8cc0fb355b3843cf276a4ff78966
   RNFS: 89de7d7f4c0f6bafa05343c578f61118c8282ed8
-  RNGestureHandler: 6837a00e3da22953ea8817864a111f5c9ac574d1
+  RNGestureHandler: 667fcafe32933456d8851e0a96932d2d2b34411a
   RNReanimated: 66cf0f600a26d2b5e74c6e0b1c77c1ab1f62fc05
   RNScreens: dca75d1e90a03d2b0229462f3d5a75880e30885d
   RNSentry: 14f067aba102863788f6d035317aabab5e14948a
@@ -2197,6 +2191,6 @@ SPEC CHECKSUMS:
   VisionCamera: f56eaedde0d3fa095143b78374d29e89e71735f9
   Yoga: db69236006b8b1c6d55ab453390c882306cbf219
 
-PODFILE CHECKSUM: d13195c30cc9196eaf9483dce378325f22f714fe
+PODFILE CHECKSUM: 1d2d60d0c880b67eb058940f50b8ea689f8cf9d3
 
 COCOAPODS: 1.16.2
