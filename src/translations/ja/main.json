@@ -34,6 +34,10 @@
   "go_back": "戻る",
   "main_screen": "メイン画面",
 
+  "backup": "バックアップ",
+  "backup_export": "エクスポートのサイズ",
+  "backup_import": "インポートのサイズ",
+
 
   "settings_settings": "設定",
   "settings_title_showSlots": "SIM スロット表示ルール",
@@ -70,6 +74,9 @@
   "settings_title_useRemoteDevice": "リモートリーダー",
   "settings_item_useRemoteDevice_on": "ON",
   "settings_item_useRemoteDevice_off": "OFF",
+  "settings_title_disableProtection": "プロファイル無効化の保護",
+  "settings_item_disableProtection_on": "ON",
+  "settings_item_disableProtection_off": "OFF",
   "settings_title_remoteDevice": "リモートリーダーの URL",
   "settings_text_remoteDevice": "HTTPS でリモートリーダーに接続する",
   "settings_title_themeColor": "テーマの色 (再起動後に適用されます)",
