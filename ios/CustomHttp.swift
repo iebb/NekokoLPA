@@ -39,8 +39,8 @@ import NIOSSL
       let response = try await HTTPClient.shared.execute(request, timeout: .seconds(30))
       if response.status == .ok {
         let body = response.body
-        let collectedBytes = try await body.collect(upTo: 1024 * 1024 * 30)
-        let responseString = collectedBytes.getString(at: 0, length: collectedBytes.readableBytes)!
+        var collectedBytes = try await body.collect(upTo: 1024 * 1024 * 30)
+        let responseString = collectedBytes.readString(length: collectedBytes.readableBytes)!
         print("Response String: \(responseString)")
         resolve(responseString)
       } else {

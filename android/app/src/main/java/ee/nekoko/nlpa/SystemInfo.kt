@@ -23,7 +23,7 @@ class SystemInfo(val context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             // New signature
             val sig = context.packageManager.getPackageInfo(context.packageName, PackageManager.GET_SIGNING_CERTIFICATES).signingInfo
-            return if (sig.hasMultipleSigners()) {
+            return if (sig!!.hasMultipleSigners()) {
                 // Send all with apkContentsSigners
                 sig!!.apkContentsSigners.map {
                     val digest = MessageDigest.getInstance("SHA")

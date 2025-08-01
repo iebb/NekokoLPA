@@ -4,6 +4,7 @@ import {ProfileMetadataMap} from "@/native/types";
 export type RootStackParamList = {
 	Main: {};
 	Stats: {};
+	Backup: {};
 	Settings: {};
 	BluetoothScan: {};
 	Notifications: {

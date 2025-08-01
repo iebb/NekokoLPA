@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {FlatList,} from 'react-native';
+import {FlatList, Platform,} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import SafeScreen from '@/theme/SafeScreen';
 import type {RootScreenProps} from "@/screens/navigation";
@@ -29,14 +29,17 @@ function PickerRow({row} : {row: SettingDataType}) {
 			<View style={{width: "100%"}}>
 				<Picker
 					enableModalBlur
+					floatingPlaceholder
 					placeholder={t(`main:settings_title_${row.key}`)}
+					floatingPlaceholderStyle={{
+						paddingBottom: 5
+					}}
 					topBarProps={{
 						useSafeArea: false,
 						title: t(`main:settings_title_${row.key}`)
 					}}
-					floatingPlaceholder
 					value={v}
-					onChange={(value) => {
+		      onChange={(value) => {
 						if (typeof value === "string") {
 							setV(value);
 							preferences.set(row.key, value);
@@ -108,7 +111,7 @@ function PickerRow({row} : {row: SettingDataType}) {
 }
 
 
-function Settings({ route,  navigation }: RootScreenProps<'Settings'>) {
+export default function Settings({ route,  navigation }: RootScreenProps<'Settings'>) {
 
 	const { t } = useTranslation(['main']);
 	const {theme, setTheme, setThemeColor} = useAppTheme();
@@ -123,7 +126,7 @@ function Settings({ route,  navigation }: RootScreenProps<'Settings'>) {
 					data={[
 						{
 							key: "language",
-							options: ['en', 'ja', 'zh'],
+							options: ['en', 'ja', 'zh', 'es', 'ru', 'ar'],
 							defaultValue: 'en',
 							type: 'select',
 							onChange: (value: string) => {
@@ -163,6 +166,12 @@ function Settings({ route,  navigation }: RootScreenProps<'Settings'>) {
 							defaultValue: 'provider',
 							type: 'select'
 						},
+						(Platform.OS === 'android') ? {
+							key: "disableProtection",
+							options: ['on', 'off'],
+							defaultValue: 'on',
+							type: 'select'
+						} : null,
 						{
 							key: "useCamera",
 							options: ['always', 'ondemand'],
@@ -177,15 +186,11 @@ function Settings({ route,  navigation }: RootScreenProps<'Settings'>) {
 								setThemeColor(value);
 							}
 						},
-					]}
+					].filter(Boolean)}
 					renderItem={({item, index}) => (
 						<View
 							paddingH-20
 							key={item.key}
-							style={{
-								borderTopWidth: 0.5,
-								borderTopColor: Colors.$outlineDisabled,
-							}}
 						>
 							<ListItem
 								activeBackgroundColor={Colors.grey60}
@@ -201,5 +206,3 @@ function Settings({ route,  navigation }: RootScreenProps<'Settings'>) {
 		</SafeScreen>
 	);
 }
-
-export default Settings;

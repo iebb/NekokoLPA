@@ -5,9 +5,9 @@ import {useTranslation} from 'react-i18next';
 import {version} from '../../package.json';
 import {Colors, Image, Text, View} from 'react-native-ui-lib';
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
-import {faArrowLeft, faCode, faCog, faFlag, faShoppingCart} from "@fortawesome/free-solid-svg-icons";
+import {faArrowLeft, faDownload, faCode, faCog, faFlag, faShoppingCart} from "@fortawesome/free-solid-svg-icons";
 import {faBluetoothB} from "@fortawesome/free-brands-svg-icons";
-import {AppBuyLink, AppLogo, GithubLink} from "@/screens/Main/config";
+import {AppBuyLink, AppLogo, AppTitle, GithubLink} from "@/screens/Main/config";
 import {Linking} from 'react-native';
 
 
@@ -35,6 +35,10 @@ export default function LeftSidebarDrawer({ navigation }: DrawerContentComponent
       icon: faCode, onPress: (navigation: any) => Linking.openURL(GithubLink)
     },
     {
+      title: 'Backup', label: 'main:backup',
+      icon: faDownload, onPress: (navigation: any) => navigation.navigate('Stack', { screen: 'Backup' })
+    },
+    {
       title: 'Settings', label: 'main:settings_settings',
       icon: faCog, onPress: (navigation: any) => navigation.navigate('Stack', { screen: 'Settings' })
     },
@@ -49,7 +53,7 @@ export default function LeftSidebarDrawer({ navigation }: DrawerContentComponent
         />
         <View>
           <View>
-            <Text $textDefault text70BO>NekokoLPA</Text>
+            <Text $textDefault text70BO>{AppTitle}</Text>
           </View>
           <View>
             <Text $textNeutralLight text90L>v{version}</Text>

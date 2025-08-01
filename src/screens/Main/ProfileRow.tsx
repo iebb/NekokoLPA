@@ -218,7 +218,7 @@ export const ProfileRow = ({profile, deviceId} : {profile: ProfileExt, deviceId:
                 onValueChange={async (value2: boolean) => {
                   makeLoading(setLoading, async () => {
                     if (profile.selected) {
-                      if (adapter.device.type !== "omapi") {
+                      if (adapter.device.type !== "omapi" || preferences.getString("disableProtection") === 'off') {
                         await adapter.disableProfileByIccId(metadata.iccid);
                       } else {
                         ToastAndroid.show(`Disabling Profile on Android may have unintended effects.`, ToastAndroid.SHORT);

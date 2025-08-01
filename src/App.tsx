@@ -12,7 +12,6 @@ import * as Sentry from "@sentry/react-native";
 
 Sentry.init({
   dsn: "https://eea742e6ac6d6908f6bc6c34e30fb88d@sentry.nekoko.it/2",
-
   // uncomment the line below to enable Spotlight (https://spotlightjs.com)
   // spotlight: __DEV__,
 });
@@ -23,6 +22,7 @@ require("react-native-ui-lib/config").setConfig({
 try {
   initializeTheme(preferences.getString("themeColor") ?? "#a575f6");
 } catch {}
+
 
 function App() {
   return (

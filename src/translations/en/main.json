@@ -6,7 +6,7 @@
   "insert_supported_sim": "Try insert a supported SIM card or relaunch the app.",
   "open_stk_menu": "Open STK Menu",
   "android_aram": "This application supports following ARA-Ms.",
-  "purchase_note": "Supported devices",
+  "purchase_note": "Buy supported devices",
   "set_nickname": "Set Nickname",
   "set_nickname_prompt": "Set a nickname for this card. Works locally only",
   "download_profile": "Download Profile",
@@ -35,6 +35,10 @@
   "go_back": "Back",
   "main_screen": "Main Screen",
 
+  "backup": "Backup",
+  "backup_export": "Export Sizes",
+  "backup_import": "Import Sizes",
+
 
   "settings_settings": "Settings",
   "settings_title_showSlots": "SIM Slot display rules",
@@ -45,6 +49,9 @@
   "settings_item_language_en": "English",
   "settings_item_language_ja": "日本語",
   "settings_item_language_zh": "中文（简化字）",
+  "settings_item_language_ar": "الفصحى",
+  "settings_item_language_es": "Español",
+  "settings_item_language_ru": "русский",
   "settings_title_unit": "Size Unit",
   "settings_item_unit_b": "Bytes",
   "settings_item_unit_kb": "kB (1,000 Bytes)",
@@ -74,6 +81,9 @@
   "settings_title_useRemoteDevice": "Remote Reader",
   "settings_item_useRemoteDevice_on": "On",
   "settings_item_useRemoteDevice_off": "Off",
+  "settings_title_disableProtection": "Profile Disable Protection",
+  "settings_item_disableProtection_on": "On",
+  "settings_item_disableProtection_off": "Off",
   "settings_title_remoteDevice": "Remote Reader URL",
   "settings_text_remoteDevice": "Connect to a remote reader with HTTPS",
   "settings_title_themeColor": "Theme Color (restart to take effect)",
@@ -143,6 +153,8 @@
   "progress_download.step2.es9p_initiate_authentication": "(2/4) Communicating with Server",
   "progress_download.step3.es10b_authenticate_server": "(3/4) Check Server Response",
   "progress_download.step4.es9p_authenticate_client": "(4/4) Requesting Metadata",
+  "progress_download.step4.es11_authenticate_client": "(4/4) Requesting Servers",
+  "progress_download.step5.finished": "(4/4) Finished",
 
   "progress_download.step5.es10b_prepare_download": "(1/5) Confirming Download",
   "progress_download.step6.es9p_get_bound_profile_package": "(2/5) Requesting Profile from Server",

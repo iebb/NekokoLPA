@@ -27,6 +27,7 @@ export async function setupDevice(a: Adapter): Promise<(s: string, args: any[]) 
   module.jsFetch = async (urlString: string, body: string) => {
     console.log("URL: ", urlString);
     console.log("Request:", body);
+    urlString = urlString.replaceAll(/\s/g, ''); // TODO: temporary fix of Orange PL profiles
     try {
       const response = await CustomHttp.sendHttpRequest(urlString, body);
       console.log("Response:", response);

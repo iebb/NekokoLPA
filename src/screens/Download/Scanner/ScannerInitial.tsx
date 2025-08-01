@@ -3,11 +3,10 @@ import Container from "@/components/common/Container";
 import {Button, Checkbox, Colors, Text, TextField, View} from "react-native-ui-lib";
 import {Camera, useCameraDevice, useCameraPermission, useCodeScanner} from "react-native-vision-camera";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
-import {faCamera, faDownload, faPhotoFilm} from "@fortawesome/free-solid-svg-icons";
+import {faCamera, faDownload, faPhotoFilm, faSearch} from "@fortawesome/free-solid-svg-icons";
 import React, {useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {makeLoading} from "@/components/utils/loading";
-import BlockingLoader from "@/components/common/BlockingLoader";
 import {LPACode} from "@/utils/lpaRegex";
 import {launchImageLibrary} from "react-native-image-picker";
 import QrImageReader from 'react-native-qr-image-reader';
@@ -18,11 +17,15 @@ import {selectDeviceState} from "@/redux/stateStore";
 import {preferences} from "@/utils/mmkv";
 import {formatSize} from "@/utils/size";
 import {useLoading} from "@/components/common/LoadingProvider";
+import {useToast} from "@/components/common/ToastProvider";
 
 export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
   const DeviceState = useSelector(selectDeviceState(deviceId));
   const cameraState = preferences.getString("useCamera");
 
+
+  const { showToast } = useToast();
+  const { setLoading } = useLoading();
 
   const [showCamera, setShowCamera] = useState(cameraState === 'always');
 
@@ -34,7 +37,6 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
   const [confirmationCodeReq, setConfirmationCodeReq] = useState(false);
   const { hasPermission, requestPermission } = useCameraPermission();
   const { eid, euiccAddress, euiccInfo2 } = DeviceState;
-  const { setLoading } = useLoading();
   const adapter = Adapters[deviceId];
   const [smdp, setSmdp] = useState('');
 
@@ -194,17 +196,63 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
             >{t('main:profile_ui_download')}</Text>
           </Button>
           <View style={{ padding: 10, display: "flex", gap: 0, paddingVertical: 10 }}>
-            <TextField
-              placeholder={'SM-DP+ Address'}
-              floatingPlaceholder
-              value={smdp}
-              onChangeText={c => c.includes('$') ? processLPACode(c) : setSmdp(c.trim())}
-              enableErrors
-              validate={['required']}
-              validationMessage={['Field is required']}
+            <View style={{ display: "flex", flexDirection: "row" }}>
+              <View style={{ flex: 1 }}>
+                <TextField
+                  placeholder={'SM-DP+ Address'}
+                  floatingPlaceholder
+                  value={smdp}
+                  onChangeText={c => c.includes('$') ? processLPACode(c) : setSmdp(c.trim())}
+                  enableErrors
+                  validate={['required']}
+                  validationMessage={['Field is required']}
+                  style={{ borderBottomWidth: 0.5, borderColor: Colors.$outlineDisabledHeavy }}
+                />
+              </View>
+              <View style={{ flex: 0, paddingTop: 10 }}>
+                <Button
+                  size={'small'}
+                  padding-10
+                  iconSource={
+                    style => <FontAwesomeIcon icon={faSearch as any} style={{color: (style as any)[0].tintColor}}/>
+                  }
+                  onPress={() => {
+                    makeLoading(
+                      setLoading,
+                      async () => {
 
-              style={{ borderBottomWidth: 0.5, borderColor: Colors.$outlineDisabledHeavy }}
-            />
+                        const authenticateResult = await adapter.smdsDiscovery(
+                          (e: any) => setLoading(
+                            t(`main:progress_${e.message}`, e) as string ?? t('main:profile_loading_validating_profile')
+                          )
+                        );
+
+                        setTimeout(() => {
+                          if (authenticateResult.success) {
+                            if (authenticateResult.smdp_list.length === 1) {
+                              setSmdp(authenticateResult.smdp_list[0]);
+                              showToast('SM-DP Discovered.', 'success');
+                            } else if (authenticateResult.smdp_list.length === 0) {
+                              showToast('Discovered nothing.', 'success');
+                            } else {
+                              setSmdp(authenticateResult.smdp_list[0]);
+                              showToast('Multiple SM-DPs has been discovered.', 'success');
+                            }
+                          } else {
+                            showToast('Failed to discover SM-DPs.', 'error');
+                          }
+                        }, 100);
+
+
+                  }
+                    )
+                  }}
+                  iconOnRight
+                  animateLayout
+                  animateTo={'left'}
+                />
+              </View>
+            </View>
             <TextField
               placeholder={'Matching ID'}
               floatingPlaceholder
