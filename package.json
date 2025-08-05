@@ -1,7 +1,7 @@
 {
   "name": "nekokolpa",
-  "buildVersion": 362,
-  "version": "1.11.362",
+  "buildVersion": 363,
+  "version": "1.11.363",
   "private": true,
   "scripts": {
     "android": "react-native run-android",

@@ -37,7 +37,7 @@ import NIOSSL
       request.headers.add(name: "Accept", value: "application/json")
       request.body = .bytes(ByteBuffer(string: postData))
       let response = try await HTTPClient.shared.execute(request, timeout: .seconds(30))
-      if response.status == .ok {
+      if response.status.code < 400 {
         let body = response.body
         var collectedBytes = try await body.collect(upTo: 1024 * 1024 * 30)
         let responseString = collectedBytes.readString(length: collectedBytes.readableBytes)!

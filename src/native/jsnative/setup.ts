@@ -33,6 +33,7 @@ export async function setupDevice(a: Adapter): Promise<(s: string, args: any[]) 
       console.log("Response:", response);
       return [true, 200, response];
     } catch (error) {
+      console.error(error);
       return [false, 500, ""];
     }
   };
