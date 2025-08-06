@@ -12,6 +12,7 @@
   "download_profile": "プロファイルをダウンロード",
   "manage_notifications": "通知の管理",
   "eid_copy": "EID をコピー",
+  "github": "GitHub",
   "remote_device": "リモートデバイスの PIN",
   "remote_device_pin": "リモートエンドポイント\n{{remote}}\n接続には PIN が必要です。",
   "bluetooth_scan": "Bluetooth",
@@ -45,6 +46,12 @@
   "settings_item_showSlots_possible": "OMAPI 有効スロット",
   "settings_item_showSlots_available": "読み取り可能な eUICC のみ",
   "settings_title_language": "言語",
+  "settings_item_language_en": "English",
+  "settings_item_language_ja": "日本語",
+  "settings_item_language_zh": "中文（简化字）",
+  "settings_item_language_ar": "الفصحى",
+  "settings_item_language_es": "Español",
+  "settings_item_language_ru": "русский",
   "settings_title_unit": "サイズの単位",
   "settings_item_unit_b": "B",
   "settings_item_unit_kb": "kB (1,000 B)",
@@ -137,7 +144,8 @@
   "notifications_send_failed": "通知の送信に失敗しました",
   "notifications_send_failed_alert": "この通知を送信できませんでした。",
   "notifications_delete": "通知を削除",
-  "notifications_delete_alert": "この通知を削除してもよろしいですか？ 復元はできません。",  "notifications_delete_ok": "OK",
+  "notifications_delete_alert": "この通知を削除してもよろしいですか？ 復元はできません。", 
+  "notifications_delete_ok": "OK",
   "notifications_delete_cancel": "キャンセル",
 
 
@@ -145,6 +153,8 @@
   "progress_download.step2.es9p_initiate_authentication": "(2/4) サーバーと通信中です",
   "progress_download.step3.es10b_authenticate_server": "(3/4) サーバーのレスポンスを確認中です",
   "progress_download.step4.es9p_authenticate_client": "(4/4) メタデータを要求中です",
+  "progress_download.step4.es11_authenticate_client": "(4/4) サーバーに要求中です",
+  "progress_download.step5.finished": "(4/4) 完了しました",
 
   "progress_download.step5.es10b_prepare_download": "(1/5) ダウンロードを確認中です",
   "progress_download.step6.es9p_get_bound_profile_package": "(2/5) サーバーからプロファイルを要求中です",
@@ -157,3 +167,4 @@
 
   "_": ""
 }
+
