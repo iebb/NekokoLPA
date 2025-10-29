@@ -1,12 +1,11 @@
-import {Colors, Text, View} from "react-native-ui-lib";
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/redux/reduxDataStore";
 import {EUICCPage} from "@/screens/Main/EUICCPage";
 import {useTranslation} from "react-i18next";
-import {Alert, Dimensions, Linking, NativeModules, Platform, ScrollView, ToastAndroid} from "react-native";
+import {Alert, Dimensions, Linking, NativeModules, Platform, ScrollView, ToastAndroid, View} from "react-native";
 import {Adapters} from "@/native/adapters/registry";
-import TabController from "../../components/ui/Tab";
+import {Tabs, Text as TText, useTheme, XStack} from 'tamagui';
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faSimCard} from "@fortawesome/free-solid-svg-icons";
 import {faBluetooth, faUsb} from "@fortawesome/free-brands-svg-icons";
@@ -15,9 +14,9 @@ import {preferences} from "@/utils/mmkv";
 import {AppBuyLink} from "@/screens/Main/config";
 import {getNicknames} from "@/configs/store";
 import {setTargetDevice} from "@/redux/stateStore";
-import Config from 'react-native-config';
 
 export default function SIMSelector() {
+  const theme = useTheme();
   const ds = useSelector((state: RootState) => state.DeviceState);
   const {deviceList: _deviceList, targetDevice} = useSelector((state: RootState) => state.LPA);
   const nicknames = getNicknames();
@@ -78,90 +77,88 @@ export default function SIMSelector() {
       alwaysBounceVertical
       overScrollMode="always"
     >
-      <View flex paddingT-20 gap-10>
-        <Text $textDefault center text70L>
+      <View style={{ flex: 1, paddingTop: 20, gap: 10 }}>
+        <TText color="$textDefault" fontSize={18} textAlign="center">
           {t('main:no_device')}
-        </Text>
-        <Text $textPrimary center underline text60L marginT-40 onPress={() => {
+        </TText>
+        <TText color="$accentColor" textDecorationLine="underline" fontSize={20} textAlign="center" style={{ marginTop: 40 }} onPress={() => {
           Linking.openURL(AppBuyLink);
         }}>
           {t('main:purchase_note')}
-        </Text>
+        </TText>
       </View>
     </ScrollView>
   );
 
   return (
     <View
-      flexG-1
-      flexS-0
+      style={{ flexGrow: 1, flexShrink: 0 }}
       key={deviceList.length}
     >
-      <TabController
-        items={
-          deviceList.map((name, _idx) => {
+      <Tabs
+        value={String(index)}
+        onValueChange={(val: string) => {
+          const next = Number(val);
+          if (!Number.isNaN(next)) setIndex(next);
+        }}
+      >
+        <Tabs.List
+          backgroundColor={theme.background?.val}
+          borderRadius={20}
+          style={{ height: 40, overflow: 'hidden', width: '100%', marginBottom: 8 }}
+        >
+          {deviceList.map((name, _idx) => {
             const adapter = Adapters[name];
-            const eid = ds[name]?.eid ?? "";
-
+            const eid = ds[name]?.eid ?? '';
             const label = adapter.device.available ?
               ((nicknames[eid]) ? nicknames[eid] + ` (${adapter.device.displayName})` : adapter.device.displayName)
               : `${adapter.device.displayName}\nunavailable`;
-
-            return ({
-              label,
-              icon: (
-                <FontAwesomeIcon
-                  icon={
-                    adapter.device.deviceId.startsWith("omapi") ? faSimCard :
-                    adapter.device.deviceId.startsWith("ble") ? (faBluetooth as any) : (faUsb as any)
-                  }
-                  style={{
-                    color: Colors.$textPrimary,
-                    marginRight: 4,
-                    marginTop: -2,
-                  }}
-                  size={15}
-                />
-              ),
-              labelStyle: {
-                padding: 0,
-                margin: 0,
-                fontSize: 12,
-                lineHeight: 16,
-              },
-              selectedLabelStyle: {
-                padding: 0,
-                margin: 0,
-                fontSize: 12,
-                lineHeight: 16,
-                fontWeight: '500',
-              },
-              labelColor: Colors.$textNeutral,
-              selectedLabelColor: Colors.$textPrimary,
-              width: displayWidth,
-            })
-
-          })
-        }
-        initialIndex={index}
-        onChangeIndex={setIndex}
-      >
-        <TabController.TabBar
-          backgroundColor={Colors.cardBackground}
-          indicatorWidth={displayWidth2}
-          indicatorStyle={{
-            backgroundColor: Colors.$textPrimary,
-          }}
-          containerWidth={width}
-          containerStyle={{
-            width: '100%',
-            overflow: "hidden",
-            borderRadius: 20,
-            marginBottom: 10,
-            height: 40,
-          }}
-        />
-      </TabController>
+            const selected = index === _idx;
+            return (
+              <Tabs.Tab
+                key={`${name}-${_idx}`}
+                value={String(_idx)}
+                width={displayWidth}
+                style={{
+                  backgroundColor: selected ? (theme.color2?.val || 'rgba(0,0,0,0.04)') : 'transparent',
+                }}
+              >
+                <XStack alignItems="center" gap={4} paddingHorizontal={8} paddingVertical={6}>
+                  <FontAwesomeIcon
+                    icon={
+                      adapter.device.deviceId.startsWith('omapi') ? faSimCard :
+                      adapter.device.deviceId.startsWith('ble') ? (faBluetooth as any) : (faUsb as any)
+                    }
+                    style={{ color: selected ? (theme.accentColor?.val || theme.color?.val) : (theme.color10?.val || '#888'), marginRight: 4, marginTop: -2 }}
+                    size={15}
+                  />
+                  <TText
+                    fontSize={12}
+                    lineHeight={16}
+                    color={selected ? (theme.accentColor?.val || theme.color?.val) : (theme.color10?.val || '#777')}
+                    fontWeight={selected ? '600' as any : '400' as any}
+                    numberOfLines={2}
+                  >
+                    {label}
+                  </TText>
+                </XStack>
+              </Tabs.Tab>
+            );
+          })}
+          {/* Selected tab underline indicator */}
+          <View
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              left: (index * displayWidth) + ((displayWidth - displayWidth2) / 2),
+              width: displayWidth2,
+              height: 2,
+              backgroundColor: theme.accentColor?.val || theme.color?.val,
+              borderRadius: 1,
+            }}
+          />
+        </Tabs.List>
+      </Tabs>
       {
         selected && (adapter != null) && (
           adapter.device.available ? (
@@ -172,26 +169,26 @@ export default function SIMSelector() {
               alwaysBounceVertical
               overScrollMode="always"
             >
-              <View flex paddingT-20 gap-10>
-                <Text $textDefault center text70L>
+              <View style={{ flex: 1, paddingTop: 20, gap: 10 }}>
+                <TText color="$textDefault" fontSize={18} textAlign="center">
                   {t('main:error_device')}
-                </Text>
-                <Text $textMajor center text60L marginB-40>
+                </TText>
+                <TText color="$color" fontSize={20} textAlign="center" style={{ marginBottom: 40 }}>
                   {adapter.device.description}
-                </Text>
+                </TText>
                 {
                   (Platform.OS === 'android' && adapter.device.signatures) && (
                     <>
-                      <Text $textDefault center text70L>
+                      <TText color="$textDefault" fontSize={18} textAlign="center">
                         {t('main:android_aram')}
-                      </Text>
+                      </TText>
 
-                      <View flex paddingB-40 gap-10>
+                      <View style={{ flex: 1, paddingBottom: 40, gap: 10 }}>
                         {adapter.device.signatures.split(",").map((s: string) => (
-                          <Text $textDefault text80L center key={s} onPress={() => {
+                          <TText color="$textDefault" fontSize={14} textAlign="center" key={s} onPress={() => {
                             ToastAndroid.show(`ARA-M ${s} Copied`, ToastAndroid.SHORT);
                             Clipboard.setString(s)
-                          }}>{s}</Text>
+                          }}>{s}</TText>
                         ))}
                       </View>
                     </>
@@ -200,20 +197,20 @@ export default function SIMSelector() {
                 {
                   (Platform.OS === 'android') && (
                     <>
-                      <Text $textDefault center underline text60L marginT-40 onPress={() => {
+                      <TText color="$textDefault" textDecorationLine="underline" fontSize={20} textAlign="center" style={{ marginTop: 40 }} onPress={() => {
                         const { OMAPIBridge } = NativeModules;
                         OMAPIBridge.openSTK(adapter.device.deviceName);
                       }}>
                         {t('main:open_stk_menu')}
-                      </Text>
+                      </TText>
                     </>
                   )
                 }
-                <Text $textPrimary center underline text60L marginT-40 onPress={() => {
+                <TText color="$accentColor" textDecorationLine="underline" fontSize={20} textAlign="center" style={{ marginTop: 40 }} onPress={() => {
                   Linking.openURL(AppBuyLink);
                 }}>
                   {t('main:purchase_note')}
-                </Text>
+                </TText>
               </View>
             </ScrollView>
           )

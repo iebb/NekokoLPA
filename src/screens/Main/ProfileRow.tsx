@@ -1,7 +1,8 @@
 import {parseMetadata} from "@/utils/parser";
 import {findPhoneNumbersInText} from "libphonenumber-js/min";
 import {preferences, sizeStats} from "@/utils/mmkv";
-import {Card, Colors, Drawer, Switch, Text, View} from "react-native-ui-lib";
+import { Drawer } from "react-native-ui-lib";
+import { Card, Switch, Text, XStack, YStack, Stack, useTheme } from 'tamagui';
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faPencil, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {Alert, Image, PixelRatio, ToastAndroid, TouchableOpacity} from "react-native";
@@ -21,28 +22,30 @@ interface ProfileExt extends Profile {
 
 // Extracted components
 const ProfileTags = React.memo(({ tags, stealthMode }: { tags: any[]; stealthMode: string }) => (
-  <View row gap-5 marginV-2>
+  <XStack gap={5} marginVertical={2}>
     {tags.map((t, i) => (
-      <View 
-        style={{ paddingHorizontal: 5, borderRadius: 5, backgroundColor: t.backgroundColor }} 
+      <XStack
         key={i}
+        paddingHorizontal={5}
+        borderRadius={5}
+        backgroundColor={t.backgroundColor}
       >
-        <Text style={{ color: t.color, fontSize: 10, fontWeight: 500}}>
+        <Text fontSize={10} fontWeight={"500" as any} color={t.color}>
           {stealthMode === 'none' ? t.value : stealthMode === 'medium' ? t.value : '***'}
         </Text>
-      </View>
+      </XStack>
     ))}
-  </View>
+  </XStack>
 ));
 
-const ProfileSubtitle = React.memo(({ 
-  metadata, 
-  mccMnc, 
-  displaySubtitle 
-}: { 
-  metadata: any; 
-  mccMnc: any; 
-  displaySubtitle: string; 
+const ProfileSubtitle = React.memo(({
+  metadata,
+  mccMnc,
+  displaySubtitle
+}: {
+  metadata: any;
+  mccMnc: any;
+  displaySubtitle: string;
 }) => {
   const subtitleText = useMemo(() => {
     switch (displaySubtitle) {
@@ -61,8 +64,10 @@ const ProfileSubtitle = React.memo(({
     }
   }, [metadata, mccMnc, displaySubtitle]);
 
+  // Theme-aware; no direct Appearance usage needed
+
   return (
-    <Text text90L $textNeutral numberOfLines={1}>
+    <Text color="$color10" numberOfLines={1} fontSize={11}>
       {subtitleText}
     </Text>
   );
@@ -73,21 +78,22 @@ export const ProfileRow = ({profile, deviceId} : {profile: ProfileExt, deviceId:
   const adapter = Adapters[deviceId];
   const { setLoading, isLoading } = useLoading();
   const navigation = useNavigation();
-  
+  const theme = useTheme();
+
   // Memoize preferences
-  const stealthMode = useMemo(() => 
-    preferences.getString("redactMode") ?? "none", 
+  const stealthMode = useMemo(() =>
+    preferences.getString("redactMode") ?? "none",
     []
   );
-  const displaySubtitle = useMemo(() => 
-    preferences.getString("displaySubtitle") ?? "profileProvider", 
+  const displaySubtitle = useMemo(() =>
+    preferences.getString("displaySubtitle") ?? "profileProvider",
     []
   );
 
   // Memoize metadata processing
   const metadata = profile;
-  const { tags, name, country, mccMnc } = useMemo(() => 
-    parseMetadata(metadata, t), 
+  const { tags, name, country, mccMnc } = useMemo(() =>
+    parseMetadata(metadata, t),
     [metadata, t]
   );
 
@@ -102,7 +108,7 @@ export const ProfileRow = ({profile, deviceId} : {profile: ProfileExt, deviceId:
   const replacedName = useMemo(() => {
     const phoneNumbers = findPhoneNumbersInText(name, country as any);
     let result = name;
-    
+
     for (const p of phoneNumbers) {
 
       const match = name.substring(p.startsAt, p.endsAt);
@@ -119,7 +125,7 @@ export const ProfileRow = ({profile, deviceId} : {profile: ProfileExt, deviceId:
         result = result.replaceAll(match, formatted);
       }
     }
-    
+
     return result;
   }, [name, country, stealthMode]);
 
@@ -130,6 +136,8 @@ export const ProfileRow = ({profile, deviceId} : {profile: ProfileExt, deviceId:
     }
     return 0;
   }, [metadata?.iccid]);
+
+  // Row surface tone handled via theme token `$surfaceRow`
 
   // Memoize handlers
   const handleProfilePress = useCallback(() => {
@@ -148,7 +156,7 @@ export const ProfileRow = ({profile, deviceId} : {profile: ProfileExt, deviceId:
   const handleDeletePress = useCallback(() => {
     Alert.alert(
       t('main:profile_delete_profile'),
-      t('main:profile_delete_profile_alert_body'), 
+      t('main:profile_delete_profile_alert_body'),
       [
         {
           text: t('main:profile_delete_tag_cancel'),
@@ -161,7 +169,7 @@ export const ProfileRow = ({profile, deviceId} : {profile: ProfileExt, deviceId:
           onPress: () => {
             Alert.alert(
               t('main:profile_delete_profile_alert2'),
-              t('main:profile_delete_profile_alert2_body'), 
+              t('main:profile_delete_profile_alert2_body'),
               [
                 {
                   text: t('main:profile_delete_tag_ok'),
@@ -205,23 +213,27 @@ export const ProfileRow = ({profile, deviceId} : {profile: ProfileExt, deviceId:
 
   // Memoize display name
   const displayName = useMemo(() => {
-    return (stealthMode === 'none' || stealthMode === 'medium') 
-      ? replacedName 
+    return (stealthMode === 'none' || stealthMode === 'medium')
+      ? replacedName
       : metadata?.serviceProviderName;
   }, [stealthMode, replacedName, metadata?.serviceProviderName]);
 
   // Memoize right items for drawer
-  const rightItems = useMemo(() => 
+  const rightItems = useMemo(() =>
     profile.selected ? [] : [{
       customElement: (
-        <FontAwesomeIcon icon={faTrash} style={{ color: Colors.$backgroundDefault }} />
+        <FontAwesomeIcon icon={faTrash} style={{ color: (theme.backgroundDefault?.val || '#fff') }} />
       ),
       width: 60,
-      background: Colors.red30,
+      background: theme.backgroundDangerHeavy?.val || '#ff6b6b',
       onPress: handleDeletePress,
-    }], 
-    [profile.selected, handleDeletePress]
+    }],
+    [profile.selected, handleDeletePress, theme.backgroundDefault?.val, theme.backgroundDangerHeavy?.val]
   );
+
+  const primaryColor = useMemo(() => {
+    return preferences.getString('themeColor') ?? (useTheme().textPrimary?.val || '#6c5ce7');
+  }, []);
 
   return (
     <Drawer
@@ -233,79 +245,76 @@ export const ProfileRow = ({profile, deviceId} : {profile: ProfileExt, deviceId:
       rightItems={rightItems}
       leftItem={{
         customElement: (
-          <FontAwesomeIcon icon={faPencil} style={{ color: Colors.$backgroundDefault }} />
+          <FontAwesomeIcon icon={faPencil} style={{ color: (theme.backgroundDefault?.val || '#fff') }} />
         ),
-        background: Colors.yellow30,
+        background: theme.backgroundSuccessLight?.val || '#f3c969',
         width: 60,
         onPress: handleEditPress,
       }}
     >
-      <Card style={{ backgroundColor: Colors.cardBackground }}>
-        <View paddingT-5 paddingL-15 paddingR-10 margin-0 gap-5>
-          <View row flex width="100%">
+      <Card backgroundColor="$surfaceRow" padding={0}>
+        <YStack paddingTop={5} paddingLeft={15} paddingRight={10} gap={5}>
+          <XStack width="100%" alignItems="flex-start">
             <TouchableOpacity
               style={{ flexShrink: 1, flexGrow: 1 }}
               onPress={handleProfilePress}
             >
-              <View row gap-2>
+              <XStack gap={6} alignItems="center">
                 <Image
                   style={{
-                    width: 20 * PixelRatio.getFontScale(), 
+                    width: 20 * PixelRatio.getFontScale(),
                     height: 20 * PixelRatio.getFontScale()
                   }}
                   source={Flags[country] || Flags.UN}
                 />
-                <Text marginL-5 text70 $textDefault style={{ marginTop: -2 }}>
+                <Text color="$textDefault" fontSize={16} style={{ marginTop: -2 }} numberOfLines={1}>
                   {displayName}
                 </Text>
-              </View>
-              
-              <View row>
-                <ProfileSubtitle 
-                  metadata={metadata} 
-                  mccMnc={mccMnc} 
-                  displaySubtitle={displaySubtitle} 
+              </XStack>
+              <XStack>
+                <ProfileSubtitle
+                  metadata={metadata}
+                  mccMnc={mccMnc}
+                  displaySubtitle={displaySubtitle}
                 />
-              </View>
-              
-              <View>
-                <ProfileTags tags={tags} stealthMode={stealthMode} />
-              </View>
+              </XStack>
+              <ProfileTags tags={tags} stealthMode={stealthMode} />
             </TouchableOpacity>
-            
-            <View
-              style={{
-                padding: 5, 
-                width: 50,
-                flexShrink: 0, 
-                flexGrow: 0,
-              }}
-            >
+
+            <XStack padding={5} width={50}>
               <Switch
-                value={profile.selected}
+                checked={profile.selected}
                 disabled={isLoading !== false}
-                style={{ marginTop: -5 }}
-                padding-5
-                onValueChange={handleSwitchChange}
-              />
-            </View>
-            
+                size={"$2.5" as any}
+                style={{ 
+                  marginTop: -5,
+                  borderWidth: 0.5,
+                  borderColor: profile.selected ? primaryColor : (theme.outlineDisabledHeavy?.val || theme.outlineNeutral?.val || '#ccc'),
+                }}
+                backgroundColor={profile.selected ? primaryColor : (theme.outlineDisabledHeavy?.val || theme.outlineNeutral?.val || '#ccc')}
+                onCheckedChange={(val: boolean) => handleSwitchChange(!!val)}
+              >
+                <Switch.Thumb 
+                  backgroundColor={theme.backgroundDefault?.val || '#ffffff'}
+                  style={{ borderWidth: 0.5, borderColor: profile.selected ? primaryColor : (theme.outlineDisabledHeavy?.val || theme.outlineNeutral?.val || '#ccc') }}
+                />
+              </Switch>
+            </XStack>
+
             {Size > 1536 && (
-              <Text 
-                text100L 
-                $textDefault 
-                style={{ position: "absolute", right: 2, bottom: 0 }} 
+              <Text
+                color="$textNeutral"
+                fontSize={10}
+                style={{ position: "absolute", right: 2, bottom: 0 }}
                 numberOfLines={1}
               >
                 {formatSize(Size)}
               </Text>
             )}
-          </View>
-        </View>
-        
-        <View
-          style={{ height: 2, backgroundColor: `hsl(${hueICCID}, 50%, 50%)`}}
-        />
+          </XStack>
+        </YStack>
+
+        <Stack height={2} backgroundColor={`hsl(${hueICCID}, 50%, 50%)`} />
       </Card>
     </Drawer>
   );

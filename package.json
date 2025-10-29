@@ -37,6 +37,10 @@
     "@react-navigation/stack": "7.1.1",
     "@reduxjs/toolkit": "2.5.1",
     "@sentry/react-native": "6.15.0",
+    "@tamagui/babel-plugin": "^1.135.5",
+    "@tamagui/config": "latest",
+    "@tamagui/core": "^1.135.5",
+    "@tamagui/static": "^1.135.5",
     "babel-plugin-inline-import": "3.0.0",
     "i18next": "24.2.2",
     "libphonenumber-js": "^1.11.19",
@@ -59,7 +63,8 @@
     "react-native-svg": "15.11.1",
     "react-native-ui-lib": "7.38.1",
     "react-native-vision-camera": "4.6.4",
-    "react-redux": "9.2.0"
+    "react-redux": "9.2.0",
+    "tamagui": "^1.135.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

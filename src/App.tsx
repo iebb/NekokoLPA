@@ -8,6 +8,7 @@ import {Provider} from "react-redux";
 import ApplicationNavigator from "@/screens/Application";
 import {initializeTheme} from "@/theme/theme";
 import * as Sentry from "@sentry/react-native";
+import { TamaguiProvider } from "@/theme/TamaguiProvider";
 
 
 Sentry.init({
@@ -23,13 +24,14 @@ try {
   initializeTheme(preferences.getString("themeColor") ?? "#a575f6");
 } catch {}
 
-
 function App() {
   return (
     <Provider store={store}>
       <NativeListener>
         <ThemeProvider>
-          <ApplicationNavigator />
+          <TamaguiProvider>
+            <ApplicationNavigator />
+          </TamaguiProvider>
         </ThemeProvider>
       </NativeListener>
     </Provider>

@@ -4,7 +4,9 @@ import {useTranslation} from 'react-i18next';
 import SafeScreen from '@/theme/SafeScreen';
 import type {RootScreenProps} from "@/screens/navigation";
 import Title from "@/components/common/Title";
-import {Colors, Drawer, Text, View} from "react-native-ui-lib";
+import {Colors, Drawer} from "react-native-ui-lib";
+import {Text} from 'tamagui';
+import {View} from 'react-native';
 import {useSelector} from "react-redux";
 import {selectDeviceState} from "@/redux/stateStore";
 import {Adapters} from "@/native/adapters/registry";
@@ -60,7 +62,7 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
     }
 
     return (
-      <View key={row.seqNumber} backgroundColor={Colors.pageBackground} marginB-10>
+      <View key={row.seqNumber} style={{ backgroundColor: Colors.pageBackground, marginBottom: 10 }}>
         <Drawer
           style={{
             overflow: "hidden",
@@ -111,13 +113,13 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
           }}
         >
           <TouchableOpacity>
-            <View flex row backgroundColor={Colors.pageBackground} paddingH-20 paddingV-10 >
-              <View flexG>
-                <View row>
-                  <Text $textDefault text70BO numberOfLines={1} marginR-10>
+            <View style={{ flexDirection: 'row', backgroundColor: Colors.pageBackground, paddingHorizontal: 20, paddingVertical: 10 }}>
+              <View style={{ flexGrow: 1 }}>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text color="$textDefault" numberOfLines={1} style={{ marginRight: 10 }}>
                     #{row.seqNumber}
                   </Text>
-                  <Text $textDefault text70BO numberOfLines={1}>
+                  <Text color="$textDefault" numberOfLines={1}>
                     <Image
                       style={{width: 20 * PixelRatio.getFontScale(), height: 20 * PixelRatio.getFontScale()}}
                       source={Flags[country] || Flags.UN}
@@ -128,8 +130,8 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
                   </Text>
                 </View>
                 <View>
-                  <Text $textNeutral text90L>RSP: {row.notificationAddress}</Text>
-                  <Text $textNeutral text90L>ICCID: {row.iccid}</Text>
+                  <Text color="$textNeutral" fontSize={12}>RSP: {row.notificationAddress}</Text>
+                  <Text color="$textNeutral" fontSize={12}>ICCID: {row.iccid}</Text>
                 </View>
               </View>
               <View>
@@ -137,7 +139,7 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
                   <Text style={{ textAlign: 'right', height: 20 }}>
                     <FontAwesomeIcon icon={iconType} style={{ color: Colors.$iconNeutral }} size={20} />
                   </Text>
-                  <Text marginT-5 text90L style={{ textAlign: 'right', color: Colors.$iconNeutral }}>{type}</Text>
+                  <Text style={{ marginTop: 5, textAlign: 'right', color: Colors.$iconNeutral, fontSize: 12 }}>{type}</Text>
                 </View>
               </View>
             </View>

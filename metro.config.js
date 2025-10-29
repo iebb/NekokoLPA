@@ -11,6 +11,11 @@ const { assetExts, sourceExts } = defaultConfig.resolver;
  *
  * @type {import('metro-config').MetroConfig}
  */
-const config = {};
+const config = {
+  resolver: {
+    // Enable package.json exports field resolution
+    unstable_enablePackageExports: true,
+  },
+};
 
 module.exports = withSentryConfig(mergeConfig(defaultConfig, config));
