@@ -1,4 +1,5 @@
-import {Colors, Text, View} from "react-native-ui-lib";
+import {Text} from 'tamagui';
+import {View} from 'react-native';
 import React, {useEffect, useState} from "react";
 import {ProfileMetadataMap} from "@/native/types";
 import {Image, StyleSheet, ToastAndroid, TouchableOpacity} from "react-native";
@@ -21,9 +22,9 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
   const readableMccMnc = metadata.profileOwnerMccMnc.replaceAll("F", " ");
 
   return (
-    <View left flex gap-10>
-      <View row flex-1 gap-12>
-        <Text $textDefault style={styles.tableHeader}>
+    <View style={{ alignItems: 'flex-start', flex: 1, gap: 10 }}>
+      <View style={{ flexDirection: 'row', flex: 1, gap: 12 }}>
+        <Text color="$textDefault" style={styles.tableHeader}>
           {t("main:profile_name")}:
         </Text>
         <TouchableOpacity  
@@ -34,13 +35,13 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
             }
           }}
         >
-          <Text $textDefault flexG text70L>
+          <Text color="$textDefault" style={{ flexGrow: 1 }}>
             {metadata.profileName}
           </Text>
         </TouchableOpacity>
       </View>
-      <View row flex-1 gap-12>
-        <Text $textDefault style={styles.tableHeader}>
+      <View style={{ flexDirection: 'row', flex: 1, gap: 12 }}>
+        <Text color="$textDefault" style={styles.tableHeader}>
           {t("main:profile_provider")}:
         </Text>
         <TouchableOpacity
@@ -51,13 +52,13 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
             }
           }}
         >
-          <Text $textDefault flexG text70L>
+          <Text color="$textDefault" style={{ flexGrow: 1 }}>
             {metadata.serviceProviderName}
           </Text>
         </TouchableOpacity>
       </View>
-      <View row flex-1 gap-12>
-        <Text $textDefault style={styles.tableHeader}>
+      <View style={{ flexDirection: 'row', flex: 1, gap: 12 }}>
+        <Text color="$textDefault" style={styles.tableHeader}>
           {t("main:profile_plmn")}:
         </Text>
         <TouchableOpacity
@@ -68,7 +69,7 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
             }
           }}
         >
-          <Text $textDefault flexG text70L>
+          <Text color="$textDefault" style={{ flexGrow: 1 }}>
             {readableMccMnc}
           </Text>
         </TouchableOpacity>
@@ -76,8 +77,8 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
       {
         resolvedMccMnc && (
           <>
-            <View row flex-1 gap-12>
-              <Text $textDefault style={styles.tableHeader}>
+            <View style={{ flexDirection: 'row', flex: 1, gap: 12 }}>
+              <Text color="$textDefault" style={styles.tableHeader}>
                 {t("main:profile_country")}:
               </Text>
               <TouchableOpacity
@@ -93,15 +94,15 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
                   style={{width: 20, height: 20}}
                   source={Flags[resolvedMccMnc?.ISO1 || "UN"] || Flags.UN}
                 />
-                <Text $textDefault flexG text70L>
+                <Text color="$textDefault" style={{ flexGrow: 1 }}>
                   {resolvedMccMnc.Country}
                 </Text>
               </TouchableOpacity>
             </View>
             {
               resolvedMccMnc.Operator && (
-                <View row flex-1 gap-12>
-                  <Text $textDefault style={styles.tableHeader}>
+                <View style={{ flexDirection: 'row', flex: 1, gap: 12 }}>
+                  <Text color="$textDefault" style={styles.tableHeader}>
                     {t("main:profile_operator")}:
                   </Text>
                   <TouchableOpacity
@@ -112,7 +113,7 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
                       }
                     }}
                   >
-                    <Text $textDefault flexG text70L adjustsFontSizeToFit >
+                    <Text color="$textDefault" style={{ flexGrow: 1 }}>
                       {resolvedMccMnc.Operator}
                     </Text>
                   </TouchableOpacity>
@@ -121,8 +122,8 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
             }
             {
               resolvedMccMnc.Brand && (
-                <View row flex-1 gap-12>
-                  <Text $textDefault style={styles.tableHeader}>
+                <View style={{ flexDirection: 'row', flex: 1, gap: 12 }}>
+                  <Text color="$textDefault" style={styles.tableHeader}>
                     {t("main:profile_brand")}:
                   </Text>
                   <TouchableOpacity
@@ -133,7 +134,7 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
                       }
                     }}
                   >
-                    <Text $textDefault flexG text70L adjustsFontSizeToFit>
+                    <Text color="$textDefault" style={{ flexGrow: 1 }}>
                       {resolvedMccMnc.Brand}
                     </Text>
                   </TouchableOpacity>
@@ -143,8 +144,8 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
           </>
         )
       }
-      <View row flex-1 gap-12>
-        <Text $textDefault style={styles.tableHeader}>
+      <View style={{ flexDirection: 'row', flex: 1, gap: 12 }}>
+        <Text color="$textDefault" style={styles.tableHeader}>
           {t("main:profile_iccid")}:
         </Text>
         <TouchableOpacity
@@ -155,7 +156,7 @@ export default function MetadataView({ metadata }: { metadata?: ProfileMetadataM
             }
           }}
         >
-          <Text $textDefault flexG text70L adjustsFontSizeToFit>
+          <Text color="$textDefault" style={{ flexGrow: 1 }}>
             {metadata.iccid}
           </Text>
         </TouchableOpacity>

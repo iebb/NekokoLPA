@@ -5,7 +5,7 @@ import SafeScreen from '@/theme/SafeScreen';
 import type {RootScreenProps} from "@/screens/navigation";
 import Title from "@/components/common/Title";
 import {Colors, Drawer} from "react-native-ui-lib";
-import {Text} from 'tamagui';
+import {Text, useTheme} from 'tamagui';
 import {View} from 'react-native';
 import {useSelector} from "react-redux";
 import {selectDeviceState} from "@/redux/stateStore";
@@ -25,6 +25,7 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
   const { t } = useTranslation(['main']);
   const { profiles, notifications } = DeviceState;
   const { setLoading } = useLoading();
+  const theme = useTheme();
 
   const adapter = Adapters[deviceId];
 
@@ -61,8 +62,16 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
         break;
     }
 
+    const rowBg = theme.surfaceRow?.val || theme.background?.val || '#fff';
+    const borderCol = theme.borderColor?.val || 'rgba(0,0,0,0.06)';
+    const iconMuted = theme.color10?.val || '#8a8a8a';
+    // badge colors by type
+    const badgeBg = type === 'delete' ? (theme.backgroundDangerHeavy?.val || '#dc2626')
+                    : type === 'disable' ? (theme.color10?.val || '#888')
+                    : type === 'enable' ? (theme.accentColor?.val || '#a575f6')
+                    : (theme.color?.val || '#555');
     return (
-      <View key={row.seqNumber} style={{ backgroundColor: Colors.pageBackground, marginBottom: 10 }}>
+      <View key={row.seqNumber} style={{ marginBottom: 12, marginHorizontal: 16 }}>
         <Drawer
           style={{
             overflow: "hidden",
@@ -113,13 +122,14 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
           }}
         >
           <TouchableOpacity>
-            <View style={{ flexDirection: 'row', backgroundColor: Colors.pageBackground, paddingHorizontal: 20, paddingVertical: 10 }}>
+            {/* Card surface inside Drawer so gestures remain smooth */}
+            <View style={{ borderRadius: 12, backgroundColor: rowBg, borderWidth: 1, borderColor: borderCol, flexDirection: 'row', paddingHorizontal: 16, paddingVertical: 12 }}>
               <View style={{ flexGrow: 1 }}>
                 <View style={{ flexDirection: 'row' }}>
-                  <Text color="$textDefault" numberOfLines={1} style={{ marginRight: 10 }}>
+                  <Text color="$textDefault" numberOfLines={1} style={{ marginRight: 10 }} fontSize={14} fontWeight={"700" as any}>
                     #{row.seqNumber}
                   </Text>
-                  <Text color="$textDefault" numberOfLines={1}>
+                  <Text color="$textDefault" numberOfLines={1} fontSize={14}>
                     <Image
                       style={{width: 20 * PixelRatio.getFontScale(), height: 20 * PixelRatio.getFontScale()}}
                       source={Flags[country] || Flags.UN}
@@ -130,16 +140,20 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
                   </Text>
                 </View>
                 <View>
-                  <Text color="$textNeutral" fontSize={12}>RSP: {row.notificationAddress}</Text>
-                  <Text color="$textNeutral" fontSize={12}>ICCID: {row.iccid}</Text>
+                  <Text color="$color10" fontSize={12}>RSP: {row.notificationAddress}</Text>
+                  <Text color="$color10" fontSize={12}>ICCID: {row.iccid}</Text>
                 </View>
               </View>
               <View>
                 <View>
-                  <Text style={{ textAlign: 'right', height: 20 }}>
-                    <FontAwesomeIcon icon={iconType} style={{ color: Colors.$iconNeutral }} size={20} />
-                  </Text>
-                  <Text style={{ marginTop: 5, textAlign: 'right', color: Colors.$iconNeutral, fontSize: 12 }}>{type}</Text>
+                  {/* Right side badge for type */}
+                  <View style={{ alignItems: 'flex-end' }}>
+                    <View style={{ backgroundColor: badgeBg, borderRadius: 999, paddingHorizontal: 10, paddingVertical: 4 }}>
+                      <Text color={theme.background?.val || '#ffffff'} fontSize={12}>
+                        {type}
+                      </Text>
+                    </View>
+                  </View>
                 </View>
               </View>
             </View>

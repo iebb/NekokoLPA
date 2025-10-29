@@ -1,9 +1,8 @@
 import React, {useEffect, useState, useMemo, useCallback} from 'react';
 import SafeScreen from '@/theme/SafeScreen';
-import {Button, Colors, Text, View} from "react-native-ui-lib";
+import { View, Image, Linking, PixelRatio, Platform, TouchableOpacity } from "react-native";
 import SIMSelector from "@/screens/Main/SIMSelector";
 import type {RootScreenProps} from "@/screens/navigation";
-import {Image, Linking, PixelRatio, Platform, TouchableOpacity} from "react-native";
 import {version} from '../../../package.json';
 import {useDispatch} from "react-redux";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
@@ -11,6 +10,7 @@ import {faCog, faFlag, faRefresh} from "@fortawesome/free-solid-svg-icons";
 import {setupDevices} from "@/native/setup";
 import {AppCheckForUpdates, AppLogo, AppTitle} from "@/screens/Main/config";
 import { faBluetoothB } from '@fortawesome/free-brands-svg-icons';
+import { XStack, YStack, Text as TText, useTheme } from 'tamagui';
 
 // Extracted components
 const AppHeader = React.memo(({ 
@@ -23,34 +23,29 @@ const AppHeader = React.memo(({
   isLatest: boolean; 
   release: any; 
   onUpdatePress: () => void; 
-}) => (
-  <View row flexG>
-    <View row gap-5 flexG>
+}) => {
+  const theme = useTheme();
+  return (
+    <XStack alignItems="center" gap={10} flex={1}>
       <TouchableOpacity onPress={() => navigation.openDrawer()}>
         <Image source={AppLogo} style={{width: 42, height: 42}} />
       </TouchableOpacity>
-      <View onTouchStart={onUpdatePress}>
-        <Text style={{fontSize: 16 / PixelRatio.getFontScale(), fontWeight: 'bold'}} $textDefault>
+      <TouchableOpacity onPress={onUpdatePress} style={{flexShrink: 1}}>
+        <TText fontSize={16 / PixelRatio.getFontScale()} fontWeight={'700' as any} color="$textDefault" numberOfLines={1}>
           {AppTitle}
-        </Text>
-        <Text style={{
-          fontSize: 12 / PixelRatio.getFontScale(),
-          color: isLatest ? Colors.$textNeutralLight : Colors.red40
-        }}>
+        </TText>
+        <TText fontSize={12 / PixelRatio.getFontScale()} color={isLatest ? (theme.color10?.val || '#999') : (theme.backgroundDangerHeavy?.val || '#d33')}>
           v{version} {!isLatest && "↑"}
-        </Text>
+        </TText>
         {!isLatest && (
-          <Text style={{
-            fontSize: 12 / PixelRatio.getFontScale(),
-            color: isLatest ? Colors.$textNeutralLight : Colors.red40
-          }}>
+          <TText fontSize={12 / PixelRatio.getFontScale()} color={theme.backgroundDangerHeavy?.val || '#d33'}>
             {release.tag_name} available
-          </Text>
+          </TText>
         )}
-      </View>
-    </View>
-  </View>
-));
+      </TouchableOpacity>
+    </XStack>
+  );
+});
 
 const ActionButtons = React.memo(({ 
   navigation, 
@@ -58,55 +53,38 @@ const ActionButtons = React.memo(({
 }: { 
   navigation: any; 
   onRefresh: () => void; 
-}) => (
-  <View row gap-10>
-    <Button
-      size={'small'}
-      padding-10
-      iconSource={style => (
-        <FontAwesomeIcon 
-          icon={faBluetoothB as any} 
-          style={{color: (style as any)[0].tintColor}}
-        />
-      )}
-      onPress={() => navigation.navigate('BluetoothScan', {})}
-      iconOnRight
-      animateLayout
-      animateTo={'left'}
-    />
-    <Button
-      size={'small'}
-      padding-10
-      iconSource={style => (
-        <FontAwesomeIcon 
-          icon={faRefresh} 
-          style={{color: (style as any)[0].tintColor}}
-        />
-      )}
-      onPress={onRefresh}
-      iconOnRight
-      animateLayout
-      animateTo={'left'}
-    />
-    <Button
-      size={'small'}
-      padding-10
-      iconSource={style => (
-        <FontAwesomeIcon 
-          icon={faCog} 
-          style={{color: (style as any)[0].tintColor}}
-        />
-      )}
-      onPress={() => navigation.navigate('Settings', {})}
-      iconOnRight
-      animateLayout
-      animateTo={'left'}
-    />
-  </View>
-));
+}) => {
+  const theme = useTheme();
+  const Btn = ({ icon, onPress }: { icon: any; onPress: () => void }) => (
+    <TouchableOpacity
+      onPress={onPress}
+      style={{
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 1,
+        borderColor: theme.accentColor?.val || theme.color?.val || '#6c5ce7',
+        backgroundColor: theme.accentColor?.val || theme.color?.val || '#6c5ce7',
+      }}
+    >
+      <FontAwesomeIcon icon={icon} style={{ color: theme.background?.val || '#fff' }} />
+    </TouchableOpacity>
+  );
+
+  return (
+    <XStack alignItems="center" gap={10}>
+      <Btn icon={faBluetoothB as any} onPress={() => navigation.navigate('BluetoothScan', {})} />
+      <Btn icon={faRefresh} onPress={onRefresh} />
+      <Btn icon={faCog} onPress={() => navigation.navigate('Settings', {})} />
+    </XStack>
+  );
+});
 
 function Main({ navigation }: RootScreenProps<'Main'>) {
 	const dispatch = useDispatch();
+  const theme = useTheme();
 	const [release, setRelease] = useState({
 		tag_name: `v${version}`,
 	});
@@ -163,9 +141,9 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 
 	return (
 		<SafeScreen>
-			<View paddingH-24 marginT-12>
-				<View style={{flexDirection: 'column', display: 'flex', height: '100%', gap: 10}}>
-					<View row>
+			<View style={{ paddingHorizontal: 24, marginTop: 12, flex: 1 }}>
+				<YStack gap={10} flex={1}>
+					<XStack alignItems="center" justifyContent="space-between">
 						<AppHeader 
 							navigation={navigation} 
 							isLatest={isLatest} 
@@ -173,9 +151,11 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 							onUpdatePress={handleUpdatePress}
 						/>
 						<ActionButtons navigation={navigation} onRefresh={handleRefresh} />
+					</XStack>
+					<View style={{ flex: 1 }}>
+						<SIMSelector/>
 					</View>
-					<SIMSelector/>
-				</View>
+				</YStack>
 			</View>
 		</SafeScreen>
 	);

@@ -1,12 +1,9 @@
-import {View} from "react-native-ui-lib";
-import {ViewProps} from "react-native";
+import {View, ViewProps} from "react-native";
 
 export default function Container(props: ViewProps): JSX.Element {
   return (
     <View
-      paddingH-20
-      paddingV-10
-      gap-10
+      style={{ paddingHorizontal: 20, paddingVertical: 10, gap: 10 }}
       {...props}
     />
   )

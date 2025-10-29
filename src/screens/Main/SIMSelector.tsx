@@ -90,6 +90,7 @@ export default function SIMSelector() {
     </ScrollView>
   );
 
+
   return (
     <View
       style={{ flexGrow: 1, flexShrink: 0 }}
@@ -103,9 +104,16 @@ export default function SIMSelector() {
         }}
       >
         <Tabs.List
-          backgroundColor={theme.background?.val}
+          backgroundColor={theme.surfaceRow?.val || theme.background?.val}
           borderRadius={20}
-          style={{ height: 40, overflow: 'hidden', width: '100%', marginBottom: 8 }}
+          style={{
+            height: 40,
+            overflow: 'hidden',
+            width: '100%',
+            marginBottom: 8,
+            borderWidth: 1,
+            borderColor: theme.borderColor?.val || 'transparent'
+          }}
         >
           {deviceList.map((name, _idx) => {
             const adapter = Adapters[name];
@@ -119,9 +127,7 @@ export default function SIMSelector() {
                 key={`${name}-${_idx}`}
                 value={String(_idx)}
                 width={displayWidth}
-                style={{
-                  backgroundColor: selected ? (theme.color2?.val || 'rgba(0,0,0,0.04)') : 'transparent',
-                }}
+                style={{ backgroundColor: 'transparent' }}
               >
                 <XStack alignItems="center" gap={4} paddingHorizontal={8} paddingVertical={6}>
                   <FontAwesomeIcon
@@ -129,13 +135,13 @@ export default function SIMSelector() {
                       adapter.device.deviceId.startsWith('omapi') ? faSimCard :
                       adapter.device.deviceId.startsWith('ble') ? (faBluetooth as any) : (faUsb as any)
                     }
-                    style={{ color: selected ? (theme.accentColor?.val || theme.color?.val) : (theme.color10?.val || '#888'), marginRight: 4, marginTop: -2 }}
+                    style={{ color: selected ? (theme.accentColor?.val || theme.colorFocus?.val || theme.color?.val) : (theme.color11?.val || theme.color10?.val || '#888'), marginRight: 4, marginTop: -2 }}
                     size={15}
                   />
                   <TText
                     fontSize={12}
                     lineHeight={16}
-                    color={selected ? (theme.accentColor?.val || theme.color?.val) : (theme.color10?.val || '#777')}
+                    color={selected ? (theme.accentColor?.val || theme.colorFocus?.val || theme.color?.val) : (theme.color11?.val || theme.color10?.val || '#777')}
                     fontWeight={selected ? '600' as any : '400' as any}
                     numberOfLines={2}
                   >
@@ -153,7 +159,7 @@ export default function SIMSelector() {
               left: (index * displayWidth) + ((displayWidth - displayWidth2) / 2),
               width: displayWidth2,
               height: 2,
-              backgroundColor: theme.accentColor?.val || theme.color?.val,
+              backgroundColor: theme.color10?.val || theme.colorFocus?.val || theme.color?.val,
               borderRadius: 1,
             }}
           />

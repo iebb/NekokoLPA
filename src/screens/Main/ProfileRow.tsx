@@ -235,6 +235,14 @@ export const ProfileRow = ({profile, deviceId} : {profile: ProfileExt, deviceId:
     return preferences.getString('themeColor') ?? (useTheme().textPrimary?.val || '#6c5ce7');
   }, []);
 
+  // Unified switch colors (selected vs base). Base tuned for dark theme to be less bright.
+  const switchBaseColor = useMemo(() => {
+    return (theme.color7?.val || theme.outlineDisabledHeavy?.val || theme.outlineNeutral?.val || '#777');
+  }, [theme.color7?.val, theme.outlineDisabledHeavy?.val, theme.outlineNeutral?.val]);
+
+  const switchTrackColor = profile.selected ? primaryColor : switchBaseColor;
+  const switchBorderColor = profile.selected ? primaryColor : switchBaseColor;
+
   return (
     <Drawer
       key={`${metadata.iccid}`}
@@ -289,14 +297,14 @@ export const ProfileRow = ({profile, deviceId} : {profile: ProfileExt, deviceId:
                 style={{ 
                   marginTop: -5,
                   borderWidth: 0.5,
-                  borderColor: profile.selected ? primaryColor : (theme.outlineDisabledHeavy?.val || theme.outlineNeutral?.val || '#ccc'),
+                  borderColor: switchBorderColor,
                 }}
-                backgroundColor={profile.selected ? primaryColor : (theme.outlineDisabledHeavy?.val || theme.outlineNeutral?.val || '#ccc')}
+                backgroundColor={switchTrackColor}
                 onCheckedChange={(val: boolean) => handleSwitchChange(!!val)}
               >
                 <Switch.Thumb 
                   backgroundColor={theme.backgroundDefault?.val || '#ffffff'}
-                  style={{ borderWidth: 0.5, borderColor: profile.selected ? primaryColor : (theme.outlineDisabledHeavy?.val || theme.outlineNeutral?.val || '#ccc') }}
+                  style={{ borderWidth: 0.5, borderColor: switchBorderColor }}
                 />
               </Switch>
             </XStack>

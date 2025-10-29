@@ -1,5 +1,5 @@
 import React, {createContext, useContext, useState} from 'react';
-import {Colors, Toast} from 'react-native-ui-lib';
+import { YStack, Text, useTheme } from 'tamagui';
 
 const ToastContext = createContext({ showToast: (message: string, type = 'error') => {} });
 
@@ -26,12 +26,25 @@ export const ToastProvider = ({ children }: { children: React.ReactNode}) => {
       {/* Toast UI */}
       {
         toastConfig.visible && (
-          <Toast
-            visible={toastConfig.visible}
-            position={'bottom'}
-            backgroundColor={toastConfig.type === 'error' ? Colors.$backgroundDangerHeavy : 'green'}
-            message={toastConfig.message}
-          />
+          <YStack
+            position="absolute"
+            bottom={20}
+            left={0}
+            right={0}
+            alignItems="center"
+          >
+            <YStack
+              paddingHorizontal={14}
+              paddingVertical={10}
+              borderRadius={8}
+              backgroundColor={toastConfig.type === 'error' ? '$backgroundDanger' : '$accentColor'}
+              maxWidth={360}
+            >
+              <Text color="$background" fontSize={14} textAlign="center">
+                {toastConfig.message}
+              </Text>
+            </YStack>
+          </YStack>
         )
       }
     </ToastContext.Provider>
