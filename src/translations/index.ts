@@ -47,4 +47,9 @@ void i18n.use(initReactI18next).init({
 	compatibilityJSON: 'v4',
 });
 
+// Listen for language changes and save to preferences
+i18n.on('languageChanged', (lng) => {
+	preferences.set("language", lng);
+});
+
 export default i18n;

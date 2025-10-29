@@ -1,7 +1,7 @@
 import {NativeModules} from "react-native";
 import {Device} from "@/native/adapters/adapter";
 import {preferences} from "@/utils/mmkv";
-import {AIDList} from "@/utils/aid";
+import {getAIDList} from "@/utils/aid";
 const { CCIDPlugin } = NativeModules;
 
 
@@ -43,7 +43,7 @@ export class CCIDDevice implements Device {
         this.description = "Channel cannot be opened";
         return false;
       }
-      for(const aid of AIDList.split(",")) {
+      for(const aid of getAIDList().split(",")) {
         try {
           const aidResp = await this.transmit(channel + "A4040010" + aid);
           if (aidResp.startsWith("61") || aidResp.startsWith("90")) {

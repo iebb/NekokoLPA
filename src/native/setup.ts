@@ -5,7 +5,7 @@ import {Adapter, Device} from "@/native/adapters/adapter";
 import {Adapters, ConnectedBluetoothDevices} from "@/native/adapters/registry";
 import {setInternalDevices, setTargetDevice} from "@/redux/stateStore";
 import {Dispatch} from "@reduxjs/toolkit";
-import {AIDList} from "@/utils/aid";
+import {getAIDList} from "@/utils/aid";
 import {ESTKmeRED} from "@/native/adapters/estk_red_adapter";
 import {SimLinkAdapter} from "@/native/adapters/9esim_adapter";
 
@@ -16,7 +16,7 @@ export async function setupDevices(dispatch: Dispatch, targetDevice: string | nu
 
   const _devices = [];
   if (Platform.OS === 'android') {
-    const devices = JSON.parse(await OMAPIBridge.listDevices(AIDList));
+    const devices = JSON.parse(await OMAPIBridge.listDevices(getAIDList()));
     for(const d of devices) {
       if (d.available === 'true') {
         _devices.push(new OMAPIDevice(d.name, true) as Device);

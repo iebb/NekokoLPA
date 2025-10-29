@@ -2,23 +2,37 @@ import {View} from "react-native-ui-lib";
 import {useSelector} from "react-redux";
 import {Profile} from "@/native/types";
 import {RefreshControl, ScrollView} from "react-native";
-import React, {useState} from "react";
+import React, {useState, useMemo, useCallback} from "react";
 import {Adapters} from "@/native/adapters/registry";
 import {selectDeviceState} from "@/redux/stateStore";
 import {ProfileRow} from "@/screens/Main/ProfileRow";
 
 export default function ProfileSelector({ deviceId } : { deviceId: string }) {
-
   const DeviceState = useSelector(selectDeviceState(deviceId));
   const [refreshing, setRefreshing] = useState(false);
 
-  const profileList = DeviceState.profiles;
+  // Memoize profile list processing
+  const profiles = useMemo(() => {
+    const profileList = DeviceState.profiles;
+    if (!profileList?.map) return [];
+    
+    return profileList.map((profile: Profile) => ({
+      ...profile, 
+      selected: profile.profileState === 1
+    }));
+  }, [DeviceState.profiles]);
 
-  const profiles = ((profileList as any)?.map ? profileList : []).map(
-    (profile: Profile) => ({...profile, selected: profile.profileState === 1})
-  ) || []
-  
   const adapter = Adapters[deviceId];
+
+  // Memoize refresh handler
+  const handleRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await adapter.refresh();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [adapter]);
 
   return (
     <View
@@ -34,21 +48,22 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
         alwaysBounceVertical
         overScrollMode="always"
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={() => {
-            setRefreshing(true);
-            adapter.refresh();
-            setRefreshing(false);
-          }} />
+          <RefreshControl 
+            refreshing={refreshing} 
+            onRefresh={handleRefresh} 
+          />
         }
       >
         <View gap-10>
-          {
-            profiles.map((p, i) => <ProfileRow
-              deviceId={deviceId} profile={p} key={i}
-            />)
-          }
+          {profiles.map((p, i) => (
+            <ProfileRow
+              deviceId={deviceId} 
+              profile={p} 
+              key={p.iccid || i}
+            />
+          ))}
         </View>
       </ScrollView>
     </View>
-  )
+  );
 }
