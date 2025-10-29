@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/redux/reduxDataStore";
 import {EUICCPage} from "@/screens/Main/EUICCPage";
 import {useTranslation} from "react-i18next";
-import {Dimensions, Linking, NativeModules, Platform, ScrollView, ToastAndroid} from "react-native";
+import {Alert, Dimensions, Linking, NativeModules, Platform, ScrollView, ToastAndroid} from "react-native";
 import {Adapters} from "@/native/adapters/registry";
 import TabController from "../../components/ui/Tab";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
@@ -59,6 +59,17 @@ export default function SIMSelector() {
       }
     }
   }, [targetDevice]);
+
+  // Show iOS notification when no compatible devices are found
+  useEffect(() => {
+    if (Platform.OS === 'ios' && deviceList.length === 0) {
+      Alert.alert(
+        'No Compatible Devices',
+        'A compatible external CCID reader is required for iOS.',
+        [{ text: 'OK' }]
+      );
+    }
+  }, [deviceList.length]);
 
   if (width <= 0) return null;
   if (deviceList.length == 0) return (
