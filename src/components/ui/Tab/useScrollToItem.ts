@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import {useState, useCallback, useEffect, useRef, RefObject} from 'react';
 import {LayoutChangeEvent} from 'react-native';
 import {useSharedValue} from 'react-native-reanimated';
@@ -99,9 +98,9 @@ const useScrollToItem = <T extends ScrollToSupportedViews>(props: ScrollToItemPr
     outerSpacing = 0,
     innerSpacing = 0
   } = props;
-  const itemsWidths = useRef<(number | null)[]>(_.times(itemsCount, () => null));
-  const itemsWidthsAnimated = useSharedValue<number[]>(_.times(itemsCount, () => 0));
-  const itemsOffsetsAnimated = useSharedValue<number[]>(_.times(itemsCount, () => 0));
+  const itemsWidths = useRef<(number | null)[]>(Array.from({ length: itemsCount }, () => null));
+  const itemsWidthsAnimated = useSharedValue<number[]>(Array.from({ length: itemsCount }, () => 0));
+  const itemsOffsetsAnimated = useSharedValue<number[]>(Array.from({ length: itemsCount }, () => 0));
   const currentIndex = useRef<number>(selectedIndex || 0);
   const [offsets, setOffsets] = useState<Offsets>({CENTER: [], LEFT: [], RIGHT: []});
   const {scrollViewRef, scrollTo, onContentSizeChange, onLayout} = useScrollTo<T>({scrollViewRef: propsScrollViewRef});
@@ -115,7 +114,7 @@ const useScrollToItem = <T extends ScrollToSupportedViews>(props: ScrollToItemPr
   // TODO: const scrollEnabled = contentWidth.current > containerWidth;
 
   const setSnapBreakpoints = useCallback((widths: number[]) => {
-    if (_.isEmpty(widths)) {
+    if (!widths || widths.length === 0) {
       return;
     }
 
@@ -169,7 +168,7 @@ const useScrollToItem = <T extends ScrollToSupportedViews>(props: ScrollToItemPr
   const onItemLayout = useCallback((event: LayoutChangeEvent, index: number) => {
     const {width} = event.nativeEvent.layout;
     itemsWidths.current[index] = width;
-    if (!_.includes(itemsWidths.current, null)) {
+    if (!itemsWidths.current.includes(null)) {
       setSnapBreakpoints(itemsWidths.current as number[]);
     }
   },
@@ -189,7 +188,7 @@ const useScrollToItem = <T extends ScrollToSupportedViews>(props: ScrollToItemPr
   [offsets, offsetType, scrollTo]);
 
   useEffect(() => {
-    if (!_.isUndefined(selectedIndex)) {
+    if (selectedIndex !== undefined) {
       focusIndex(selectedIndex, false);
     }
   }, [selectedIndex, focusIndex]);

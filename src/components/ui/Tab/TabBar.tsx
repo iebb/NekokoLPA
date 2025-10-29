@@ -1,5 +1,4 @@
 // @ts-nocheck
-import _ from 'lodash';
 import React, {useMemo, useContext, useState, useRef, ReactNode} from 'react';
 import {StyleSheet, Platform, StyleProp, ViewStyle} from 'react-native';
 import Reanimated, {runOnJS, useAnimatedReaction, useAnimatedStyle, interpolate} from 'react-native-reanimated';
@@ -203,7 +202,7 @@ const TabBar = (props: Props) => {
   });
 
   const tabBarItems = useMemo((): ReactNode => {
-    return _.map(items, (item, index) => {
+    return (items || []).map((item, index) => {
       return (
         <TabBarItem
           labelColor={labelColor}
@@ -275,8 +274,8 @@ const TabBar = (props: Props) => {
   }, [shadowStyle, containerWidth, containerStyle]);
 
   const tabBarContainerStyle = useMemo(() => {
-    return [styles.tabBar, spreadItems && styles.spreadItems, !_.isUndefined(height) && {height}, {backgroundColor}];
-  }, [height, backgroundColor]);
+    return [styles.tabBar, spreadItems && styles.spreadItems, height !== undefined && {height}, {backgroundColor}];
+  }, [height, backgroundColor, spreadItems]);
 
   const scrollViewContainerStyle = useMemo(() => {
     return {minWidth: containerWidth};

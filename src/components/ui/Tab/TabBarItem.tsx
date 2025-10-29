@@ -1,7 +1,6 @@
 // @ts-nocheck
 import React, {useCallback, useContext, useEffect, useRef, useMemo, ReactElement} from 'react';
 import {StyleSheet, TextStyle, LayoutChangeEvent, StyleProp, ViewStyle, TextProps} from 'react-native';
-import _ from 'lodash';
 import Reanimated, {runOnJS, useAnimatedStyle, useSharedValue} from 'react-native-reanimated';
 import {Gesture, GestureDetector} from 'react-native-gesture-handler';
 import {Colors, Typography, Spacings} from 'react-native-ui-lib/src/components/../style';
@@ -145,10 +144,11 @@ export default function TabBarItem({
   const sharedLabelStyle = useSharedValue(JSON.parse(JSON.stringify(StyleSheet.flatten(labelStyle))));
   const sharedSelectedLabelStyle = useSharedValue(JSON.parse(JSON.stringify(StyleSheet.flatten(selectedLabelStyle))));
 
-  // NOTE: We clone these color values in refs because they might contain a PlatformColor value
+  // NOTE: We store these color values in refs because they might contain a PlatformColor value
   //       which throws an error (see https://github.com/software-mansion/react-native-reanimated/issues/3164)
-  const inactiveColor = useRef(_.cloneDeep(labelColor));
-  const activeColor = useRef(_.cloneDeep(!ignore ? selectedLabelColor : inactiveColor.current));
+  // Strings are immutable, so we can use them directly
+  const inactiveColor = useRef(labelColor);
+  const activeColor = useRef(!ignore ? selectedLabelColor : inactiveColor.current);
 
   useEffect(() => {
     if (props.width) {
@@ -237,13 +237,13 @@ export default function TabBarItem({
       >
         {leadingAccessory}
         {icon}
-        {!_.isEmpty(label) && (
+        {label && label.length > 0 && (
           <Reanimated.Text
             {...labelProps}
             fsTagName={'unmask'}
             style={[styles.tabItemLabel, labelStyle, animatedLabelStyle, animatedLabelColorStyle]}
           >
-            {uppercase ? _.toUpper(label) : label}
+            {uppercase ? label.toUpperCase() : label}
           </Reanimated.Text>
         )}
         {badge && (

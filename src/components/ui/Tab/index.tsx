@@ -1,5 +1,4 @@
 // @ts-nocheck
-import _ from 'lodash';
 import React, {PropsWithChildren, useCallback, useEffect, useMemo, useState} from 'react';
 import {
   configureReanimatedLogger,
@@ -17,7 +16,7 @@ import TabBarItem, {TabControllerItemProps} from './TabBarItem';
 
 // This is the default configuration
 configureReanimatedLogger({
-  level: ReanimatedLogLevel.warn,
+  level: ReanimatedLogLevel.error,
   strict: false, // Reanimated runs in strict mode by default
 });
 
@@ -78,7 +77,7 @@ const TabController = React.forwardRef((props: PropsWithChildren<TabControllerPr
     asCarousel = false,
     nestedInScrollView = false,
     items,
-    onChangeIndex = _.noop,
+    onChangeIndex = () => {},
     carouselPageWidth,
     useSafeArea = false,
     children
@@ -96,7 +95,7 @@ const TabController = React.forwardRef((props: PropsWithChildren<TabControllerPr
   }, [carouselPageWidth, screenWidth]);
 
   const ignoredItems = useMemo(() => {
-    return _.filter<TabControllerItemProps[]>(items, (item: TabControllerItemProps) => item.ignore);
+    return items.filter((item: TabControllerItemProps) => item.ignore);
   }, [items]);
 
   /* currentPage - static page index */
