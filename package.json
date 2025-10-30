@@ -1,7 +1,7 @@
 {
   "name": "nekokolpa",
-  "buildVersion": 364,
-  "version": "1.11.364",
+  "buildVersion": 365,
+  "version": "1.12.365-alpha",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -9,7 +9,6 @@
     "lint": "eslint .",
     "start": "react-native start",
     "type-check": "tsc",
-    
     "pod-install": "cd ios && pod install && cd ..",
     "get-mcc-mnc": "python3 scripts/mcc_mnc.py",
     "build": "bash build.sh",
@@ -85,7 +84,6 @@
     "babel-plugin-root-import": "^6.6.0",
     "dotenv": "^16.3.1",
     "eslint": "^8.19.0",
-    
     "prettier": "2.8.8",
     "reactotron-react-native": "^5.1.6",
     "reactotron-react-native-mmkv": "^0.2.6",
