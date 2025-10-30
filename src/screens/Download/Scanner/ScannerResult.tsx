@@ -1,12 +1,12 @@
 import React from 'react';
 import {useTranslation} from 'react-i18next';
-import {Button, Colors, Text, View} from "react-native-ui-lib";
+import { View } from 'react-native';
+import { Button as TButton, Text as TText, XStack, YStack, useTheme } from 'tamagui';
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faArrowLeftLong, faCancel, faCheck, faCheckCircle} from "@fortawesome/free-solid-svg-icons";
 import RemoteErrorView from "@/screens/Download/RemoteErrorView";
 import MetadataView from "@/components/common/MetadataView";
 import Title from "@/components/common/Title";
-import Container from "@/components/common/Container";
 import {makeLoading} from "@/components/utils/loading";
 import {Adapters} from "@/native/adapters/registry";
 import {useLoading} from "@/components/common/LoadingProvider";
@@ -21,6 +21,7 @@ export function ScannerResult(
   }: any
 ) {
   const { t } = useTranslation(['main']);
+  const theme = useTheme();
   const { setLoading } = useLoading();
   const adapter = Adapters[deviceId];
 
@@ -30,35 +31,38 @@ export function ScannerResult(
       {
         (downloadResult?.success) ?
           (
-            <Container>
-              <View center style={{ marginVertical: 20 }}>
-                <FontAwesomeIcon icon={faCheckCircle} size={80} color={Colors.green30} />
+            <YStack gap={10}>
+              <View style={{ alignItems: 'center', marginVertical: 20 }}>
+                <FontAwesomeIcon icon={faCheckCircle} size={80} color={theme.backgroundSuccessHeavy?.val || '#22c55e'} />
               </View>
-              <Text center text60>
+              <TText textAlign="center" fontSize={18} color="$textDefault">
                 {t('main:profile_download_success')}
-              </Text>
+              </TText>
               <MetadataView metadata={authenticateResult.profile} />
-              <View flex>
-                <View flex row gap-10>
-                  <Button
-                    marginV-12 flex
-                    backgroundColor={Colors.$backgroundNeutralHeavy}
+              <YStack flex={1}>
+                <XStack gap={10} flex={1}>
+                  <TButton
+                    flex={1}
+                    marginVertical={12}
+                    backgroundColor={theme.color2?.val || theme.accentColor?.val || '#444'}
                     onPress={() => {
                       goBack();
                     }}
                   >
-                    <FontAwesomeIcon
-                      icon={faArrowLeftLong}
-                      style={{ color: Colors.white }}
-                    />
-                    <Text
-                      marginL-10
-                      color={Colors.white}
-                    >{t('main:profile_ui_back')}</Text>
-                  </Button>
-                  <Button
-                    marginV-12 flex
-                    backgroundColor={Colors.green500}
+                    <XStack alignItems="center" gap={10}>
+                      <FontAwesomeIcon
+                        icon={faArrowLeftLong}
+                        style={{ color: theme.background?.val || '#fff' }}
+                      />
+                      <TText color={theme.background?.val || '#fff'} fontSize={16}>
+                        {t('main:profile_ui_back')}
+                      </TText>
+                    </XStack>
+                  </TButton>
+                  <TButton
+                    flex={1}
+                    marginVertical={12}
+                    backgroundColor={theme.backgroundSuccessHeavy?.val || '#22c55e'}
                     onPress={() => {
                       makeLoading(
                         setLoading,
@@ -69,51 +73,52 @@ export function ScannerResult(
                       )
                     }}
                   >
-                    <FontAwesomeIcon
-                      icon={faCheck}
-                      style={{ color: Colors.white }}
-                    />
-                    <Text
-                      marginL-10
-                      color={Colors.white}
-                    >{t('main:profile_ui_enable')}</Text>
-                  </Button>
-                </View>
-              </View>
-            </Container>
+                    <XStack alignItems="center" gap={10}>
+                      <FontAwesomeIcon
+                        icon={faCheck}
+                        style={{ color: theme.background?.val || '#fff' }}
+                      />
+                      <TText color={theme.background?.val || '#fff'} fontSize={16}>
+                        {t('main:profile_ui_enable')}
+                      </TText>
+                    </XStack>
+                  </TButton>
+                </XStack>
+              </YStack>
+            </YStack>
           ) : (
-            <Container>
-              <View flex style={{ gap: 20 }}>
-                <Text center text60>
-                  {t('main:profile_download_failure')}
-                </Text>
-                <RemoteErrorView remoteError={downloadResult} />
-                <View flex>
-                  <View flex style={{ flexDirection: "row", gap: 10 }}>
-                    <Button
-                      marginV-12 flex
-                      backgroundColor={Colors.red20}
-                      onPress={() => {
-                        makeLoading(setLoading,
-                          async () => {
-                            await adapter.getProfiles();
-                            goBack();
-                          });
-                      }}
-                    >
+            <YStack gap={20} flex={1}>
+              <TText textAlign="center" fontSize={18} color="$textDefault">
+                {t('main:profile_download_failure')}
+              </TText>
+              <RemoteErrorView remoteError={downloadResult} />
+              <YStack flex={1}>
+                <XStack flex={1} gap={10}>
+                  <TButton
+                    flex={1}
+                    marginVertical={12}
+                    backgroundColor={theme.backgroundDangerHeavy?.val || '#dc2626'}
+                    onPress={() => {
+                      makeLoading(setLoading,
+                        async () => {
+                          await adapter.getProfiles();
+                          goBack();
+                        });
+                    }}
+                  >
+                    <XStack alignItems="center" gap={10}>
                       <FontAwesomeIcon
                         icon={faCancel}
-                        style={{ color: Colors.white }}
+                        style={{ color: theme.background?.val || '#fff' }}
                       />
-                      <Text
-                        marginL-10
-                        color={Colors.white}
-                      >{t('main:profile_ui_back')}</Text>
-                    </Button>
-                  </View>
-                </View>
-              </View>
-            </Container>
+                      <TText color={theme.background?.val || '#fff'} fontSize={16}>
+                        {t('main:profile_ui_back')}
+                      </TText>
+                    </XStack>
+                  </TButton>
+                </XStack>
+              </YStack>
+            </YStack>
           )
       }
     </View>

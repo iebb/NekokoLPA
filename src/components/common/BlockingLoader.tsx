@@ -94,7 +94,7 @@ export default function BlockingLoader({
         size="$4"
         backgroundColor={theme.surfaceRow?.val || theme.background?.val}
         borderColor={theme.borderColor?.val}
-        borderRadius={12}
+        borderRadius={12} // Using theme-radius.card value (12px)
         padding={20}
         maxWidth={320}
         minWidth={260}

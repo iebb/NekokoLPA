@@ -90,7 +90,6 @@ export default function SIMSelector() {
     </ScrollView>
   );
 
-
   return (
     <View
       style={{ flexGrow: 1, flexShrink: 0 }}
@@ -104,15 +103,14 @@ export default function SIMSelector() {
         }}
       >
         <Tabs.List
-          backgroundColor={theme.surfaceRow?.val || theme.background?.val}
-          borderRadius={20}
+          backgroundColor={theme.surfaceSpecial?.val}
+          borderRadius={12}
           style={{
             height: 40,
             overflow: 'hidden',
             width: '100%',
             marginBottom: 8,
-            borderWidth: 1,
-            borderColor: theme.borderColor?.val || 'transparent'
+            borderWidth: 0,
           }}
         >
           {deviceList.map((name, _idx) => {
@@ -159,7 +157,7 @@ export default function SIMSelector() {
               left: (index * displayWidth) + ((displayWidth - displayWidth2) / 2),
               width: displayWidth2,
               height: 2,
-              backgroundColor: theme.color10?.val || theme.colorFocus?.val || theme.color?.val,
+              backgroundColor: theme.accentColor?.val || theme.colorFocus?.val || theme.color?.val,
               borderRadius: 1,
             }}
           />

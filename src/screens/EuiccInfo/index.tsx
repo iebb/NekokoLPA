@@ -2,6 +2,7 @@ import React from 'react';
 import {FlatList} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import SafeScreen from '@/theme/SafeScreen';
+import PageContainer from '@/components/common/PageContainer';
 import type {RootScreenProps} from "@/screens/navigation";
 import Title from "@/components/common/Title";
 import {Text, useTheme} from 'tamagui';
@@ -32,7 +33,7 @@ function EuiccInfo({ route,  navigation }: RootScreenProps<'EuiccInfo'>) {
           Clipboard.setString(row.raw ?? row.rendered)
         }}
       >
-        <View style={{ paddingVertical: 10, paddingHorizontal: 20, borderBottomWidth: 0.5, borderBottomColor: theme.borderColor?.val || 'rgba(0,0,0,0.08)' }}>
+        <View style={{ paddingVertical: 10, borderBottomWidth: 0.5, borderBottomColor: theme.borderColor?.val || 'rgba(0,0,0,0.08)' }}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text color="$textDefault" numberOfLines={1} style={{ flex: 1 }}>
               {t('main:euiccInfo_' + row.key)}
@@ -50,24 +51,27 @@ function EuiccInfo({ route,  navigation }: RootScreenProps<'EuiccInfo'>) {
 	return (
 		<SafeScreen>
 			<Title>{t('main:euiccInfo_euiccinfo')}</Title>
-			<FlatList
-				data={[
-					{key: "eid", rendered: `${eid}` },
-					{key: "sasAcreditationNumber", rendered: euiccInfo2?.sasAcreditationNumber },
-					{key: "svn", rendered: euiccInfo2?.svn },
-					{key: "freeNonVolatileMemory", rendered: formatSize(euiccInfo2?.extCardResource.freeNonVolatileMemory) },
-					{key: "freeVolatileMemory", rendered: formatSize(euiccInfo2?.extCardResource.freeVolatileMemory) },
-					{key: "defaultDpAddress", rendered: euiccAddress?.defaultDpAddress },
-					{key: "rootDsAddress", rendered: euiccAddress?.rootDsAddress },
-					{key: "euiccCiPKIdListForSigning", rendered: euiccInfo2?.euiccCiPKIdListForSigning.map(x => x.substr(0, 16)).join(", "), raw: euiccInfo2?.euiccCiPKIdListForSigning.join("\n") },
-					{key: "euiccCiPKIdListForVerification", rendered: euiccInfo2?.euiccCiPKIdListForVerification.map(x => x.substr(0, 16)).join(", "), raw: euiccInfo2?.euiccCiPKIdListForVerification.join("\n") },
-					{key: "profileVersion", rendered: euiccInfo2?.profileVersion },
-					{key: "globalplatformVersion", rendered: euiccInfo2?.globalplatformVersion },
-					{key: "euiccFirmwareVer", rendered: euiccInfo2?.euiccFirmwareVer },
-				]}
-				renderItem={({item, index}) => renderRow(item, index, t)}
-				keyExtractor={(item: EuiccInfoDataType) => item.key}
-			/>
+			<PageContainer keyboardAvoiding={false} scrollViewProps={{ nestedScrollEnabled: true }}>
+				<FlatList
+					data={[
+						{key: "eid", rendered: `${eid}` },
+						{key: "sasAcreditationNumber", rendered: euiccInfo2?.sasAcreditationNumber },
+						{key: "svn", rendered: euiccInfo2?.svn },
+						{key: "freeNonVolatileMemory", rendered: formatSize(euiccInfo2?.extCardResource.freeNonVolatileMemory) },
+						{key: "freeVolatileMemory", rendered: formatSize(euiccInfo2?.extCardResource.freeVolatileMemory) },
+						{key: "defaultDpAddress", rendered: euiccAddress?.defaultDpAddress },
+						{key: "rootDsAddress", rendered: euiccAddress?.rootDsAddress },
+						{key: "euiccCiPKIdListForSigning", rendered: euiccInfo2?.euiccCiPKIdListForSigning.map(x => x.substr(0, 16)).join(", "), raw: euiccInfo2?.euiccCiPKIdListForSigning.join("\n") },
+						{key: "euiccCiPKIdListForVerification", rendered: euiccInfo2?.euiccCiPKIdListForVerification.map(x => x.substr(0, 16)).join(", "), raw: euiccInfo2?.euiccCiPKIdListForVerification.join("\n") },
+						{key: "profileVersion", rendered: euiccInfo2?.profileVersion },
+						{key: "globalplatformVersion", rendered: euiccInfo2?.globalplatformVersion },
+						{key: "euiccFirmwareVer", rendered: euiccInfo2?.euiccFirmwareVer },
+					]}
+					renderItem={({item, index}) => renderRow(item, index, t)}
+					keyExtractor={(item: EuiccInfoDataType) => item.key}
+					scrollEnabled={false}
+				/>
+			</PageContainer>
 		</SafeScreen>
 	);
 

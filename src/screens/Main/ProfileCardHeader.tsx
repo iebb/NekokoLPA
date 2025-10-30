@@ -1,12 +1,13 @@
-import {ActionSheet, Button, Card, Colors, Text, View} from "react-native-ui-lib";
-import React, {useState, useMemo, useCallback} from "react";
+import {Button as TButton, Card, Text as TText, useTheme, XStack, YStack} from 'tamagui';
+import AppSheet from '@/components/common/AppSheet';
+import {NativeModules, Platform, ToastAndroid, TouchableOpacity, View} from 'react-native';
+import React, {useCallback, useMemo, useState} from "react";
 import {useSelector} from "react-redux";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faPlus} from '@fortawesome/free-solid-svg-icons'
 import {useNavigation} from "@react-navigation/native";
 import {useTranslation} from "react-i18next";
 import {Adapters} from "@/native/adapters/registry";
-import {NativeModules, Platform, ToastAndroid} from "react-native";
 import Clipboard from "@react-native-clipboard/clipboard";
 import prompt from "react-native-prompt-android";
 import {preferences} from "@/utils/mmkv";
@@ -19,24 +20,24 @@ import {useToast} from "@/components/common/ToastProvider";
 import {useLoading} from "@/components/common/LoadingProvider";
 
 // Extracted components
-const ActionSheetOptions = React.memo(({ 
-  deviceId, 
-  DeviceState, 
-  adapter, 
-  navigation, 
+const ActionSheetOptions = React.memo(({
+  deviceId,
+  DeviceState,
+  adapter,
+  navigation,
   euiccMenu,
-  setEuiccMenu, 
-  setLoading, 
-  showToast 
-}: { 
-  deviceId: string; 
-  DeviceState: any; 
-  adapter: any; 
- navigation: any; 
+  setEuiccMenu,
+  setLoading,
+  showToast
+}: {
+  deviceId: string;
+  DeviceState: any;
+  adapter: any;
+ navigation: any;
   euiccMenu: boolean;
-  setEuiccMenu: (visible: boolean) => void; 
-  setLoading: any; 
-  showToast: any; 
+  setEuiccMenu: (visible: boolean) => void;
+  setLoading: any;
+  showToast: any;
 }) => {
   const { t } = useTranslation(['main']);
 
@@ -52,10 +53,6 @@ const ActionSheetOptions = React.memo(({
 
   const handleEuiccInfo = useCallback(() => {
     navigation.navigate('EuiccInfo', { deviceId });
-  }, [navigation, deviceId]);
-
-  const handleDownloadProfile = useCallback(() => {
-    navigation.navigate('Scanner', { deviceId });
   }, [navigation, deviceId]);
 
   const handleSetNickname = useCallback(() => {
@@ -91,10 +88,6 @@ const ActionSheetOptions = React.memo(({
     );
   }, [setLoading, adapter, showToast]);
 
-  const handleCancel = useCallback(() => {
-    setEuiccMenu(false);
-  }, [setEuiccMenu]);
-
   const options = useMemo(() => [
     {
       label: t('main:eid_copy'),
@@ -109,10 +102,6 @@ const ActionSheetOptions = React.memo(({
       onPress: handleEuiccInfo
     },
     {
-      label: t('main:download_profile'),
-      onPress: handleDownloadProfile
-    },
-    {
       label: t('main:set_nickname'),
       onPress: handleSetNickname
     },
@@ -124,118 +113,122 @@ const ActionSheetOptions = React.memo(({
       label: t('main:notifications_send'),
       onPress: handleSendNotifications
     },
-    {
-      label: 'Cancel',
-      onPress: handleCancel
-    }
   ], [
-    t, deviceId, adapter, navigation, 
-    handleEidCopy, handleOpenSTK, handleEuiccInfo, handleDownloadProfile,
-    handleSetNickname, handleManageNotifications, handleSendNotifications, handleCancel
+    t, deviceId, adapter, navigation,
+    handleEidCopy, handleOpenSTK, handleEuiccInfo,
+    handleSetNickname, handleManageNotifications, handleSendNotifications
   ]);
 
   return (
-    <ActionSheet
-      title={`EID: ${DeviceState?.eid}`}
-      containerStyle={{
-        backgroundColor: Colors.cardBackground,
-      }}
-      cancelButtonIndex={options.length - 1}
-      options={options}
-      visible={euiccMenu}
-      useNativeIOS
-      onDismiss={() => setEuiccMenu(false)}
-    />
+    <AppSheet open={euiccMenu} onOpenChange={setEuiccMenu} title={`EID: ${DeviceState?.eid}`}>
+      <YStack>
+        {options.map((opt, idx) => (
+          <View key={idx}>
+            <TouchableOpacity
+              activeOpacity={0.6}
+              onPress={() => { setEuiccMenu(false); opt.onPress(); }}
+            >
+              <View style={{ paddingVertical: 12, paddingHorizontal: 16 }}>
+                <TText color="$textDefault" fontSize={14}>{opt.label}</TText>
+              </View>
+            </TouchableOpacity>
+            {idx < options.length - 1 && (
+              <View style={{ height: 1, backgroundColor: (useTheme().outlineNeutral?.val || '#e6e6ea'), opacity: 0.4 }} />
+            )}
+          </View>
+        ))}
+      </YStack>
+    </AppSheet>
   );
 });
 
-const CardContent = React.memo(({ 
-  DeviceState, 
-  maskedEid, 
-  supplementText 
-}: { 
-  DeviceState: any; 
-  maskedEid: string; 
-  supplementText: string; 
+const CardContent = React.memo(({
+  DeviceState,
+  maskedEid,
+  supplementText
+}: {
+  DeviceState: any;
+  maskedEid: string;
+  supplementText: string;
 }) => {
   const { t } = useTranslation(['main']);
 
   return (
-    <View paddingH-10 paddingV-3 flexG style={{ flex: 1 }}>
+    <View style={{ paddingHorizontal: 10, paddingVertical: 3, flex: 1 }}>
       {/* First Row */}
-      <View row style={{ width: '100%' }}>
-        <Text text100L $textDefault numberOfLines={1}>
+      <View style={{ flexDirection: 'row', width: '100%' }}>
+        <TText color="$textDefault" fontSize={11} numberOfLines={1}>
           {t('main:available_space', {
             size: formatSize(DeviceState.bytesFree),
           })}
-        </Text>
-        <Text
-          text100L
-          $textDefault
+        </TText>
+        <TText
+          color="$textDefault"
+          fontSize={11}
           style={{ textAlign: 'right', flexGrow: 1 }}
           numberOfLines={1}
         >
           CI: {DeviceState.euiccInfo2?.euiccCiPKIdListForSigning.map((x: any) => toCIName(x)).join(', ')}
-        </Text>
+        </TText>
       </View>
 
       {/* Second Row */}
-      <View row style={{ width: '100%' }}>
-        <Text text100L $textDefault>
+      <View style={{ flexDirection: 'row', width: '100%' }}>
+        <TText color="$textDefault" fontSize={11}>
           EID: {maskedEid}
-        </Text>
-        <Text
-          text100L
-          $textDefault
+        </TText>
+        <TText
+          color="$textDefault"
+          fontSize={11}
           style={{ textAlign: 'right', flexGrow: 1 }}
           numberOfLines={1}
         >
           {supplementText}
-        </Text>
+        </TText>
       </View>
     </View>
   );
 });
 
-const AddProfileButton = React.memo(({ 
-  deviceId, 
-  navigation 
-}: { 
-  deviceId: string; 
-  navigation: any; 
+const AddProfileButton = React.memo(({
+  deviceId,
+  navigation
+}: {
+  deviceId: string;
+  navigation: any;
 }) => {
+  const theme = useTheme();
   const handlePress = useCallback(() => {
     navigation.navigate('Scanner', { deviceId });
   }, [navigation, deviceId]);
 
   return (
-    <View flexG-1 style={{ maxWidth: 36, flex: 1 }}>
-      <Button
-        borderRadius={0}
-        fullWidth
-        round
-        style={{ flex: 1, width: 36 }}
-        size="small"
+    <View style={{ maxWidth: 36, flex: 1 }}>
+      <TButton
+        size="$3"
+        style={{ width: 36, height: 36, borderRadius: 12 }}
+        backgroundColor={theme.accentColor?.val || theme.color?.val || '#6c5ce7'}
         onPress={handlePress}
       >
-        <FontAwesomeIcon icon={faPlus} style={{ color: Colors.buttonForeground }} />
-      </Button>
+        <FontAwesomeIcon icon={faPlus} style={{ color: theme.background?.val || '#fff' }} />
+      </TButton>
     </View>
   );
 });
 
 export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
   const { t } = useTranslation(['main']);
+  const theme = useTheme();
   const navigation = useNavigation();
   const [euiccMenu, setEuiccMenu] = useState(false);
   const DeviceState = useSelector((state: RootState) => state.DeviceState[deviceId]) ?? {};
-  
+
   // Memoize preferences
-  const stealthMode = useMemo(() => 
-    preferences.getString("redactMode") ?? "none", 
+  const stealthMode = useMemo(() =>
+    preferences.getString("redactMode") ?? "none",
     []
   );
-  
+
   const adapter = Adapters[deviceId];
   const { showToast } = useToast();
   const { setLoading } = useLoading();
@@ -250,14 +243,14 @@ export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
   }, [DeviceState?.eid, stealthMode]);
 
   // Memoize supplement text
-  const supplementText = useMemo(() => 
-    toFriendlyName(eid, DeviceState.euiccInfo2), 
+  const supplementText = useMemo(() =>
+    toFriendlyName(eid, DeviceState.euiccInfo2),
     [eid, DeviceState.euiccInfo2]
   );
 
   // Memoize action sheet visibility
-  const shouldShowActionSheet = useMemo(() => 
-    DeviceState?.eid && euiccMenu, 
+  const shouldShowActionSheet = useMemo(() =>
+    DeviceState?.eid && euiccMenu,
     [DeviceState?.eid, euiccMenu]
   );
 
@@ -283,29 +276,24 @@ export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
            showToast={showToast}
          />
        )}
-      
+
       <Card
-        style={{
-          backgroundColor: Colors.cardBackground,
-          borderRadius: 10,
-          borderColor: Colors.$outlineNeutral,
-          borderWidth: 1,
-          overflow: "hidden",
-          width: "100%",
-          display: "flex",
-          flexDirection: "row"
-        }}
-        row
-        enableShadow
+        backgroundColor={theme.surfaceSpecial?.val}
+        borderRadius={12}
+        borderWidth={0}
+        width="100%"
         onPress={handleCardPress}
+        padding={0}
       >
-        <CardContent 
-          DeviceState={DeviceState} 
-          maskedEid={maskedEid} 
-          supplementText={supplementText} 
-        />
-        
-        <AddProfileButton deviceId={deviceId} navigation={navigation} />
+        <XStack flex={1} alignItems="center">
+          <CardContent
+            DeviceState={DeviceState}
+            maskedEid={maskedEid}
+            supplementText={supplementText}
+          />
+
+          <AddProfileButton deviceId={deviceId} navigation={navigation} />
+        </XStack>
       </Card>
     </View>
   );

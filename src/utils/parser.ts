@@ -3,7 +3,13 @@ import {ProfileMetadataMap} from "@/native/types";
 import {resolveMccMnc} from "@/data/mccMncResolver";
 import {TFunction} from "i18next";
 import {countryList} from "@/utils/mmkv";
-import {Colors} from "react-native-ui-lib";
+// Color constants for tag rendering - using theme-agnostic values
+const TAG_COLORS = {
+  red: { fg: '#dc2626', bg: '#fee2e2' },
+  orange: { fg: '#ea580c', bg: '#ffedd5' },
+  green: { fg: '#16a34a', bg: '#dcfce7' },
+  blue: { fg: '#2563eb', bg: '#dbeafe' },
+};
 
 export function predictCountryForICCID(iccid: string) {
   const prefix = iccid.substring(2).replaceAll(/^0+/g, '');
@@ -72,8 +78,8 @@ export function parseMetadata(metadata: ProfileMetadataMap, t: TFunction, parseC
               remaining: -days,
             }) as string,
             rawValue: `d:${date6}`,
-            color: Colors.red10,
-            backgroundColor: Colors.red70,
+            color: TAG_COLORS.red.fg,
+            backgroundColor: TAG_COLORS.red.bg,
           })
         } else {
           tags.push({
@@ -84,8 +90,8 @@ export function parseMetadata(metadata: ProfileMetadataMap, t: TFunction, parseC
               remaining: days,
             }) as string,
             rawValue: `d:${date6}`,
-            color: days < 7 ? Colors.orange10 : Colors.green10,
-            backgroundColor: days < 7 ? Colors.orange70 : Colors.green70,
+            color: days < 7 ? TAG_COLORS.orange.fg : TAG_COLORS.green.fg,
+            backgroundColor: days < 7 ? TAG_COLORS.orange.bg : TAG_COLORS.green.bg,
           })
         }
         nickname = nickname.replace(eDate[0], '').trim();
@@ -100,8 +106,8 @@ export function parseMetadata(metadata: ProfileMetadataMap, t: TFunction, parseC
       tag: 'text',
       value: match[1].replaceAll("_", " "),
       rawValue: `t:${match[1]}`,
-      color: Colors.blue10,
-      backgroundColor: Colors.blue70,
+      color: TAG_COLORS.blue.fg,
+      backgroundColor: TAG_COLORS.blue.bg,
     });
     nickname = nickname.replace(match[0], '').trim();
   }

@@ -1,11 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {ScrollView,} from 'react-native';
+import {TouchableOpacity} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import SafeScreen from '@/theme/SafeScreen';
+import PageContainer from '@/components/common/PageContainer';
 import type {RootScreenProps} from "@/screens/navigation";
 import Title from "@/components/common/Title";
-import Container from "@/components/common/Container";
-import {Colors, LoaderScreen, Text, TouchableOpacity, View} from "react-native-ui-lib";
+import UnifiedLoader from "@/components/common/UnifiedLoader";
+import { View } from 'react-native';
+import { Text as TText, XStack, YStack, useTheme } from 'tamagui';
 import {bleManager, requestBluetoothPermission} from "@/utils/blue";
 import {Device} from 'react-native-ble-plx';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
@@ -17,7 +19,7 @@ import {makeLoading} from "@/components/utils/loading";
 import {useLoading} from "@/components/common/LoadingProvider";
 
 function BluetoothScan({ route,  navigation }: RootScreenProps<'BluetoothScan'>) {
-
+	const theme = useTheme();
 	const { t } = useTranslation(['main']);
 	const [devices, setDevices] = useState<Device[]>([]);
 	const dispatch = useDispatch();
@@ -66,55 +68,49 @@ function BluetoothScan({ route,  navigation }: RootScreenProps<'BluetoothScan'>)
 	return (
 		<SafeScreen>
 			<Title>{t('main:bluetooth_scan')}</Title>
-			<Container>
-				<ScrollView>
-					<View flex flexG style={{ gap: 10 }}>
-						<View gap-10>
-							{
-								devices.map(device => {
-									return (
-										<TouchableOpacity
-											key={device.id}
-											paddingV-10
-											onPress={async () => {
-												makeLoading(setLoading, async () => {
-													setScanning(false);
-													bleManager.stopDeviceScan();
-													await connectDevice(device);
-													await setupDevices(dispatch, "ble:" + device.id);
-													navigation.goBack();
-												})
-											}}
-										>
-											<View row gap-10>
-												<FontAwesomeIcon icon={
-													device!.name!.startsWith("ESTKme") ? faMattressPillow : device!.name!.startsWith("eSIM_Writer") ? fa9 : faSdCard
-												} size={40} style={{ color: Colors.$textPrimary }} />
-												<View flexG>
-													<Text text70M style={{ marginTop: -2 }} flexG $textDefault>
-														{device.name}
-													</Text>
-													<View>
-														<Text $textNeutral text90M flexG>
-															{device.id}
-														</Text>
-													</View>
+			<PageContainer>
+				<YStack gap={10} flex={1}>
+					<YStack gap={10}>
+						{
+							devices.map(device => {
+								return (
+									<TouchableOpacity
+										key={device.id}
+										style={{ paddingVertical: 10 }}
+										onPress={async () => {
+											makeLoading(setLoading, async () => {
+												setScanning(false);
+												bleManager.stopDeviceScan();
+												await connectDevice(device);
+												await setupDevices(dispatch, "ble:" + device.id);
+												navigation.goBack();
+											})
+										}}
+									>
+										<XStack gap={10} alignItems="center">
+											<FontAwesomeIcon icon={
+												device!.name!.startsWith("ESTKme") ? faMattressPillow : device!.name!.startsWith("eSIM_Writer") ? fa9 : faSdCard
+											} size={40} style={{ color: theme.accentColor?.val || theme.color?.val || '#6c5ce7' }} />
+											<YStack flex={1}>
+												<TText color="$textDefault" fontSize={14} fontWeight={"500" as any} style={{ marginTop: -2 }}>
+													{device.name}
+												</TText>
+												<View>
+													<TText color="$color10" fontSize={12} fontWeight={"500" as any}>
+														{device.id}
+													</TText>
 												</View>
-											</View>
-										</TouchableOpacity>
-									)})
-							}
-							{
-								scanning && (
-									<View>
-										<LoaderScreen color={Colors.$textPrimary} size="large" loaderColor={Colors.$backgroundNeutral} />
-									</View>
-								)
-							}
-						</View>
-					</View>
-				</ScrollView>
-			</Container>
+											</YStack>
+										</XStack>
+									</TouchableOpacity>
+								)})
+						}
+                        {scanning && (
+                            <UnifiedLoader variant="circular" compact text={t('main:bluetooth_scan')} />
+                        )}
+					</YStack>
+				</YStack>
+			</PageContainer>
 		</SafeScreen>
 	);
 

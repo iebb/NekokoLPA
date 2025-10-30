@@ -45,6 +45,11 @@ const appTokens = createTokens({
     3: 12,
     4: 16,
     5: 20,
+    // Standard border radius values for consistency
+    card: 12,      // Cards, modals, containers
+    button: 8,     // Buttons
+    tag: 999,      // Tags, chips, circular elements
+    small: 4,      // Small elements
   },
   zIndex: {
     0: 0,
@@ -56,48 +61,71 @@ const appTokens = createTokens({
   },
 })
 
-// Light theme: keep defaults, minor tweaks for border/shadow subtlety
-const lightTheme = {
+// Default themes with default primary color (#a575f6)
+import { generateTamaguiThemes } from '@/theme/tamaguiThemeGenerator'
+
+const defaultPrimaryColor = '#a575f6'
+const defaultThemes = generateTamaguiThemes(defaultPrimaryColor)
+
+// Base themes structure - will be merged with generated themes
+const baseLightTheme = {
   ...defaultConfig.themes.light,
   borderColor: '#e6e6ea',
   shadowColor: 'rgba(0,0,0,0.06)',
-  // Elevated row surface
-  surfaceRow: '#ffffff',
 }
 
-// Dark theme: deeper background, improved contrast, professional accents
-const darkTheme = {
+const baseDarkTheme = {
   ...defaultConfig.themes.dark,
-  // base surfaces
   background: '#0b0b0f',
   color: '#e9e9ef',
-  // borders and shadows
   borderColor: '#2a2a34',
   shadowColor: 'rgba(0,0,0,0.35)',
-  // accent and focus
-  accentColor: '#a575f6',
-  colorFocus: '#b58aff',
-  // Elevated row surface - slightly lighter than background
-  surfaceRow: '#16161d',
 }
 
-const config = createTamagui({
-  // Use default animations from v4 config
-  animations: defaultConfig.animations,
-  defaultFont: 'body',
-  fonts: {
-    body: interFont,
-    heading: interFont,
-  },
-  shouldAddPrefersColorThemes: true,
-  themeClassNameOnRoot: true,
-  shorthands,
-  tokens: appTokens,
-  themes: {
-    light: lightTheme,
-    dark: darkTheme,
-  },
-})
+// Merge base themes with generated themes
+const lightTheme = {
+  ...baseLightTheme,
+  ...defaultThemes.light,
+}
+
+const darkTheme = {
+  ...baseDarkTheme,
+  ...defaultThemes.dark,
+}
+
+/**
+ * Create a Tamagui config with custom primary color
+ * @param primaryColor - Primary/accent color (hex string)
+ */
+export function createTamaguiConfigWithColor(primaryColor: string = defaultPrimaryColor) {
+  const generatedThemes = generateTamaguiThemes(primaryColor)
+  
+  return createTamagui({
+    // Use default animations from v4 config
+    animations: defaultConfig.animations,
+    defaultFont: 'body',
+    fonts: {
+      body: interFont,
+      heading: interFont,
+    },
+    shouldAddPrefersColorThemes: true,
+    themeClassNameOnRoot: true,
+    shorthands,
+    tokens: appTokens,
+    themes: {
+      light: {
+        ...baseLightTheme,
+        ...generatedThemes.light,
+      },
+      dark: {
+        ...baseDarkTheme,
+        ...generatedThemes.dark,
+      },
+    },
+  })
+}
+
+const config = createTamaguiConfigWithColor(defaultPrimaryColor)
 
 export type AppConfig = typeof config
 

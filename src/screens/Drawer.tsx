@@ -3,7 +3,8 @@ import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 import React from "react";
 import {useTranslation} from 'react-i18next';
 import {version} from '../../package.json';
-import {Colors, Image, Text, View} from 'react-native-ui-lib';
+import { View, Image } from 'react-native';
+import {Text as TText, useTheme} from 'tamagui';
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faArrowLeft, faDownload, faCode, faCog, faFlag, faShoppingCart} from "@fortawesome/free-solid-svg-icons";
 import {faBluetoothB} from "@fortawesome/free-brands-svg-icons";
@@ -13,6 +14,7 @@ import {Linking} from 'react-native';
 
 export default function LeftSidebarDrawer({ navigation }: DrawerContentComponentProps) {
   const { t } = useTranslation(['main']);
+  const theme = useTheme();
   const menuItems = [
     {
       title: 'Main', label: 'main:main_screen',
@@ -46,34 +48,34 @@ export default function LeftSidebarDrawer({ navigation }: DrawerContentComponent
 
   return (
     <DrawerContentScrollView>
-      <View row gap-5 flexG paddingH-5>
+      <View style={{ flexDirection: 'row', gap: 5, flex: 1, paddingHorizontal: 5 }}>
         <Image
           source={AppLogo}
           style={{width: 42, height: 42}}
         />
         <View>
           <View>
-            <Text $textDefault text70BO>{AppTitle}</Text>
+            <TText color="$textDefault" fontSize={16} fontWeight={"700" as any}>{AppTitle}</TText>
           </View>
           <View>
-            <Text $textNeutralLight text90L>v{version}</Text>
+            <TText color="$color10" fontSize={12}>v{version}</TText>
           </View>
         </View>
       </View>
-      <View paddingT-10>
+      <View style={{ paddingTop: 10 }}>
         {
           menuItems.map((item, i) => {
             return (
               <DrawerItem
                 key={i}
-                inactiveTintColor={Colors.$iconPrimary}
-                activeTintColor={Colors.$iconPrimaryLight}
+                inactiveTintColor={theme.color10?.val || theme.color?.val || '#888'}
+                activeTintColor={theme.accentColor?.val || theme.color?.val || '#6c5ce7'}
                 icon={
                   ({focused, size, color}) => <FontAwesomeIcon icon={item.icon as any} style={{color}}/>
                 }
                 label={t(item.label)}
                 labelStyle={{
-                  color: Colors.$textDefault,
+                  color: theme.textDefault?.val || theme.color?.val || '#000',
                 }}
                 onPress={() => item.onPress(navigation)}
               />

@@ -1,10 +1,11 @@
 import React, {useEffect} from 'react';
-import {Alert, Image, PixelRatio, ScrollView, TouchableOpacity,} from 'react-native';
+import {Alert, Image, PixelRatio, TouchableOpacity,} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import SafeScreen from '@/theme/SafeScreen';
+import PageContainer from '@/components/common/PageContainer';
 import type {RootScreenProps} from "@/screens/navigation";
 import Title from "@/components/common/Title";
-import {Colors, Drawer} from "react-native-ui-lib";
+import { Swipeable } from 'react-native-gesture-handler';
 import {Text, useTheme} from 'tamagui';
 import {View} from 'react-native';
 import {useSelector} from "react-redux";
@@ -70,95 +71,87 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
                     : type === 'disable' ? (theme.color10?.val || '#888')
                     : type === 'enable' ? (theme.accentColor?.val || '#a575f6')
                     : (theme.color?.val || '#555');
-    return (
-      <View key={row.seqNumber} style={{ marginBottom: 12, marginHorizontal: 16 }}>
-        <Drawer
-          style={{
-            overflow: "hidden",
-          }}
-          rightItems={[{
-            customElement: (
-              <FontAwesomeIcon icon={faPaperPlane} style={{ color: Colors.buttonForeground }} />
-            ),
-            width: 60,
-            background: Colors.green30,
-            onPress: async () => {
+    const renderRight = () => (
+      <TouchableOpacity
+        onPress={async () => {
+          const result = await adapter.sendNotification(row.seqNumber);
+          if (result.result !== 0) {
+            Alert.alert(t('main:notifications_send_failed'), t('main:notifications_send_failed_alert'));
+            showToast(t('main:notifications_send_failed'), 'error');
+          } else {
+            showToast(t('main:notifications_send_success'), 'success');
+          }
+        }}
+        activeOpacity={0.8}
+        style={{ width: 60, justifyContent: 'center', alignItems: 'center', backgroundColor: (theme.backgroundSuccessHeavy?.val || theme.accentColor?.val || '#22c55e'), borderTopRightRadius: 12, borderBottomRightRadius: 12 }}
+      >
+        <FontAwesomeIcon icon={faPaperPlane} style={{ color: theme.background?.val || '#fff' }} />
+      </TouchableOpacity>
+    );
+
+    const renderLeft = () => (
+      <TouchableOpacity
+        onPress={() => Alert.alert(
+          t('main:notifications_delete'),
+          t('main:notifications_delete_alert'), [
+            { text: t('main:notifications_delete_cancel'), onPress: () => {}, style: 'cancel' },
+            { text: t('main:notifications_delete_ok'), style: 'destructive', onPress: async () => {
               const result = await adapter.sendNotification(row.seqNumber);
-              if (result.result !== 0) {
-                Alert.alert(t('main:notifications_send_failed'), t('main:notifications_send_failed_alert'));
-                showToast(t('main:notifications_send_failed'), 'error');
+              if (result.result === 0) {
+                await adapter.deleteNotification(row.seqNumber);
               } else {
-                showToast(t('main:notifications_send_success'), 'success');
+                Alert.alert(t('main:notifications_send_failed'), t('main:notifications_send_failed_alert'));
               }
-            }
-          }]}
-          leftItem={{
-            customElement: (
-              <FontAwesomeIcon icon={faTrash} style={{ color: Colors.buttonForeground }} />
-            ),
-            width: 60,
-            background: Colors.red30,
-            onPress: () => Alert.alert(
-              t('main:notifications_delete'),
-              t('main:notifications_delete_alert'), [
-                {
-                  text: t('main:notifications_delete_cancel'),
-                  onPress: () => {},
-                  style: 'cancel',
-                },
-                {
-                  text: t('main:notifications_delete_ok'),
-                  style: 'destructive',
-                  onPress: async () => {
-                    const result = await adapter.sendNotification(row.seqNumber);
-                    if (result.result === 0) {
-                      await adapter.deleteNotification(row.seqNumber);
-                    } else {
-                      Alert.alert(t('main:notifications_send_failed'), t('main:notifications_send_failed_alert'));
-                    }
-                  }
-                },
-              ])
-          }}
-        >
+            }}
+          ])}
+        activeOpacity={0.8}
+        style={{ width: 60, justifyContent: 'center', alignItems: 'center', backgroundColor: (theme.backgroundDangerHeavy?.val || '#dc2626'), borderTopLeftRadius: 12, borderBottomLeftRadius: 12 }}
+      >
+        <FontAwesomeIcon icon={faTrash} style={{ color: theme.background?.val || '#fff' }} />
+      </TouchableOpacity>
+    );
+
+    return (
+      <View key={row.seqNumber} style={{ marginBottom: 12 }}>
+        <Swipeable renderLeftActions={renderLeft} renderRightActions={renderRight} overshootFriction={8} friction={2}>
           <TouchableOpacity>
-            {/* Card surface inside Drawer so gestures remain smooth */}
-            <View style={{ borderRadius: 12, backgroundColor: rowBg, borderWidth: 1, borderColor: borderCol, flexDirection: 'row', paddingHorizontal: 16, paddingVertical: 12 }}>
+            {/* Card surface inside to keep rounded corners */}
+            <View style={{ borderRadius: 12, backgroundColor: rowBg, borderWidth: 1, borderColor: borderCol, flexDirection: 'row', paddingHorizontal: 16, paddingVertical: 12, marginHorizontal: 16, position: 'relative' }}>
+              {/* Flag top-left */}
+              <View style={{ marginRight: 10, justifyContent: 'flex-start' }}>
+                <Image
+                  style={{width: 20 * PixelRatio.getFontScale(), height: 20 * PixelRatio.getFontScale()}}
+                  source={Flags[country] || Flags.UN}
+                />
+              </View>
+
+              {/* Main content */}
               <View style={{ flexGrow: 1 }}>
-                <View style={{ flexDirection: 'row' }}>
-                  <Text color="$textDefault" numberOfLines={1} style={{ marginRight: 10 }} fontSize={14} fontWeight={"700" as any}>
-                    #{row.seqNumber}
-                  </Text>
-                  <Text color="$textDefault" numberOfLines={1} fontSize={14}>
-                    <Image
-                      style={{width: 20 * PixelRatio.getFontScale(), height: 20 * PixelRatio.getFontScale()}}
-                      source={Flags[country] || Flags.UN}
-                    />
-                    {
-                      metadata ? ` [${country}] ${name}` : ` ${row.iccid}`
-                    }
-                  </Text>
-                </View>
-                <View>
+                <Text color="$textDefault" numberOfLines={1} fontSize={14}>
+                  {metadata ? ` ${name}` : ` ${row.iccid}`}
+                </Text>
+                <View style={{ marginTop: 4 }}>
                   <Text color="$color10" fontSize={12}>RSP: {row.notificationAddress}</Text>
                   <Text color="$color10" fontSize={12}>ICCID: {row.iccid}</Text>
                 </View>
               </View>
-              <View>
-                <View>
-                  {/* Right side badge for type */}
-                  <View style={{ alignItems: 'flex-end' }}>
-                    <View style={{ backgroundColor: badgeBg, borderRadius: 999, paddingHorizontal: 10, paddingVertical: 4 }}>
-                      <Text color={theme.background?.val || '#ffffff'} fontSize={12}>
-                        {type}
-                      </Text>
-                    </View>
-                  </View>
+
+              {/* Right side badge for type */}
+              <View style={{ alignItems: 'flex-end', justifyContent: 'center' }}>
+                <View style={{ backgroundColor: badgeBg, borderRadius: 999, paddingHorizontal: 10, paddingVertical: 4, minHeight: 24, justifyContent: 'center' }}>
+                  <Text color={theme.background?.val || '#ffffff'} fontSize={12}>
+                    {type}
+                  </Text>
                 </View>
               </View>
+
+              {/* Number bottom-right */}
+              <Text color="$textDefault" fontSize={12} style={{ position: 'absolute', right: 12, bottom: 8, opacity: 0.8 }}>
+                #{row.seqNumber}
+              </Text>
             </View>
           </TouchableOpacity>
-        </Drawer>
+        </Swipeable>
       </View>
     );
   }
@@ -166,13 +159,11 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
   return (
     <SafeScreen>
       <Title>{t('main:notifications_notifications')}</Title>
-      <View paddingV-20>
-        <ScrollView>
-          {
-            sorted.map(item => renderRow(item))
-          }
-        </ScrollView>
-      </View>
+      <PageContainer>
+        {
+          sorted.map(item => renderRow(item))
+        }
+      </PageContainer>
     </SafeScreen>
   );
 

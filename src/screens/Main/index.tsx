@@ -1,5 +1,6 @@
 import React, {useEffect, useState, useMemo, useCallback} from 'react';
 import SafeScreen from '@/theme/SafeScreen';
+import PageContainer from '@/components/common/PageContainer';
 import { View, Image, Linking, PixelRatio, Platform, TouchableOpacity } from "react-native";
 import SIMSelector from "@/screens/Main/SIMSelector";
 import type {RootScreenProps} from "@/screens/navigation";
@@ -47,13 +48,13 @@ const AppHeader = React.memo(({
   );
 });
 
-const ActionButtons = React.memo(({ 
+function ActionButtons({ 
   navigation, 
   onRefresh 
 }: { 
   navigation: any; 
   onRefresh: () => void; 
-}) => {
+}) {
   const theme = useTheme();
   const Btn = ({ icon, onPress }: { icon: any; onPress: () => void }) => (
     <TouchableOpacity
@@ -61,15 +62,15 @@ const ActionButtons = React.memo(({
       style={{
         width: 36,
         height: 36,
-        borderRadius: 18,
+        borderRadius: 18, // Circular button - keep as is
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 1,
-        borderColor: theme.accentColor?.val || theme.color?.val || '#6c5ce7',
-        backgroundColor: theme.accentColor?.val || theme.color?.val || '#6c5ce7',
+        borderColor: theme.accentColor?.val,
+        backgroundColor: theme.accentColor?.val,
       }}
     >
-      <FontAwesomeIcon icon={icon} style={{ color: theme.background?.val || '#fff' }} />
+      <FontAwesomeIcon icon={icon} style={{ color: theme.background?.val }} />
     </TouchableOpacity>
   );
 
@@ -80,7 +81,7 @@ const ActionButtons = React.memo(({
       <Btn icon={faCog} onPress={() => navigation.navigate('Settings', {})} />
     </XStack>
   );
-});
+}
 
 function Main({ navigation }: RootScreenProps<'Main'>) {
 	const dispatch = useDispatch();
@@ -141,8 +142,8 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 
 	return (
 		<SafeScreen>
-			<View style={{ paddingHorizontal: 24, marginTop: 12, flex: 1 }}>
-				<YStack gap={10} flex={1}>
+			<PageContainer horizontalPadding={24} keyboardAvoiding={false} scrollViewProps={{ scrollEnabled: false }}>
+				<YStack gap={10} flex={1} marginTop={12}>
 					<XStack alignItems="center" justifyContent="space-between">
 						<AppHeader 
 							navigation={navigation} 
@@ -156,7 +157,7 @@ function Main({ navigation }: RootScreenProps<'Main'>) {
 						<SIMSelector/>
 					</View>
 				</YStack>
-			</View>
+			</PageContainer>
 		</SafeScreen>
 	);
 }

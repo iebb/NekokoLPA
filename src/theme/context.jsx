@@ -1,32 +1,54 @@
-import React, {createContext, useContext, useState} from 'react';
-import {Colors, ThemeManager, View} from 'react-native-ui-lib';
-import {Appearance} from "react-native";
-import {initializeTheme} from "@/theme/theme";
+import React, {createContext, useContext, useState, useEffect} from 'react';
+import {Appearance} from 'react-native';
 import {preferences} from "@/utils/mmkv";
-import Container from "@/components/common/Container";
 
 const ThemeContext = createContext();
 
 export const useAppTheme = () => useContext(ThemeContext);
 
 export const ThemeProvider = ({children}) => {
-  const [theme, _setTheme] = useState('default');
+  const [theme, _setTheme] = useState(preferences.getString("theme") ?? 'default');
   const [themeColor, _setThemeColor] = useState(preferences.getString("themeColor") ?? '#a575f6');
-  const effectiveTheme = theme === 'default' ? Appearance.getColorScheme() : theme;
+  const [systemTheme, setSystemTheme] = useState(Appearance.getColorScheme());
+  const [themeVersion, setThemeVersion] = useState(0);
+
+  const effectiveTheme = theme === 'default' ? systemTheme : theme;
+  
   const setTheme = (_theme) => {
-    Colors.setScheme(_theme);
     _setTheme(_theme);
+    preferences.set("theme", _theme);
+    setThemeVersion(v => v + 1);
   };
 
   const setThemeColor = (color) => {
-    initializeTheme(color);
+    preferences.set("themeColor", color);
     _setThemeColor(color);
+    setThemeVersion(v => v + 1);
   };
 
+  // initialize theme from preferences on mount
+  useEffect(() => {
+    const storedTheme = preferences.getString("theme");
+    if (storedTheme && storedTheme !== theme) {
+      _setTheme(storedTheme);
+    }
+    const storedColor = preferences.getString("themeColor");
+    if (storedColor && storedColor !== themeColor) {
+      _setThemeColor(storedColor);
+    }
+    const sub = Appearance.addChangeListener(({ colorScheme }) => {
+      setSystemTheme(colorScheme);
+      setThemeVersion(v => v + 1);
+    });
+    return () => {
+      // @ts-ignore
+      sub?.remove?.();
+    };
+  }, []);
 
   return (
     <ThemeContext.Provider
-      value={{theme, effectiveTheme, themeColor, setTheme, setThemeColor}}
+      value={{theme, effectiveTheme, themeColor, setTheme, setThemeColor, themeVersion}}
     >
       {children}
     </ThemeContext.Provider>

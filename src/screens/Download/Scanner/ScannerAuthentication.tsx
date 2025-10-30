@@ -1,14 +1,14 @@
 import React, {useState} from 'react';
 import {Alert, StyleSheet,} from 'react-native';
 import {useTranslation} from 'react-i18next';
-import {Button, Colors, Text, TextField, View} from "react-native-ui-lib";
+import { View } from 'react-native';
+import { Button as TButton, Text as TText, Input, XStack, YStack, useTheme } from 'tamagui';
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faCancel, faDownload} from "@fortawesome/free-solid-svg-icons";
 import BlockingLoader from "@/components/common/BlockingLoader";
 import RemoteErrorView from "@/screens/Download/RemoteErrorView";
 import MetadataView from "@/components/common/MetadataView";
 import Title from "@/components/common/Title";
-import Container from "@/components/common/Container";
 import {makeLoading} from "@/components/utils/loading";
 import {Adapters} from "@/native/adapters/registry";
 import sizeFile, {ProfileSizes} from "@/data/sizes";
@@ -26,6 +26,7 @@ export function ScannerAuthentication(
     initialConfirmationCode
   }: any
 ) {
+  const theme = useTheme();
   const { t } = useTranslation(['main']);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState({} as any);
@@ -46,7 +47,7 @@ export function ScannerAuthentication(
 
 
   return (
-    <View>
+    <YStack gap={10} flex={1}>
       <Title>{t('main:profile_title_confirm_profile')}</Title>
       {
         loading && (
@@ -63,180 +64,179 @@ export function ScannerAuthentication(
       }
       {
         (authenticateResult?.success) ? (
-          <Container>
+          <YStack gap={10}>
             <MetadataView metadata={authenticateResult.profile} />
-            <View left gap-10 style={{ marginTop: 20 }}>
+            <YStack alignItems="flex-start" gap={10} marginTop={20}>
               {
-                (authenticateResult.isCcRequired || confirmationCode) && (
-                  <View style={styles.tableRow} row flex-1 gap-12>
-                    <Text $textDefault style={styles.tableHeader}>
-                      {t('main:profile_conf_code')}:
-                    </Text>
-                    <View style={styles.tableColumn}>
-                      <TextField
-                        placeholder={'Confirmation Code'}
-                        value={confirmationCode}
-                        onChangeText={c => setConfirmationCode(c)}
-                        enableErrors
-                        validate={['required']}
-                        validationMessage={['Field is required']}
-                        color={Colors.$textDefault}
-                        placeholderTextColor={Colors.$textNeutralLight}
-                        style={{
-                          ...styles.tableColumn,
-                          color: Colors.$textDefault,
-                          borderColor: Colors.$outlineDisabledHeavy,
-                          borderBottomWidth: 1,
-                          marginBottom: -10,
-                          marginTop: -5,
-                          marginLeft: -5,
-                        }}
-                      />
-                    </View>
+              (authenticateResult.isCcRequired || confirmationCode) && (
+                <XStack style={styles.tableRow} flex={1} gap={12} alignItems="center">
+                  <TText color="$textDefault" style={styles.tableHeader}>
+                    {t('main:profile_conf_code')}:
+                  </TText>
+                  <View style={styles.tableColumn}>
+                    <Input
+                      placeholder="Confirmation Code"
+                      value={confirmationCode}
+                      onChangeText={c => setConfirmationCode(c)}
+                      borderWidth={1}
+                      borderBottomWidth={1}
+                      borderColor={theme.outlineNeutral?.val || theme.borderColor?.val || '#777'}
+                      backgroundColor="transparent"
+                      color={theme.textDefault?.val}
+                      placeholderTextColor={theme.color10?.val}
+                      fontSize={17}
+                      padding={0}
+                      paddingBottom={8}
+                    />
                   </View>
-                )
-              }
-              {
-                sizeData && (
-                  <>
-                    <View style={styles.tableRow} flex-1 gap-12>
-                      <Text $textDefault style={styles.tableHeader}>
-                        {t('main:profile_size')}:
-                      </Text>
-                      <View style={styles.tableColumn}>
-                        <Text $textDefault flexG text70L>
-                          {formatSize(sizeData[1])} ({formatSize(sizeData[0])} ~ {formatSize(sizeData[2])})
-                        </Text>
-                      </View>
+                </XStack>
+              )
+            }
+            {
+              sizeData && (
+                <>
+                  <XStack style={styles.tableRow} flex={1} gap={12} alignItems="center">
+                    <TText color="$textDefault" style={styles.tableHeader}>
+                      {t('main:profile_size')}:
+                    </TText>
+                    <View style={styles.tableColumn}>
+                      <TText color="$textDefault" flex={1} fontSize={14}>
+                        {formatSize(sizeData[1])} ({formatSize(sizeData[0])} ~ {formatSize(sizeData[2])})
+                      </TText>
                     </View>
-                    <View style={styles.tableRow} flex-1 gap-12>
-                      <Text $textDefault style={styles.tableHeader}>
-                        {t('main:profile_available_space')}:
-                      </Text>
-                      <View style={styles.tableColumn}>
-                        <Text $textDefault flexG text70L style={freeSpace <= maxSizeData ? { color: "red" } : null }>
-                          {formatSize(freeSpace)}
-                        </Text>
-                      </View>
+                  </XStack>
+                  <XStack style={styles.tableRow} flex={1} gap={12} alignItems="center">
+                    <TText color="$textDefault" style={styles.tableHeader}>
+                      {t('main:profile_available_space')}:
+                    </TText>
+                    <View style={styles.tableColumn}>
+                      <TText color="$textDefault" flex={1} fontSize={14} style={freeSpace <= maxSizeData ? { color: theme.backgroundDangerHeavy?.val || '#dc2626' } : undefined}>
+                        {formatSize(freeSpace)}
+                      </TText>
                     </View>
-                  </>
-                )
-              }
-            </View>
-            <View flex>
-              <View flex row style={{ gap: 10 }}>
-                <Button
-                  flex-1
-                  marginV-12
-                  backgroundColor={Colors.red20}
-                  onPress={() => {
+                  </XStack>
+                </>
+              )
+            }
+          </YStack>
+          <YStack flex={1}>
+            <XStack flex={1} gap={10}>
+              <TButton
+                flex={1}
+                marginVertical={12}
+                backgroundColor={theme.backgroundDangerHeavy?.val || '#dc2626'}
+                onPress={() => {
+                  makeLoading(
+                    setLoading,
+                    async () => {
+                      await adapter.cancelSession(authenticateResult._internal);
+                      goBack();
+                    }
+                  )
+                }}
+              >
+                <XStack alignItems="center" gap={10}>
+                  <FontAwesomeIcon
+                    icon={faCancel}
+                    style={{ color: theme.background?.val || '#fff' }}
+                  />
+                  <TText color={theme.background?.val || '#fff'} fontSize={16}>
+                    {t('main:profile_ui_cancel')}
+                  </TText>
+                </XStack>
+              </TButton>
+              <TButton
+                flex={10}
+                marginVertical={12}
+                backgroundColor={theme.accentColor?.val || theme.color?.val || '#6c5ce7'}
+                onPress={() => {
+                  if (freeSpace <= maxSizeData) {
+                    Alert.alert(
+                      t('main:profile_title_confirm_profile'),
+                      t('main:profile_available_space_alert', { space: formatSize(freeSpace) }), [
+                        {
+                          text: t('main:profile_delete_tag_cancel'),
+                          onPress: () => {},
+                          style: 'cancel',
+                        },
+                        {
+                          text: t('main:profile_delete_tag_ok'),
+                          style: 'destructive',
+                          onPress: () => {
+                            makeLoading(
+                              setLoading,
+                              async () => {
+                                const downloadResult = await adapter.downloadProfile(authenticateResult._internal, confirmationCode, setProgress);
+                                await adapter.processNotifications(authenticateResult.profile.iccid);
+                                // InfiLPA.refreshProfileList(device);
+                                confirmDownload({
+                                  downloadResult
+                                });
+                              }
+                            )
+                          }
+                        },
+                      ]);
+                  } else {
                     makeLoading(
                       setLoading,
                       async () => {
-                        await adapter.cancelSession(authenticateResult._internal);
-                        goBack();
+                        const downloadResult = await adapter.downloadProfile(authenticateResult._internal, confirmationCode, setProgress);
+                        await adapter.processNotifications(authenticateResult.profile.iccid);
+                        // InfiLPA.refreshProfileList(device);
+                        confirmDownload({
+                          downloadResult
+                        });
                       }
                     )
-                  }}
-                >
-                  <FontAwesomeIcon
-                    icon={faCancel}
-                    style={{ color: Colors.white }}
-                  />
-                  <Text
-                    marginL-10
-                    color={Colors.white}
-                  >{t('main:profile_ui_cancel')}</Text>
-                </Button>
-                <Button
-                  style={{ flex: 10 }}
-                  marginV-12
-                  onPress={() => {
-                    if (freeSpace <= maxSizeData) {
-                      Alert.alert(
-                        t('main:profile_title_confirm_profile'),
-                        t('main:profile_available_space_alert', { space: formatSize(freeSpace) }), [
-                          {
-                            text: t('main:profile_delete_tag_cancel'),
-                            onPress: () => {},
-                            style: 'cancel',
-                          },
-                          {
-                            text: t('main:profile_delete_tag_ok'),
-                            style: 'destructive',
-                            onPress: () => {
-                              makeLoading(
-                                setLoading,
-                                async () => {
-                                  const downloadResult = await adapter.downloadProfile(authenticateResult._internal, confirmationCode, setProgress);
-                                  await adapter.processNotifications(authenticateResult.profile.iccid);
-                                  // InfiLPA.refreshProfileList(device);
-                                  confirmDownload({
-                                    downloadResult
-                                  });
-                                }
-                              )
-                            }
-                          },
-                        ]);
-                    } else {
-                      makeLoading(
-                        setLoading,
-                        async () => {
-                          const downloadResult = await adapter.downloadProfile(authenticateResult._internal, confirmationCode, setProgress);
-                          await adapter.processNotifications(authenticateResult.profile.iccid);
-                          // InfiLPA.refreshProfileList(device);
-                          confirmDownload({
-                            downloadResult
-                          });
-                        }
-                      )
-                    }
-                  }}
-                >
+                  }
+                }}
+              >
+                <XStack alignItems="center" gap={10}>
                   <FontAwesomeIcon
                     icon={faDownload}
-                    style={{ color: Colors.white }}
+                    style={{ color: theme.background?.val || '#fff' }}
                   />
-                  <Text
-                    style={{ color: Colors.white, marginLeft: 10 }}
-                  >{t('main:profile_ui_download')}</Text>
-                </Button>
-              </View>
-            </View>
-          </Container>
-        ) : (
-          <Container>
-            <View flex style={{ gap: 20 }}>
-              <Text center text60>
-                {t('main:profile_download_failure')}
-              </Text>
-              <RemoteErrorView remoteError={authenticateResult} />
-              <View flex>
-                <View flex gap-10>
-                  <Button
-                    flex-1
-                    marginV-12
-                    backgroundColor={Colors.grey60}
-                    onPress={() => {
-                      goBack();
-                    }}
-                  >
-                    <FontAwesomeIcon
-                      icon={faCancel}
-                      style={{ color: Colors.white }}
-                    />
-                    <Text
-                      style={{ color: Colors.white, marginLeft: 10 }}
-                    >{t('main:profile_ui_back')}</Text>
-                  </Button>
-                </View>
-              </View>
-            </View>
-          </Container>
-        )
-      }
-    </View>
+                  <TText color={theme.background?.val || '#fff'} fontSize={16}>
+                    {t('main:profile_ui_download')}
+                  </TText>
+                </XStack>
+              </TButton>
+            </XStack>
+          </YStack>
+        </YStack>
+      ) : (
+        <YStack gap={20} flex={1}>
+          <TText textAlign="center" fontSize={18} color="$textDefault">
+            {t('main:profile_download_failure')}
+          </TText>
+          <RemoteErrorView remoteError={authenticateResult} />
+          <YStack flex={1}>
+            <XStack flex={1} gap={10}>
+              <TButton
+                flex={1}
+                marginVertical={12}
+                backgroundColor={theme.color10?.val || '#888'}
+                onPress={() => {
+                  goBack();
+                }}
+              >
+                <XStack alignItems="center" gap={10}>
+                  <FontAwesomeIcon
+                    icon={faCancel}
+                    style={{ color: theme.background?.val || '#fff' }}
+                  />
+                  <TText color={theme.background?.val || '#fff'} fontSize={16}>
+                    {t('main:profile_ui_back')}
+                  </TText>
+                </XStack>
+              </TButton>
+            </XStack>
+          </YStack>
+        </YStack>
+      )
+    }
+    </YStack>
   );
 }
 

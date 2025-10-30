@@ -1,4 +1,5 @@
-import {View} from "react-native-ui-lib";
+import { View } from 'react-native';
+import { YStack } from 'tamagui';
 import {useSelector} from "react-redux";
 import {Profile} from "@/native/types";
 import {RefreshControl, ScrollView} from "react-native";
@@ -38,10 +39,9 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
     <View
       style={{
         overflow: "hidden",
+        flex: 1,
+        paddingBottom: 10,
       }}
-      flex-1
-      flexG-1
-      paddingB-10
     >
       <ScrollView
         bounces
@@ -54,7 +54,7 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
           />
         }
       >
-        <View gap-10>
+        <YStack gap={10}>
           {profiles.map((p, i) => (
             <ProfileRow
               deviceId={deviceId} 
@@ -62,7 +62,7 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
               key={p.iccid || i}
             />
           ))}
-        </View>
+        </YStack>
       </ScrollView>
     </View>
   );

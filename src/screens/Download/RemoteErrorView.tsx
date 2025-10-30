@@ -1,4 +1,5 @@
-import {Colors, Text, View} from "react-native-ui-lib";
+import { View } from 'react-native';
+import { Text as TText, YStack } from 'tamagui';
 import React from "react";
 import {RemoteError} from "@/native/types";
 
@@ -7,35 +8,19 @@ export default function RemoteErrorView({ remoteError }: { remoteError?: RemoteE
   if (!remoteError) return null;
 
   return (
-    <View flex style={{ gap: 5 }}>
-      <Text
-        $textDefault
-        center
-        text70
-      >
+    <YStack flex={1} gap={5}>
+      <TText color="$textDefault" textAlign="center" fontSize={14}>
         Status: {remoteError.status}
-      </Text>
-      <Text
-        $textDefault
-        center
-        text70
-      >
+      </TText>
+      <TText color="$textDefault" textAlign="center" fontSize={14}>
         {remoteError.message}
-      </Text>
-      <Text
-        $textDefault
-        center
-        text80
-      >
+      </TText>
+      <TText color="$textDefault" textAlign="center" fontSize={12}>
         Reason: {remoteError.reasonCode}
-      </Text>
-      <Text
-        $textDefault
-        center
-        text80
-      >
+      </TText>
+      <TText color="$textDefault" textAlign="center" fontSize={12}>
         Subject: {remoteError.subjectCode}
-      </Text>
-    </View>
+      </TText>
+    </YStack>
   )
 }

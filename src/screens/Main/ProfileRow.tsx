@@ -1,8 +1,9 @@
 import {parseMetadata} from "@/utils/parser";
 import {findPhoneNumbersInText} from "libphonenumber-js/min";
 import {preferences, sizeStats} from "@/utils/mmkv";
-import { Drawer } from "react-native-ui-lib";
+import { Swipeable } from 'react-native-gesture-handler';
 import { Card, Switch, Text, XStack, YStack, Stack, useTheme } from 'tamagui';
+import {useAppTheme} from "@/theme/context";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faPencil, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {Alert, Image, PixelRatio, ToastAndroid, TouchableOpacity} from "react-native";
@@ -27,7 +28,7 @@ const ProfileTags = React.memo(({ tags, stealthMode }: { tags: any[]; stealthMod
       <XStack
         key={i}
         paddingHorizontal={5}
-        borderRadius={5}
+        borderRadius={4}
         backgroundColor={t.backgroundColor}
       >
         <Text fontSize={10} fontWeight={"500" as any} color={t.color}>
@@ -218,49 +219,71 @@ export const ProfileRow = ({profile, deviceId} : {profile: ProfileExt, deviceId:
       : metadata?.serviceProviderName;
   }, [stealthMode, replacedName, metadata?.serviceProviderName]);
 
-  // Memoize right items for drawer
-  const rightItems = useMemo(() =>
-    profile.selected ? [] : [{
-      customElement: (
+  const renderRightActions = useCallback(() => {
+    if (profile.selected) return null;
+    return (
+      <TouchableOpacity
+        onPress={handleDeletePress}
+        activeOpacity={0.8}
+        style={{
+          width: 60,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: (theme.backgroundDangerHeavy?.val || '#ff6b6b'),
+          borderTopRightRadius: 12,
+          borderBottomRightRadius: 12,
+        }}
+      >
         <FontAwesomeIcon icon={faTrash} style={{ color: (theme.backgroundDefault?.val || '#fff') }} />
-      ),
-      width: 60,
-      background: theme.backgroundDangerHeavy?.val || '#ff6b6b',
-      onPress: handleDeletePress,
-    }],
-    [profile.selected, handleDeletePress, theme.backgroundDefault?.val, theme.backgroundDangerHeavy?.val]
-  );
+      </TouchableOpacity>
+    );
+  }, [handleDeletePress, profile.selected, theme.backgroundDangerHeavy?.val, theme.backgroundDefault?.val]);
 
+  const renderLeftActions = useCallback(() => (
+    <TouchableOpacity
+      onPress={handleEditPress}
+      activeOpacity={0.8}
+      style={{
+        width: 60,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: (theme.backgroundSuccessLight?.val || '#f3c969'),
+        borderTopLeftRadius: 12,
+        borderBottomLeftRadius: 12,
+      }}
+    >
+      <FontAwesomeIcon icon={faPencil} style={{ color: (theme.backgroundDefault?.val || '#fff') }} />
+    </TouchableOpacity>
+  ), [handleEditPress, theme.backgroundSuccessLight?.val, theme.backgroundDefault?.val]);
+
+  // Get theme color from context to ensure updates when color changes
+  const { themeColor } = useAppTheme();
   const primaryColor = useMemo(() => {
-    return preferences.getString('themeColor') ?? (useTheme().textPrimary?.val || '#6c5ce7');
-  }, []);
+    return themeColor ?? (useTheme().color?.val || '#6c5ce7');
+  }, [themeColor]);
 
   // Unified switch colors (selected vs base). Base tuned for dark theme to be less bright.
   const switchBaseColor = useMemo(() => {
-    return (theme.color7?.val || theme.outlineDisabledHeavy?.val || theme.outlineNeutral?.val || '#777');
-  }, [theme.color7?.val, theme.outlineDisabledHeavy?.val, theme.outlineNeutral?.val]);
+    return (theme.color7?.val);
+  }, [theme.color7?.val]);
 
   const switchTrackColor = profile.selected ? primaryColor : switchBaseColor;
   const switchBorderColor = profile.selected ? primaryColor : switchBaseColor;
 
   return (
-    <Drawer
-      key={`${metadata.iccid}`}
-      style={{
-        borderRadius: 15,
-        overflow: "hidden",
-      }}
-      rightItems={rightItems}
-      leftItem={{
-        customElement: (
-          <FontAwesomeIcon icon={faPencil} style={{ color: (theme.backgroundDefault?.val || '#fff') }} />
-        ),
-        background: theme.backgroundSuccessLight?.val || '#f3c969',
-        width: 60,
-        onPress: handleEditPress,
-      }}
+    <Swipeable
+      renderRightActions={renderRightActions}
+      renderLeftActions={renderLeftActions}
+      overshootFriction={8}
+      friction={2}
     >
-      <Card backgroundColor="$surfaceRow" padding={0}>
+      <Card
+        backgroundColor={theme.surfaceSpecial?.val}
+        borderWidth={0}
+        borderRadius={12}
+        overflow="hidden"
+        padding={0}
+      >
         <YStack paddingTop={5} paddingLeft={15} paddingRight={10} gap={5}>
           <XStack width="100%" alignItems="flex-start">
             <TouchableOpacity
@@ -322,8 +345,9 @@ export const ProfileRow = ({profile, deviceId} : {profile: ProfileExt, deviceId:
           </XStack>
         </YStack>
 
-        <Stack height={2} backgroundColor={`hsl(${hueICCID}, 50%, 50%)`} />
+        {/* Underline inside the card to avoid overflow past rounded corners */}
+        <Stack height={2} width="100%" backgroundColor={`hsl(${hueICCID}, 50%, 50%)`} />
       </Card>
-    </Drawer>
+    </Swipeable>
   );
 };

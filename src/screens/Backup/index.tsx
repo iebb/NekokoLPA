@@ -1,23 +1,23 @@
 import React from 'react';
 import {useTranslation} from 'react-i18next';
 import SafeScreen from '@/theme/SafeScreen';
+import PageContainer from '@/components/common/PageContainer';
 import type {RootScreenProps} from "@/screens/navigation";
 import Title from "@/components/common/Title";
-import Container from "@/components/common/Container";
 import {sizeStats} from "@/utils/mmkv";
-import {Button, Colors, Text, View} from "react-native-ui-lib";
+// import { View } from 'react-native';
+import { Button as TButton, Text as TText, YStack, useTheme, XStack } from 'tamagui';
 import RNFS from 'react-native-fs';
 import Share from 'react-native-share'; // optional for sharing
 import DocumentPicker from 'react-native-document-picker';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faDownload, faUpload} from '@fortawesome/free-solid-svg-icons';
 import {useToast} from "@/components/common/ToastProvider";
-import {ScrollView} from 'react-native';
 
 
 export default function Backup({ route,  navigation }: RootScreenProps<'Backup'>) {
 	const { showToast } = useToast();
-
+	const theme = useTheme();
 	const { t } = useTranslation(['main']);
 	const exportFile = async () => {
 		const sizeData = sizeStats.getAllKeys();
@@ -73,42 +73,46 @@ export default function Backup({ route,  navigation }: RootScreenProps<'Backup'>
 	return (
 		<SafeScreen>
 			<Title>{t('main:backup')}</Title>
-			<Container>
-				<ScrollView>
-					<View flex flexG style={{ gap: 10 }}>
-						<View>
-							<Button
-								marginV-12 flex
-								backgroundColor={Colors.$backgroundNeutralHeavy}
-								onPress={exportFile}
-							>
+			<PageContainer>
+				<YStack gap={10} flex={1}>
+					<YStack gap={12}>
+                        <TButton
+                            flex={1}
+                            backgroundColor={theme.accentColor?.val}
+                            onPress={exportFile}
+                            borderRadius={12}
+                            paddingVertical={12}
+                        >
+							<XStack alignItems="center" gap={10}>
 								<FontAwesomeIcon
 									icon={faDownload}
-									style={{ color: Colors.white }}
+                                    style={{ color: theme.background?.val }}
 								/>
-								<Text
-									marginL-10
-									color={Colors.white}
-								>{t('main:backup_export')}</Text>
-							</Button>
-							<Button
-								marginV-12 flex
-								backgroundColor={Colors.$backgroundNeutralHeavy}
-								onPress={importData}
-							>
+                                <TText color={theme.background?.val} fontSize={16}>
+									{t('main:backup_export')}
+								</TText>
+							</XStack>
+						</TButton>
+                        <TButton
+                            flex={1}
+                            backgroundColor={theme.accentColor?.val}
+                            onPress={importData}
+                            borderRadius={12}
+                            paddingVertical={12}
+                        >
+							<XStack alignItems="center" gap={10}>
 								<FontAwesomeIcon
 									icon={faUpload}
-									style={{ color: Colors.white }}
+                                    style={{ color: theme.background?.val }}
 								/>
-								<Text
-									marginL-10
-									color={Colors.white}
-								>{t('main:backup_import')}</Text>
-							</Button>
-						</View>
-					</View>
-				</ScrollView>
-			</Container>
+                                <TText color={theme.background?.val} fontSize={16}>
+									{t('main:backup_import')}
+								</TText>
+							</XStack>
+						</TButton>
+					</YStack>
+				</YStack>
+			</PageContainer>
 		</SafeScreen>
 	);
 
