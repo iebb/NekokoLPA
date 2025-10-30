@@ -135,88 +135,97 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
     <SafeScreen>
       <AppSheet open={tagModal} onOpenChange={setTagModal} title={t('main:profile_add_tag')}>
           <YStack gap={16}>
-          <XStack alignItems="center" gap={20}>
-            <TText color="$textDefault" fontSize={16}>{t('main:profile_add_tag_type')}:</TText>
-            <TouchableOpacity onPress={() => setNewTagType('date')}>
-              <XStack alignItems="center" gap={8}>
-                <View style={{
-                  width: 20,
-                  height: 20,
-                  borderRadius: 10,
-                  borderWidth: 2,
-                  borderColor: newTagType === 'date' ? (theme.accentColor?.val || '#a575f6') : (theme.outlineNeutral?.val || '#ccc'),
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: newTagType === 'date' ? (theme.accentColor?.val || '#a575f6') : 'transparent'
-                }}>
-                  {newTagType === 'date' && <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: theme.background?.val || '#fff' }} />}
-                </View>
-                <TText color="$textDefault" fontSize={14}>{t('main:profile_tags_date')}</TText>
-              </XStack>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => setNewTagType('text')}>
-              <XStack alignItems="center" gap={8}>
-                <View style={{
-                  width: 20,
-                  height: 20,
-                  borderRadius: 10,
-                  borderWidth: 2,
-                  borderColor: newTagType === 'text' ? (theme.accentColor?.val || '#a575f6') : (theme.outlineNeutral?.val || '#ccc'),
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: newTagType === 'text' ? (theme.accentColor?.val || '#a575f6') : 'transparent'
-                }}>
-                  {newTagType === 'text' && <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: theme.background?.val || '#fff' }} />}
-                </View>
-                <TText color="$textDefault" fontSize={14}>{t('main:profile_tags_text')}</TText>
-              </XStack>
-            </TouchableOpacity>
-          </XStack>
-          <View>
-            {newTagType === 'date' ? (
-              <>
-                <XStack alignItems="center" gap={10}>
-                  <TText color="$textDefault" fontSize={16}>
-                    {selectedDate.toDateString()}
+            {/* Toggle group */}
+            <XStack alignItems="center" gap={12}>
+              <TText color="$textDefault" fontSize={16}>{t('main:profile_add_tag_type')}:</TText>
+              <XStack gap={8}>
+                <TButton
+                  onPress={() => setNewTagType('date')}
+                  backgroundColor={newTagType === 'date' ? (theme.accentColor?.val) : 'transparent'}
+                  borderWidth={1}
+                  borderColor={newTagType === 'date' ? (theme.accentColor?.val) : (theme.outlineNeutral?.val || '#ccc')}
+                  paddingHorizontal={12}
+                  paddingVertical={8}
+                  borderRadius={8}
+                >
+                  <TText color={newTagType === 'date' ? (theme.background?.val) : (theme.textDefault?.val)} fontSize={14}>
+                    {t('main:profile_tags_date')}
                   </TText>
-                  <TButton onPress={() => setShowDatePicker(true)} backgroundColor={theme.accentColor?.val || '#6c5ce7'}>
-                    <TText color={theme.background?.val || '#fff'} fontSize={14}>Select Date</TText>
-                  </TButton>
-                </XStack>
-                {showDatePicker && (
-                  <DateTimePicker
-                    value={selectedDate}
-                    mode="date"
-                    display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                    onChange={(event: any, date?: Date) => {
-                      if (Platform.OS === 'android') {
-                        setShowDatePicker(false);
-                      }
-                      if (date) {
-                        setSelectedDate(date);
-                        setTagValue(`d:${dateToDate6(date)}`);
-                      }
-                    }}
-                  />
-                )}
-              </>
-            ) : newTagType === 'text' ? (
-              <Input
-                placeholder={t('main:profile_tags_text_placeholder')}
-                onChangeText={c => setTagValue(`t:${c.replaceAll(' ', '_')}`)}
-                borderWidth={0}
-                borderBottomWidth={1}
-                borderColor={theme.outlineNeutral?.val || theme.borderColor?.val || '#777'}
-                backgroundColor="transparent"
-                color={theme.textDefault?.val}
-                placeholderTextColor={theme.color10?.val}
-                fontSize={16}
-                padding={0}
-                paddingBottom={8}
-              />
-            ) : null}
-          </View>
-          <XStack justifyContent="flex-end">
+                </TButton>
+                <TButton
+                  onPress={() => setNewTagType('text')}
+                  backgroundColor={newTagType === 'text' ? (theme.accentColor?.val) : 'transparent'}
+                  borderWidth={1}
+                  borderColor={newTagType === 'text' ? (theme.accentColor?.val) : (theme.outlineNeutral?.val || '#ccc')}
+                  paddingHorizontal={12}
+                  paddingVertical={8}
+                  borderRadius={8}
+                >
+                  <TText color={newTagType === 'text' ? (theme.background?.val) : (theme.textDefault?.val)} fontSize={14}>
+                    {t('main:profile_tags_text')}
+                  </TText>
+                </TButton>
+              </XStack>
+            </XStack>
+
+            {/* Input area */}
+            <YStack gap={12}>
+              {newTagType === 'date' ? (
+                <>
+                  <XStack alignItems="center" gap={10}>
+                    <Input
+                      value={new Date(selectedDate.getTime() - selectedDate.getTimezoneOffset()*60000).toISOString().slice(0,10)}
+                      editable={false}
+                      borderWidth={0}
+                      borderBottomWidth={1}
+                      borderColor={theme.outlineNeutral?.val || theme.borderColor?.val || '#777'}
+                      backgroundColor="transparent"
+                      color={theme.textDefault?.val}
+                      fontSize={16}
+                      padding={0}
+                      flex={1}
+                    />
+                    <TButton onPress={() => setShowDatePicker(true)} backgroundColor={theme.accentColor?.val} borderRadius={8}>
+                      <TText color={theme.background?.val} fontSize={14}>{t('main:select')}</TText>
+                    </TButton>
+                  </XStack>
+                  {showDatePicker && (
+                    <DateTimePicker
+                      value={selectedDate}
+                      mode="date"
+                      display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                      onChange={(event: any, date?: Date) => {
+                        if (Platform.OS === 'android') {
+                          setShowDatePicker(false);
+                        }
+                        if (date) {
+                          setSelectedDate(date);
+                          setTagValue(`d:${dateToDate6(date)}`);
+                        }
+                      }}
+                    />
+                  )}
+                </>
+              ) : newTagType === 'text' ? (
+                <Input
+                  placeholder={t('main:profile_tags_text_placeholder')}
+                  onChangeText={c => {
+                    const cleaned = c.replace(/\s+/g, '');
+                    setTagValue(`t:${cleaned}`);
+                  }}
+                  borderWidth={0}
+                  borderBottomWidth={1}
+                  borderColor={theme.outlineNeutral?.val || theme.borderColor?.val || '#777'}
+                  backgroundColor="transparent"
+                  color={theme.textDefault?.val}
+                  placeholderTextColor={theme.color10?.val}
+                  fontSize={16}
+                  padding={0}
+                  paddingBottom={8}
+                />
+              ) : null}
+            </YStack>
+            <XStack justifyContent="flex-end" marginTop={8}>
             <TButton
               onPress={() => {
                 if (tagValue.length) {
@@ -227,7 +236,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
               }}
               backgroundColor={theme.accentColor?.val || theme.color?.val || '#6c5ce7'}
             >
-              <TText color={theme.background?.val || '#fff'} fontSize={16}>Done</TText>
+                <TText color={theme.background?.val || '#fff'} fontSize={16}>Save</TText>
             </TButton>
           </XStack>
           </YStack>
