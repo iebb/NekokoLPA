@@ -3,7 +3,7 @@ import {findPhoneNumbersInText} from "libphonenumber-js/min";
 import {preferences, sizeStats} from "@/utils/mmkv";
 import { Swipeable } from 'react-native-gesture-handler';
 import { Card, Switch, Text, XStack, YStack, Stack, useTheme } from 'tamagui';
-import {useAppTheme} from "@/theme/context";
+// useTheme covers dynamic color; no need for useColorScheme here
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faPencil, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {Alert, Image, PixelRatio, ToastAndroid, TouchableOpacity} from "react-native";
@@ -256,16 +256,11 @@ export const ProfileRow = ({profile, deviceId} : {profile: ProfileExt, deviceId:
     </TouchableOpacity>
   ), [handleEditPress, theme.backgroundSuccessLight?.val, theme.backgroundDefault?.val]);
 
-  // Get theme color from context to ensure updates when color changes
-  const { themeColor } = useAppTheme();
-  const primaryColor = useMemo(() => {
-    return themeColor ?? (useTheme().color?.val || '#6c5ce7');
-  }, [themeColor]);
+  // Use tamagui theme token directly (updates on theme change)
+  const primaryColor = theme.buttonBackground?.val || theme.accentColor?.val;
 
   // Unified switch colors (selected vs base). Base tuned for dark theme to be less bright.
-  const switchBaseColor = useMemo(() => {
-    return (theme.color7?.val);
-  }, [theme.color7?.val]);
+  const switchBaseColor = theme.color7?.val;
 
   const switchTrackColor = profile.selected ? primaryColor : switchBaseColor;
   const switchBorderColor = profile.selected ? primaryColor : switchBaseColor;

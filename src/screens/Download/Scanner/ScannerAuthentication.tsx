@@ -15,6 +15,8 @@ import sizeFile, {ProfileSizes} from "@/data/sizes";
 import {useSelector} from "react-redux";
 import {selectDeviceState} from "@/redux/stateStore";
 import {formatSize} from "@/utils/size";
+import PageContainer from "@/components/common/PageContainer";
+import SafeScreen from "@/theme/SafeScreen";
 
 
 export function ScannerAuthentication(
@@ -47,8 +49,9 @@ export function ScannerAuthentication(
 
 
   return (
-    <YStack gap={10} flex={1}>
+    <SafeScreen>
       <Title>{t('main:profile_title_confirm_profile')}</Title>
+      <PageContainer keyboardAvoiding={false} scrollViewProps={{ nestedScrollEnabled: true }}>
       {
         loading && (
           <BlockingLoader
@@ -123,6 +126,7 @@ export function ScannerAuthentication(
             <XStack flex={1} gap={10}>
               <TButton
                 flex={1}
+                borderRadius={100}
                 marginVertical={12}
                 backgroundColor={theme.backgroundDangerHeavy?.val || '#dc2626'}
                 onPress={() => {
@@ -146,7 +150,8 @@ export function ScannerAuthentication(
                 </XStack>
               </TButton>
               <TButton
-                flex={10}
+                flex={3}
+                borderRadius={100}
                 marginVertical={12}
                 backgroundColor={theme.accentColor?.val || theme.color?.val || '#6c5ce7'}
                 onPress={() => {
@@ -216,6 +221,7 @@ export function ScannerAuthentication(
               <TButton
                 flex={1}
                 marginVertical={12}
+                borderRadius={100}
                 backgroundColor={theme.color10?.val || '#888'}
                 onPress={() => {
                   goBack();
@@ -235,8 +241,9 @@ export function ScannerAuthentication(
           </YStack>
         </YStack>
       )
-    }
-    </YStack>
+      }
+      </PageContainer>
+    </SafeScreen>
   );
 }
 

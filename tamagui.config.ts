@@ -81,25 +81,13 @@ const baseDarkTheme = {
   borderColor: '#2a2a34',
   shadowColor: 'rgba(0,0,0,0.35)',
 }
-
-// Merge base themes with generated themes
-const lightTheme = {
-  ...baseLightTheme,
-  ...defaultThemes.light,
-}
-
-const darkTheme = {
-  ...baseDarkTheme,
-  ...defaultThemes.dark,
-}
-
 /**
  * Create a Tamagui config with custom primary color
  * @param primaryColor - Primary/accent color (hex string)
  */
 export function createTamaguiConfigWithColor(primaryColor: string = defaultPrimaryColor) {
   const generatedThemes = generateTamaguiThemes(primaryColor)
-  
+
   return createTamagui({
     // Use default animations from v4 config
     animations: defaultConfig.animations,

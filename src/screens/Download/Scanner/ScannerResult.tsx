@@ -10,6 +10,8 @@ import Title from "@/components/common/Title";
 import {makeLoading} from "@/components/utils/loading";
 import {Adapters} from "@/native/adapters/registry";
 import {useLoading} from "@/components/common/LoadingProvider";
+import PageContainer from "@/components/common/PageContainer";
+import SafeScreen from "@/theme/SafeScreen";
 
 
 export function ScannerResult(
@@ -26,8 +28,9 @@ export function ScannerResult(
   const adapter = Adapters[deviceId];
 
   return (
-    <View>
+    <SafeScreen>
       <Title>{t('main:profile_title_download_profile')}</Title>
+      <PageContainer scrollViewProps={{ nestedScrollEnabled: true }}>
       {
         (downloadResult?.success) ?
           (
@@ -43,8 +46,9 @@ export function ScannerResult(
                 <XStack gap={10} flex={1}>
                   <TButton
                     flex={1}
+                    borderRadius={100}
                     marginVertical={12}
-                    backgroundColor={theme.color2?.val || theme.accentColor?.val || '#444'}
+                    backgroundColor={theme.color10?.val}
                     onPress={() => {
                       goBack();
                     }}
@@ -52,15 +56,16 @@ export function ScannerResult(
                     <XStack alignItems="center" gap={10}>
                       <FontAwesomeIcon
                         icon={faArrowLeftLong}
-                        style={{ color: theme.background?.val || '#fff' }}
+                        style={{ color: theme.background?.val}}
                       />
-                      <TText color={theme.background?.val || '#fff'} fontSize={16}>
+                      <TText color={theme.background?.val} fontSize={16}>
                         {t('main:profile_ui_back')}
                       </TText>
                     </XStack>
                   </TButton>
                   <TButton
                     flex={1}
+                    borderRadius={100}
                     marginVertical={12}
                     backgroundColor={theme.backgroundSuccessHeavy?.val || '#22c55e'}
                     onPress={() => {
@@ -96,6 +101,7 @@ export function ScannerResult(
                 <XStack flex={1} gap={10}>
                   <TButton
                     flex={1}
+                    borderRadius={100}
                     marginVertical={12}
                     backgroundColor={theme.backgroundDangerHeavy?.val || '#dc2626'}
                     onPress={() => {
@@ -121,6 +127,7 @@ export function ScannerResult(
             </YStack>
           )
       }
-    </View>
+      </PageContainer>
+    </SafeScreen>
   );
 }

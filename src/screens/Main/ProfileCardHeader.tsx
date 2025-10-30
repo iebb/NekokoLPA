@@ -21,19 +21,19 @@ import {useLoading} from "@/components/common/LoadingProvider";
 
 // Extracted components
 const ActionSheetOptions = React.memo(({
-  deviceId,
-  DeviceState,
-  adapter,
-  navigation,
-  euiccMenu,
-  setEuiccMenu,
-  setLoading,
-  showToast
-}: {
+                                         deviceId,
+                                         DeviceState,
+                                         adapter,
+                                         navigation,
+                                         euiccMenu,
+                                         setEuiccMenu,
+                                         setLoading,
+                                         showToast
+                                       }: {
   deviceId: string;
   DeviceState: any;
   adapter: any;
- navigation: any;
+  navigation: any;
   euiccMenu: boolean;
   setEuiccMenu: (visible: boolean) => void;
   setLoading: any;
@@ -62,8 +62,8 @@ const ActionSheetOptions = React.memo(({
       [
         {text: 'Cancel', onPress: () => {}, style: 'cancel'},
         {text: 'OK', onPress: (nickname: string) => {
-          if (DeviceState!.eid) setNicknameByEid(DeviceState!.eid!, nickname);
-        }},
+            if (DeviceState!.eid) setNicknameByEid(DeviceState!.eid!, nickname);
+          }},
       ],
       {
         cancelable: true,
@@ -119,6 +119,7 @@ const ActionSheetOptions = React.memo(({
     handleSetNickname, handleManageNotifications, handleSendNotifications
   ]);
 
+  const theme = useTheme();
   return (
     <AppSheet open={euiccMenu} onOpenChange={setEuiccMenu} title={`EID: ${DeviceState?.eid}`}>
       <YStack>
@@ -133,7 +134,7 @@ const ActionSheetOptions = React.memo(({
               </View>
             </TouchableOpacity>
             {idx < options.length - 1 && (
-              <View style={{ height: 1, backgroundColor: (useTheme().outlineNeutral?.val || '#e6e6ea'), opacity: 0.4 }} />
+              <View style={{ height: 1, backgroundColor: (theme.outlineNeutral?.val || '#e6e6ea'), opacity: 0.4 }} />
             )}
           </View>
         ))}
@@ -143,10 +144,10 @@ const ActionSheetOptions = React.memo(({
 });
 
 const CardContent = React.memo(({
-  DeviceState,
-  maskedEid,
-  supplementText
-}: {
+                                  DeviceState,
+                                  maskedEid,
+                                  supplementText
+                                }: {
   DeviceState: any;
   maskedEid: string;
   supplementText: string;
@@ -191,9 +192,9 @@ const CardContent = React.memo(({
 });
 
 const AddProfileButton = React.memo(({
-  deviceId,
-  navigation
-}: {
+                                       deviceId,
+                                       navigation
+                                     }: {
   deviceId: string;
   navigation: any;
 }) => {
@@ -217,7 +218,6 @@ const AddProfileButton = React.memo(({
 });
 
 export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
-  const { t } = useTranslation(['main']);
   const theme = useTheme();
   const navigation = useNavigation();
   const [euiccMenu, setEuiccMenu] = useState(false);
@@ -225,7 +225,7 @@ export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
 
   // Memoize preferences
   const stealthMode = useMemo(() =>
-    preferences.getString("redactMode") ?? "none",
+      preferences.getString("redactMode") ?? "none",
     []
   );
 
@@ -244,13 +244,13 @@ export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
 
   // Memoize supplement text
   const supplementText = useMemo(() =>
-    toFriendlyName(eid, DeviceState.euiccInfo2),
+      toFriendlyName(eid, DeviceState.euiccInfo2),
     [eid, DeviceState.euiccInfo2]
   );
 
   // Memoize action sheet visibility
   const shouldShowActionSheet = useMemo(() =>
-    DeviceState?.eid && euiccMenu,
+      DeviceState?.eid && euiccMenu,
     [DeviceState?.eid, euiccMenu]
   );
 
@@ -258,24 +258,20 @@ export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
     setEuiccMenu(true);
   }, []);
 
-  const handleActionSheetDismiss = useCallback(() => {
-    setEuiccMenu(false);
-  }, []);
-
   return (
     <View>
-             {shouldShowActionSheet && (
-         <ActionSheetOptions
-           deviceId={deviceId}
-           DeviceState={DeviceState}
-           adapter={adapter}
-           navigation={navigation}
-           euiccMenu={euiccMenu}
-           setEuiccMenu={setEuiccMenu}
-           setLoading={setLoading}
-           showToast={showToast}
-         />
-       )}
+      {shouldShowActionSheet && (
+        <ActionSheetOptions
+          deviceId={deviceId}
+          DeviceState={DeviceState}
+          adapter={adapter}
+          navigation={navigation}
+          euiccMenu={euiccMenu}
+          setEuiccMenu={setEuiccMenu}
+          setLoading={setLoading}
+          showToast={showToast}
+        />
+      )}
 
       <Card
         backgroundColor={theme.surfaceSpecial?.val}
@@ -291,7 +287,6 @@ export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
             maskedEid={maskedEid}
             supplementText={supplementText}
           />
-
           <AddProfileButton deviceId={deviceId} navigation={navigation} />
         </XStack>
       </Card>

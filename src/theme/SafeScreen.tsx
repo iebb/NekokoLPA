@@ -1,16 +1,17 @@
 import {StatusBar, View} from 'react-native';
 import React, {PropsWithChildren} from 'react';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {useAppTheme} from "@/theme/context";
-import { useTheme } from 'tamagui';
+import {useColorScheme} from "@/theme/context";
+import {useTheme} from 'tamagui';
 
 function SafeScreen({ children }: PropsWithChildren) {
-	const { effectiveTheme } = useAppTheme();
+	const { scheme } = useColorScheme();
 	const insets = useSafeAreaInsets();
-	return (
+  const theme = useTheme();
+  return (
     <View
       style={{
-        backgroundColor: (useTheme().background?.val || '#fff'),
+        backgroundColor: (theme.background?.val || '#fff'),
         paddingTop: insets.top,
         paddingBottom: insets.bottom,
         paddingLeft: insets.left,
@@ -19,8 +20,8 @@ function SafeScreen({ children }: PropsWithChildren) {
       }}
     >
 			<StatusBar
-				barStyle={effectiveTheme === 'dark' ? 'light-content' : 'dark-content'}
-        backgroundColor={useTheme().background?.val || '#fff'}
+				barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'}
+        backgroundColor={theme.background?.val || '#fff'}
 			/>
 			{children}
 		</View>

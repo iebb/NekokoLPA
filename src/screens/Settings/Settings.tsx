@@ -12,7 +12,7 @@ import DraggableFlatList from "react-native-draggable-flatlist";
 import {Adapt, Button as TButton, Input, Select, Slider, Text as TText, useTheme, XStack, YStack} from 'tamagui';
 import AppSheet from '@/components/common/AppSheet';
 import {preferences} from "@/utils/mmkv";
-import {useAppTheme} from "@/theme/context";
+import {useColorScheme} from "@/theme/context";
 import i18next from "i18next";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faPaintbrush, faTrash} from "@fortawesome/free-solid-svg-icons";
@@ -346,7 +346,7 @@ function PickerRow({row} : {row: SettingDataType}) {
 export default function Settings({ route,  navigation }: RootScreenProps<'Settings'>) {
 
   const { t } = useTranslation(['main']);
-  const {theme: appTheme, setTheme, setThemeColor} = useAppTheme();
+  const {scheme, setTheme} = useColorScheme();
   const theme = useTheme();
   const [aidModalVisible, setAidModalVisible] = useState(false);
   const insets = useSafeAreaInsets();
@@ -356,7 +356,6 @@ export default function Settings({ route,  navigation }: RootScreenProps<'Settin
       <Title>{t('main:settings_settings')}</Title>
       <PageContainer keyboardAvoiding={false} scrollViewProps={{ nestedScrollEnabled: true }}>
         <FlatList
-          key={appTheme}
           data={(() => {
             const items: SettingDataType[] = [
               {
@@ -416,9 +415,6 @@ export default function Settings({ route,  navigation }: RootScreenProps<'Settin
                 key: "themeColor",
                 defaultValue: '#a575f6',
                 type: 'color',
-                onChange: (value: string) => {
-                  setThemeColor(value);
-                }
               },
             ];
             if (Platform.OS === 'android') {

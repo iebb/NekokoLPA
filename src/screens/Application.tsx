@@ -2,7 +2,6 @@ import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer, NavigationContainerRef} from '@react-navigation/native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {useAppTheme} from '@/theme/context';
 import type {RootStackParamList} from '@/screens/navigation';
 import React from "react";
 import EuiccInfo from "@/screens/EuiccInfo";
@@ -42,12 +41,11 @@ function StackNavigator() {
 	)
 }
 function ApplicationNavigator() {
-	const { theme, themeColor } = useAppTheme();
 	const tamaguiTheme = useTheme();
 	const navigationRef = React.createRef<NavigationContainerRef<RootStackParamList>>();
 
 	return (
-		<SafeAreaProvider key={theme + "_" + themeColor}>
+		<SafeAreaProvider>
 			<NavigationContainer ref={navigationRef}>
 				<ToastProvider>
 					<LoadingProvider>

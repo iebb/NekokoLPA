@@ -18,6 +18,8 @@ import {preferences} from "@/utils/mmkv";
 import {formatSize} from "@/utils/size";
 import {useLoading} from "@/components/common/LoadingProvider";
 import {useToast} from "@/components/common/ToastProvider";
+import PageContainer from "@/components/common/PageContainer";
+import SafeScreen from "@/theme/SafeScreen";
 
 export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
   const theme = useTheme();
@@ -85,13 +87,9 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
   const sizeW = Math.min(size * 4/3, Dimensions.get('window').width - 50);
 
   return (
-    <YStack gap={10} flex={1}>
+    <SafeScreen>
       <Title>{t('main:profile_title_download_profile')}</Title>
-      <KeyboardAvoidingView
-        behavior='position'
-        keyboardVerticalOffset={Platform.OS == 'ios' ? 80 : 0}
-        style={{ gap: 10, flex: 1 }}
-      >
+      <PageContainer>
         <YStack alignItems="center" gap={5} marginVertical={10}>
           <TText color="$textDefault" fontSize={14} fontWeight={"500" as any}>
             {t('main:profile_scan_qr_prompt')}
@@ -166,7 +164,7 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
         <TButton
           marginTop={36}
           marginVertical={12}
-          borderRadius={210}
+          borderRadius={100}
           disabled={smdp.length === 0 && !(euiccAddress?.defaultDpAddress)}
           backgroundColor={theme.accentColor?.val || theme.color?.val || '#6c5ce7'}
           onPress={() => {
@@ -307,7 +305,7 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
             </TText>
           </XStack>
         </YStack>
-      </KeyboardAvoidingView>
-    </YStack>
+      </PageContainer>
+    </SafeScreen>
   )
 }
