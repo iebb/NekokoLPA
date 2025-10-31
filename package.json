@@ -1,7 +1,7 @@
 {
   "name": "nekokolpa",
   "buildVersion": 365,
-  "version": "1.12.365-alpha",
+  "version": "1.12.365-beta",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
