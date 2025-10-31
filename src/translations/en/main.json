@@ -139,6 +139,7 @@
   "profile_ui_download": "Download",
 
   "notifications_notifications": "Notifications",
+  "notifications_subtitle": "These messages update your carrier about changes to your eSIM profiles. Some profiles need these messages to work properly or download again.",
   "notifications_send": "Send Notifications",
   "notifications_send_success": "Notification sent successfully",
   "notifications_send_failed": "Notification failed to send",
@@ -147,7 +148,9 @@
   "notifications_delete_alert": "Are you sure to delete this notification? It cannot be recovered",
   "notifications_delete_ok": "OK",
   "notifications_delete_cancel": "Cancel",
-
+  "notifications_handle_all": "Handle Notifications",
+  "notifications_processing_all": "Processing all notifications. This may take some time.",
+  "notifications_processing_all_success": "All notifications processed successfully.",
 
   "progress_download.step1.es10b_get_euicc_challenge_and_info": "(1/4) Checking card",
   "progress_download.step2.es9p_initiate_authentication": "(2/4) Communicating with Server",

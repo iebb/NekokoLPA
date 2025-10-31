@@ -6,12 +6,10 @@ import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faArrowLeftLong, faCancel, faCheck, faCheckCircle} from "@fortawesome/free-solid-svg-icons";
 import RemoteErrorView from "@/screens/Download/RemoteErrorView";
 import MetadataView from "@/components/common/MetadataView";
-import Title from "@/components/common/Title";
+import Screen from "@/components/common/Screen";
 import {makeLoading} from "@/components/utils/loading";
 import {Adapters} from "@/native/adapters/registry";
 import {useLoading} from "@/components/common/LoadingProvider";
-import PageContainer from "@/components/common/PageContainer";
-import SafeScreen from "@/theme/SafeScreen";
 
 
 export function ScannerResult(
@@ -28,9 +26,7 @@ export function ScannerResult(
   const adapter = Adapters[deviceId];
 
   return (
-    <SafeScreen>
-      <Title>{t('main:profile_title_download_profile')}</Title>
-      <PageContainer scrollViewProps={{ nestedScrollEnabled: true }}>
+    <Screen title={t('main:profile_title_download_profile')} keyboardAvoiding={false} scrollViewProps={{ nestedScrollEnabled: true }}>
       {
         (downloadResult?.success) ?
           (
@@ -103,7 +99,7 @@ export function ScannerResult(
                     flex={1}
                     borderRadius={100}
                     marginVertical={12}
-                    backgroundColor={theme.backgroundDangerHeavy?.val || '#dc2626'}
+                    backgroundColor="$backgroundDangerHeavy"
                     onPress={() => {
                       makeLoading(setLoading,
                         async () => {
@@ -127,7 +123,6 @@ export function ScannerResult(
             </YStack>
           )
       }
-      </PageContainer>
-    </SafeScreen>
+    </Screen>
   );
 }

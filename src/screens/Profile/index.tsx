@@ -1,13 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Image, KeyboardAvoidingView, Platform, ToastAndroid, TouchableOpacity, View} from 'react-native';
+import {Alert, Image, Platform, ToastAndroid, TouchableOpacity} from 'react-native';
 import {useTranslation} from 'react-i18next';
-import SafeScreen from '@/theme/SafeScreen';
-import PageContainer from '@/components/common/PageContainer';
+import Screen from '@/components/common/Screen';
 import type {RootScreenProps} from "@/screens/navigation";
 import {Button as TButton, Input, Text as TText, useTheme, XStack, YStack} from 'tamagui';
 import AppSheet from '@/components/common/AppSheet';
 import {useSelector} from "react-redux";
-import Title from "@/components/common/Title";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faCopy, faPencil, faTimes} from "@fortawesome/free-solid-svg-icons";
 import Clipboard from "@react-native-clipboard/clipboard";
@@ -40,7 +38,7 @@ function MetadataRow({
       onPress={() => value && onCopy?.(value)}
       activeOpacity={0.7}
     >
-      <View style={{ paddingVertical: 10 }}>
+      <YStack paddingVertical={10}>
         <XStack alignItems="center" justifyContent="space-between" gap={12}>
           <TText color="$color10" fontSize={12} style={{ minWidth: 100, flexShrink: 0 }}>
             {label}
@@ -71,7 +69,7 @@ function MetadataRow({
             )}
           </XStack>
         </XStack>
-      </View>
+      </YStack>
     </TouchableOpacity>
   );
 }
@@ -132,7 +130,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
   }
 
   return (
-    <SafeScreen>
+    <Screen title={t('main:profile_profile_detail')} keyboardAvoiding={false} scrollViewProps={{ nestedScrollEnabled: true }}>
       <AppSheet open={tagModal} onOpenChange={setTagModal} title={t('main:profile_add_tag')}>
           <YStack gap={16}>
             {/* Toggle group */}
@@ -172,7 +170,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
             <YStack gap={12}>
               {newTagType === 'date' ? (
                 <>
-                  <XStack alignItems="center" gap={10}>
+                  <TouchableOpacity onPress={() => setShowDatePicker(true)} activeOpacity={0.7}>
                     <Input
                       value={new Date(selectedDate.getTime() - selectedDate.getTimezoneOffset()*60000).toISOString().slice(0,10)}
                       editable={false}
@@ -183,12 +181,8 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
                       color={theme.textDefault?.val}
                       fontSize={16}
                       padding={0}
-                      flex={1}
                     />
-                    <TButton onPress={() => setShowDatePicker(true)} backgroundColor={theme.accentColor?.val} borderRadius={8}>
-                      <TText color={theme.background?.val} fontSize={14}>{t('main:select')}</TText>
-                    </TButton>
-                  </XStack>
+                  </TouchableOpacity>
                   {showDatePicker && (
                     <DateTimePicker
                       value={selectedDate}
@@ -234,14 +228,14 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
                 }
                 setTagModal(false);
               }}
-              backgroundColor={theme.accentColor?.val || theme.color?.val || '#6c5ce7'}
+              backgroundColor="$accentColor"
             >
                 <TText color={theme.background?.val || '#fff'} fontSize={16}>Save</TText>
             </TButton>
           </XStack>
           </YStack>
       </AppSheet>
-       {/* Rename Profile Sheet */}
+      {/* Rename Profile Sheet */}
       <AppSheet open={renameModal} onOpenChange={setRenameModal} title={t('main:profile_rename_profile')}>
         <YStack gap={12}>
            <Input
@@ -266,15 +260,13 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
                  updateNickname(nickname + tagChars);
                  setRenameModal(false);
                }}
-               backgroundColor={theme.accentColor?.val || '#6c5ce7'}
+               backgroundColor="$accentColor"
              >
                <TText color={theme.background?.val || '#fff'} fontSize={14}>Save</TText>
              </TButton>
            </XStack>
         </YStack>
-       </AppSheet>
-       <Title>{t('main:profile_profile_detail')}</Title>
-       <PageContainer keyboardAvoiding={false} scrollViewProps={{ nestedScrollEnabled: true }}>
+      </AppSheet>
         <YStack gap={20} flex={1}>
           {/* Header Section */}
            <YStack gap={8}>
@@ -285,7 +277,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
                 source={Flags[country] || Flags.UN}
               />
               <TouchableOpacity
-                 style={{ flex: 1 }}
+                style={{ flex: 1 }}
                 onPress={() => {
                   if (nickname && Platform.OS === 'android') {
                     Clipboard.setString(nickname);
@@ -332,7 +324,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
           {/* Tags Section */}
            <YStack gap={10}>
              <TText color="$textDefault" fontSize={16} fontWeight="700">Tags</TText>
-             <YStack backgroundColor={theme.surfaceSpecial?.val} borderRadius={12} padding={12}>
+             <YStack backgroundColor="$surfaceSpecial" borderRadius={12} padding={12}>
              <XStack gap={8} flexWrap="wrap">
               {tags.map((tag, i) => {
                 return (
@@ -381,7 +373,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
              <XStack justifyContent="flex-end" marginTop={8}>
                <TButton
                  onPress={() => setTagModal(true)}
-                 backgroundColor={theme.accentColor?.val || '#6c5ce7'}
+                 backgroundColor="$accentColor"
                  borderRadius={8}
                  height={32}
                  paddingHorizontal={10}
@@ -400,7 +392,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
             <TText color="$textDefault" fontSize={16} fontWeight="700">
               Profile Information
             </TText>
-            <YStack backgroundColor={theme.surfaceSpecial?.val} borderRadius={12} padding={20} gap={10}>
+            <YStack backgroundColor="$surfaceSpecial" borderRadius={12} padding={20} gap={10}>
               {metadata && (
                 <>
                   {metadata.iccid && (
@@ -520,8 +512,7 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
             )
           }
         </YStack>
-      </PageContainer>
-    </SafeScreen>
+    </Screen>
   );
 }
 

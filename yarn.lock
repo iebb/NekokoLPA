@@ -4589,7 +4589,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tamagui/font-inter@npm:1.135.6, @tamagui/font-inter@npm:^1.135.6":
+"@tamagui/font-inter@npm:1.135.6":
   version: 1.135.6
   resolution: "@tamagui/font-inter@npm:1.135.6"
   dependencies:
@@ -4700,6 +4700,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tamagui/helpers-icon@npm:1.135.6":
+  version: 1.135.6
+  resolution: "@tamagui/helpers-icon@npm:1.135.6"
+  dependencies:
+    "@tamagui/core": 1.135.6
+  peerDependencies:
+    react: "*"
+    react-native-svg: ">=12"
+  checksum: bc18393e0e62f696fd89cad3469b0c467f655f3dedee85510e323c7e34664c95888cb60c6d9045201130a0fee5ec88f9d32ec4e7385a3771ff82f7b086f514d0
+  languageName: node
+  linkType: hard
+
 "@tamagui/helpers-node@npm:1.135.6":
   version: 1.135.6
   resolution: "@tamagui/helpers-node@npm:1.135.6"
@@ -4803,6 +4815,19 @@ __metadata:
   peerDependencies:
     react: "*"
   checksum: 2890a30b399e3523449ee46054d93c51ad3a5b5af5da5a59d89d0dbaf09450ac854d542147b221f9a9267c7dc6547c43a73a10c31fc3ebc6e41060ba6b9afa9b
+  languageName: node
+  linkType: hard
+
+"@tamagui/lucide-icons@npm:1.135.6":
+  version: 1.135.6
+  resolution: "@tamagui/lucide-icons@npm:1.135.6"
+  dependencies:
+    "@tamagui/core": 1.135.6
+    "@tamagui/helpers-icon": 1.135.6
+  peerDependencies:
+    react: "*"
+    react-native-svg: ">=12"
+  checksum: db6d90b937596e815d0fa8f812f44f7c87359e41f73baee6f972055126e6a5c227e708a056e96bbb06eb20da0d73aec8e235856509bc70b9be18186d707e4b11
   languageName: node
   linkType: hard
 
@@ -5152,7 +5177,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tamagui/shorthands@npm:1.135.6, @tamagui/shorthands@npm:^1.135.6":
+"@tamagui/shorthands@npm:1.135.6":
   version: 1.135.6
   resolution: "@tamagui/shorthands@npm:1.135.6"
   dependencies:
@@ -11631,9 +11656,10 @@ __metadata:
     "@tamagui/babel-plugin": 1.135.6
     "@tamagui/config": 1.135.6
     "@tamagui/core": 1.135.6
-    "@tamagui/font-inter": ^1.135.6
+    "@tamagui/font-inter": 1.135.6
+    "@tamagui/lucide-icons": 1.135.6
     "@tamagui/portal": 1.135.6
-    "@tamagui/shorthands": ^1.135.6
+    "@tamagui/shorthands": 1.135.6
     "@types/node": ^22.13.0
     "@types/react": ^18.2.6
     "@typescript-eslint/parser": ^6.13.1

@@ -251,6 +251,7 @@ export class Adapter {
   async processNotifications(iccid: string) {
     await this.execute("process_notifications", [iccid, 0x90, 0]);
     await this.execute("process_notifications", [iccid, 0x60, 1]);
+    await this.getNotifications();
     return
   }
 

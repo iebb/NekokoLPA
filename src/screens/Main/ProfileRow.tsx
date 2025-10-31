@@ -2,7 +2,7 @@ import {parseMetadata} from "@/utils/parser";
 import {findPhoneNumbersInText} from "libphonenumber-js/min";
 import {preferences, sizeStats} from "@/utils/mmkv";
 import { Swipeable } from 'react-native-gesture-handler';
-import { Card, Switch, Text, XStack, YStack, Stack, useTheme } from 'tamagui';
+import { Card, Switch, Text, XStack, YStack, Stack, useTheme, getTokenValue } from 'tamagui';
 // useTheme covers dynamic color; no need for useColorScheme here
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faPencil, faTrash} from "@fortawesome/free-solid-svg-icons";
@@ -179,7 +179,7 @@ export const ProfileRow = ({profile, deviceId} : {profile: ProfileExt, deviceId:
                     makeLoading(setLoading, async () => {
                       setLoading("Deleting Profile");
                       await adapter.deleteProfileByIccId(metadata.iccid);
-                      setLoading("Processing Notifications");
+                      setLoading("Loading Notifications");
                       await adapter.processNotifications(metadata.iccid);
                       setLoading(false);
                     });
@@ -273,13 +273,13 @@ export const ProfileRow = ({profile, deviceId} : {profile: ProfileExt, deviceId:
       friction={2}
     >
       <Card
-        backgroundColor={theme.surfaceSpecial?.val}
+        backgroundColor="$surfaceSpecial"
         borderWidth={0}
         borderRadius={12}
         overflow="hidden"
         padding={0}
       >
-        <YStack paddingTop={5} paddingLeft={15} paddingRight={10} gap={5}>
+        <YStack paddingTop={5} paddingLeft={15} paddingRight={15} gap={5}>
           <XStack width="100%" alignItems="flex-start">
             <TouchableOpacity
               style={{ flexShrink: 1, flexGrow: 1 }}
@@ -311,16 +311,16 @@ export const ProfileRow = ({profile, deviceId} : {profile: ProfileExt, deviceId:
               <Switch
                 checked={profile.selected}
                 disabled={isLoading !== false}
-                size={"$2.5" as any}
-                style={{ 
-                  marginTop: -5,
+                size={"$3" as any}
+                style={{
+                  marginTop: -4,
                   borderWidth: 0.5,
                   borderColor: switchBorderColor,
                 }}
                 backgroundColor={switchTrackColor}
                 onCheckedChange={(val: boolean) => handleSwitchChange(!!val)}
               >
-                <Switch.Thumb 
+                <Switch.Thumb
                   backgroundColor={theme.backgroundDefault?.val || '#ffffff'}
                   style={{ borderWidth: 0.5, borderColor: switchBorderColor }}
                 />

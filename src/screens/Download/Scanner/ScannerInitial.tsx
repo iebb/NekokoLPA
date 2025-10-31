@@ -1,4 +1,4 @@
-import Title from "@/components/common/Title";
+import Screen from "@/components/common/Screen";
 import { View } from 'react-native';
 import { Button as TButton, Text as TText, Input, XStack, YStack, useTheme, Checkbox } from 'tamagui';
 import {Camera, useCameraDevice, useCameraPermission, useCodeScanner} from "react-native-vision-camera";
@@ -18,8 +18,6 @@ import {preferences} from "@/utils/mmkv";
 import {formatSize} from "@/utils/size";
 import {useLoading} from "@/components/common/LoadingProvider";
 import {useToast} from "@/components/common/ToastProvider";
-import PageContainer from "@/components/common/PageContainer";
-import SafeScreen from "@/theme/SafeScreen";
 
 export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
   const theme = useTheme();
@@ -87,9 +85,7 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
   const sizeW = Math.min(size * 4/3, Dimensions.get('window').width - 50);
 
   return (
-    <SafeScreen>
-      <Title>{t('main:profile_title_download_profile')}</Title>
-      <PageContainer>
+    <Screen title={t('main:profile_title_download_profile')}>
         <YStack alignItems="center" gap={5} marginVertical={10}>
           <TText color="$textDefault" fontSize={14} fontWeight={"500" as any}>
             {t('main:profile_scan_qr_prompt')}
@@ -166,7 +162,7 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
           marginVertical={12}
           borderRadius={100}
           disabled={smdp.length === 0 && !(euiccAddress?.defaultDpAddress)}
-          backgroundColor={theme.accentColor?.val || theme.color?.val || '#6c5ce7'}
+          backgroundColor="$accentColor"
           onPress={() => {
             makeLoading(
               setLoading,
@@ -221,7 +217,7 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
               <TButton
                 size="$3"
                 padding={10}
-                backgroundColor={theme.accentColor?.val || theme.color?.val || '#6c5ce7'}
+                backgroundColor="$accentColor"
                 onPress={() => {
                   makeLoading(
                     setLoading,
@@ -305,7 +301,6 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
             </TText>
           </XStack>
         </YStack>
-      </PageContainer>
-    </SafeScreen>
+    </Screen>
   )
 }

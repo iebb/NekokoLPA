@@ -49,6 +49,14 @@ export default function PageContainer({
   );
 
   if (!keyboardAvoiding) {
+    // If scrollEnabled is false, don't use ScrollView - just return the content directly
+    if (scrollViewProps?.scrollEnabled === false) {
+      return (
+        <View style={{ flex: 1 }}>
+          {content}
+        </View>
+      );
+    }
     return (
       <ScrollView
         bounces
@@ -58,6 +66,21 @@ export default function PageContainer({
       >
         {content}
       </ScrollView>
+    );
+  }
+
+  // If scrollEnabled is false, don't use ScrollView - just return the content with KeyboardAvoidingView
+  if (scrollViewProps?.scrollEnabled === false) {
+    return (
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+      >
+        <View style={{ flex: 1 }}>
+          {content}
+        </View>
+      </KeyboardAvoidingView>
     );
   }
 

@@ -3,8 +3,7 @@ import AppSheet from '@/components/common/AppSheet';
 import {NativeModules, Platform, ToastAndroid, TouchableOpacity, View} from 'react-native';
 import React, {useCallback, useMemo, useState} from "react";
 import {useSelector} from "react-redux";
-import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
-import {faPlus} from '@fortawesome/free-solid-svg-icons'
+import {MessageSquareShare, Plus} from '@tamagui/lucide-icons';
 import {useNavigation} from "@react-navigation/native";
 import {useTranslation} from "react-i18next";
 import {Adapters} from "@/native/adapters/registry";
@@ -81,9 +80,9 @@ const ActionSheetOptions = React.memo(({
     makeLoading(
       setLoading,
       async () => {
-        showToast('Processing Notifications. This may take some time.', 'success');
+        showToast('Loading Notifications. This may take some time.', 'success');
         await adapter.processNotifications('');
-        showToast('Processing Notifications. This may take some time.', 'success');
+        showToast('Loading Notifications. This may take some time.', 'success');
       }
     );
   }, [setLoading, adapter, showToast]);
@@ -191,31 +190,23 @@ const CardContent = React.memo(({
   );
 });
 
-const AddProfileButton = React.memo(({
-                                       deviceId,
-                                       navigation
-                                     }: {
-  deviceId: string;
-  navigation: any;
-}) => {
-  const theme = useTheme();
-  const handlePress = useCallback(() => {
-    navigation.navigate('Scanner', { deviceId });
-  }, [navigation, deviceId]);
+const RoundedButton = (props: any) => {
+
+  const {radiusL, radiusR } = props;
 
   return (
-    <View style={{ maxWidth: 36, flex: 1 }}>
-      <TButton
-        size="$3"
-        style={{ width: 36, height: 36, borderRadius: 12 }}
-        backgroundColor={theme.accentColor?.val || theme.color?.val || '#6c5ce7'}
-        onPress={handlePress}
-      >
-        <FontAwesomeIcon icon={faPlus} style={{ color: theme.background?.val || '#fff' }} />
-      </TButton>
-    </View>
+    <TButton
+      size="$3"
+      width={40}
+      height={40}
+      borderTopLeftRadius={radiusL}
+      borderBottomLeftRadius={radiusL}
+      borderTopRightRadius={radiusR}
+      borderBottomRightRadius={radiusR}
+      {...props}
+    />
   );
-});
+}
 
 export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
   const theme = useTheme();
@@ -280,14 +271,28 @@ export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
         width="100%"
         onPress={handleCardPress}
         padding={0}
+        height={40}
       >
         <XStack flex={1} alignItems="center">
+          <RoundedButton
+            backgroundColor="$color10"
+            icon={<MessageSquareShare size="$1" />}
+            onPress={() => {navigation.navigate('Notifications', { deviceId });}}
+            radiusL={12}
+            radiusR={0}
+          />
           <CardContent
             DeviceState={DeviceState}
             maskedEid={maskedEid}
             supplementText={supplementText}
           />
-          <AddProfileButton deviceId={deviceId} navigation={navigation} />
+          <RoundedButton
+            backgroundColor="$accentColor"
+            icon={<Plus size="$1" />}
+            onPress={() => {navigation.navigate('Scanner', { deviceId });}}
+            radiusL={0}
+            radiusR={12}
+          />
         </XStack>
       </Card>
     </View>

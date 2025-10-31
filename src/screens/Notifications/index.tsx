@@ -1,13 +1,10 @@
 import React, {useEffect} from 'react';
-import {Alert, Image, PixelRatio, TouchableOpacity,} from 'react-native';
+import {Alert, Image, PixelRatio, TouchableOpacity, View,} from 'react-native';
 import {useTranslation} from 'react-i18next';
-import SafeScreen from '@/theme/SafeScreen';
-import PageContainer from '@/components/common/PageContainer';
+import Screen from '@/components/common/Screen';
 import type {RootScreenProps} from "@/screens/navigation";
-import Title from "@/components/common/Title";
-import { Swipeable } from 'react-native-gesture-handler';
-import {Text, useTheme} from 'tamagui';
-import {View} from 'react-native';
+import {Swipeable} from 'react-native-gesture-handler';
+import {Text, useTheme, XStack, YStack} from 'tamagui';
 import {useSelector} from "react-redux";
 import {selectDeviceState} from "@/redux/stateStore";
 import {Adapters} from "@/native/adapters/registry";
@@ -18,6 +15,8 @@ import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faBan, faCircleCheck, faDownload, faPaperPlane, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {useToast} from "@/components/common/ToastProvider";
 import {useLoading} from "@/components/common/LoadingProvider";
+import {makeLoading} from "@/components/utils/loading";
+import {Button as TButton} from 'tamagui';
 
 function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>) {
   const { deviceId } = route.params;
@@ -112,59 +111,81 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
     );
 
     return (
-      <View key={row.seqNumber} style={{ marginBottom: 12 }}>
+      <View key={row.seqNumber}>
         <Swipeable renderLeftActions={renderLeft} renderRightActions={renderRight} overshootFriction={8} friction={2}>
           <TouchableOpacity>
             {/* Card surface inside to keep rounded corners */}
-            <View style={{ borderRadius: 12, backgroundColor: rowBg, borderWidth: 1, borderColor: borderCol, flexDirection: 'row', paddingHorizontal: 16, paddingVertical: 12, marginHorizontal: 16, position: 'relative' }}>
+            <View style={{ borderRadius: 12, backgroundColor: rowBg, borderWidth: 1, borderColor: borderCol, flexDirection: 'row', paddingHorizontal: 16, paddingVertical: 12, position: 'relative' }}>
               {/* Flag top-left */}
-              <View style={{ marginRight: 10, justifyContent: 'flex-start' }}>
-                <Image
-                  style={{width: 20 * PixelRatio.getFontScale(), height: 20 * PixelRatio.getFontScale()}}
-                  source={Flags[country] || Flags.UN}
-                />
-              </View>
+
 
               {/* Main content */}
-              <View style={{ flexGrow: 1 }}>
-                <Text color="$textDefault" numberOfLines={1} fontSize={14}>
-                  {metadata ? ` ${name}` : ` ${row.iccid}`}
-                </Text>
-                <View style={{ marginTop: 4 }}>
-                  <Text color="$color10" fontSize={12}>RSP: {row.notificationAddress}</Text>
-                  <Text color="$color10" fontSize={12}>ICCID: {row.iccid}</Text>
-                </View>
-              </View>
-
-              {/* Right side badge for type */}
-              <View style={{ alignItems: 'flex-end', justifyContent: 'center' }}>
-                <View style={{ backgroundColor: badgeBg, borderRadius: 999, paddingHorizontal: 10, paddingVertical: 4, minHeight: 24, justifyContent: 'center' }}>
-                  <Text color={theme.background?.val || '#ffffff'} fontSize={12}>
-                    {type}
+              <YStack style={{ flexGrow: 1 }}>
+                <XStack gap={5}>
+                  <Image
+                    style={{width: 20 * PixelRatio.getFontScale(), height: 20 * PixelRatio.getFontScale()}}
+                    source={Flags[country] || Flags.UN}
+                  />
+                  <Text color="$textDefault" numberOfLines={1} fontSize={14} flex={1}>
+                    {metadata ? ` ${name}` : ` ${row.iccid}`}
                   </Text>
-                </View>
-              </View>
+                  <Text color={badgeBg} fontSize={12}>
+                    {type.toUpperCase()}
+                  </Text>
+                </XStack>
 
-              {/* Number bottom-right */}
-              <Text color="$textDefault" fontSize={12} style={{ position: 'absolute', right: 12, bottom: 8, opacity: 0.8 }}>
-                #{row.seqNumber}
-              </Text>
+                <XStack gap={5}>
+                  <YStack flex={1}>
+                    <Text color="$color10" fontSize={12}>{row.notificationAddress}</Text>
+                    <Text color="$color10" fontSize={12}>ICCID: {row.iccid}</Text>
+                  </YStack>
+                  <Text color="$textDefault" fontSize={12}>
+                    #{row.seqNumber}
+                  </Text>
+                </XStack>
+              </YStack>
             </View>
           </TouchableOpacity>
         </Swipeable>
       </View>
     );
   }
+  const handleProcessAllNotifications = () => {
+    makeLoading(
+      setLoading,
+      async () => {
+        showToast(t('main:notifications_processing_all'), 'success');
+        await adapter.processNotifications('');
+        showToast(t('main:notifications_processing_all_success'), 'success');
+      }
+    );
+  };
+
   const sorted = Array.isArray(notifications) ?  [...notifications].sort((a, b) => b.seqNumber - a.seqNumber) : [];
   return (
-    <SafeScreen>
-      <Title>{t('main:notifications_notifications')}</Title>
-      <PageContainer>
-        {
-          sorted.map(item => renderRow(item))
-        }
-      </PageContainer>
-    </SafeScreen>
+    <Screen
+      title={t('main:notifications_notifications')}
+      subtitle={t('main:notifications_subtitle')}
+      fixedHeader={
+        <XStack justifyContent="flex-end" paddingHorizontal={20} paddingBottom={16} flexShrink={0}>
+          <TButton
+            onPress={handleProcessAllNotifications}
+            backgroundColor="$accentColor"
+            borderRadius={8}
+            paddingHorizontal={16}
+            paddingVertical={10}
+          >
+            <Text color={theme.background?.val || '#fff'} fontSize={14} fontWeight="600">
+              {t('main:notifications_handle_all')}
+            </Text>
+          </TButton>
+        </XStack>
+      }
+    >
+      <YStack gap={4}>
+        {sorted.map(item => renderRow(item))}
+      </YStack>
+    </Screen>
   );
 
 }

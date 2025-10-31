@@ -8,15 +8,13 @@ import {faCancel, faDownload} from "@fortawesome/free-solid-svg-icons";
 import BlockingLoader from "@/components/common/BlockingLoader";
 import RemoteErrorView from "@/screens/Download/RemoteErrorView";
 import MetadataView from "@/components/common/MetadataView";
-import Title from "@/components/common/Title";
+import Screen from "@/components/common/Screen";
 import {makeLoading} from "@/components/utils/loading";
 import {Adapters} from "@/native/adapters/registry";
 import sizeFile, {ProfileSizes} from "@/data/sizes";
 import {useSelector} from "react-redux";
 import {selectDeviceState} from "@/redux/stateStore";
 import {formatSize} from "@/utils/size";
-import PageContainer from "@/components/common/PageContainer";
-import SafeScreen from "@/theme/SafeScreen";
 
 
 export function ScannerAuthentication(
@@ -49,9 +47,7 @@ export function ScannerAuthentication(
 
 
   return (
-    <SafeScreen>
-      <Title>{t('main:profile_title_confirm_profile')}</Title>
-      <PageContainer keyboardAvoiding={false} scrollViewProps={{ nestedScrollEnabled: true }}>
+    <Screen title={t('main:profile_title_confirm_profile')} keyboardAvoiding={false} scrollViewProps={{ nestedScrollEnabled: true }}>
       {
         loading && (
           <BlockingLoader
@@ -128,7 +124,7 @@ export function ScannerAuthentication(
                 flex={1}
                 borderRadius={100}
                 marginVertical={12}
-                backgroundColor={theme.backgroundDangerHeavy?.val || '#dc2626'}
+                backgroundColor="$backgroundDangerHeavy"
                 onPress={() => {
                   makeLoading(
                     setLoading,
@@ -153,7 +149,7 @@ export function ScannerAuthentication(
                 flex={3}
                 borderRadius={100}
                 marginVertical={12}
-                backgroundColor={theme.accentColor?.val || theme.color?.val || '#6c5ce7'}
+                backgroundColor="$accentColor"
                 onPress={() => {
                   if (freeSpace <= maxSizeData) {
                     Alert.alert(
@@ -242,8 +238,7 @@ export function ScannerAuthentication(
         </YStack>
       )
       }
-      </PageContainer>
-    </SafeScreen>
+    </Screen>
   );
 }
 

@@ -17,7 +17,7 @@ interface BlockingLoaderProps {
 
 export default function BlockingLoader({
   visible = true,
-  title = "Processing",
+  title = "Loading",
   subtitle,
   message,
   state = "loading",

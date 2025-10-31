@@ -1,10 +1,8 @@
 import React from 'react';
 import {FlatList} from 'react-native';
 import {useTranslation} from 'react-i18next';
-import SafeScreen from '@/theme/SafeScreen';
-import PageContainer from '@/components/common/PageContainer';
+import Screen from '@/components/common/Screen';
 import type {RootScreenProps} from "@/screens/navigation";
-import Title from "@/components/common/Title";
 import {Text, useTheme} from 'tamagui';
 import {View, TouchableOpacity, ToastAndroid} from 'react-native';
 import {useSelector} from "react-redux";
@@ -49,9 +47,7 @@ function EuiccInfo({ route,  navigation }: RootScreenProps<'EuiccInfo'>) {
     );
   }
 	return (
-		<SafeScreen>
-			<Title>{t('main:euiccInfo_euiccinfo')}</Title>
-			<PageContainer keyboardAvoiding={false} scrollViewProps={{ nestedScrollEnabled: true }}>
+    <Screen title={t('main:euiccInfo_euiccinfo')} keyboardAvoiding={false} scrollViewProps={{ nestedScrollEnabled: true }}>
 				<FlatList
 					data={[
 						{key: "eid", rendered: `${eid}` },
@@ -71,8 +67,7 @@ function EuiccInfo({ route,  navigation }: RootScreenProps<'EuiccInfo'>) {
 					keyExtractor={(item: EuiccInfoDataType) => item.key}
 					scrollEnabled={false}
 				/>
-			</PageContainer>
-		</SafeScreen>
+    </Screen>
 	);
 
 }

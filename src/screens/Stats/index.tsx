@@ -1,10 +1,8 @@
 import React from 'react';
 import {Image} from 'react-native';
 import {useTranslation} from 'react-i18next';
-import SafeScreen from '@/theme/SafeScreen';
-import PageContainer from '@/components/common/PageContainer';
+import Screen from '@/components/common/Screen';
 import type {RootScreenProps} from "@/screens/navigation";
-import Title from "@/components/common/Title";
 import {countryList} from "@/utils/mmkv";
 import _MCC from "@/data/mcc.json";
 import {Flags} from "@/assets/flags";
@@ -35,10 +33,8 @@ function Stats({ route,  navigation }: RootScreenProps<'Stats'>) {
 		}
 	}
 
-	return (
-		<SafeScreen>
-			<Title>{t('main:profile_collection_stats')}</Title>
-			<PageContainer>
+  return (
+    <Screen title={t('main:profile_collection_stats')}>
 				<YStack gap={10} flex={1}>
 					<YStack gap={10}>
 						{
@@ -69,9 +65,8 @@ function Stats({ route,  navigation }: RootScreenProps<'Stats'>) {
 								)})
 						}
 					</YStack>
-				</YStack>
-			</PageContainer>
-		</SafeScreen>
+        </YStack>
+    </Screen>
 	);
 
 }
