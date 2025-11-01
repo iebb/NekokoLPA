@@ -13,20 +13,6 @@ import React from 'react';
 import {useTheme, Theme} from 'tamagui';
 import {createTamaguiConfigWithColor} from "../tamagui.config";
 import {preferences} from "@/utils/mmkv";
-// Load Sentry only in development to avoid references in production builds
-let Sentry: any;
-if (__DEV__) {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  Sentry = require('@sentry/react-native');
-}
-
-
-if (__DEV__ && Sentry) {
-  Sentry.init({
-    dsn: "https://eea742e6ac6d6908f6bc6c34e30fb88d@sentry.nekoko.it/2",
-    // spotlight: __DEV__,
-  });
-}
 
 function App() {
   return (

@@ -2,7 +2,6 @@ package ee.nekoko.nlpa
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Build
 import java.security.MessageDigest
 
 fun bytesToHex(bytes: ByteArray): String {
@@ -20,27 +19,17 @@ fun bytesToHex(bytes: ByteArray): String {
 class SystemInfo(val context: Context) {
 
     fun signatureList(): List<String> {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            // New signature
-            val sig = context.packageManager.getPackageInfo(context.packageName, PackageManager.GET_SIGNING_CERTIFICATES).signingInfo
-            return if (sig!!.hasMultipleSigners()) {
-                // Send all with apkContentsSigners
-                sig!!.apkContentsSigners.map {
-                    val digest = MessageDigest.getInstance("SHA")
-                    digest.update(it.toByteArray())
-                    bytesToHex(digest.digest())
-                }
-            } else {
-                // Send one with signingCertificateHistory
-                sig!!.signingCertificateHistory.map {
-                    val digest = MessageDigest.getInstance("SHA")
-                    digest.update(it.toByteArray())
-                    bytesToHex(digest.digest())
-                }
+        val sig = context.packageManager.getPackageInfo(context.packageName, PackageManager.GET_SIGNING_CERTIFICATES).signingInfo
+        return if (sig.hasMultipleSigners()) {
+            // Send all with apkContentsSigners
+            sig.apkContentsSigners.map {
+                val digest = MessageDigest.getInstance("SHA")
+                digest.update(it.toByteArray())
+                bytesToHex(digest.digest())
             }
         } else {
-            val sig = context.packageManager.getPackageInfo(context.packageName, PackageManager.GET_SIGNATURES).signatures
-            return sig!!.map {
+            // Send one with signingCertificateHistory
+            sig.signingCertificateHistory.map {
                 val digest = MessageDigest.getInstance("SHA")
                 digest.update(it.toByteArray())
                 bytesToHex(digest.digest())
