@@ -18,6 +18,7 @@
   "bluetooth_scan": "蓝牙",
 
   "euiccInfo_euiccinfo": "EUICC Info",
+  "euiccInfo_subtitle": "设备和eUICC详细信息",
   "euiccInfo_sasAcreditationNumber": "SAS Accreditation",
   "euiccInfo_profileVersion": "Profile Version",
   "euiccInfo_globalplatformVersion": "Global Platform Version",
@@ -33,6 +34,7 @@
   "euiccInfo_rootDsAddress": "Root SM-DS Address",
 
   "settings_settings": "设置",
+  "settings_subtitle": "自定义应用偏好设置",
   "settings_title_showSlots": "卡槽显示",
   "settings_item_showSlots_all": "显示所有 SIM 卡槽",
   "settings_item_showSlots_possible": "仅显示 OMAPI 可用卡槽",

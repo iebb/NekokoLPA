@@ -18,6 +18,7 @@
   "bluetooth_scan": "Bluetooth",
 
   "euiccInfo_euiccinfo": "Información EUICC",
+  "euiccInfo_subtitle": "Detalles del dispositivo y eUICC",
   "euiccInfo_sasAcreditationNumber": "Acreditación SAS",
   "euiccInfo_profileVersion": "Versión del perfil",
   "euiccInfo_globalplatformVersion": "Versión de Global Platform",
@@ -40,6 +41,7 @@
   "backup_import": "Importar tamaños",
 
   "settings_settings": "Configuración",
+  "settings_subtitle": "Personalizar preferencias de la app",
   "settings_title_showSlots": "Reglas de visualización de ranuras SIM",
   "settings_item_showSlots_all": "Todas las ranuras de tarjetas SIM",
   "settings_item_showSlots_possible": "Ranuras con OMAPI habilitado",

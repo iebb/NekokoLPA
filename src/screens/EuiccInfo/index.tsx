@@ -47,7 +47,7 @@ function EuiccInfo({ route,  navigation }: RootScreenProps<'EuiccInfo'>) {
     );
   }
 	return (
-    <Screen title={t('main:euiccInfo_euiccinfo')} keyboardAvoiding={false} scrollViewProps={{ nestedScrollEnabled: true }}>
+    <Screen title={t('main:euiccInfo_euiccinfo')} subtitle={t('main:euiccInfo_subtitle')} keyboardAvoiding={false} scrollViewProps={{ nestedScrollEnabled: true }}>
 				<FlatList
 					data={[
 						{key: "eid", rendered: `${eid}` },
