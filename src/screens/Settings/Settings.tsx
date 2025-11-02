@@ -23,7 +23,6 @@ export type SettingDataType = {
 }
 
 
-
 export default function Settings({ route,  navigation }: RootScreenProps<'Settings'>) {
 
   const { t } = useTranslation(['main']);
@@ -52,19 +51,9 @@ export default function Settings({ route,  navigation }: RootScreenProps<'Settin
     if (item.type === 'aid') {
       const aidCount = getAIDList().split(',').filter(Boolean).length;
       return (
-        <TouchableOpacity activeOpacity={0.6} style={{ paddingVertical: 8 }} onPress={() => setAidModalVisible(true)}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
-            <View>
-              <TText color="$textDefault" fontSize={14}>AID Configuration</TText>
-            </View>
-            <View style={{ flex: 1 }} />
-          </View>
-          <View style={{ flexDirection: 'row', width: '100%' }}>
-            <View style={{ flex: 1 }} />
-            <View>
-              <TText color="$color10" fontSize={14}>{aidCount} AID{aidCount !== 1 ? 's' : ''} →</TText>
-            </View>
-          </View>
+        <TouchableOpacity key={item.key} activeOpacity={0.6} onPress={() => setAidModalVisible(true)}>
+          <TText color="$textDefault" fontSize={14}>AID Configuration</TText>
+          <TText color="$color10" textAlign="right" fontSize={14}>{aidCount} AID{aidCount !== 1 ? 's' : ''} →</TText>
         </TouchableOpacity>
       );
     }
@@ -72,12 +61,16 @@ export default function Settings({ route,  navigation }: RootScreenProps<'Settin
 
   return (
     <Screen title={t('main:settings_settings')} keyboardAvoiding scrollViewProps={{ nestedScrollEnabled: true }}>
-      <YStack>
+      <YStack gap={8}>
         {items.map((item: SettingDataType) => renderItem({item}))}
       </YStack>
-      <AppSheet open={aidModalVisible} onOpenChange={setAidModalVisible} title={"AID Configuration"}>
-        <AIDManager />
-      </AppSheet>
+      {
+        aidModalVisible && (
+          <AppSheet open={aidModalVisible} onOpenChange={setAidModalVisible} title={"AID Configuration"}>
+            <AIDManager />
+          </AppSheet>
+        )
+      }
     </Screen>
   );
 }

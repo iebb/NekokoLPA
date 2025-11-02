@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {TouchableOpacity, View} from 'react-native';
+import {TouchableOpacity} from 'react-native';
 import {useTranslation} from 'react-i18next';
-import {Select, Text as TText, Adapt} from 'tamagui';
+import {Adapt, Select, Text as TText} from 'tamagui';
 import AppSheet from '@/components/common/AppSheet';
 import {preferences} from '@/utils/mmkv';
 
@@ -31,48 +31,39 @@ const SelectRow = React.memo(function SelectRow({row} : {row: SettingDataType}) 
     : v;
 
   return (
-    <>
-      <TouchableOpacity activeOpacity={0.6} style={{ paddingVertical: 8 }} onPress={() => setOpen(true)}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
-          <View>
-            <TText color="$textDefault" fontSize={14}>{t(`main:settings_title_${row.key}`)}</TText>
-          </View>
-          <View style={{ flex: 1 }} />
-        </View>
-        <View style={{ flexDirection: 'row', width: '100%' }}>
-          <View style={{ flex: 1 }} />
-          <View>
-            <TText color="$color10" fontSize={14}>{currentLabel} →</TText>
-          </View>
-        </View>
-      </TouchableOpacity>
-
-      <Select open={open} onOpenChange={setOpen} value={v}
-        onValueChange={(opt: string) => {
-          setV(opt);
-          preferences.set(row.key, opt);
-          row.onChange?.(opt);
-        }}
-      >
-        <Select.Trigger display="none">
-          <Select.Value placeholder={currentLabel} />
-        </Select.Trigger>
-        <Adapt platform="touch">
-          <AppSheet open={open} onOpenChange={setOpen} title={t(`main:settings_title_${row.key}`)}>
-            <Adapt.Contents />
-          </AppSheet>
-        </Adapt>
-        <Select.Content zIndex={200000}>
-          <Select.Viewport>
-            {options.map((opt, i) => (
-              <Select.Item key={opt} value={opt} index={i} backgroundColor="transparent" pressStyle={{ backgroundColor: 'transparent' }}>
-                <Select.ItemText>{t(`main:settings_item_${row.key}_${opt}`)}</Select.ItemText>
-              </Select.Item>
-            ))}
-          </Select.Viewport>
-        </Select.Content>
-      </Select>
-    </>
+    <TouchableOpacity activeOpacity={0.6} onPress={() => setOpen(true)}>
+      <TText color="$textDefault" fontSize={14}>{t(`main:settings_title_${row.key}`)}</TText>
+      <TText color="$color10" textAlign="right" fontSize={14}>{currentLabel} →</TText>
+      {
+        open && (
+          <Select open={open} onOpenChange={setOpen} value={v}
+                  onValueChange={(opt: string) => {
+                    setV(opt);
+                    preferences.set(row.key, opt);
+                    row.onChange?.(opt);
+                  }}
+          >
+            <Select.Trigger display="none">
+              <Select.Value placeholder={currentLabel} />
+            </Select.Trigger>
+            <Adapt platform="touch">
+              <AppSheet open={open} onOpenChange={setOpen} title={t(`main:settings_title_${row.key}`)}>
+                <Adapt.Contents />
+              </AppSheet>
+            </Adapt>
+            <Select.Content zIndex={200000}>
+              <Select.Viewport>
+                {options.map((opt, i) => (
+                  <Select.Item padding={0} key={opt} value={opt} index={i} backgroundColor="transparent" pressStyle={{ backgroundColor: 'transparent' }}>
+                    <Select.ItemText>{t(`main:settings_item_${row.key}_${opt}`)}</Select.ItemText>
+                  </Select.Item>
+                ))}
+              </Select.Viewport>
+            </Select.Content>
+          </Select>
+        )
+      }
+    </TouchableOpacity>
   );
 });
 

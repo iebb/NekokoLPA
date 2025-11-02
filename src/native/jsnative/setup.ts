@@ -1,7 +1,7 @@
 import {NativeModules, Platform} from "react-native";
 import {Adapter, Device} from "@/native/adapters/adapter";
 import {Adapters} from "@/native/adapters/registry";
-const { CustomHttp } = NativeModules;
+import {CustomHttp} from "@/native/modules";
 
 export async function setupDevice(a: Adapter): Promise<(s: string, args: any[]) => Promise<(fn: string, args: any[]) => Promise<any>>> {
   const module = await (require("./web.out"))();

@@ -11682,7 +11682,8 @@ __metadata:
     react-native-fs: 2.20.0
     react-native-gesture-handler: 2.25.0
     react-native-image-picker: 7.1.2
-    react-native-mmkv: 2.12.2
+    react-native-mmkv: 4.0.0
+    react-native-nitro-modules: ^0.31.4
     react-native-prompt-android: 1.1.0
     react-native-qr-image-reader: ^1.0.5
     react-native-reanimated: 3.16.7
@@ -12818,13 +12819,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-mmkv@npm:2.12.2":
-  version: 2.12.2
-  resolution: "react-native-mmkv@npm:2.12.2"
+"react-native-mmkv@npm:4.0.0":
+  version: 4.0.0
+  resolution: "react-native-mmkv@npm:4.0.0"
   peerDependencies:
     react: "*"
-    react-native: ">=0.71.0"
-  checksum: 8c79504a89fefd7f9c290a4a6bb24f1f9ef9e2a69d20d0f7d882b89f3943556e9c919c9d46583e44ab698f25213489277fccb6d4c856cce310267c5f907388f1
+    react-native: "*"
+    react-native-nitro-modules: "*"
+  checksum: 2e81aeb3a8ee559b145e78c05ea521b81147919fa2c417a51c04792b239d031f993a6af2077b9ebf03d6f4d261e17472543d11a3df0241452b25b3b9f3b58811
+  languageName: node
+  linkType: hard
+
+"react-native-nitro-modules@npm:^0.31.4":
+  version: 0.31.4
+  resolution: "react-native-nitro-modules@npm:0.31.4"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 9d251ec788eafb5c66033a1f376e2a8f9dfc8962a22e8511f6451bc50bf324549fd4e5113ee5bed59a993c0afc3288e8722d854239a33c00faae26848a211fde
   languageName: node
   linkType: hard
 

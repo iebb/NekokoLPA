@@ -4,11 +4,10 @@ import {useTranslation} from 'react-i18next';
 import Screen from '@/components/common/Screen';
 import type {RootScreenProps} from "@/screens/navigation";
 import UnifiedLoader from "@/components/common/UnifiedLoader";
-import { Text as TText, XStack, YStack, useTheme, View as TView, getTokenValue } from 'tamagui';
+import {Text as TText, View as TView, XStack, YStack, useTheme} from 'tamagui';
+import {Bed, Package, HardDrive} from '@tamagui/lucide-icons';
 import {bleManager, requestBluetoothPermission} from "@/utils/blue";
 import {Device} from 'react-native-ble-plx';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {fa9, faMattressPillow, faSdCard} from '@fortawesome/free-solid-svg-icons';
 import {connectDevice} from "@/screens/Bluetooth/connection";
 import {setupDevices} from "@/native/setup";
 import {useDispatch} from 'react-redux';
@@ -16,12 +15,12 @@ import {makeLoading} from "@/components/utils/loading";
 import {useLoading} from "@/components/common/LoadingProvider";
 
 function BluetoothScan({ route,  navigation }: RootScreenProps<'BluetoothScan'>) {
-  const theme = useTheme();
   const { t } = useTranslation(['main']);
   const [devices, setDevices] = useState<Device[]>([]);
   const dispatch = useDispatch();
   const { setLoading } = useLoading();
   const [scanning, setScanning] = useState(false);
+  const theme = useTheme();
 
 
   const addDevice = (scannedDevice: Device) => {
@@ -83,9 +82,16 @@ function BluetoothScan({ route,  navigation }: RootScreenProps<'BluetoothScan'>)
                   }}
                 >
                   <XStack gap={10} alignItems="center">
-                    <FontAwesomeIcon icon={
-                      device!.name!.startsWith("ESTKme") ? faMattressPillow : device!.name!.startsWith("eSIM_Writer") ? fa9 : faSdCard
-                    } size={40} style={{ color: getTokenValue('$accentColor') as string }} />
+                    {(() => {
+                      const IconComponent = device!.name!.startsWith("ESTKme") 
+                        ? Bed 
+                        : device!.name!.startsWith("eSIM_Writer") 
+                          ? Package 
+                          : HardDrive;
+                      return (
+                        <IconComponent size={40} color={theme.accentColor?.val as string} />
+                      );
+                    })()}
                     <YStack flex={1}>
                       <TText color="$textDefault" fontSize={14} fontWeight={"500" as any} style={{ marginTop: -2 }}>
                         {device.name}

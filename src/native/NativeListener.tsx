@@ -9,6 +9,7 @@ export function NativeListener({ children }: { children?: React.ReactNode }) {
 
   const { t } = useTranslation(['main']);
   useEffect(() => {
+    console.log("NL xxx");
     setupDevices(dispatch).then(r => r);
   }, []);
 

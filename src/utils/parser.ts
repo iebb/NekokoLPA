@@ -50,11 +50,49 @@ export function dateToDate6(d: Date): string {
   return dateToDate8(d).substring(2);
 }
 
+/**
+ * Parse a 3-letter lowercase suffix (base-26) to a number
+ * 'aaa' = 0, 'aab' = 1, ..., 'zzz' = 17575
+ */
+function parseBase26Suffix(suffix: string): number {
+  if (suffix.length !== 3 || !/^[a-z]{3}$/.test(suffix)) {
+    return -1; // No order set
+  }
+  const a = suffix.charCodeAt(0) - 97; // 'a' = 97
+  const b = suffix.charCodeAt(1) - 97;
+  const c = suffix.charCodeAt(2) - 97;
+  return a * 26 * 26 + b * 26 + c;
+}
+
+/**
+ * Convert a number to a 3-letter lowercase suffix (base-26)
+ * 0 = 'aaa', 1 = 'aab', ..., 17575 = 'zzz'
+ */
+export function orderToBase26Suffix(order: number): string {
+  if (order < 0 || order > 17575) {
+    return 'mmm'; // Default
+  }
+  const c = order % 26;
+  const b = Math.floor((order / 26) % 26);
+  const a = Math.floor(order / (26 * 26));
+  return String.fromCharCode(97 + a) + String.fromCharCode(97 + b) + String.fromCharCode(97 + c);
+}
+
 export function parseMetadata(metadata: ProfileMetadataMap, t: TFunction, parseCountry = true) {
   const tags = [];
 
   let nickname = metadata.profileNickname || metadata.profileName || metadata.serviceProviderName;
+  let order = -1; // Default order for 'mmm'
+
   if (nickname) {
+    // Extract and parse order suffix (^ followed by 3 lowercase letters at the end, e.g., "^xyz")
+    const orderSuffixMatch = nickname.match(/\^[a-z]{3}$/);
+    if (orderSuffixMatch) {
+      const suffix = orderSuffixMatch[0].substring(1); // Remove the '^' and get the 3 letters
+      order = parseBase26Suffix(suffix);
+      // Remove the suffix from the nickname (^ + 3 letters = 4 characters)
+      nickname = nickname.slice(0, -4).trim();
+    }
 
     const eDates = nickname.matchAll(/\s*d:(2[012])?(\d\d)(\d\d)(\d\d)/g);
     for(const eDate of eDates) {
@@ -138,6 +176,7 @@ export function parseMetadata(metadata: ProfileMetadataMap, t: TFunction, parseC
     tags: tags,
     country: countryEmoji,
     mccMnc: mccMncInfo,
+    order: order,
   };
 
 }
@@ -146,7 +185,17 @@ export function parseMetadataOnly(metadata: ProfileMetadataMap) {
   const tags = [];
 
   let nickname = metadata.profileNickname || metadata.profileName || metadata.serviceProviderName;
+  let order = -1; // Default order for 'mmm'
+
   if (nickname) {
+    // Extract and parse order suffix (^ followed by 3 lowercase letters at the end, e.g., "^xyz")
+    const orderSuffixMatch = nickname.match(/\^[a-z]{3}$/);
+    if (orderSuffixMatch) {
+      const suffix = orderSuffixMatch[0].substring(1); // Remove the '^' and get the 3 letters
+      order = parseBase26Suffix(suffix);
+      // Remove the suffix from the nickname (^ + 3 letters = 4 characters)
+      nickname = nickname.slice(0, -4).trim();
+    }
 
     const eDates = nickname.matchAll(/\s*d:(2[012])?(\d\d)(\d\d)(\d\d)/g);
     for(const eDate of eDates) {
@@ -191,6 +240,7 @@ export function parseMetadataOnly(metadata: ProfileMetadataMap) {
     tags: tags,
     country: countryEmoji,
     mccMnc: mccMncInfo,
+    order: order,
   };
 
 }

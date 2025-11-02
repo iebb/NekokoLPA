@@ -4,10 +4,8 @@ import {RootState} from "@/redux/reduxDataStore";
 import {useTranslation} from "react-i18next";
 import {Alert, Dimensions, Linking, NativeModules, Platform, ScrollView, ToastAndroid} from "react-native";
 import {Adapters} from "@/native/adapters/registry";
-import {Tabs, Text as TText, XStack, YStack, View as TView, getTokenValue} from 'tamagui';
-import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
-import {faSimCard} from "@fortawesome/free-solid-svg-icons";
-import {faBluetooth, faUsb} from "@fortawesome/free-brands-svg-icons";
+import {Tabs, Text as TText, XStack, YStack, View as TView, useTheme} from 'tamagui';
+import {Smartphone, Bluetooth, Usb} from '@tamagui/lucide-icons';
 import Clipboard from "@react-native-clipboard/clipboard";
 import {preferences} from "@/utils/mmkv";
 import {AppBuyLink} from "@/screens/Main/config";
@@ -23,6 +21,7 @@ export default function SIMSelector() {
   const dispatch = useDispatch();
   const { t } = useTranslation(['main']);
   const showSlots = preferences.getString("showSlots");
+  const theme = useTheme();
 
   let deviceList = _deviceList ?? [];
 
@@ -35,9 +34,10 @@ export default function SIMSelector() {
   const firstAvailable = deviceList.map(x => Adapters[x].device.available).indexOf(true);
 
   const [index, setIndex] = useState(firstAvailable < 0 ? 0 : firstAvailable);
+  const [dimensions, setDimensions] = useState(() => Dimensions.get('window'));
   const selected = index < deviceList.length ? deviceList[index] : null;
   const adapter = selected ? Adapters[selected] : null;
-  const width = Dimensions.get('window').width - 48;
+  const width = dimensions.width - 48;
 
   const deviceCount = deviceList.length;
   const displayWidth = width / deviceCount;
@@ -70,7 +70,20 @@ export default function SIMSelector() {
     }
   }, [deviceList.length]);
 
+  // Listen for dimension changes (orientation changes)
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+      setDimensions(window);
+    });
+
+    return () => {
+      subscription?.remove();
+    };
+  }, []);
+
   if (width <= 0) return null;
+
+
   if (deviceList.length == 0) return (
     <ScrollView
       bounces
@@ -129,14 +142,18 @@ export default function SIMSelector() {
                 style={{ backgroundColor: 'transparent' }}
               >
                 <XStack alignItems="center" gap={4} paddingHorizontal={8} paddingVertical={6}>
-                  <FontAwesomeIcon
-                    icon={
-                      adapter.device.deviceId.startsWith('omapi') ? faSimCard :
-                      adapter.device.deviceId.startsWith('ble') ? (faBluetooth as any) : (faUsb as any)
-                    }
-                    style={{ color: selected ? (getTokenValue('$accentColor') as string) : (getTokenValue('$color11') as string), marginRight: 4, marginTop: -2 }}
-                    size={15}
-                  />
+                  {(() => {
+                    const IconComponent = adapter.device.deviceId.startsWith('omapi')
+                      ? Smartphone
+                      : adapter.device.deviceId.startsWith('ble')
+                        ? Bluetooth
+                        : Usb;
+                    return (
+                      <TView style={{ marginRight: 4, marginTop: -2 }}>
+                        <IconComponent size={15} color={selected ? "$accentColor" : "$color11"} />
+                      </TView>
+                    );
+                  })()}
                   <TText
                     fontSize={12}
                     lineHeight={16}
@@ -205,7 +222,7 @@ export default function SIMSelector() {
                   (Platform.OS === 'android') && (
                     <>
                       <TText color="$textDefault" textDecorationLine="underline" fontSize={20} textAlign="center" marginTop={40} onPress={() => {
-                        const { OMAPIBridge } = NativeModules;
+                        const { OMAPIBridge } = require("@/native/modules");
                         OMAPIBridge.openSTK(adapter.device.deviceName);
                       }}>
                         {t('main:open_stk_menu')}

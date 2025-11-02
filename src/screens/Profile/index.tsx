@@ -114,6 +114,13 @@ function Profile({ route,  navigation }: RootScreenProps<'Profile'>) {
 
   const updateNickname = (n: string) => {
     makeLoading(setLoading, async () => {
+      // Preserve the order suffix if it exists
+      if (metadata?.profileNickname) {
+        const orderSuffixMatch = metadata.profileNickname.match(/\^[a-z]{3}$/);
+        if (orderSuffixMatch) {
+          n = n + orderSuffixMatch[0]; // Add the ^xxx suffix
+        }
+      }
       await adapter.setNicknameByIccId(iccid, n);
     });
   }

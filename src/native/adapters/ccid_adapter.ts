@@ -2,7 +2,7 @@ import {NativeModules} from "react-native";
 import {Device} from "@/native/adapters/adapter";
 import {preferences} from "@/utils/mmkv";
 import {getAIDList} from "@/utils/aid";
-const { CCIDPlugin } = NativeModules;
+import {CCIDPlugin} from "@/native/modules";
 
 
 export class CCIDDevice implements Device {

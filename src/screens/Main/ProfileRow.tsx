@@ -1,8 +1,8 @@
 import {parseMetadata} from "@/utils/parser";
 import {findPhoneNumbersInText} from "libphonenumber-js/min";
 import {preferences, sizeStats} from "@/utils/mmkv";
-import { Swipeable } from 'react-native-gesture-handler';
-import { Card, Switch, Text, XStack, YStack, Stack, useTheme, getTokenValue } from 'tamagui';
+import {Swipeable} from 'react-native-gesture-handler';
+import {Card, Stack, Switch, Text, useTheme, XStack, YStack} from 'tamagui';
 // useTheme covers dynamic color; no need for useColorScheme here
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faPencil, faTrash} from "@fortawesome/free-solid-svg-icons";
@@ -10,7 +10,7 @@ import {Alert, Image, PixelRatio, ToastAndroid, TouchableOpacity} from "react-na
 import {makeLoading} from "@/components/utils/loading";
 import {Flags} from "@/assets/flags";
 import {formatSize} from "@/utils/size";
-import React, {useMemo, useCallback} from "react";
+import React, {useCallback, useMemo} from "react";
 import {useTranslation} from "react-i18next";
 import {useNavigation} from "@react-navigation/native";
 import {Profile} from "@/native/types";
@@ -74,11 +74,11 @@ const ProfileSubtitle = React.memo(({
   );
 });
 
-export const ProfileRow = ({profile, deviceId} : {profile: ProfileExt, deviceId: string}) => {
+export const ProfileRow = ({profile, deviceId, drag} : {profile: ProfileExt, deviceId: string, drag: any}) => {
   const { t } = useTranslation(['main']);
   const adapter = Adapters[deviceId];
   const { setLoading, isLoading } = useLoading();
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const theme = useTheme();
 
   // Memoize preferences
@@ -93,7 +93,7 @@ export const ProfileRow = ({profile, deviceId} : {profile: ProfileExt, deviceId:
 
   // Memoize metadata processing
   const metadata = profile;
-  const { tags, name, country, mccMnc } = useMemo(() =>
+  const { tags, name, country, mccMnc, order } = useMemo(() =>
     parseMetadata(metadata, t),
     [metadata, t]
   );
@@ -126,6 +126,8 @@ export const ProfileRow = ({profile, deviceId} : {profile: ProfileExt, deviceId:
         result = result.replaceAll(match, formatted);
       }
     }
+
+
 
     return result;
   }, [name, country, stealthMode]);
@@ -283,6 +285,7 @@ export const ProfileRow = ({profile, deviceId} : {profile: ProfileExt, deviceId:
           <XStack width="100%" alignItems="flex-start">
             <TouchableOpacity
               style={{ flexShrink: 1, flexGrow: 1 }}
+              onLongPress={drag}
               onPress={handleProfilePress}
             >
               <XStack gap={6} alignItems="center">
@@ -310,15 +313,15 @@ export const ProfileRow = ({profile, deviceId} : {profile: ProfileExt, deviceId:
             <XStack padding={5} width={50}>
               <Switch
                 checked={profile.selected}
-                disabled={isLoading !== false}
-                size={"$3" as any}
+                disabled={isLoading}
+                size={"$2.5" as any}
                 style={{
                   marginTop: -4,
                   borderWidth: 0.5,
                   borderColor: switchBorderColor,
                 }}
                 backgroundColor={switchTrackColor}
-                onCheckedChange={(val: boolean) => handleSwitchChange(!!val)}
+                onCheckedChange={(val: boolean) => handleSwitchChange(val)}
               >
                 <Switch.Thumb
                   backgroundColor={theme.backgroundDefault?.val || '#ffffff'}

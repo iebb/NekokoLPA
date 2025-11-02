@@ -171,16 +171,16 @@ const PickerRow = React.memo(function PickerRow({row} : {row: SettingDataType}) 
                   <Svg width="100%" height="100%" >
                     <Defs>
                       <SvgLinearGradient id="lightGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <Stop offset="0%" stopColor={hslToHex(h, s, 0)} />
+                        <Stop offset="0%" stopColor={hslToHex(h, s, 40)} />
                         <Stop offset="50%" stopColor={hslToHex(h, s, 50)} />
-                        <Stop offset="100%" stopColor={hslToHex(h, s, 100)} />
+                        <Stop offset="100%" stopColor={hslToHex(h, s, 60)} />
                       </SvgLinearGradient>
                     </Defs>
                     <Rect x="0" y="0" width="100%" height="100%" fill="url(#lightGrad)" />
                   </Svg>
                 </View>
                 <View style={{ position: 'absolute', inset: 0, justifyContent: 'center', width: '100%' }}>
-                  <Slider value={[lVal]} onValueChange={(val) => setLVal(Math.round(val[0]))} max={100} step={1} style={{ width: '100%' }}>
+                  <Slider value={[lVal]} onValueChange={(val) => setLVal(Math.round(val[0]))} max={60} min={40} step={1} style={{ width: '100%' }}>
                     <Slider.Track backgroundColor="transparent"><Slider.TrackActive backgroundColor="transparent" /></Slider.Track>
                     <Slider.Thumb index={0} circular size="$2" />
                   </Slider>

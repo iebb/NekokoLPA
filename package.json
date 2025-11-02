@@ -1,7 +1,7 @@
 {
   "name": "nekokolpa",
   "buildVersion": 365,
-  "version": "1.12.365-beta",
+  "version": "1.12.365",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -54,7 +54,8 @@
     "react-native-fs": "2.20.0",
     "react-native-gesture-handler": "2.25.0",
     "react-native-image-picker": "7.1.2",
-    "react-native-mmkv": "2.12.2",
+    "react-native-mmkv": "4.0.0",
+    "react-native-nitro-modules": "^0.31.4",
     "react-native-prompt-android": "1.1.0",
     "react-native-qr-image-reader": "^1.0.5",
     "react-native-reanimated": "3.16.7",
@@ -95,6 +96,17 @@
   },
   "overrides": {
     "react-dom": "18.3.1"
+  },
+  "codegenConfig": {
+    "name": "NekokoLPA",
+    "type": "modules",
+    "jsSrcsDir": "src/native/specs",
+    "android": {
+      "javaPackageName": "ee.nekoko.nlpa"
+    },
+    "ios": {
+      "moduleName": "NekokoLPA"
+    }
   },
   "packageManager": "yarn@3.6.4"
 }
