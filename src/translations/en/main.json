@@ -37,8 +37,9 @@
   "main_screen": "Main Screen",
 
   "backup": "Backup",
-  "backup_export": "Export Sizes",
-  "backup_import": "Import Sizes",
+  "backup_description": "This can be used to export downloaded profile sizes, configurations and other locally stored data, to preserve across reinstalls or device changes.",
+  "backup_export": "Export Data",
+  "backup_import": "Import Data",
 
 
   "settings_settings": "Settings",

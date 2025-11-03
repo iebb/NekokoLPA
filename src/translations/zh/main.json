@@ -17,6 +17,11 @@
   "main_screen": "主界面",
   "bluetooth_scan": "蓝牙",
 
+  "backup": "备份",
+  "backup_description": "此功能可用于导出已下载的配置文件大小、配置和其他本地存储的数据，以便在重新安装或更换设备后保留数据。",
+  "backup_export": "导出数据",
+  "backup_import": "导入数据",
+
   "euiccInfo_euiccinfo": "EUICC Info",
   "euiccInfo_subtitle": "设备和eUICC详细信息",
   "euiccInfo_sasAcreditationNumber": "SAS Accreditation",

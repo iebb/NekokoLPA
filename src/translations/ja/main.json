@@ -36,8 +36,9 @@
   "main_screen": "メイン画面",
 
   "backup": "バックアップ",
-  "backup_export": "エクスポートのサイズ",
-  "backup_import": "インポートのサイズ",
+  "backup_description": "ダウンロードしたプロファイルサイズ、設定、その他のローカルに保存されたデータをエクスポートできます。再インストールやデバイス変更後もデータを保持できます。",
+  "backup_export": "データのエクスポート",
+  "backup_import": "データのインポート",
 
 
   "settings_settings": "設定",

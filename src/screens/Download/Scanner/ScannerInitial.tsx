@@ -13,7 +13,7 @@ import {
 } from 'tamagui';
 import {Camera, useCameraDevice, useCameraPermission, useCodeScanner} from "react-native-vision-camera";
 import BarcodeScanning from '@react-native-ml-kit/barcode-scanning';
-import {Camera as CameraIcon, Download, Image as ImageIcon, QrCode, Search} from '@tamagui/lucide-icons';
+import {Camera as CameraIcon, Download, Image as ImageIcon, QrCode, Search, Clipboard as ClipboardIcon} from '@tamagui/lucide-icons';
 import React, {useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {makeLoading} from "@/components/utils/loading";
@@ -27,6 +27,8 @@ import {selectDeviceState} from "@/redux/stateStore";
 import {formatSize} from "@/utils/size";
 import {useLoading} from "@/components/common/LoadingProvider";
 import {useToast} from "@/components/common/ToastProvider";
+import {toCIName} from "@/utils/friendlyName";
+import Clipboard from '@react-native-clipboard/clipboard';
 
 export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
   const theme = useTheme();
@@ -42,7 +44,6 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
   const [oid, setOid] = useState("");
   const [imei, setImei] = useState("");
   const [confirmationCode, setConfirmationCode] = useState("");
-  const [confirmationCodeReq, setConfirmationCodeReq] = useState(false);
   const { hasPermission, requestPermission } = useCameraPermission();
   const { eid, euiccAddress, euiccInfo2 } = DeviceState;
   const adapter = Adapters[deviceId];
@@ -64,7 +65,6 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
       setSmdp(SMDP);
       setAcToken(AC_TOKEN);
       setOid(OID);
-      setConfirmationCodeReq(CCREQ === "1");
       setConfirmationCode(CONFIRMATION_CODE);
     }
   }
@@ -95,6 +95,35 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
   const size = Math.min(250, Dimensions.get('window').width - 50);
   const sizeW = Math.min(size * 4/3, Dimensions.get('window').width - 50);
 
+  const handleDiscovery = async () => {
+    await makeLoading(
+      setLoading,
+      async () => {
+        const authenticateResult = await adapter.smdsDiscovery(
+          (e: any) => setLoading(
+            t(`main:progress_${e.message}`, e) as string ?? t('main:profile_loading_validating_profile')
+          )
+        );
+
+        setTimeout(() => {
+          if (authenticateResult.success) {
+            if (authenticateResult.smdp_list.length === 1) {
+              setSmdp(authenticateResult.smdp_list[0]);
+              showToast('SM-DP Discovered.', 'success');
+            } else if (authenticateResult.smdp_list.length === 0) {
+              showToast('Discovered nothing.', 'success');
+            } else {
+              setSmdp(authenticateResult.smdp_list[0]);
+              showToast('Multiple SM-DPs has been discovered.', 'success');
+            }
+          } else {
+            showToast('Failed to discover SM-DPs.', 'error');
+          }
+        }, 100);
+      }
+    );
+  };
+
   return (
     <Screen title={t('main:profile_title_download_profile')}>
         <YStack gap={20}>
@@ -104,11 +133,16 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
               <TText color="$textDefault" fontSize={16} fontWeight={"600" as any}>
                 {t('main:profile_current_euicc', { device: adapter.device.deviceName })}
               </TText>
-              <TText color="$color6" fontSize={14}>
-                {t('main:available_space', {
-                  size: formatSize(euiccInfo2?.extCardResource?.freeNonVolatileMemory),
-                })}
-              </TText>
+              <XStack gap={8}>
+                <TText color="$color6" fontSize={14} flex={1}>
+                  {t('main:available_space', {
+                    size: formatSize(euiccInfo2?.extCardResource?.freeNonVolatileMemory),
+                  })}
+                </TText>
+                <TText color="$color6" fontSize={14}>
+                  CI: {DeviceState.euiccInfo2?.euiccCiPKIdListForSigning.map((x: any) => toCIName(x)).join(', ')}
+                </TText>
+              </XStack>
             </YStack>
           </Card>
 
@@ -130,7 +164,7 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
               !showCamera && (
                 <YStack gap={24} alignItems="center">
                   <QrCode size={48} color={theme.color6?.val || '#999'} />
-                  <XStack gap={32} alignItems="center">
+                  <XStack gap={24} alignItems="center" flexWrap="wrap" justifyContent="center">
                     <TouchableOpacity
                       onPress={() => {
                         if (!showCamera)
@@ -197,6 +231,58 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
                         Gallery
                       </TText>
                     </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={async () => {
+                        try {
+                          const text = await Clipboard.getString();
+                          if (text && text.trim().length > 0) {
+                            if (text.includes('$')) {
+                              processLPACode(text);
+                            } else {
+                              setSmdp(text.trim());
+                              showToast('Pasted from clipboard.', 'success');
+                            }
+                          } else {
+                            showToast('Clipboard is empty.', 'error');
+                          }
+                        } catch (e) {
+                          console.log(e);
+                        }
+                      }}
+                      style={{ alignItems: 'center', gap: 8 }}
+                    >
+                      <View style={{
+                        width: 64,
+                        height: 64,
+                        borderRadius: 16,
+                        backgroundColor: theme.primaryColor?.val || '#a575f6',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}>
+                        <ClipboardIcon size={32} color="#ffffff" />
+                      </View>
+                      <TText color="$color6" fontSize={12} marginTop={4}>
+                        Clipboard
+                      </TText>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={handleDiscovery}
+                      style={{ alignItems: 'center', gap: 8 }}
+                    >
+                      <View style={{
+                        width: 64,
+                        height: 64,
+                        borderRadius: 16,
+                        backgroundColor: theme.primaryColor?.val || '#a575f6',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}>
+                        <Search size={32} color="#ffffff" />
+                      </View>
+                      <TText color="$color6" fontSize={12} marginTop={4}>
+                        Discovery
+                      </TText>
+                    </TouchableOpacity>
                   </XStack>
                 </YStack>
               )
@@ -220,64 +306,21 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
               <TText color="$color6" fontSize={13} fontWeight={"500" as any} textTransform="uppercase" letterSpacing={0.5}>
                 SM-DP+ Address
               </TText>
-              <XStack gap={10} alignItems="flex-end">
-                <View style={{ flex: 1 }}>
-                  <Input
-                    placeholder="Enter SM-DP+ address or scan QR code"
-                    value={smdp}
-                    onChangeText={c => c.includes('$') ? processLPACode(c) : setSmdp(c.trim())}
-                    borderWidth={1}
-                    borderColor={theme.outlineNeutral?.val || theme.borderColor?.val || '#ddd'}
-                    backgroundColor="$background"
-                    color={theme.textDefault?.val}
-                    placeholderTextColor={theme.color6?.val}
-                    fontSize={15}
-                    padding={12}
-                    borderRadius={12}
-                  />
-                </View>
-                <TButton
-                  size="$4"
-                  width={48}
-                  height={48}
-                  padding={0}
-                  backgroundColor="$btnBackground"
+              <View>
+                <Input
+                  placeholder="Enter SM-DP+ address or scan QR code"
+                  value={smdp}
+                  onChangeText={c => c.includes('$') ? processLPACode(c) : setSmdp(c.trim())}
+                  borderWidth={1}
+                  borderColor={theme.outlineNeutral?.val || theme.borderColor?.val || '#ddd'}
+                  backgroundColor="$background"
+                  color={theme.textDefault?.val}
+                  placeholderTextColor={theme.color6?.val}
+                  fontSize={15}
+                  padding={12}
                   borderRadius={12}
-                  onPress={() => {
-                    makeLoading(
-                      setLoading,
-                      async () => {
-
-                        const authenticateResult = await adapter.smdsDiscovery(
-                          (e: any) => setLoading(
-                            t(`main:progress_${e.message}`, e) as string ?? t('main:profile_loading_validating_profile')
-                          )
-                        );
-
-                        setTimeout(() => {
-                          if (authenticateResult.success) {
-                            if (authenticateResult.smdp_list.length === 1) {
-                              setSmdp(authenticateResult.smdp_list[0]);
-                              showToast('SM-DP Discovered.', 'success');
-                            } else if (authenticateResult.smdp_list.length === 0) {
-                              showToast('Discovered nothing.', 'success');
-                            } else {
-                              setSmdp(authenticateResult.smdp_list[0]);
-                              showToast('Multiple SM-DPs has been discovered.', 'success');
-                            }
-                          } else {
-                            showToast('Failed to discover SM-DPs.', 'error');
-                          }
-                        }, 100);
-
-
-                  }
-                    )
-                  }}
-                >
-                  <Search size={20} color="$btnForeground" />
-                </TButton>
-              </XStack>
+                />
+              </View>
             </YStack>
 
             {/* Matching ID */}
@@ -319,22 +362,6 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
                 borderRadius={12}
               />
             </YStack>
-
-            {/* Confirmation Code Checkbox */}
-            <XStack alignItems="center" gap={12} paddingTop={4}>
-              <Checkbox
-                checked={confirmationCodeReq}
-                onCheckedChange={(checked) => setConfirmationCodeReq(!!checked)}
-                size="$4"
-                borderColor={theme.outlineNeutral?.val}
-                backgroundColor="$background"
-              >
-                <Checkbox.Indicator backgroundColor="$btnBackground" />
-              </Checkbox>
-              <TText color="$textDefault" fontSize={14} onPress={() => setConfirmationCodeReq(!confirmationCodeReq)} flex={1}>
-                {t('main:profile_download_confcode_required')}
-              </TText>
-            </XStack>
           </YStack>
         </Card>
 

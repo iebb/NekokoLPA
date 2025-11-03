@@ -88,7 +88,7 @@ const AIDRow = React.memo(function SelectRow({row} : {row: SettingDataType}) {
                   <Button
                     onPress={addAid}
                     disabled={!inputValid}
-                    backgroundColor={inputValid ? "$primaryColor" : "$color0"}
+                    backgroundColor={inputValid ? "$primaryColor" : "$color12"}
                   >
                     <TText>
                       Add

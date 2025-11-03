@@ -3,37 +3,28 @@ import {useTranslation} from 'react-i18next';
 import Screen from '@/components/common/Screen';
 import type {RootScreenProps} from "@/screens/navigation";
 import {sizeStats} from "@/utils/mmkv";
-import {Button as TButton, Text as TText, useTheme, XStack, YStack} from 'tamagui';
+import {Button as TButton, Text as TText, XStack, YStack} from 'tamagui';
 import RNFS from 'react-native-fs';
-import Share from 'react-native-share'; // optional for sharing
-import DocumentPicker from '@react-native-documents/picker';
+import {pick, types} from '@react-native-documents/picker';
 import {Download, Upload} from '@tamagui/lucide-icons';
 import {useToast} from "@/components/common/ToastProvider";
 
 
 export default function Backup({ route,  navigation }: RootScreenProps<'Backup'>) {
   const { showToast } = useToast();
-  const theme = useTheme();
   const { t } = useTranslation(['main']);
   const exportFile = async () => {
     const sizeData = sizeStats.getAllKeys();
-    const doc = {sizes: {}};
+    const doc = {data: {}};
     for(const k of sizeData) {
-      (doc.sizes as any)[k] = sizeStats.getNumber(k);
+      (doc.data as any)[k] = sizeStats.getNumber(k);
     }
 
-    const fileName = 'export.json';
-    const filePath = `${RNFS.DocumentDirectoryPath}/${fileName}`;
+    const fileName = 'nlpa-data.json';
+    const filePath = `${RNFS.DownloadDirectoryPath}/${fileName}`;
     try {
       await RNFS.writeFile(filePath, JSON.stringify(doc), 'utf8');
-      console.log('File written to:', filePath);
-
-      // Optionally share it
-      await Share.open({
-        title: 'Exported Data',
-        url: 'file://' + filePath,
-        type: 'application/json',
-      });
+      showToast('Exported to ' + filePath, 'success');
     } catch (err) {
       showToast('Export failed.', 'error');
       console.error('Export failed:', err);
@@ -41,45 +32,45 @@ export default function Backup({ route,  navigation }: RootScreenProps<'Backup'>
   }
   const importData = async () => {
     try {
-      const res = await DocumentPicker.pickSingle({
-        type: [DocumentPicker.types.json],
+      const res = await pick({
+        type: [types.json],
       });
 
-      const fileContent = await RNFS.readFile(res.uri, 'utf8');
+      if (!res || !res[0].uri) {
+        showToast('No file selected.', 'error');
+        return;
+      }
+
+      const fileContent = await RNFS.readFile(res[0].uri, 'utf8');
       try {
-        const { sizes } = JSON.parse(fileContent);
-        for(const s of Object.keys(sizes)) {
-          sizeStats.set(s, sizes[s] as number);
+        const { data } = JSON.parse(fileContent);
+        for(const s of Object.keys(data)) {
+          sizeStats.set(s, data[s] as number);
         }
         showToast('Import successful.', 'success');
       } catch (err) {
         showToast('Import failed.', 'error');
-
       }
     } catch (err) {
-      if (DocumentPicker.isCancel(err)) {
-        console.log('User cancelled file picker');
-      } else {
-        console.error('Import error:', err);
-      }
+      console.error('Import error:', err);
+      showToast('Import failed.', 'error');
       return null;
     }
   };
 
   return (
-    <Screen title={t('main:backup')}>
-      <YStack gap={10} flex={1}>
-        <YStack gap={12}>
+    <Screen title={t('main:backup')} subtitle={t('main:backup_description')}>
+      <YStack gap={20} flex={1}>
+        <XStack gap={12}>
           <TButton
             flex={1}
             backgroundColor="$btnBackground"
             onPress={exportFile}
             borderRadius={12}
-            paddingVertical={12}
           >
             <XStack alignItems="center" gap={10}>
-              <Download size={20} color={theme.background?.val || '#fff'} />
-              <TText color={theme.background?.val} fontSize={16}>
+              <Download size={20} color="$color0" />
+              <TText color="$color0">
                 {t('main:backup_export')}
               </TText>
             </XStack>
@@ -89,16 +80,15 @@ export default function Backup({ route,  navigation }: RootScreenProps<'Backup'>
             backgroundColor="$btnBackground"
             onPress={importData}
             borderRadius={12}
-            paddingVertical={12}
           >
             <XStack alignItems="center" gap={10}>
-              <Upload size={20} color={theme.background?.val || '#fff'} />
-              <TText color={theme.background?.val} fontSize={16}>
+              <Upload size={20} color="$color0" />
+              <TText color="$color0">
                 {t('main:backup_import')}
               </TText>
             </XStack>
           </TButton>
-        </YStack>
+        </XStack>
       </YStack>
     </Screen>
   );

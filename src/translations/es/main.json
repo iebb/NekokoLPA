@@ -37,8 +37,9 @@
   "main_screen": "Pantalla principal",
 
   "backup": "Respaldo",
-  "backup_export": "Exportar tamaños",
-  "backup_import": "Importar tamaños",
+  "backup_description": "Se puede usar para exportar tamaños de perfiles descargados, configuraciones y otros datos almacenados localmente, para conservarlos entre reinstalaciones o cambios de dispositivo.",
+  "backup_export": "Exportar Datos",
+  "backup_import": "Importar Datos",
 
   "settings_settings": "Configuración",
   "settings_subtitle": "Personalizar preferencias de la app",

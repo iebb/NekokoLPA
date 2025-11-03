@@ -3,14 +3,14 @@ import AppSheet from '@/components/common/AppSheet';
 import {Platform, ToastAndroid, TouchableOpacity, View} from 'react-native';
 import React, {useCallback, useMemo, useState} from "react";
 import {useSelector} from "react-redux";
-import {MessageSquareShare, Plus, GripVertical} from '@tamagui/lucide-icons';
+import {GripVertical, MessageSquareShare, Plus} from '@tamagui/lucide-icons';
 import {useNavigation} from "@react-navigation/native";
 import {useTranslation} from "react-i18next";
 import {Adapters} from "@/native/adapters/registry";
 import Clipboard from "@react-native-clipboard/clipboard";
 import {preferences} from "@/utils/mmkv";
 import {formatSize} from "@/utils/size";
-import {toCIName, toFriendlyName} from "@/utils/friendlyName";
+import {toFriendlyName} from "@/utils/friendlyName";
 import {getNicknameByEid, setNicknameByEid} from "@/configs/store";
 import {RootState} from "@/redux/reduxDataStore";
 import {makeLoading} from "@/components/utils/loading";
@@ -27,7 +27,9 @@ const ActionSheetOptions = React.memo(({
                                          setEuiccMenu,
                                          setLoading,
                                          showToast,
-                                         setNicknameSheetOpen
+                                         setNicknameSheetOpen,
+                                         rearrangeMode,
+                                         setRearrangeMode
                                        }: {
   deviceId: string;
   DeviceState: any;
@@ -38,6 +40,8 @@ const ActionSheetOptions = React.memo(({
   setLoading: any;
   showToast: any;
   setNicknameSheetOpen: (open: boolean) => void;
+  rearrangeMode?: boolean;
+  setRearrangeMode?: (enabled: boolean) => void;
 }) => {
   const { t } = useTranslation(['main']);
 
@@ -80,6 +84,10 @@ const ActionSheetOptions = React.memo(({
       label: t('main:eid_copy'),
       onPress: handleEidCopy
     },
+    {
+      label: rearrangeMode ? 'Done Rearranging' : 'Rearrange Profiles',
+      onPress: () => setRearrangeMode && setRearrangeMode(!rearrangeMode)
+    },
     ...(((Platform.OS === 'android' && deviceId.startsWith("omapi")) ? [{
       label: t('main:open_stk_menu'),
       onPress: handleOpenSTK
@@ -103,7 +111,8 @@ const ActionSheetOptions = React.memo(({
   ], [
     t, deviceId, adapter, navigation, setEuiccMenu, setNicknameSheetOpen,
     handleEidCopy, handleOpenSTK, handleEuiccInfo,
-    handleSetNickname, handleManageNotifications, handleSendNotifications
+    handleSetNickname, handleManageNotifications, handleSendNotifications,
+    rearrangeMode, setRearrangeMode
   ]);
 
   return (
@@ -145,14 +154,6 @@ const CardContent = React.memo(({
           {t('main:available_space', {
             size: formatSize(DeviceState.bytesFree),
           })}
-        </TText>
-        <TText
-          color="$textDefault"
-          fontSize={11}
-          style={{ textAlign: 'right', flexGrow: 1 }}
-          numberOfLines={1}
-        >
-          CI: {DeviceState.euiccInfo2?.euiccCiPKIdListForSigning.map((x: any) => toCIName(x)).join(', ')}
         </TText>
       </View>
 
@@ -272,6 +273,8 @@ export default function ProfileCardHeader({ deviceId, rearrangeMode, setRearrang
           setLoading={setLoading}
           showToast={showToast}
           setNicknameSheetOpen={setNicknameSheetOpen}
+          rearrangeMode={rearrangeMode}
+          setRearrangeMode={setRearrangeMode}
         />
       )}
 
@@ -304,7 +307,7 @@ export default function ProfileCardHeader({ deviceId, rearrangeMode, setRearrang
                     setNicknameSheetOpen(false);
                     setNicknameInput('');
                   }}
-                  backgroundColor="$color0"
+                  backgroundColor="$color12"
                 >
                   <TText>Cancel</TText>
                 </TButton>
@@ -330,13 +333,7 @@ export default function ProfileCardHeader({ deviceId, rearrangeMode, setRearrang
         height={40}
       >
         <XStack flex={1} alignItems="center">
-          <RoundedButton
-            backgroundColor={rearrangeBgColor}
-            icon={<GripVertical size="$1" color={rearrangeFgColor} />}
-            onPress={() => {setRearrangeMode?.(!rearrangeMode);}}
-            radiusL={12}
-            radiusR={0}
-          />
+          {/* Rearrange moved into action sheet menu */}
           <CardContent
             DeviceState={DeviceState}
             maskedEid={maskedEid}
