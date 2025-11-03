@@ -5,7 +5,6 @@
 import { AppRegistry } from "react-native";
 import App from "./src/App";
 
-if (__DEV__) {
-  import("@/reactotron.config");
-}
+console.log("entry");
+
 AppRegistry.registerComponent("NekokoLPA", () => App);

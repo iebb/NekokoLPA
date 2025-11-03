@@ -6,7 +6,7 @@ import {sizeStats} from "@/utils/mmkv";
 import {Button as TButton, Text as TText, useTheme, XStack, YStack} from 'tamagui';
 import RNFS from 'react-native-fs';
 import Share from 'react-native-share'; // optional for sharing
-import DocumentPicker from 'react-native-document-picker';
+import DocumentPicker from '@react-native-documents/picker';
 import {Download, Upload} from '@tamagui/lucide-icons';
 import {useToast} from "@/components/common/ToastProvider";
 

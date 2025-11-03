@@ -14,11 +14,13 @@ import {useTheme, Theme} from 'tamagui';
 import {createTamaguiConfigWithColor} from "../tamagui.config";
 import {preferences} from "@/utils/mmkv";
 
+const config = createTamaguiConfigWithColor(preferences.getString("themeColor") || '#a575f6');
+
 function App() {
   return (
     <Provider store={store}>
       <ThemeProvider>
-        <TamaguiProvider config={createTamaguiConfigWithColor(preferences.getString("themeColor") || '#a575f6')}>
+        <TamaguiProvider config={config}>
           <ColorSchemeRoot />
         </TamaguiProvider>
       </ThemeProvider>

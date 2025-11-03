@@ -15,9 +15,7 @@ export function generateTamaguiTheme(
 
   // Generate button foreground color
   // If primary is dark, get lighter tint (80), otherwise darker tint (20)
-  const buttonForeground = isPrimaryDark
-    ? getColorTint(primaryColor, 80)
-    : getColorTint(primaryColor, 20);
+  const buttonForeground = getColorTint(primaryColor, isPrimaryDark ? 80 : 20);
 
   // btnBackground is the accentColor (theme color)
   // Generate foreground for btnBackground (white if dark, black if light)
@@ -25,7 +23,7 @@ export function generateTamaguiTheme(
   const btnForeground = isBtnBackgroundDark ? '#ffffff' : '#000000';
 
   // btnAltBackground is the muted/inverted tinted color (tint at 70) - for non-arrange mode arrange button
-  const btnAltBackground = getColorTint(primaryColor, 90);
+  const btnAltBackground = baseTheme === 'light' ? '#c5c5c5' : '#252525';
 
   // Generate foreground for btnAltBackground (white if dark, black if light)
   const isBtnAltBackgroundDark = isDarkColor(btnAltBackground);

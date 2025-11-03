@@ -1,6 +1,6 @@
 import Screen from "@/components/common/Screen";
 import { View } from 'react-native';
-import { Button as TButton, Text as TText, Input, XStack, YStack, useTheme, Checkbox, Card } from 'tamagui';
+import { Button as TButton, Text as TText, Input, XStack, YStack, View as TView, useTheme, Checkbox, Card } from 'tamagui';
 import {Camera, useCameraDevice, useCameraPermission, useCodeScanner} from "react-native-vision-camera";
 import {Camera as CameraIcon, Download, Image as ImageIcon, Search, QrCode} from '@tamagui/lucide-icons';
 import React, {useEffect, useState} from "react";
@@ -21,13 +21,11 @@ import {useToast} from "@/components/common/ToastProvider";
 export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
   const theme = useTheme();
   const DeviceState = useSelector(selectDeviceState(deviceId));
-  const cameraState = preferences.getString("useCamera");
-
 
   const { showToast } = useToast();
   const { setLoading } = useLoading();
 
-  const [showCamera, setShowCamera] = useState(cameraState === 'always');
+  const [showCamera, setShowCamera] = useState(false);
 
   const { t } = useTranslation(['main']);
   const [acToken, setAcToken] = useState("");
@@ -100,104 +98,94 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
             </YStack>
           </Card>
 
-          {/* QR Scanner Card */}
-          <Card backgroundColor="$surfaceSpecial" borderRadius={16} padding={16} borderWidth={0}>
-            <YStack gap={16} alignItems="center">
-              <TText color="$textDefault" fontSize={16} fontWeight={"500" as any} textAlign="center">
-                {t('main:profile_scan_qr_prompt')}
-              </TText>
-              <View style={{ alignItems: 'center', width: '100%' }}>
-                <View
-                  style={{
-                  width: sizeW,
-                  height: size,
-                  borderRadius: 24,
-                  overflow: "hidden",
-                  borderColor: showCamera ? 'transparent' : (theme.outlineNeutral?.val || theme.borderColor?.val || '#ddd'),
-                  borderWidth: showCamera ? 0 : 2,
-                  borderStyle: 'dashed',
-                  backgroundColor: showCamera ? 'transparent' : (theme.color2?.val || '#f9fafb'),
-                  justifyContent: 'center',
-                  alignItems: 'center'
-                }}
-                >
-                    {
-                      !showCamera && (
-                        <YStack gap={24} alignItems="center">
-                          <QrCode size={48} color={theme.color10?.val || '#999'} />
-                          <XStack gap={32} alignItems="center">
-                            <TouchableOpacity
-                              onPress={() => {
-                                if (!showCamera)
-                                  setShowCamera(true);
-                              }}
-                              style={{ alignItems: 'center', gap: 8 }}
-                            >
-                              <View style={{
-                                width: 64,
-                                height: 64,
-                                borderRadius: 16,
-                                backgroundColor: theme.accentColor?.val || '#a575f6',
-                                justifyContent: 'center',
-                                alignItems: 'center'
-                              }}>
-                                <CameraIcon size={32} color="#ffffff" />
-                              </View>
-                              <TText color="$color11" fontSize={12} marginTop={4}>
-                                Camera
-                              </TText>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                              onPress={() => {
-                                launchImageLibrary({
-                                  mediaType: "photo",
-                                }, (result) => {
-                                  if (result.assets) {
-                                    for(const a of result.assets) {
-                                      QrImageReader.decode({ path: a.uri })
-                                        .then(({result}) => {
-                                          processLPACode(result!);
-                                        })
-                                        .catch(error => console.log(error || 'No QR code found.'));
-                                      break;
-                                    }
-                                  }
-                                });
-                              }}
-                              style={{ alignItems: 'center', gap: 8 }}
-                            >
-                              <View style={{
-                                width: 64,
-                                height: 64,
-                                borderRadius: 16,
-                                backgroundColor: theme.accentColor?.val || '#a575f6',
-                                justifyContent: 'center',
-                                alignItems: 'center'
-                              }}>
-                                <ImageIcon size={32} color="#ffffff" />
-                              </View>
-                              <TText color="$color11" fontSize={12} marginTop={4}>
-                                Gallery
-                              </TText>
-                            </TouchableOpacity>
-                          </XStack>
-                        </YStack>
-                      )
-                    }
-                    {
-                      cameraDevice && hasPermission && showCamera && (
-                        <Camera
-                          device={cameraDevice}
-                          isActive
-                          codeScanner={codeScanner}
-                          style={{ width: sizeW, height: size}}
-                        />
-                      )
-                    }
-                </View>
-              </View>
-            </YStack>
-          </Card>
+          {/* QR Scanner */}
+          <TView
+            borderRadius={16}
+            padding={showCamera ? 0 : 24}
+            backgroundColor="$surfaceSpecial"
+            overflow="hidden"
+            style={{
+              borderColor: showCamera ? (theme.outlineNeutral?.val || theme.borderColor?.val || '#ddd'): null,
+              borderWidth: showCamera ? 4 : 2,
+              borderStyle: 'dashed',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
+          >
+            {
+              !showCamera && (
+                <YStack gap={24} alignItems="center">
+                  <QrCode size={48} color={theme.color10?.val || '#999'} />
+                  <XStack gap={32} alignItems="center">
+                    <TouchableOpacity
+                      onPress={() => {
+                        if (!showCamera)
+                          setShowCamera(true);
+                      }}
+                      style={{ alignItems: 'center', gap: 8 }}
+                    >
+                      <View style={{
+                        width: 64,
+                        height: 64,
+                        borderRadius: 16,
+                        backgroundColor: theme.accentColor?.val || '#a575f6',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}>
+                        <CameraIcon size={32} color="#ffffff" />
+                      </View>
+                      <TText color="$color11" fontSize={12} marginTop={4}>
+                        Camera
+                      </TText>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => {
+                        launchImageLibrary({
+                          mediaType: "photo",
+                        }, (result) => {
+                          if (result.assets) {
+                            for(const a of result.assets) {
+                              QrImageReader.decode({ path: a.uri })
+                                .then(({result}) => {
+                                  processLPACode(result!);
+                                })
+                                .catch(error => console.log(error || 'No QR code found.'));
+                              break;
+                            }
+                          }
+                        });
+                      }}
+                      style={{ alignItems: 'center', gap: 8 }}
+                    >
+                      <View style={{
+                        width: 64,
+                        height: 64,
+                        borderRadius: 16,
+                        backgroundColor: theme.accentColor?.val || '#a575f6',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}>
+                        <ImageIcon size={32} color="#ffffff" />
+                      </View>
+                      <TText color="$color11" fontSize={12} marginTop={4}>
+                        Gallery
+                      </TText>
+                    </TouchableOpacity>
+                  </XStack>
+                </YStack>
+              )
+            }
+            {
+              cameraDevice && hasPermission && showCamera && (
+                <Camera
+                  device={cameraDevice}
+                  isActive
+                  codeScanner={codeScanner}
+                  style={{  width: "100%", minHeight: size }}
+                />
+              )
+            }
+          </TView>
         {/* Input Form Card */}
         <Card backgroundColor="$surfaceSpecial" borderRadius={16} padding={20} borderWidth={0}>
           <YStack gap={20}>

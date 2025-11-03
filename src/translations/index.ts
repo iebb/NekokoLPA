@@ -7,7 +7,7 @@ import * as ja from './ja';
 import * as es from './es';
 import * as ar from './ar';
 import * as ru from './ru';
-import {NativeModules, Platform} from 'react-native';
+import {I18nManager} from 'react-native';
 import {preferences} from "@/utils/mmkv";
 
 type TupleUnion<U extends string, R extends unknown[] = []> = {
@@ -20,13 +20,7 @@ const ns = Object.keys(en) as TupleUnion<keyof typeof en>;
 
 export const defaultNS = ns[0];
 
-const locale =
-	preferences.getString("language") ??
-	(
-		Platform.OS === 'ios'
-		? NativeModules.SettingsManager.settings.AppleLocale
-		: NativeModules.I18nManager.localeIdentifier
-	).substring(0, 2);
+const locale = preferences.getString("language") ?? (I18nManager.getConstants().localeIdentifier || 'en').substring(0, 2);
 
 void i18n.use(initReactI18next).init({
 	ns,

@@ -33,7 +33,6 @@ export default function Settings({ route,  navigation }: RootScreenProps<'Settin
     { key: 'redactMode', options: ['none','medium','hard'], defaultValue: 'none', type: 'select' },
     { key: 'unit', options: ['b','kb','kib','mb','mib','adaptive_si','adaptive_bi'], defaultValue: 'adaptive_si', type: 'select' },
     { key: 'displaySubtitle', options: ['provider','operator','country','code','iccid'], defaultValue: 'provider', type: 'select' },
-    { key: 'useCamera', options: ['always','ondemand'], defaultValue: 'always', type: 'select' },
     { key: 'aid', type: 'aid' },
     { key: 'themeColor', defaultValue: '#a575f6', type: 'color' },
   ];
