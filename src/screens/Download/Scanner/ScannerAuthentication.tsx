@@ -89,7 +89,7 @@ export function ScannerAuthentication(
                       borderColor={theme.outlineNeutral?.val || theme.borderColor?.val || '#ddd'}
                       backgroundColor="$background"
                       color={theme.textDefault?.val}
-                      placeholderTextColor={theme.color10?.val}
+                      placeholderTextColor={theme.color6?.val}
                       fontSize={16}
                       padding={14}
                       borderRadius={12}
@@ -109,7 +109,7 @@ export function ScannerAuthentication(
                     </TText>
                     <YStack gap={12}>
                       <XStack justifyContent="space-between" alignItems="center">
-                        <TText color="$color11" fontSize={14} fontWeight={"500" as any}>
+                        <TText color="$color6" fontSize={14} fontWeight={"500" as any}>
                           {t('main:profile_size')}
                         </TText>
                         <TText color="$textDefault" fontSize={14} fontWeight={"500" as any}>
@@ -117,25 +117,25 @@ export function ScannerAuthentication(
                         </TText>
                       </XStack>
                       <XStack justifyContent="space-between" alignItems="center">
-                        <TText color="$color11" fontSize={14} fontWeight={"500" as any}>
+                        <TText color="$color6" fontSize={14} fontWeight={"500" as any}>
                           Size Range
                         </TText>
-                        <TText color="$color10" fontSize={13}>
+                        <TText color="$color6" fontSize={13}>
                           {formatSize(sizeData[0])} ~ {formatSize(sizeData[2])}
                         </TText>
                       </XStack>
                       <View style={{ height: 1, backgroundColor: theme.outlineNeutral?.val || theme.borderColor?.val || '#ddd', marginVertical: 4 }} />
                       <XStack justifyContent="space-between" alignItems="center">
-                        <TText color="$color11" fontSize={14} fontWeight={"500" as any}>
+                        <TText color="$color6" fontSize={14} fontWeight={"500" as any}>
                           {t('main:profile_available_space')}
                         </TText>
                         <XStack gap={8} alignItems="center">
                           {freeSpace <= maxSizeData && (
                             <AlertTriangle size={16} color={theme.backgroundDangerHeavy?.val || '#dc2626'} />
                           )}
-                          <TText 
-                            color={freeSpace <= maxSizeData ? (theme.backgroundDangerHeavy?.val || '#dc2626') : "$textDefault"} 
-                            fontSize={14} 
+                          <TText
+                            color={freeSpace <= maxSizeData ? (theme.backgroundDangerHeavy?.val || '#dc2626') : "$textDefault"}
+                            fontSize={14}
                             fontWeight={freeSpace <= maxSizeData ? "600" as any : "500" as any}
                           >
                             {formatSize(freeSpace)}
@@ -155,7 +155,7 @@ export function ScannerAuthentication(
                 flex={1}
                 height={52}
                 borderRadius={16}
-                backgroundColor="$color10"
+                backgroundColor="$color6"
                 onPress={() => {
                   makeLoading(
                     setLoading,
@@ -244,7 +244,7 @@ export function ScannerAuthentication(
           <TButton
             height={52}
             borderRadius={16}
-            backgroundColor="$color10"
+            backgroundColor="$color6"
             onPress={() => {
               goBack();
             }}

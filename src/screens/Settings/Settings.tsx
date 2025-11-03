@@ -49,7 +49,7 @@ export default function Settings({ route,  navigation }: RootScreenProps<'Settin
 
   return (
     <Screen title={t('main:settings_settings')} subtitle={t('main:settings_subtitle')} keyboardAvoiding scrollViewProps={{ nestedScrollEnabled: true }}>
-      <YStack gap={8}>
+      <YStack gap={16}>
         {items.map((item: SettingDataType) => renderItem({item}))}
       </YStack>
     </Screen>

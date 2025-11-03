@@ -11,7 +11,7 @@ export default function Title({ children, subtitle }: { children: string; subtit
           {children}
         </Text>
         {subtitle && (
-          <Text color="$color10" fontSize={14}>
+          <Text color="$color6" fontSize={14}>
             {subtitle}
           </Text>
         )}

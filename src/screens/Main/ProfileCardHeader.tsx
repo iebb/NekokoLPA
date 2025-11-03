@@ -202,9 +202,9 @@ export default function ProfileCardHeader({ deviceId, rearrangeMode, setRearrang
   const DeviceState = useSelector((state: RootState) => state.DeviceState[deviceId]) ?? {};
 
   // Button colors from theme - calculated in theme generation
-  // Rearrange button: active (accentColor) in rearrange mode, alternative (btnAltBackground) in normal mode
-  const rearrangeBgColor = rearrangeMode ? "$accentColor" : "$btnAltBackground";
-  const rearrangeFgColor = rearrangeMode ? "$buttonForeground" : "$btnAltForeground";
+  // Rearrange button: active (primaryColor) in rearrange mode, alternative (btnAltBackground) in normal mode
+  const rearrangeBgColor = rearrangeMode ? "$primaryColor" : "$btnAltBackground";
+  const rearrangeFgColor = rearrangeMode ? "$btnForeground" : "$btnAltForeground";
 
   // Memoize preferences
   const stealthMode = useMemo(() =>
@@ -283,7 +283,7 @@ export default function ProfileCardHeader({ deviceId, rearrangeMode, setRearrang
             title={t('main:set_nickname')}
           >
             <YStack gap={16}>
-              <TText color="$color10" fontSize={14}>
+              <TText color="$color6" fontSize={14}>
                 {t('main:set_nickname_prompt')}
               </TText>
               <Input
@@ -294,7 +294,7 @@ export default function ProfileCardHeader({ deviceId, rearrangeMode, setRearrang
                 borderColor={theme.outlineNeutral?.val || theme.borderColor?.val || '#777'}
                 backgroundColor="transparent"
                 color={theme.textDefault?.val}
-                placeholderTextColor={theme.color10?.val}
+                placeholderTextColor={theme.color6?.val}
                 fontSize={16}
                 autoFocus
               />
@@ -304,7 +304,7 @@ export default function ProfileCardHeader({ deviceId, rearrangeMode, setRearrang
                     setNicknameSheetOpen(false);
                     setNicknameInput('');
                   }}
-                  backgroundColor="$color2"
+                  backgroundColor="$color0"
                 >
                   <TText>Cancel</TText>
                 </TButton>

@@ -37,7 +37,7 @@ export const ToastProvider = ({ children }: { children: React.ReactNode}) => {
               paddingHorizontal={14}
               paddingVertical={10}
               borderRadius={8}
-              backgroundColor={toastConfig.type === 'error' ? '$backgroundDanger' : '$accentColor'}
+              backgroundColor={toastConfig.type === 'error' ? '$backgroundDanger' : '$primaryColor'}
               maxWidth={360}
             >
               <Text color="$background" fontSize={14} textAlign="center">

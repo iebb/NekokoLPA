@@ -33,7 +33,7 @@ const SelectRow = React.memo(function SelectRow({row} : {row: SettingDataType}) 
   return (
     <TouchableOpacity activeOpacity={0.6} onPress={() => setOpen(true)}>
       <TText color="$textDefault" fontSize={14}>{t(`main:settings_title_${row.key}`)}</TText>
-      <TText color="$color10" textAlign="right" fontSize={14}>{currentLabel} →</TText>
+      <TText color="$color6" textAlign="right" fontSize={14}>{currentLabel} →</TText>
       {
         open && (
           <Select open={open} onOpenChange={setOpen} value={v}

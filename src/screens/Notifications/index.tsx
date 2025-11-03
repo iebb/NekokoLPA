@@ -63,11 +63,11 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
 
     const rowBg = theme.surfaceRow?.val || theme.background?.val || '#fff';
     const borderCol = theme.borderColor?.val || 'rgba(0,0,0,0.06)';
-    const iconMuted = theme.color10?.val || '#8a8a8a';
+    const iconMuted = theme.color6?.val || '#8a8a8a';
     // badge colors by type
     const badgeBg = type === 'delete' ? (theme.backgroundDangerHeavy?.val || '#dc2626')
-                    : type === 'disable' ? (theme.color10?.val || '#888')
-                    : type === 'enable' ? (theme.accentColor?.val || '#a575f6')
+                    : type === 'disable' ? (theme.color6?.val || '#888')
+                    : type === 'enable' ? (theme.primaryColor?.val || '#a575f6')
                     : (theme.color?.val || '#555');
     const renderRight = () => (
       <TouchableOpacity
@@ -81,7 +81,7 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
           }
         }}
         activeOpacity={0.8}
-        style={{ width: 60, justifyContent: 'center', alignItems: 'center', backgroundColor: (theme.backgroundSuccessHeavy?.val || theme.accentColor?.val || '#22c55e'), borderTopRightRadius: 12, borderBottomRightRadius: 12 }}
+        style={{ width: 60, justifyContent: 'center', alignItems: 'center', backgroundColor: (theme.backgroundSuccessHeavy?.val || theme.primaryColor?.val || '#22c55e'), borderTopRightRadius: 12, borderBottomRightRadius: 12 }}
       >
         <Send size={18} color={theme.background?.val || '#fff'} />
       </TouchableOpacity>
@@ -135,8 +135,8 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
 
                 <XStack gap={5}>
                   <YStack flex={1}>
-                    <Text color="$color10" fontSize={12}>{row.notificationAddress}</Text>
-                    <Text color="$color10" fontSize={12}>ICCID: {row.iccid}</Text>
+                    <Text color="$color6" fontSize={12}>{row.notificationAddress}</Text>
+                    <Text color="$color6" fontSize={12}>ICCID: {row.iccid}</Text>
                   </YStack>
                   <Text color="$textDefault" fontSize={12}>
                     #{row.seqNumber}

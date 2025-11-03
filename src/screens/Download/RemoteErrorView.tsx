@@ -23,13 +23,13 @@ export default function RemoteErrorView({ remoteError }: { remoteError?: RemoteE
           </TText>
         </YStack>
       )}
-      
+
       <YStack gap={12}>
         {remoteError.status && (
           <XStack justifyContent="space-between" alignItems="center" paddingVertical={8} borderBottomWidth={1} borderBottomColor="$outlineNeutral">
             <XStack gap={8} alignItems="center">
-              <Info size={16} color="$color10" />
-              <TText color="$color11" fontSize={13} fontWeight={"500" as any}>
+              <Info size={16} color="$color6" />
+              <TText color="$color6" fontSize={13} fontWeight={"500" as any}>
                 Status
               </TText>
             </XStack>
@@ -38,30 +38,30 @@ export default function RemoteErrorView({ remoteError }: { remoteError?: RemoteE
             </TText>
           </XStack>
         )}
-        
+
         {remoteError.reasonCode && (
           <XStack justifyContent="space-between" alignItems="center" paddingVertical={8} borderBottomWidth={1} borderBottomColor="$outlineNeutral">
             <XStack gap={8} alignItems="center">
-              <Code size={16} color="$color10" />
-              <TText color="$color11" fontSize={13} fontWeight={"500" as any}>
+              <Code size={16} color="$color6" />
+              <TText color="$color6" fontSize={13} fontWeight={"500" as any}>
                 Reason Code
               </TText>
             </XStack>
-            <TText color="$textDefault" fontSize={14} fontFamily="$mono">
+            <TText color="$textDefault" fontSize={14}>
               {remoteError.reasonCode}
             </TText>
           </XStack>
         )}
-        
+
         {remoteError.subjectCode && (
           <XStack justifyContent="space-between" alignItems="center" paddingVertical={8}>
             <XStack gap={8} alignItems="center">
-              <Code size={16} color="$color10" />
-              <TText color="$color11" fontSize={13} fontWeight={"500" as any}>
+              <Code size={16} color="$color6" />
+              <TText color="$color6" fontSize={13} fontWeight={"500" as any}>
                 Subject Code
               </TText>
             </XStack>
-            <TText color="$textDefault" fontSize={14} fontFamily="$mono">
+            <TText color="$textDefault" fontSize={14}>
               {remoteError.subjectCode}
             </TText>
           </XStack>

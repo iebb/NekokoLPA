@@ -32,7 +32,7 @@ const PickerRow = React.memo(function PickerRow({row} : {row: SettingDataType}) 
   if (row.type === 'text') {
     return (
       <View style={{width: '100%'}}>
-        <TText color="$color10" fontSize={12} marginBottom={4}>{t(`main:settings_title_${row.key}`)}</TText>
+        <TText color="$color6" fontSize={12} marginBottom={4}>{t(`main:settings_title_${row.key}`)}</TText>
         <Input
           placeholder={t(`main:settings_title_${row.key}`)}
           value={v}
@@ -45,7 +45,7 @@ const PickerRow = React.memo(function PickerRow({row} : {row: SettingDataType}) 
           borderBottomWidth={0.5}
           backgroundColor="transparent"
           color={theme.textDefault?.val}
-          placeholderTextColor={theme.color10?.val}
+          placeholderTextColor={theme.color6?.val}
           fontSize={16}
           padding={0}
           paddingBottom={8}
@@ -115,7 +115,7 @@ const PickerRow = React.memo(function PickerRow({row} : {row: SettingDataType}) 
               <TText color="$textDefault" fontSize={14}>{currentHex}</TText>
             </XStack>
             <YStack gap={8}>
-              <TText color="$color10" fontSize={12}>Hue</TText>
+              <TText color="$color6" fontSize={12}>Hue</TText>
               <View style={{ position: 'relative', height: 12, borderRadius: 6 }}>
                 <View style={{ height: 12, borderRadius: 12, overflow: 'hidden', top: -3 }}>
                   <Svg width="100%" height="100%">
@@ -142,7 +142,7 @@ const PickerRow = React.memo(function PickerRow({row} : {row: SettingDataType}) 
               </View>
             </YStack>
             <YStack gap={8}>
-              <TText color="$color10" fontSize={12}>Saturation</TText>
+              <TText color="$color6" fontSize={12}>Saturation</TText>
               <View style={{ position: 'relative', height: 12, borderRadius: 6 }}>
                 <View style={{ height: 12, borderRadius: 12, overflow: 'hidden', top: -3 }}>
                   <Svg width="100%" height="100%">
@@ -164,7 +164,7 @@ const PickerRow = React.memo(function PickerRow({row} : {row: SettingDataType}) 
               </View>
             </YStack>
             <YStack gap={8}>
-              <TText color="$color10" fontSize={12}>Lightness</TText>
+              <TText color="$color6" fontSize={12}>Lightness</TText>
               <View style={{ position: 'relative', height: 12, borderRadius: 6 }}>
                 <View style={{ height: 12, borderRadius: 12, overflow: 'hidden', top: -3 }}>
                   <Svg width="100%" height="100%" >

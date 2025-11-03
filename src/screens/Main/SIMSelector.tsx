@@ -113,7 +113,7 @@ export default function SIMSelector() {
         <TText color="$textDefault" fontSize={18} textAlign="center">
           {t('main:no_device')}
         </TText>
-        <TText color="$accentColor" textDecorationLine="underline" fontSize={20} textAlign="center" marginTop={40} onPress={() => {
+        <TText color="$primaryColor" textDecorationLine="underline" fontSize={20} textAlign="center" marginTop={40} onPress={() => {
           Linking.openURL(AppBuyLink);
         }}>
           {t('main:purchase_note')}
@@ -169,14 +169,14 @@ export default function SIMSelector() {
                         : Usb;
                     return (
                       <TView style={{ marginRight: 4, marginTop: -2 }}>
-                        <IconComponent size={15} color={selected ? "$accentColor" : "$color11"} />
+                        <IconComponent size={15} color={selected ? "$primaryColor" : "$color6"} />
                       </TView>
                     );
                   })()}
                   <TText
                     fontSize={12}
                     lineHeight={16}
-                    color={selected ? '$accentColor' : '$color11'}
+                    color={selected ? '$primaryColor' : '$color6'}
                     fontWeight={selected ? '600' as any : '400' as any}
                     numberOfLines={2}
                   >
@@ -246,7 +246,7 @@ export default function SIMSelector() {
                     </>
                   )
                 }
-                <TText color="$accentColor" textDecorationLine="underline" fontSize={20} textAlign="center" marginTop={40} onPress={() => {
+                <TText color="$primaryColor" textDecorationLine="underline" fontSize={20} textAlign="center" marginTop={40} onPress={() => {
                   Linking.openURL(AppBuyLink);
                 }}>
                   {t('main:purchase_note')}

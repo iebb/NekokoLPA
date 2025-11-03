@@ -63,7 +63,7 @@ export default function AppHeader({ navigation }: {
         <TText fontSize={16 / PixelRatio.getFontScale()} fontWeight={'700' as any} color="$textDefault" numberOfLines={1}>
           {AppTitle}
         </TText>
-        <TText fontSize={12 / PixelRatio.getFontScale()} color={isLatest ? (theme.color10?.val || '#999') : (theme.backgroundDangerHeavy?.val || '#d33')}>
+        <TText fontSize={12 / PixelRatio.getFontScale()} color={isLatest ? (theme.color6?.val || '#999') : (theme.backgroundDangerHeavy?.val || '#d33')}>
           v{version} {!isLatest && '↑'}
         </TText>
         {!isLatest && (

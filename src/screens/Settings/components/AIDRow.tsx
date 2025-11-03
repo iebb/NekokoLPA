@@ -62,7 +62,7 @@ const AIDRow = React.memo(function SelectRow({row} : {row: SettingDataType}) {
   return (
     <TouchableOpacity activeOpacity={0.6} onPress={() => setOpen(true)}>
       <TText color="$textDefault" fontSize={14}>AID Configuration</TText>
-      <TText color="$color10" textAlign="right" fontSize={14}>{aidCount} AID{aidCount !== 1 ? 's' : ''} →</TText>
+      <TText color="$color6" textAlign="right" fontSize={14}>{aidCount} AID{aidCount !== 1 ? 's' : ''} →</TText>
       {
         open && (
           <AppSheet open={open} onOpenChange={setOpen} title={"AID Configuration"}>
@@ -71,7 +71,7 @@ const AIDRow = React.memo(function SelectRow({row} : {row: SettingDataType}) {
               <YStack flex={1} padding={0} gap={16}>
                 <XStack alignItems="flex-end" gap={10}>
                   <YStack flex={1}>
-                    <TText color="$color10" fontSize={12} marginBottom={6}>
+                    <TText color="$color6" fontSize={12} marginBottom={6}>
                       Add AID (hex)
                     </TText>
                     <Input
@@ -82,13 +82,13 @@ const AIDRow = React.memo(function SelectRow({row} : {row: SettingDataType}) {
                       borderColor={theme.outlineNeutral?.val || theme.borderColor?.val || '#777'}
                       backgroundColor="transparent"
                       color={theme.textDefault?.val}
-                      placeholderTextColor={theme.color10?.val || '#999'}
+                      placeholderTextColor={theme.color6?.val || '#999'}
                     />
                   </YStack>
                   <Button
                     onPress={addAid}
                     disabled={!inputValid}
-                    backgroundColor={inputValid ? "$accentColor" : "$color2"}
+                    backgroundColor={inputValid ? "$primaryColor" : "$color0"}
                   >
                     <TText>
                       Add
@@ -115,7 +115,7 @@ const AIDRow = React.memo(function SelectRow({row} : {row: SettingDataType}) {
                   />
                 ) : (
                   <YStack flex={1} justifyContent="center" alignItems="center" minHeight={100}>
-                    <TText color="$color10" fontSize={14}>No AIDs configured</TText>
+                    <TText color="$color6" fontSize={14}>No AIDs configured</TText>
                   </YStack>
                 )}
               </YStack>

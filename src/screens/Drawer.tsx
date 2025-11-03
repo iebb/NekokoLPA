@@ -56,7 +56,7 @@ export default function LeftSidebarDrawer({ navigation }: DrawerContentComponent
             <TText color="$textDefault" fontSize={16} fontWeight={"700" as any}>{AppTitle}</TText>
           </View>
           <View>
-            <TText color="$color10" fontSize={12}>v{version}</TText>
+            <TText color="$color6" fontSize={12}>v{version}</TText>
           </View>
         </View>
       </View>
@@ -66,8 +66,8 @@ export default function LeftSidebarDrawer({ navigation }: DrawerContentComponent
             return (
               <DrawerItem
                 key={i}
-                inactiveTintColor={theme.color10?.val || theme.color?.val || '#888'}
-                activeTintColor={theme.accentColor?.val || theme.color?.val || '#6c5ce7'}
+                inactiveTintColor={theme.color6?.val || theme.color?.val || '#888'}
+                activeTintColor={theme.primaryColor?.val || theme.color?.val || '#6c5ce7'}
                 icon={
                   ({focused, size, color}) => {
                     const IconComponent = item.icon;

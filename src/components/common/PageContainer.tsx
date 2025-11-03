@@ -20,6 +20,10 @@ interface PageContainerProps {
    * Horizontal padding (default: 10)
    */
   horizontalPadding?: number;
+  /**
+   * Top padding (default: 0)
+   */
+  topPadding?: number;
 }
 
 /**
@@ -35,12 +39,14 @@ export default function PageContainer({
   keyboardAvoiding = true,
   bottomPadding = 40,
   horizontalPadding = 20,
+  topPadding = 0,
 }: PropsWithChildren<PageContainerProps>) {
   const insets = useSafeAreaInsets();
 
   const content = (
     <YStack
       paddingHorizontal={horizontalPadding}
+      paddingTop={topPadding}
       paddingBottom={Math.max(insets.bottom, bottomPadding)}
       flex={1}
     >

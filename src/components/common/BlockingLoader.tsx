@@ -38,15 +38,15 @@ export default function BlockingLoader({
   const stateColor = (() => {
     switch (state) {
       case "success":
-        return theme.accentColor?.val || theme.color?.val;
+        return theme.primaryColor?.val || theme.color?.val;
       case "error":
         return "#ff6b6b";
       case "warning":
         return "#f5a524";
       case "info":
-        return theme.colorFocus?.val || theme.accentColor?.val || theme.color?.val;
+        return theme.colorFocus?.val || theme.primaryColor?.val || theme.color?.val;
       default:
-        return theme.accentColor?.val || theme.color?.val;
+        return theme.primaryColor?.val || theme.color?.val;
     }
   })();
 
@@ -107,7 +107,7 @@ export default function BlockingLoader({
                 width: '100%',
                 height: 8,
                 borderRadius: 999,
-                backgroundColor: theme.color2?.val || theme.borderColor?.val || '#444'
+                backgroundColor: theme.color0?.val
               }}>
                 <View style={{
                   width: `${normalizedProgress}%`,
@@ -116,7 +116,7 @@ export default function BlockingLoader({
                   backgroundColor: stateColor
                 }} />
               </View>
-              <TText fontSize={12} color="$color10" textAlign="center">{normalizedProgress}%</TText>
+              <TText fontSize={12} color="$color6" textAlign="center">{normalizedProgress}%</TText>
             </YStack>
           ) : (
             <XStack alignItems="center" justifyContent="center">
@@ -129,7 +129,7 @@ export default function BlockingLoader({
             </TText>
           ) : null}
           {effectiveSubtitle ? (
-            <TText fontSize={13} color="$color10" textAlign="center">
+            <TText fontSize={13} color="$color6" textAlign="center">
               {effectiveSubtitle}
             </TText>
           ) : null}

@@ -83,13 +83,13 @@ function BluetoothScan({ route,  navigation }: RootScreenProps<'BluetoothScan'>)
                 >
                   <XStack gap={10} alignItems="center">
                     {(() => {
-                      const IconComponent = device!.name!.startsWith("ESTKme") 
-                        ? Bed 
-                        : device!.name!.startsWith("eSIM_Writer") 
-                          ? Package 
+                      const IconComponent = device!.name!.startsWith("ESTKme")
+                        ? Bed
+                        : device!.name!.startsWith("eSIM_Writer")
+                          ? Package
                           : HardDrive;
                       return (
-                        <IconComponent size={40} color={theme.accentColor?.val as string} />
+                        <IconComponent size={40} color={theme.primaryColor?.val as string} />
                       );
                     })()}
                     <YStack flex={1}>
@@ -97,7 +97,7 @@ function BluetoothScan({ route,  navigation }: RootScreenProps<'BluetoothScan'>)
                         {device.name}
                       </TText>
                       <TView>
-                        <TText color="$color10" fontSize={12} fontWeight={"500" as any}>
+                        <TText color="$color6" fontSize={12} fontWeight={"500" as any}>
                           {device.id}
                         </TText>
                       </TView>

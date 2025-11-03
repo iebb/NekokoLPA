@@ -29,6 +29,7 @@ export default function Screen({
         horizontalPadding={horizontalPadding}
         keyboardAvoiding={keyboardAvoiding}
         scrollViewProps={scrollViewProps}
+        topPadding={subtitle && subtitle.trim().length > 0 ? 20 : 0}
       >
         <>{children}</>
       </PageContainer>

@@ -1,6 +1,6 @@
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import {NavigationContainer, NavigationContainerRef} from '@react-navigation/native';
+import {NavigationContainer, NavigationContainerRef, DefaultTheme, DarkTheme, Theme as NavTheme} from '@react-navigation/native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import type {RootStackParamList} from '@/screens/navigation';
 import React from "react";
@@ -22,11 +22,15 @@ const Stack = createStackNavigator<RootStackParamList>();
 const Drawer = createDrawerNavigator();
 
 function StackNavigator() {
+    const theme = useTheme();
 	return (
 		<Stack.Navigator
-			screenOptions={{
-				headerShown: false,
-			}}
+            screenOptions={{
+                headerShown: false,
+                cardStyle: {
+                    backgroundColor: theme.background?.val,
+                },
+            }}
 		>
 			<Stack.Screen name="Main" component={Main} />
 			<Stack.Screen name="Scanner" component={Scanner} options={TransitionPresets.SlideFromRightIOS} />
@@ -44,9 +48,21 @@ function ApplicationNavigator() {
 	const tamaguiTheme = useTheme();
 	const navigationRef = React.createRef<NavigationContainerRef<RootStackParamList>>();
 
+	const navTheme: NavTheme = {
+		...(tamaguiTheme.color?.val ? DarkTheme : DefaultTheme),
+		colors: {
+			...((tamaguiTheme.color?.val ? DarkTheme : DefaultTheme).colors),
+			background: tamaguiTheme.background?.val || '#000',
+			card: tamaguiTheme.background?.val || '#000',
+			border: tamaguiTheme.borderColor?.val || ((tamaguiTheme.color?.val ? DarkTheme : DefaultTheme).colors.border),
+			text: tamaguiTheme.textDefault?.val || ((tamaguiTheme.color?.val ? DarkTheme : DefaultTheme).colors.text),
+			primary: tamaguiTheme.primaryColor?.val || ((tamaguiTheme.color?.val ? DarkTheme : DefaultTheme).colors.primary),
+		},
+	};
+
 	return (
-		<SafeAreaProvider>
-			<NavigationContainer ref={navigationRef}>
+		<SafeAreaProvider style={{ backgroundColor: tamaguiTheme.background?.val || '#000' }}>
+			<NavigationContainer theme={navTheme} ref={navigationRef}>
 				<ToastProvider>
 					<LoadingProvider>
 						<Drawer.Navigator

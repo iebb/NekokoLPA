@@ -67,7 +67,7 @@ const ProfileSubtitle = React.memo(({
   // Theme-aware; no direct Appearance usage needed
 
   return (
-    <Text color="$color10" numberOfLines={1} fontSize={11}>
+    <Text color="$color6" numberOfLines={1} fontSize={11}>
       {subtitleText}
     </Text>
   );
@@ -267,13 +267,7 @@ const ProfileRowComponent = ({profile, deviceId, drag, isActive = false, press, 
   ), [handleEditPress, theme.backgroundSuccessLight?.val, theme.backgroundDefault?.val]);
 
   // Use tamagui theme token directly (updates on theme change)
-  const primaryColor = theme.buttonBackground?.val || theme.accentColor?.val;
-
-  // Unified switch colors (selected vs base). Base tuned for dark theme to be less bright.
-  const switchBaseColor = theme.color7?.val;
-
-  const switchTrackColor = profile.selected ? primaryColor : switchBaseColor;
-  const switchBorderColor = profile.selected ? primaryColor : switchBaseColor;
+  const primaryColor = theme.buttonBackground?.val || theme.primaryColor?.val;
 
   return (
     <Swipeable
@@ -284,15 +278,15 @@ const ProfileRowComponent = ({profile, deviceId, drag, isActive = false, press, 
       enabled={!isActive && !rearrangeMode}
     >
       <Card
-        backgroundColor={isActive ? (theme.surfaceHover?.val || theme.color2?.val || '#1a1a1f') : '$surfaceSpecial'}
+        backgroundColor={isActive ? '$surfaceHover' : '$surfaceSpecial'}
         borderWidth={0}
         borderRadius={12}
         overflow="hidden"
         padding={0}
         opacity={isActive ? 0.95 : 1}
+        shadowColor={isActive ? "$buttonBackground" : 'transparent'}
         style={{
           transform: [{ scale: isActive ? 1.02 : 1 }],
-          shadowColor: isActive ? (primaryColor || theme.accentColor?.val || '#a575f6') : 'transparent',
           shadowOffset: isActive ? { width: 0, height: 4 } : { width: 0, height: 0 },
           shadowOpacity: isActive ? 0.3 : 0,
           shadowRadius: isActive ? 8 : 0,
@@ -310,7 +304,7 @@ const ProfileRowComponent = ({profile, deviceId, drag, isActive = false, press, 
                 style={{ padding: 8 }}
                 activeOpacity={0.6}
               >
-                <GripVertical size={18} color={theme.color10?.val || '#888'} />
+                <GripVertical size={18} color={theme.color6?.val || '#888'} />
               </TouchableOpacity>
             )}
 
@@ -347,17 +341,18 @@ const ProfileRowComponent = ({profile, deviceId, drag, isActive = false, press, 
                 checked={profile.selected}
                 disabled={isLoading}
                 size={"$2.5" as any}
+                borderColor={profile.selected ? "$primaryColor" : "$color6"}
                 style={{
                   marginTop: -4,
-                  borderWidth: 0.5,
-                  borderColor: switchBorderColor,
+                  borderWidth: 1,
                 }}
-                backgroundColor={switchTrackColor}
+                backgroundColor={profile.selected ? "$primaryColor" : "$color6"}
                 onCheckedChange={(val: boolean) => handleSwitchChange(val)}
               >
                 <Switch.Thumb
-                  backgroundColor={theme.backgroundDefault?.val || '#ffffff'}
-                  style={{ borderWidth: 0.5, borderColor: switchBorderColor }}
+                  backgroundColor={"$backgroundDefault"}
+                  borderColor={"$color6"}
+                  style={{ borderWidth: 0, borderColor: "$color6" }}
                 />
               </Switch>
             </XStack>

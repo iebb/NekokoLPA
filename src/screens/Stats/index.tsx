@@ -53,7 +53,7 @@ function Stats({ route,  navigation }: RootScreenProps<'Stats'>) {
 												<YStack>
 													{
 														Object.keys(countryData[country].mncs).map((mnc: string) => (
-															<TText key={mnc} color="$color10" fontSize={12} fontWeight={"500" as any}>
+															<TText key={mnc} color="$color6" fontSize={12} fontWeight={"500" as any}>
 																{mnc} {countryData[country].mncs[mnc]}
 															</TText>
 														))

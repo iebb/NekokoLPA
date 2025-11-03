@@ -33,24 +33,24 @@ export default function UnifiedLoader({
       {variant === 'circular' ? (
         determinate && typeof progress === 'number' ? (
           <XStack alignItems="center" gap={8}>
-            <Spinner size={compact ? 'small' : 'large'} color={theme.accentColor?.val || theme.color?.val} />
+            <Spinner size={compact ? 'small' : 'large'} color={theme.primaryColor?.val || theme.color?.val} />
             <TText color="$textDefault" fontSize={compact ? 12 : 14}>{Math.round(progress)}%</TText>
           </XStack>
         ) : (
-          <Spinner size={compact ? 'small' : 'large'} color={theme.accentColor?.val || theme.color?.val} />
+          <Spinner size={compact ? 'small' : 'large'} color={theme.primaryColor?.val || theme.color?.val} />
         )
       ) : (
         <YStack width={compact ? 160 : 220} gap={6}>
           <Progress value={typeof progress === 'number' ? Math.max(0, Math.min(100, progress)) : undefined}>
-            <Progress.Indicator backgroundColor={theme.accentColor?.val || theme.color?.val} />
+            <Progress.Indicator backgroundColor={theme.primaryColor?.val || theme.color?.val} />
           </Progress>
           {determinate && typeof progress === 'number' && (
-            <TText color="$color10" fontSize={12}>{Math.round(progress)}%</TText>
+            <TText color="$color6" fontSize={12}>{Math.round(progress)}%</TText>
           )}
         </YStack>
       )}
       {text && <TText color="$textDefault" fontSize={compact ? 12 : 14}>{text}</TText>}
-      {subtext && <TText color="$color10" fontSize={compact ? 10 : 12}>{subtext}</TText>}
+      {subtext && <TText color="$color6" fontSize={compact ? 10 : 12}>{subtext}</TText>}
     </YStack>
   );
 

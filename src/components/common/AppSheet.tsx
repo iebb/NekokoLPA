@@ -37,7 +37,7 @@ export default function AppSheet({ open, onOpenChange, title, children, snapPoin
           >
             <TText color="$textDefault" fontSize={18} fontWeight="700" {...titleProps}>{title}</TText>
             <TouchableOpacity onPress={() => onOpenChange(false)}>
-              <X size={18} color={theme.color10?.val || '#999'} />
+              <X size={18} color={theme.color6?.val || '#999'} />
             </TouchableOpacity>
           </XStack>
           <View

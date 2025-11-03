@@ -163,9 +163,12 @@ export default function ProfileSelector({ deviceId, rearrangeMode = false } : { 
     try {
       setLoading(true);
 
-      for (const { profile, order, name } of profilesToUpdate) {
+      for (const { profile, order } of profilesToUpdate) {
         const suffix = orderToBase26Suffix(order);
-        const newNickname = `${name}^${suffix}`;
+        // Preserve original nickname content (including tags), only strip trailing order suffix
+        const originalNickname = (profile.profileNickname || profile.profileName || (profile as any).serviceProviderName || '').trim();
+        const baseWithTags = originalNickname.replace(/\s?\^[a-z]{3}$/i, '').trimEnd();
+        const newNickname = `${baseWithTags} ^${suffix}`;
 
         if (profile.iccid) {
           await adapter.setNicknameByIccId(profile.iccid, newNickname);

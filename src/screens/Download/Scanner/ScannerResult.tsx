@@ -47,7 +47,7 @@ export function ScannerResult(
                     <TText textAlign="center" fontSize={22} color="$textDefault" fontWeight={"600" as any}>
                       {t('main:profile_download_success')}
                     </TText>
-                    <TText textAlign="center" fontSize={14} color="$color10">
+                    <TText textAlign="center" fontSize={14} color="$color6">
                       Profile has been successfully downloaded to your device
                     </TText>
                   </YStack>
@@ -71,7 +71,7 @@ export function ScannerResult(
                     flex={1}
                     height={52}
                     borderRadius={16}
-                    backgroundColor="$color10"
+                    backgroundColor="$color6"
                     onPress={() => {
                       goBack();
                     }}
@@ -127,7 +127,7 @@ export function ScannerResult(
                     <TText textAlign="center" fontSize={22} color="$textDefault" fontWeight={"600" as any}>
                       {t('main:profile_download_failure')}
                     </TText>
-                    <TText textAlign="center" fontSize={14} color="$color10">
+                    <TText textAlign="center" fontSize={14} color="$color6">
                       Unable to download the profile. Please try again.
                     </TText>
                   </YStack>

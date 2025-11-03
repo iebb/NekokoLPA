@@ -37,7 +37,7 @@ function EuiccInfo({ route,  navigation }: RootScreenProps<'EuiccInfo'>) {
               {t('main:euiccInfo_' + row.key)}
             </Text>
             { row.element ?? (
-              <Text color="$color10" style={{ textAlign: 'right' }}>
+              <Text color="$color6" style={{ textAlign: 'right' }}>
                 {row.rendered ?? "[empty]"}
               </Text>
             )}

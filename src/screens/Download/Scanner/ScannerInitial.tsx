@@ -1,19 +1,29 @@
 import Screen from "@/components/common/Screen";
-import { View } from 'react-native';
-import { Button as TButton, Text as TText, Input, XStack, YStack, View as TView, useTheme, Checkbox, Card } from 'tamagui';
+import {Dimensions, TouchableOpacity, View} from 'react-native';
+import {
+  Button as TButton,
+  Card,
+  Checkbox,
+  Input,
+  Text as TText,
+  useTheme,
+  View as TView,
+  XStack,
+  YStack
+} from 'tamagui';
 import {Camera, useCameraDevice, useCameraPermission, useCodeScanner} from "react-native-vision-camera";
-import {Camera as CameraIcon, Download, Image as ImageIcon, Search, QrCode} from '@tamagui/lucide-icons';
+import { decodeBase64 } from 'vision-camera-zxing';
+import {Camera as CameraIcon, Download, Image as ImageIcon, QrCode, Search} from '@tamagui/lucide-icons';
 import React, {useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {makeLoading} from "@/components/utils/loading";
 import {LPACode} from "@/utils/lpaRegex";
 import {launchImageLibrary} from "react-native-image-picker";
-import QrImageReader from 'react-native-qr-image-reader';
-import {Dimensions, KeyboardAvoidingView, Platform, TouchableOpacity} from "react-native";
+// Use Vision Camera's code scanner for decoding images
+// Using ZXing integration for live and image decoding
 import {Adapters} from "@/native/adapters/registry";
 import {useSelector} from "react-redux";
 import {selectDeviceState} from "@/redux/stateStore";
-import {preferences} from "@/utils/mmkv";
 import {formatSize} from "@/utils/size";
 import {useLoading} from "@/components/common/LoadingProvider";
 import {useToast} from "@/components/common/ToastProvider";
@@ -65,15 +75,19 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
     }
   }, [hasPermission]);
 
+  // No license required for ZXing
+
   const codeScanner = useCodeScanner({
     codeTypes: ['qr'],
     onCodeScanned: (codes) => {
-      for(const code of codes) {
-        processLPACode(code.value!);
-        break;
+      for (const code of codes) {
+        if (code.value) {
+          processLPACode(code.value);
+          break;
+        }
       }
     }
-  })
+  });
 
 
   const cameraDevice = useCameraDevice('back');
@@ -90,7 +104,7 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
               <TText color="$textDefault" fontSize={16} fontWeight={"600" as any}>
                 {t('main:profile_current_euicc', { device: adapter.device.deviceName })}
               </TText>
-              <TText color="$color10" fontSize={14}>
+              <TText color="$color6" fontSize={14}>
                 {t('main:available_space', {
                   size: formatSize(euiccInfo2?.extCardResource?.freeNonVolatileMemory),
                 })}
@@ -115,7 +129,7 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
             {
               !showCamera && (
                 <YStack gap={24} alignItems="center">
-                  <QrCode size={48} color={theme.color10?.val || '#999'} />
+                  <QrCode size={48} color={theme.color6?.val || '#999'} />
                   <XStack gap={32} alignItems="center">
                     <TouchableOpacity
                       onPress={() => {
@@ -128,13 +142,13 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
                         width: 64,
                         height: 64,
                         borderRadius: 16,
-                        backgroundColor: theme.accentColor?.val || '#a575f6',
+                        backgroundColor: theme.primaryColor?.val || '#a575f6',
                         justifyContent: 'center',
                         alignItems: 'center'
                       }}>
                         <CameraIcon size={32} color="#ffffff" />
                       </View>
-                      <TText color="$color11" fontSize={12} marginTop={4}>
+                      <TText color="$color6" fontSize={12} marginTop={4}>
                         Camera
                       </TText>
                     </TouchableOpacity>
@@ -142,14 +156,27 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
                       onPress={() => {
                         launchImageLibrary({
                           mediaType: "photo",
+                          includeBase64: true,
                         }, (result) => {
                           if (result.assets) {
                             for(const a of result.assets) {
-                              QrImageReader.decode({ path: a.uri })
-                                .then(({result}) => {
-                                  processLPACode(result!);
-                                })
-                                .catch(error => console.log(error || 'No QR code found.'));
+                              (async () => {
+                                try {
+                                  if (a.base64) {
+                                    const results: any[] = await decodeBase64(a.base64, { multiple: true });
+                                    if (results && results.length > 0) {
+                                      const r: any = results[0];
+                                      const text = r?.value ?? r?.text ?? r?.displayValue;
+                                      if (text) processLPACode(String(text));
+                                      else console.log('No QR code text found.');
+                                    } else {
+                                      console.log('No barcode found.');
+                                    }
+                                  }
+                                } catch (e) {
+                                  console.log('Failed to decode image with ZXing:', e);
+                                }
+                              })();
                               break;
                             }
                           }
@@ -161,13 +188,13 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
                         width: 64,
                         height: 64,
                         borderRadius: 16,
-                        backgroundColor: theme.accentColor?.val || '#a575f6',
+                        backgroundColor: theme.primaryColor?.val || '#a575f6',
                         justifyContent: 'center',
                         alignItems: 'center'
                       }}>
                         <ImageIcon size={32} color="#ffffff" />
                       </View>
-                      <TText color="$color11" fontSize={12} marginTop={4}>
+                      <TText color="$color6" fontSize={12} marginTop={4}>
                         Gallery
                       </TText>
                     </TouchableOpacity>
@@ -191,7 +218,7 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
           <YStack gap={20}>
             {/* SM-DP+ Address */}
             <YStack gap={8}>
-              <TText color="$color11" fontSize={13} fontWeight={"500" as any} textTransform="uppercase" letterSpacing={0.5}>
+              <TText color="$color6" fontSize={13} fontWeight={"500" as any} textTransform="uppercase" letterSpacing={0.5}>
                 SM-DP+ Address
               </TText>
               <XStack gap={10} alignItems="flex-end">
@@ -204,7 +231,7 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
                     borderColor={theme.outlineNeutral?.val || theme.borderColor?.val || '#ddd'}
                     backgroundColor="$background"
                     color={theme.textDefault?.val}
-                    placeholderTextColor={theme.color10?.val}
+                    placeholderTextColor={theme.color6?.val}
                     fontSize={15}
                     padding={12}
                     borderRadius={12}
@@ -256,7 +283,7 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
 
             {/* Matching ID */}
             <YStack gap={8}>
-              <TText color="$color11" fontSize={13} fontWeight={"500" as any} textTransform="uppercase" letterSpacing={0.5}>
+              <TText color="$color6" fontSize={13} fontWeight={"500" as any} textTransform="uppercase" letterSpacing={0.5}>
                 Matching ID
               </TText>
               <Input
@@ -267,7 +294,7 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
                 borderColor={theme.outlineNeutral?.val || theme.borderColor?.val || '#ddd'}
                 backgroundColor="$background"
                 color={theme.textDefault?.val}
-                placeholderTextColor={theme.color10?.val}
+                placeholderTextColor={theme.color6?.val}
                 fontSize={15}
                 padding={12}
                 borderRadius={12}
@@ -276,7 +303,7 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
 
             {/* IMEI */}
             <YStack gap={8}>
-              <TText color="$color11" fontSize={13} fontWeight={"500" as any} textTransform="uppercase" letterSpacing={0.5}>
+              <TText color="$color6" fontSize={13} fontWeight={"500" as any} textTransform="uppercase" letterSpacing={0.5}>
                 IMEI
               </TText>
               <Input
@@ -287,7 +314,7 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
                 borderColor={theme.outlineNeutral?.val || theme.borderColor?.val || '#ddd'}
                 backgroundColor="$background"
                 color={theme.textDefault?.val}
-                placeholderTextColor={theme.color10?.val}
+                placeholderTextColor={theme.color6?.val}
                 fontSize={15}
                 padding={12}
                 borderRadius={12}
