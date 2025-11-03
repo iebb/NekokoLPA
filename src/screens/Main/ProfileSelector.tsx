@@ -1,20 +1,20 @@
 import {View as TView} from 'tamagui';
 import {useSelector} from "react-redux";
 import {Profile} from "@/native/types";
-import {TouchableOpacity} from "react-native";
 import {RefreshControl} from 'react-native-gesture-handler'
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {Adapters} from "@/native/adapters/registry";
 import {selectDeviceState} from "@/redux/stateStore";
 import {ProfileRow} from "@/screens/Main/ProfileRow";
 import DraggableFlatList from 'react-native-draggable-flatlist';
-import {parseMetadataOnly} from "@/utils/parser";
-import {orderToBase26Suffix} from "@/utils/parser";
+import {FlatList} from 'react-native-gesture-handler';
+import {orderToBase26Suffix, parseMetadataOnly} from "@/utils/parser";
 import {useLoading} from "@/components/common/LoadingProvider";
 
-export default function ProfileSelector({ deviceId } : { deviceId: string }) {
+export default function ProfileSelector({ deviceId, rearrangeMode = false } : { deviceId: string, rearrangeMode?: boolean }) {
   const DeviceState = useSelector(selectDeviceState(deviceId));
   const [refreshing, setRefreshing] = useState(false);
+  const [scrollEnable, setScrollEnable] = useState(true);
   const [orderedProfiles, setOrderedProfiles] = useState<Array<Profile & { selected: boolean }>>([]);
   const { setLoading } = useLoading();
   const adapter = Adapters[deviceId];
@@ -54,8 +54,9 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
     } else {
       setOrderedProfiles([]);
     }
+    // Only depend on profiles array reference, not DeviceState.profiles directly
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profiles.length, DeviceState.profiles]);
+  }, [profiles]);
 
   // Memoize refresh handler
   const handleRefresh = useCallback(async () => {
@@ -108,7 +109,7 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
       const maxOrder = 23 * 26 * 26 + 23 * 26 + 23; // 'xxx' = 16169
       const total = newOrder.length;
       const step = total > 1 ? Math.floor((maxOrder - minOrder) / (total - 1)) : 0;
-      
+
       return newProfilesWithOrders.map((p, index) => ({
         ...p,
         order: minOrder + (index * step)
@@ -121,9 +122,9 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
         name: string;
         oldOrder: number;
       };
-      
+
       const result: ProfileWithOrder[] = [];
-      
+
       for (let index = 0; index < newProfilesWithOrders.length; index++) {
         const p = newProfilesWithOrders[index];
         if (index === 0) {
@@ -191,7 +192,7 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
         const maxOrder = 23 * 26 * 26 + 23 * 26 + 23; // 'xxx' = 16169
         const total = result.length;
         const step = total > 1 ? Math.floor((maxOrder - minOrder) / (total - 1)) : 0;
-        
+
         return result.map((p, index) => ({
           ...p,
           order: minOrder + (index * step)
@@ -206,7 +207,7 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
   const handleDragEnd = useCallback(async ({ data }: { data: Array<Profile & { selected: boolean }> }) => {
     const oldOrder = [...orderedProfiles];
     setOrderedProfiles(data);
-    
+
     // Find which profile was moved by comparing positions
     const oldPositionMap = new Map<string, number>();
     oldOrder.forEach((profile, index) => {
@@ -214,23 +215,23 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
         oldPositionMap.set(profile.iccid, index);
       }
     });
-    
+
     const movedProfileIccid = data.find((profile, newIndex) => {
       const oldIndex = profile.iccid ? oldPositionMap.get(profile.iccid) : -1;
       return oldIndex !== undefined && oldIndex !== newIndex;
     })?.iccid;
-    
+
     // If no profile moved, skip updates
     if (!movedProfileIccid) {
       return;
     }
-    
+
     const movedProfileNewIndex = data.findIndex(p => p.iccid === movedProfileIccid);
     const movedProfileOldIndex = oldOrder.findIndex(p => p.iccid === movedProfileIccid);
-    
+
     // Calculate new orders based on old and new order
     const profilesWithOrders = calculateOrders(data, oldOrder);
-    
+
     // Check if reassignment occurred (all profiles need updates if adjacent orders < 1)
     let needsReassignment = false;
     for (let i = 0; i < profilesWithOrders.length - 1; i++) {
@@ -241,11 +242,11 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
         break;
       }
     }
-    
+
     // Find the moved profile and profiles that need updates
     const movedProfile = profilesWithOrders.find(p => p.profile.iccid === movedProfileIccid);
     const profilesToUpdate: typeof profilesWithOrders = [];
-    
+
     if (needsReassignment) {
       // If reassignment occurred, update all profiles
       profilesToUpdate.push(...profilesWithOrders);
@@ -253,20 +254,20 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
       // Only update moved profile and displaced profiles
       // Always update the moved profile
       profilesToUpdate.push(movedProfile);
-      
+
       // If moved to first position, also update the previous first profile
       if (movedProfileNewIndex === 0 && movedProfileOldIndex !== 0) {
-        const previousFirst = profilesWithOrders.find(p => 
+        const previousFirst = profilesWithOrders.find(p =>
           p.profile.iccid === oldOrder[0]?.iccid && p.profile.iccid !== movedProfileIccid
         );
         if (previousFirst) {
           profilesToUpdate.push(previousFirst);
         }
       }
-      
+
       // If moved to last position, also update the previous last profile
       if (movedProfileNewIndex === data.length - 1 && movedProfileOldIndex !== data.length - 1) {
-        const previousLast = profilesWithOrders.find(p => 
+        const previousLast = profilesWithOrders.find(p =>
           p.profile.iccid === oldOrder[oldOrder.length - 1]?.iccid && p.profile.iccid !== movedProfileIccid
         );
         if (previousLast) {
@@ -274,24 +275,24 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
         }
       }
     }
-    
+
     // Update nicknames sequentially (one by one) with loading indicator
     try {
       setLoading(true);
-      
+
       for (const { profile, order, name } of profilesToUpdate) {
         // Get the current nickname without order suffix
         const currentName = name;
         // Add the order suffix
         const suffix = orderToBase26Suffix(order);
         const newNickname = `${currentName}^${suffix}`;
-        
+
         // Save the new nickname (one at a time)
         if (profile.iccid) {
           await adapter.setNicknameByIccId(profile.iccid, newNickname);
         }
       }
-      
+
       // Refresh to get updated profiles
       await adapter.refresh();
     } catch (error) {
@@ -302,41 +303,89 @@ export default function ProfileSelector({ deviceId } : { deviceId: string }) {
   }, [adapter, calculateOrders, orderedProfiles, setLoading]);
 
 
-  const renderItem = useCallback(({ item, drag, isActive }: { item: Profile & { selected: boolean }; drag: () => void; isActive: boolean }) => {
+  const renderDraggableItem = useCallback(({ item, drag, isActive }: { item: Profile & { selected: boolean }; drag: () => void; isActive: boolean }) => {
     return (
-      <TouchableOpacity
-        activeOpacity={1}
-        disabled={isActive}
-        style={{ opacity: isActive ? 0.8 : 1, marginBottom: 10 }}
-      >
+      <TView style={{ marginBottom: 10 }}>
         <ProfileRow
           deviceId={deviceId}
           profile={item}
           drag={drag}
-          key={item.iccid}
+          isActive={isActive}
+          press={(x: boolean) => setScrollEnable(!x)}
+          rearrangeMode={true}
         />
-      </TouchableOpacity>
+      </TView>
     );
   }, [deviceId]);
 
-  return (
-    <TView flex={1} minHeight={0} paddingBottom={10}>
+  const renderRegularItem = useCallback(({ item }: { item: Profile & { selected: boolean } }) => {
+    return (
+      <TView style={{ marginBottom: 10 }}>
+        <ProfileRow
+          deviceId={deviceId}
+          profile={item}
+          drag={() => {}}
+          isActive={false}
+          press={() => {}}
+          rearrangeMode={false}
+        />
+      </TView>
+    );
+  }, [deviceId]);
+
+  // Removed debug handlers to improve performance
+
+  if (rearrangeMode) {
+    // Use DraggableFlatList in rearrange mode
+    return (
       <DraggableFlatList
+        scrollEnabled
         data={orderedProfiles}
         keyExtractor={(item) => item.iccid || String(item)}
-        onDragEnd={handleDragEnd}
-        renderItem={renderItem}
+        renderItem={renderDraggableItem}
+        activationDistance={10}
+        animationConfig={{
+          damping: 20,
+          stiffness: 300,
+          mass: 0.5,
+        }}
         bounces
         alwaysBounceVertical
         keyboardShouldPersistTaps="handled"
+        scrollToOverflowEnabled
         showsVerticalScrollIndicator
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={handleRefresh}
-          />
-        }
+        simultaneousHandlers={[]}
+        onDragEnd={handleDragEnd}
+        removeClippedSubviews={true}
+        maxToRenderPerBatch={10}
+        updateCellsBatchingPeriod={50}
+        initialNumToRender={10}
+        windowSize={10}
       />
-    </TView>
+    );
+  }
+
+  // Use regular FlatList in normal mode
+  return (
+    <FlatList
+      data={orderedProfiles}
+      keyExtractor={(item) => item.iccid || String(item)}
+      renderItem={renderRegularItem}
+      bounces
+      alwaysBounceVertical
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator
+      removeClippedSubviews={true}
+      maxToRenderPerBatch={10}
+      updateCellsBatchingPeriod={50}
+      initialNumToRender={10}
+      windowSize={10}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
+        />
+      }
+    />
   );
 }

@@ -1,8 +1,7 @@
 import React from 'react';
 import {TouchableOpacity} from 'react-native';
 import {Sheet, Text as TText, useTheme, View, XStack, YStack} from 'tamagui';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faTimes} from '@fortawesome/free-solid-svg-icons';
+import {X} from '@tamagui/lucide-icons';
 
 type AppSheetProps = {
   open: boolean;
@@ -38,7 +37,7 @@ export default function AppSheet({ open, onOpenChange, title, children, snapPoin
           >
             <TText color="$textDefault" fontSize={18} fontWeight="700" {...titleProps}>{title}</TText>
             <TouchableOpacity onPress={() => onOpenChange(false)}>
-              <FontAwesomeIcon icon={faTimes} size={18} style={{ color: theme.color10?.val || '#999' }} />
+              <X size={18} color={theme.color10?.val || '#999'} />
             </TouchableOpacity>
           </XStack>
           <View

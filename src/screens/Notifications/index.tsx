@@ -11,8 +11,7 @@ import {Adapters} from "@/native/adapters/registry";
 import {Notification} from "@/native/types/LPA";
 import {parseMetadataOnly} from "@/utils/parser";
 import {Flags} from "@/assets/flags";
-import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
-import {faBan, faCircleCheck, faDownload, faPaperPlane, faTrash} from "@fortawesome/free-solid-svg-icons";
+import {Ban, CheckCircle, Download, Send, Trash2} from '@tamagui/lucide-icons';
 import {useToast} from "@/components/common/ToastProvider";
 import {useLoading} from "@/components/common/LoadingProvider";
 import {makeLoading} from "@/components/utils/loading";
@@ -40,24 +39,24 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
 
     const { name, country } = metadata ? parseMetadataOnly(metadata) : {name: "unknown", country: "WW"};
 
-    var iconType = faDownload;
+    var IconComponent: any = Download;
     var type = 'download';
 
     switch (row.profileManagementOperation) {
       case 0x10:
-        iconType = faTrash;
+        IconComponent = Trash2;
         type = 'delete';
         break;
       case 0x20:
-        iconType = faBan;
+        IconComponent = Ban;
         type = 'disable';
         break;
       case 0x40:
-        iconType = faCircleCheck;
+        IconComponent = CheckCircle;
         type = 'enable';
         break;
       case 0x80:
-        iconType = faDownload;
+        IconComponent = Download;
         type = 'install';
         break;
     }
@@ -84,7 +83,7 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
         activeOpacity={0.8}
         style={{ width: 60, justifyContent: 'center', alignItems: 'center', backgroundColor: (theme.backgroundSuccessHeavy?.val || theme.accentColor?.val || '#22c55e'), borderTopRightRadius: 12, borderBottomRightRadius: 12 }}
       >
-        <FontAwesomeIcon icon={faPaperPlane} style={{ color: theme.background?.val || '#fff' }} />
+        <Send size={18} color={theme.background?.val || '#fff'} />
       </TouchableOpacity>
     );
 
@@ -106,7 +105,7 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
         activeOpacity={0.8}
         style={{ width: 60, justifyContent: 'center', alignItems: 'center', backgroundColor: (theme.backgroundDangerHeavy?.val || '#dc2626'), borderTopLeftRadius: 12, borderBottomLeftRadius: 12 }}
       >
-        <FontAwesomeIcon icon={faTrash} style={{ color: theme.background?.val || '#fff' }} />
+        <Trash2 size={18} color={theme.background?.val || '#fff'} />
       </TouchableOpacity>
     );
 
@@ -170,7 +169,7 @@ function Notifications({ route,  navigation }: RootScreenProps<'Notifications'>)
         <XStack justifyContent="flex-end" paddingHorizontal={20} paddingBottom={16} flexShrink={0}>
           <TButton
             onPress={handleProcessAllNotifications}
-            backgroundColor="$accentColor"
+            backgroundColor="$btnBackground"
             borderRadius={8}
             paddingHorizontal={16}
             paddingVertical={10}

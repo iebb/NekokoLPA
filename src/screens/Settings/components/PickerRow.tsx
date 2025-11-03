@@ -5,8 +5,7 @@ import Svg, {Defs, LinearGradient as SvgLinearGradient, Rect, Stop} from 'react-
 import {Button as TButton, Input, Slider, Text as TText, useTheme, XStack, YStack} from 'tamagui';
 import {preferences} from '@/utils/mmkv';
 import AppSheet from '@/components/common/AppSheet';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faPaintbrush} from '@fortawesome/free-solid-svg-icons';
+import {Paintbrush} from '@tamagui/lucide-icons';
 
 export type SettingDataType = {
   key: string;
@@ -104,7 +103,7 @@ const PickerRow = React.memo(function PickerRow({row} : {row: SettingDataType}) 
             <View style={{ flex: 1 }} />
             <View>
               <TButton backgroundColor={v} onPress={() => showPicker(true)} style={{ maxWidth: 100 }}>
-                <FontAwesomeIcon icon={faPaintbrush} style={{ color: theme.background?.val || '#fff' }} />
+                <Paintbrush size={18} color={theme.background?.val || '#fff'} />
               </TButton>
             </View>
           </View>

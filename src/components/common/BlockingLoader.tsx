@@ -1,8 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 import { XStack, YStack, Text as TText, Spinner, useTheme, Card } from "tamagui";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faCheckCircle, faCircleInfo, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
+import { CheckCircle, Info, AlertTriangle } from '@tamagui/lucide-icons';
 
 type LoaderState = "loading" | "success" | "error" | "info" | "warning";
 
@@ -53,9 +52,9 @@ export default function BlockingLoader({
 
   const renderIcon = () => {
     if (state === "loading") return null;
-    const icon = state === "success" ? faCheckCircle : state === "error" ? faTriangleExclamation : faCircleInfo;
+    const IconComponent = state === "success" ? CheckCircle : state === "error" ? AlertTriangle : Info;
     return (
-      <FontAwesomeIcon icon={icon as any} size={24} style={{ color: stateColor, marginRight: 8 }} />
+      <IconComponent size={24} color={stateColor} />
     );
   };
 

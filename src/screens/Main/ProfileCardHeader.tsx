@@ -3,7 +3,7 @@ import AppSheet from '@/components/common/AppSheet';
 import {Platform, ToastAndroid, TouchableOpacity, View} from 'react-native';
 import React, {useCallback, useMemo, useState} from "react";
 import {useSelector} from "react-redux";
-import {MessageSquareShare, Plus} from '@tamagui/lucide-icons';
+import {MessageSquareShare, Plus, GripVertical} from '@tamagui/lucide-icons';
 import {useNavigation} from "@react-navigation/native";
 import {useTranslation} from "react-i18next";
 import {Adapters} from "@/native/adapters/registry";
@@ -192,7 +192,7 @@ const RoundedButton = (props: any) => {
   );
 }
 
-export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
+export default function ProfileCardHeader({ deviceId, rearrangeMode, setRearrangeMode } : { deviceId: string, rearrangeMode?: boolean, setRearrangeMode?: (enabled: boolean) => void }) {
   const theme = useTheme();
   const navigation = useNavigation<any>();
   const { t } = useTranslation(['main']);
@@ -200,6 +200,11 @@ export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
   const [nicknameSheetOpen, setNicknameSheetOpen] = useState(false);
   const [nicknameInput, setNicknameInput] = useState('');
   const DeviceState = useSelector((state: RootState) => state.DeviceState[deviceId]) ?? {};
+
+  // Button colors from theme - calculated in theme generation
+  // Rearrange button: active (accentColor) in rearrange mode, alternative (btnAltBackground) in normal mode
+  const rearrangeBgColor = rearrangeMode ? "$accentColor" : "$btnAltBackground";
+  const rearrangeFgColor = rearrangeMode ? "$buttonForeground" : "$btnAltForeground";
 
   // Memoize preferences
   const stealthMode = useMemo(() =>
@@ -213,10 +218,10 @@ export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
 
   // Memoize EID processing
   const { eid, maskedEid } = useMemo(() => {
-    const eid = (DeviceState?.eid) ?? "";
-    const maskedEid = stealthMode === 'none' ? eid : (
-      eid.substring(0, stealthMode === 'medium' ? 18 : 13) + "..."
-    );
+    const eid = String(DeviceState?.eid ?? "");
+    const maskedEid = eid.length > 16
+      ? eid.substring(0, 8) + "..." + eid.substring(eid.length - 8)
+      : eid;
     return { eid, maskedEid };
   }, [DeviceState?.eid, stealthMode]);
 
@@ -305,7 +310,7 @@ export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
                 </TButton>
                 <TButton
                   onPress={handleNicknameSubmit}
-                  backgroundColor="$accentColor"
+                  backgroundColor="$btnBackground"
                 >
                   <TText>OK</TText>
                 </TButton>
@@ -326,9 +331,9 @@ export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
       >
         <XStack flex={1} alignItems="center">
           <RoundedButton
-            backgroundColor="$color10"
-            icon={<MessageSquareShare size="$1" />}
-            onPress={() => {navigation.navigate('Notifications', { deviceId });}}
+            backgroundColor={rearrangeBgColor}
+            icon={<GripVertical size="$1" color={rearrangeFgColor} />}
+            onPress={() => {setRearrangeMode?.(!rearrangeMode);}}
             radiusL={12}
             radiusR={0}
           />
@@ -338,8 +343,15 @@ export default function ProfileCardHeader({ deviceId } : { deviceId: string }) {
             supplementText={supplementText}
           />
           <RoundedButton
-            backgroundColor="$accentColor"
-            icon={<Plus size="$1" />}
+            backgroundColor="$btnBackground"
+            icon={<MessageSquareShare size="$1" color="$btnForeground" />}
+            onPress={() => {navigation.navigate('Notifications', { deviceId });}}
+            radiusL={0}
+            radiusR={0}
+          />
+          <RoundedButton
+            backgroundColor="$btnBackground"
+            icon={<Plus size="$1" color="$btnForeground" />}
             onPress={() => {navigation.navigate('Scanner', { deviceId });}}
             radiusL={0}
             radiusR={12}

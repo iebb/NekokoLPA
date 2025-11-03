@@ -1,17 +1,15 @@
-import React, {useCallback, useMemo, useState} from 'react';
-import {FlatList, Platform, TouchableOpacity, View} from 'react-native';
+import React from 'react';
+import {Platform} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import Screen from '@/components/common/Screen';
 import type {RootScreenProps} from "@/screens/navigation";
-import {Text as TText, YStack} from 'tamagui';
-import AppSheet from '@/components/common/AppSheet';
+import {YStack} from 'tamagui';
 import {preferences} from "@/utils/mmkv";
 import {useColorScheme} from "@/theme/context";
 import i18next from "i18next";
-import {getAIDList} from "@/utils/aid";
 import PickerRow from "@/screens/Settings/components/PickerRow";
-import AIDManager from "@/screens/Settings/components/AIDManager";
 import SelectRow from "@/screens/Settings/components/SelectRow";
+import AIDRow from "@/screens/Settings/components/AIDRow";
 
 export type SettingDataType = {
   key: string;
@@ -27,7 +25,6 @@ export default function Settings({ route,  navigation }: RootScreenProps<'Settin
 
   const { t } = useTranslation(['main']);
   const {setTheme} = useColorScheme();
-  const [aidModalVisible, setAidModalVisible] = useState(false);
 
   const items: SettingDataType[] = [
     { key: 'language', options: ['en','ja','zh','es','ru','ar'], defaultValue: 'en', type: 'select', onChange: (value: string) => { preferences.set('language', value); void i18next.changeLanguage(value); } },
@@ -48,15 +45,7 @@ export default function Settings({ route,  navigation }: RootScreenProps<'Settin
   const renderItem = ({item}: {item: SettingDataType}) => {
     if (item.type === 'color') return <PickerRow key={item.key} row={item} />;
     if (item.type === 'select') return <SelectRow key={item.key} row={item} />;
-    if (item.type === 'aid') {
-      const aidCount = getAIDList().split(',').filter(Boolean).length;
-      return (
-        <TouchableOpacity key={item.key} activeOpacity={0.6} onPress={() => setAidModalVisible(true)}>
-          <TText color="$textDefault" fontSize={14}>AID Configuration</TText>
-          <TText color="$color10" textAlign="right" fontSize={14}>{aidCount} AID{aidCount !== 1 ? 's' : ''} →</TText>
-        </TouchableOpacity>
-      );
-    }
+    if (item.type === 'aid') return <AIDRow key={item.key} row={item} />;
   };
 
   return (
@@ -64,13 +53,6 @@ export default function Settings({ route,  navigation }: RootScreenProps<'Settin
       <YStack gap={8}>
         {items.map((item: SettingDataType) => renderItem({item}))}
       </YStack>
-      {
-        aidModalVisible && (
-          <AppSheet open={aidModalVisible} onOpenChange={setAidModalVisible} title={"AID Configuration"}>
-            <AIDManager />
-          </AppSheet>
-        )
-      }
     </Screen>
   );
 }

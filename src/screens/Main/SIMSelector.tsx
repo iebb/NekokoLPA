@@ -8,11 +8,30 @@ import {Tabs, Text as TText, XStack, YStack, View as TView, useTheme} from 'tama
 import {Smartphone, Bluetooth, Usb} from '@tamagui/lucide-icons';
 import Clipboard from "@react-native-clipboard/clipboard";
 import {preferences} from "@/utils/mmkv";
-import {AppBuyLink} from "@/screens/Main/config";
+import {AppBuyLink} from "@/config";
 import {getNicknames} from "@/configs/store";
 import {setTargetDevice} from "@/redux/stateStore";
 import ProfileCardHeader from "@/screens/Main/ProfileCardHeader";
 import ProfileSelector from "@/screens/Main/ProfileSelector";
+
+// Container component to manage rearrange mode state
+function ProfileSelectorContainer({ deviceId }: { deviceId: string }) {
+  const [rearrangeMode, setRearrangeMode] = useState(false);
+
+  return (
+    <YStack flex={1} minHeight={0} gap={10} key={deviceId} marginTop={5}>
+      <ProfileCardHeader
+        deviceId={deviceId}
+        rearrangeMode={rearrangeMode}
+        setRearrangeMode={setRearrangeMode}
+      />
+      <ProfileSelector
+        deviceId={deviceId}
+        rearrangeMode={rearrangeMode}
+      />
+    </YStack>
+  );
+}
 
 export default function SIMSelector() {
   const ds = useSelector((state: RootState) => state.DeviceState);
@@ -169,7 +188,7 @@ export default function SIMSelector() {
           })}
           {/* Selected tab underline indicator */}
           <TView
-            backgroundColor="$accentColor"
+            backgroundColor="$btnBackground"
             style={{
               position: 'absolute',
               bottom: 0,
@@ -184,10 +203,7 @@ export default function SIMSelector() {
       {
         selected && (adapter != null) && (
           adapter.device.available ? (
-            <YStack flex={1} minHeight={0} gap={10} key={selected} marginTop={5}>
-              <ProfileCardHeader deviceId={selected} />
-              <ProfileSelector deviceId={selected} />
-            </YStack>
+            <ProfileSelectorContainer deviceId={selected} />
           ): (
             <ScrollView
               bounces

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Image, Linking, PixelRatio, Platform, TouchableOpacity } from 'react-native';
 import { Text as TText, useTheme, XStack } from 'tamagui';
 import { version } from '../../../../package.json';
-import { AppCheckForUpdates, AppLogo, AppTitle } from '@/screens/Main/config';
+import { AppCheckForUpdates, AppLogo, AppTitle } from '@/config';
 
 export default function AppHeader({ navigation }: {
   navigation: any;

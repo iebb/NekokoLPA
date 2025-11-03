@@ -2,7 +2,7 @@ import { getColorTint, isDarkColor } from './colorUtils';
 
 /**
  * Generate Tamagui theme variants based on a primary color
- * 
+ *
  * @param primaryColor - The primary/accent color (hex string)
  * @param baseTheme - Base theme object ('light' or 'dark')
  * @returns Theme object with colors generated from primaryColor
@@ -12,12 +12,24 @@ export function generateTamaguiTheme(
   baseTheme: 'light' | 'dark'
 ): Record<string, string> {
   const isPrimaryDark = isDarkColor(primaryColor);
-  
+
   // Generate button foreground color
   // If primary is dark, get lighter tint (80), otherwise darker tint (20)
   const buttonForeground = isPrimaryDark
     ? getColorTint(primaryColor, 80)
     : getColorTint(primaryColor, 20);
+
+  // btnBackground is the accentColor (theme color)
+  // Generate foreground for btnBackground (white if dark, black if light)
+  const isBtnBackgroundDark = isDarkColor(primaryColor);
+  const btnForeground = isBtnBackgroundDark ? '#ffffff' : '#000000';
+
+  // btnAltBackground is the muted/inverted tinted color (tint at 70) - for non-arrange mode arrange button
+  const btnAltBackground = getColorTint(primaryColor, 90);
+
+  // Generate foreground for btnAltBackground (white if dark, black if light)
+  const isBtnAltBackgroundDark = isDarkColor(btnAltBackground);
+  const btnAltForeground = isBtnAltBackgroundDark ? '#ffffff' : '#000000';
 
   const baseLightBackground = '#ffffff';
   // Swap background and row background for light theme:
@@ -51,6 +63,12 @@ export function generateTamaguiTheme(
       // Button colors
       buttonBackground: primaryColor,
       buttonForeground: buttonForeground,
+      // Primary button colors (for notification and plus buttons) - same as accentColor
+      btnBackground: primaryColor, // Same as accentColor
+      btnForeground: btnForeground,
+      // Alternative button colors (for non-arrange mode rearrange button)
+      btnAltBackground: btnAltBackground,
+      btnAltForeground: btnAltForeground,
       // Success colors (keeping green as per original)
       backgroundSuccess: '#22c55e',
       backgroundSuccessLight: '#86efac',
@@ -78,6 +96,12 @@ export function generateTamaguiTheme(
       // Button colors
       buttonBackground: primaryColor,
       buttonForeground: buttonForeground,
+      // Primary button colors (for notification and plus buttons) - same as accentColor
+      btnBackground: primaryColor, // Same as accentColor
+      btnForeground: btnForeground,
+      // Alternative button colors (for non-arrange mode rearrange button)
+      btnAltBackground: btnAltBackground,
+      btnAltForeground: btnAltForeground,
       // Success colors
       backgroundSuccess: '#22c55e',
       backgroundSuccessLight: '#4ade80',

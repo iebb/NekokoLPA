@@ -12,7 +12,7 @@ const TAG_COLORS = {
 };
 
 export function predictCountryForICCID(iccid: string) {
-  const prefix = iccid.substring(2).replaceAll(/^0+/g, '');
+  const prefix = (iccid && iccid.length > 2) ? iccid.substring(2).replaceAll(/^0+/g, '') : '';
   for (let i = 1; i <= 3; i++) {
     if (countries['+' + prefix.substring(0, i)]) {
       return countries['+' + prefix.substring(0, i)];
@@ -86,9 +86,9 @@ export function parseMetadata(metadata: ProfileMetadataMap, t: TFunction, parseC
 
   if (nickname) {
     // Extract and parse order suffix (^ followed by 3 lowercase letters at the end, e.g., "^xyz")
-    const orderSuffixMatch = nickname.match(/\^[a-z]{3}$/);
-    if (orderSuffixMatch) {
-      const suffix = orderSuffixMatch[0].substring(1); // Remove the '^' and get the 3 letters
+      const orderSuffixMatch = nickname.match(/\^[a-z]{3}$/);
+      if (orderSuffixMatch && orderSuffixMatch[0]) {
+        const suffix = orderSuffixMatch[0].substring(1); // Remove the '^' and get the 3 letters
       order = parseBase26Suffix(suffix);
       // Remove the suffix from the nickname (^ + 3 letters = 4 characters)
       nickname = nickname.slice(0, -4).trim();
@@ -189,9 +189,9 @@ export function parseMetadataOnly(metadata: ProfileMetadataMap) {
 
   if (nickname) {
     // Extract and parse order suffix (^ followed by 3 lowercase letters at the end, e.g., "^xyz")
-    const orderSuffixMatch = nickname.match(/\^[a-z]{3}$/);
-    if (orderSuffixMatch) {
-      const suffix = orderSuffixMatch[0].substring(1); // Remove the '^' and get the 3 letters
+      const orderSuffixMatch = nickname.match(/\^[a-z]{3}$/);
+      if (orderSuffixMatch && orderSuffixMatch[0]) {
+        const suffix = orderSuffixMatch[0].substring(1); // Remove the '^' and get the 3 letters
       order = parseBase26Suffix(suffix);
       // Remove the suffix from the nickname (^ + 3 letters = 4 characters)
       nickname = nickname.slice(0, -4).trim();

@@ -7,8 +7,7 @@ import {Button as TButton, Text as TText, useTheme, XStack, YStack} from 'tamagu
 import RNFS from 'react-native-fs';
 import Share from 'react-native-share'; // optional for sharing
 import DocumentPicker from 'react-native-document-picker';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faDownload, faUpload} from '@fortawesome/free-solid-svg-icons';
+import {Download, Upload} from '@tamagui/lucide-icons';
 import {useToast} from "@/components/common/ToastProvider";
 
 
@@ -73,16 +72,13 @@ export default function Backup({ route,  navigation }: RootScreenProps<'Backup'>
         <YStack gap={12}>
           <TButton
             flex={1}
-            backgroundColor={theme.accentColor?.val}
+            backgroundColor="$btnBackground"
             onPress={exportFile}
             borderRadius={12}
             paddingVertical={12}
           >
             <XStack alignItems="center" gap={10}>
-              <FontAwesomeIcon
-                icon={faDownload}
-                style={{ color: theme.background?.val }}
-              />
+              <Download size={20} color={theme.background?.val || '#fff'} />
               <TText color={theme.background?.val} fontSize={16}>
                 {t('main:backup_export')}
               </TText>
@@ -90,16 +86,13 @@ export default function Backup({ route,  navigation }: RootScreenProps<'Backup'>
           </TButton>
           <TButton
             flex={1}
-            backgroundColor={theme.accentColor?.val}
+            backgroundColor="$btnBackground"
             onPress={importData}
             borderRadius={12}
             paddingVertical={12}
           >
             <XStack alignItems="center" gap={10}>
-              <FontAwesomeIcon
-                icon={faUpload}
-                style={{ color: theme.background?.val }}
-              />
+              <Upload size={20} color={theme.background?.val || '#fff'} />
               <TText color={theme.background?.val} fontSize={16}>
                 {t('main:backup_import')}
               </TText>

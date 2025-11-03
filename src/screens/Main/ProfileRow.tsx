@@ -4,9 +4,8 @@ import {preferences, sizeStats} from "@/utils/mmkv";
 import {Swipeable} from 'react-native-gesture-handler';
 import {Card, Stack, Switch, Text, useTheme, XStack, YStack} from 'tamagui';
 // useTheme covers dynamic color; no need for useColorScheme here
-import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
-import {faPencil, faTrash} from "@fortawesome/free-solid-svg-icons";
-import {Alert, Image, PixelRatio, ToastAndroid, TouchableOpacity} from "react-native";
+import {Pencil, Trash2, GripVertical} from '@tamagui/lucide-icons';
+import {Alert, Image, PixelRatio, Pressable, ToastAndroid, TouchableOpacity, View} from "react-native";
 import {makeLoading} from "@/components/utils/loading";
 import {Flags} from "@/assets/flags";
 import {formatSize} from "@/utils/size";
@@ -74,7 +73,7 @@ const ProfileSubtitle = React.memo(({
   );
 });
 
-export const ProfileRow = ({profile, deviceId, drag} : {profile: ProfileExt, deviceId: string, drag: any}) => {
+const ProfileRowComponent = ({profile, deviceId, drag, isActive = false, press, rearrangeMode = false} : {profile: ProfileExt, deviceId: string, drag: any, isActive?: boolean, press?: (pressed: boolean) => void, rearrangeMode?: boolean}) => {
   const { t } = useTranslation(['main']);
   const adapter = Adapters[deviceId];
   const { setLoading, isLoading } = useLoading();
@@ -100,30 +99,37 @@ export const ProfileRow = ({profile, deviceId, drag} : {profile: ProfileExt, dev
 
   // Memoize ICCID calculations
   const { numICCID, hueICCID } = useMemo(() => {
-    const numICCID = metadata.iccid.replaceAll(/\D/g, '');
-    const hueICCID = (parseInt(numICCID.substring(numICCID.length - 7), 10) * 17.84) % 360;
+    const iccid = String(metadata?.iccid ?? "");
+    const numICCID = iccid.replaceAll(/\D/g, '');
+    const hueICCID = numICCID.length >= 7
+      ? (parseInt(numICCID.substring(numICCID.length - 7), 10) * 17.84) % 360
+      : 0;
     return { numICCID, hueICCID };
-  }, [metadata.iccid]);
+  }, [metadata?.iccid]);
 
   // Memoize phone number processing
   const replacedName = useMemo(() => {
+    if (!name) return "";
     const phoneNumbers = findPhoneNumbersInText(name, country as any);
     let result = name;
 
     for (const p of phoneNumbers) {
+      if (p.startsAt >= 0 && p.endsAt <= name.length) {
+        const match = name.substring(p.startsAt, p.endsAt);
+        if (match[0] !== "+") continue;
+        const formatted = p.number.formatInternational();
 
-      const match = name.substring(p.startsAt, p.endsAt);
-      if (match[0] !== "+") continue;
-      const formatted = p.number.formatInternational();
-
-      if (stealthMode === 'medium') {
-        const ccPrefix = "+" + p.number.countryCallingCode + " ";
-        const toReplace = formatted.substring(ccPrefix.length);
-        result = result.replaceAll(
-          match, ccPrefix + toReplace.replaceAll(/\d/g, '*')
-        );
-      } else {
-        result = result.replaceAll(match, formatted);
+        if (stealthMode === 'medium') {
+          const ccPrefix = "+" + p.number.countryCallingCode + " ";
+          const toReplace = formatted.length > ccPrefix.length
+            ? formatted.substring(ccPrefix.length)
+            : "";
+          result = result.replaceAll(
+            match, ccPrefix + toReplace.replaceAll(/\d/g, '*')
+          );
+        } else {
+          result = result.replaceAll(match, formatted);
+        }
       }
     }
 
@@ -144,13 +150,15 @@ export const ProfileRow = ({profile, deviceId, drag} : {profile: ProfileExt, dev
 
   // Memoize handlers
   const handleProfilePress = useCallback(() => {
+    // Disable navigation in rearrange mode
+    if (rearrangeMode) return;
     // @ts-ignore
     navigation.navigate('Profile', {
       iccid: metadata.iccid,
       metadata: metadata,
       deviceId: deviceId,
     });
-  }, [navigation, metadata, deviceId]);
+  }, [navigation, metadata, deviceId, rearrangeMode]);
 
   const handleEditPress = useCallback(() => {
     handleProfilePress();
@@ -236,7 +244,7 @@ export const ProfileRow = ({profile, deviceId, drag} : {profile: ProfileExt, dev
           borderBottomRightRadius: 12,
         }}
       >
-        <FontAwesomeIcon icon={faTrash} style={{ color: (theme.backgroundDefault?.val || '#fff') }} />
+        <Trash2 size={18} color={theme.backgroundDefault?.val || '#fff'} />
       </TouchableOpacity>
     );
   }, [handleDeletePress, profile.selected, theme.backgroundDangerHeavy?.val, theme.backgroundDefault?.val]);
@@ -254,7 +262,7 @@ export const ProfileRow = ({profile, deviceId, drag} : {profile: ProfileExt, dev
         borderBottomLeftRadius: 12,
       }}
     >
-      <FontAwesomeIcon icon={faPencil} style={{ color: (theme.backgroundDefault?.val || '#fff') }} />
+      <Pencil size={18} color={theme.backgroundDefault?.val || '#fff'} />
     </TouchableOpacity>
   ), [handleEditPress, theme.backgroundSuccessLight?.val, theme.backgroundDefault?.val]);
 
@@ -273,20 +281,44 @@ export const ProfileRow = ({profile, deviceId, drag} : {profile: ProfileExt, dev
       renderLeftActions={renderLeftActions}
       overshootFriction={8}
       friction={2}
+      enabled={!isActive && !rearrangeMode}
     >
       <Card
-        backgroundColor="$surfaceSpecial"
+        backgroundColor={isActive ? (theme.surfaceHover?.val || theme.color2?.val || '#1a1a1f') : '$surfaceSpecial'}
         borderWidth={0}
         borderRadius={12}
         overflow="hidden"
         padding={0}
+        opacity={isActive ? 0.95 : 1}
+        style={{
+          transform: [{ scale: isActive ? 1.02 : 1 }],
+          shadowColor: isActive ? (primaryColor || theme.accentColor?.val || '#a575f6') : 'transparent',
+          shadowOffset: isActive ? { width: 0, height: 4 } : { width: 0, height: 0 },
+          shadowOpacity: isActive ? 0.3 : 0,
+          shadowRadius: isActive ? 8 : 0,
+          elevation: isActive ? 8 : 0,
+        }}
       >
-        <YStack paddingTop={5} paddingLeft={15} paddingRight={15} gap={5}>
-          <XStack width="100%" alignItems="flex-start">
-            <TouchableOpacity
+        <YStack paddingTop={5} paddingLeft={rearrangeMode ? 0 : 15} paddingRight={15} gap={5}>
+          <XStack width="100%" alignItems="flex-start" gap={8}>
+            {rearrangeMode && (
+              <TouchableOpacity
+                onLongPress={drag}
+                onPressIn={() => press?.(true)}
+                onPressOut={() => press?.(false)}
+                delayLongPress={100}
+                style={{ padding: 8 }}
+                activeOpacity={0.6}
+              >
+                <GripVertical size={18} color={theme.color10?.val || '#888'} />
+              </TouchableOpacity>
+            )}
+
+            {/* Main content - scrollable area, no drag interference */}
+            <Pressable
               style={{ flexShrink: 1, flexGrow: 1 }}
-              onLongPress={drag}
               onPress={handleProfilePress}
+              delayLongPress={10000}
             >
               <XStack gap={6} alignItems="center">
                 <Image
@@ -308,7 +340,7 @@ export const ProfileRow = ({profile, deviceId, drag} : {profile: ProfileExt, dev
                 />
               </XStack>
               <ProfileTags tags={tags} stealthMode={stealthMode} />
-            </TouchableOpacity>
+            </Pressable>
 
             <XStack padding={5} width={50}>
               <Switch
@@ -349,3 +381,16 @@ export const ProfileRow = ({profile, deviceId, drag} : {profile: ProfileExt, dev
     </Swipeable>
   );
 };
+
+// Memoize ProfileRow to prevent unnecessary re-renders when rearrangeMode changes
+export const ProfileRow = React.memo(ProfileRowComponent, (prevProps, nextProps) => {
+  // Only re-render if these props change
+  return (
+    prevProps.profile.iccid === nextProps.profile.iccid &&
+    prevProps.profile.profileState === nextProps.profile.profileState &&
+    prevProps.profile.profileNickname === nextProps.profile.profileNickname &&
+    prevProps.isActive === nextProps.isActive &&
+    prevProps.rearrangeMode === nextProps.rearrangeMode &&
+    prevProps.deviceId === nextProps.deviceId
+  );
+});

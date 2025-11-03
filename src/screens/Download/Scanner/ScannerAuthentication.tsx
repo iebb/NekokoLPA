@@ -2,9 +2,8 @@ import React, {useState} from 'react';
 import {Alert, StyleSheet,} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import { View } from 'react-native';
-import { Button as TButton, Text as TText, Input, XStack, YStack, useTheme } from 'tamagui';
-import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
-import {faCancel, faDownload} from "@fortawesome/free-solid-svg-icons";
+import { Button as TButton, Text as TText, Input, XStack, YStack, useTheme, Card } from 'tamagui';
+import {X, Download, AlertTriangle} from '@tamagui/lucide-icons';
 import BlockingLoader from "@/components/common/BlockingLoader";
 import RemoteErrorView from "@/screens/Download/RemoteErrorView";
 import MetadataView from "@/components/common/MetadataView";
@@ -63,68 +62,100 @@ export function ScannerAuthentication(
       }
       {
         (authenticateResult?.success) ? (
-          <YStack gap={10}>
-            <MetadataView metadata={authenticateResult.profile} />
-            <YStack alignItems="flex-start" gap={10} marginTop={20}>
-              {
+          <YStack gap={20}>
+            {/* Profile Metadata Card */}
+            <Card backgroundColor="$surfaceSpecial" borderRadius={16} padding={20} borderWidth={0}>
+              <YStack gap={16}>
+                <TText color="$textDefault" fontSize={18} fontWeight={"600" as any} marginBottom={4}>
+                  Profile Information
+                </TText>
+                <MetadataView metadata={authenticateResult.profile} />
+              </YStack>
+            </Card>
+
+            {/* Confirmation Code Card */}
+            {
               (authenticateResult.isCcRequired || confirmationCode) && (
-                <XStack style={styles.tableRow} flex={1} gap={12} alignItems="center">
-                  <TText color="$textDefault" style={styles.tableHeader}>
-                    {t('main:profile_conf_code')}:
-                  </TText>
-                  <View style={styles.tableColumn}>
+                <Card backgroundColor="$surfaceSpecial" borderRadius={16} padding={20} borderWidth={0}>
+                  <YStack gap={12}>
+                    <TText color="$textDefault" fontSize={16} fontWeight={"600" as any}>
+                      {t('main:profile_conf_code')}
+                    </TText>
                     <Input
-                      placeholder="Confirmation Code"
+                      placeholder="Enter confirmation code"
                       value={confirmationCode}
                       onChangeText={c => setConfirmationCode(c)}
                       borderWidth={1}
-                      borderBottomWidth={1}
-                      borderColor={theme.outlineNeutral?.val || theme.borderColor?.val || '#777'}
-                      backgroundColor="transparent"
+                      borderColor={theme.outlineNeutral?.val || theme.borderColor?.val || '#ddd'}
+                      backgroundColor="$background"
                       color={theme.textDefault?.val}
                       placeholderTextColor={theme.color10?.val}
-                      fontSize={17}
-                      padding={0}
-                      paddingBottom={8}
+                      fontSize={16}
+                      padding={14}
+                      borderRadius={12}
                     />
-                  </View>
-                </XStack>
+                  </YStack>
+                </Card>
               )
             }
+
+            {/* Storage Info Card */}
             {
               sizeData && (
-                <>
-                  <XStack style={styles.tableRow} flex={1} gap={12} alignItems="center">
-                    <TText color="$textDefault" style={styles.tableHeader}>
-                      {t('main:profile_size')}:
+                <Card backgroundColor="$surfaceSpecial" borderRadius={16} padding={20} borderWidth={0}>
+                  <YStack gap={16}>
+                    <TText color="$textDefault" fontSize={16} fontWeight={"600" as any}>
+                      Storage Information
                     </TText>
-                    <View style={styles.tableColumn}>
-                      <TText color="$textDefault" flex={1} fontSize={14}>
-                        {formatSize(sizeData[1])} ({formatSize(sizeData[0])} ~ {formatSize(sizeData[2])})
-                      </TText>
-                    </View>
-                  </XStack>
-                  <XStack style={styles.tableRow} flex={1} gap={12} alignItems="center">
-                    <TText color="$textDefault" style={styles.tableHeader}>
-                      {t('main:profile_available_space')}:
-                    </TText>
-                    <View style={styles.tableColumn}>
-                      <TText color="$textDefault" flex={1} fontSize={14} style={freeSpace <= maxSizeData ? { color: theme.backgroundDangerHeavy?.val || '#dc2626' } : undefined}>
-                        {formatSize(freeSpace)}
-                      </TText>
-                    </View>
-                  </XStack>
-                </>
+                    <YStack gap={12}>
+                      <XStack justifyContent="space-between" alignItems="center">
+                        <TText color="$color11" fontSize={14} fontWeight={"500" as any}>
+                          {t('main:profile_size')}
+                        </TText>
+                        <TText color="$textDefault" fontSize={14} fontWeight={"500" as any}>
+                          {formatSize(sizeData[1])}
+                        </TText>
+                      </XStack>
+                      <XStack justifyContent="space-between" alignItems="center">
+                        <TText color="$color11" fontSize={14} fontWeight={"500" as any}>
+                          Size Range
+                        </TText>
+                        <TText color="$color10" fontSize={13}>
+                          {formatSize(sizeData[0])} ~ {formatSize(sizeData[2])}
+                        </TText>
+                      </XStack>
+                      <View style={{ height: 1, backgroundColor: theme.outlineNeutral?.val || theme.borderColor?.val || '#ddd', marginVertical: 4 }} />
+                      <XStack justifyContent="space-between" alignItems="center">
+                        <TText color="$color11" fontSize={14} fontWeight={"500" as any}>
+                          {t('main:profile_available_space')}
+                        </TText>
+                        <XStack gap={8} alignItems="center">
+                          {freeSpace <= maxSizeData && (
+                            <AlertTriangle size={16} color={theme.backgroundDangerHeavy?.val || '#dc2626'} />
+                          )}
+                          <TText 
+                            color={freeSpace <= maxSizeData ? (theme.backgroundDangerHeavy?.val || '#dc2626') : "$textDefault"} 
+                            fontSize={14} 
+                            fontWeight={freeSpace <= maxSizeData ? "600" as any : "500" as any}
+                          >
+                            {formatSize(freeSpace)}
+                          </TText>
+                        </XStack>
+                      </XStack>
+                    </YStack>
+                  </YStack>
+                </Card>
               )
             }
-          </YStack>
-          <YStack flex={1}>
-            <XStack flex={1} gap={10}>
+
+          {/* Action Buttons */}
+          <YStack gap={12} marginTop={8}>
+            <XStack gap={12}>
               <TButton
                 flex={1}
-                borderRadius={100}
-                marginVertical={12}
-                backgroundColor="$backgroundDangerHeavy"
+                height={52}
+                borderRadius={16}
+                backgroundColor="$color10"
                 onPress={() => {
                   makeLoading(
                     setLoading,
@@ -136,20 +167,17 @@ export function ScannerAuthentication(
                 }}
               >
                 <XStack alignItems="center" gap={10}>
-                  <FontAwesomeIcon
-                    icon={faCancel}
-                    style={{ color: theme.background?.val || '#fff' }}
-                  />
-                  <TText color={theme.background?.val || '#fff'} fontSize={16}>
+                  <X size={18} color="$btnForeground" />
+                  <TText color="$btnForeground" fontSize={16} fontWeight={"500" as any}>
                     {t('main:profile_ui_cancel')}
                   </TText>
                 </XStack>
               </TButton>
               <TButton
-                flex={3}
-                borderRadius={100}
-                marginVertical={12}
-                backgroundColor="$accentColor"
+                flex={2}
+                height={52}
+                borderRadius={16}
+                backgroundColor="$btnBackground"
                 onPress={() => {
                   if (freeSpace <= maxSizeData) {
                     Alert.alert(
@@ -193,12 +221,9 @@ export function ScannerAuthentication(
                   }
                 }}
               >
-                <XStack alignItems="center" gap={10}>
-                  <FontAwesomeIcon
-                    icon={faDownload}
-                    style={{ color: theme.background?.val || '#fff' }}
-                  />
-                  <TText color={theme.background?.val || '#fff'} fontSize={16}>
+                <XStack alignItems="center" gap={12}>
+                  <Download size={20} color="$btnForeground" />
+                  <TText color="$btnForeground" fontSize={17} fontWeight={"600" as any}>
                     {t('main:profile_ui_download')}
                   </TText>
                 </XStack>
@@ -207,34 +232,30 @@ export function ScannerAuthentication(
           </YStack>
         </YStack>
       ) : (
-        <YStack gap={20} flex={1}>
-          <TText textAlign="center" fontSize={18} color="$textDefault">
-            {t('main:profile_download_failure')}
-          </TText>
-          <RemoteErrorView remoteError={authenticateResult} />
-          <YStack flex={1}>
-            <XStack flex={1} gap={10}>
-              <TButton
-                flex={1}
-                marginVertical={12}
-                borderRadius={100}
-                backgroundColor={theme.color10?.val || '#888'}
-                onPress={() => {
-                  goBack();
-                }}
-              >
-                <XStack alignItems="center" gap={10}>
-                  <FontAwesomeIcon
-                    icon={faCancel}
-                    style={{ color: theme.background?.val || '#fff' }}
-                  />
-                  <TText color={theme.background?.val || '#fff'} fontSize={16}>
-                    {t('main:profile_ui_back')}
-                  </TText>
-                </XStack>
-              </TButton>
+        <YStack gap={24} flex={1}>
+          <Card backgroundColor="$surfaceSpecial" borderRadius={16} padding={24} borderWidth={0}>
+            <YStack gap={16} alignItems="center">
+              <TText textAlign="center" fontSize={20} color="$textDefault" fontWeight={"600" as any}>
+                {t('main:profile_download_failure')}
+              </TText>
+              <RemoteErrorView remoteError={authenticateResult} />
+            </YStack>
+          </Card>
+          <TButton
+            height={52}
+            borderRadius={16}
+            backgroundColor="$color10"
+            onPress={() => {
+              goBack();
+            }}
+          >
+            <XStack alignItems="center" gap={10}>
+              <X size={18} color="$btnForeground" />
+              <TText color="$btnForeground" fontSize={16} fontWeight={"500" as any}>
+                {t('main:profile_ui_back')}
+              </TText>
             </XStack>
-          </YStack>
+          </TButton>
         </YStack>
       )
       }
