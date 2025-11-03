@@ -7,9 +7,7 @@ import {useTranslation} from 'react-i18next';
 export function NativeListener({ children }: { children?: React.ReactNode }) {
   const dispatch = useDispatch();
 
-  const { t } = useTranslation(['main']);
   useEffect(() => {
-    console.log("NL xxx");
     setupDevices(dispatch).then(r => r);
   }, []);
 
