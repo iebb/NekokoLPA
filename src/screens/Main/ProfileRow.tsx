@@ -361,7 +361,6 @@ const ProfileRowComponent = ({profile, deviceId, drag, isActive = false, press, 
                 />
               </Switch>
             </XStack>
-
             {Size > 1536 && (
               <Text
                 color="$textNeutral"

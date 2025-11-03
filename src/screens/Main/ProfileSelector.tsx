@@ -23,10 +23,20 @@ export default function ProfileSelector({ deviceId, rearrangeMode = false } : { 
     const profileList = DeviceState.profiles;
     if (!profileList?.map) return [];
 
-    return profileList.map((profile: Profile) => ({
+    // Map and sort by parsed order (unordered -1 goes to the end)
+    const mapped = profileList.map((profile: Profile) => ({
       ...profile,
       selected: profile.profileState === 1
     }));
+
+    // Sort by order; treat -1 as Infinity so unordered appear at the end
+    return [...mapped].sort((a, b) => {
+      const pa = parseMetadataOnly(a).order;
+      const pb = parseMetadataOnly(b).order;
+      const oa = pa === -1 ? Number.POSITIVE_INFINITY : pa;
+      const ob = pb === -1 ? Number.POSITIVE_INFINITY : pb;
+      return oa - ob;
+    });
   }, [DeviceState.profiles]);
 
   // Update ordered profiles when profiles change - preserve custom order if it exists
@@ -69,138 +79,22 @@ export default function ProfileSelector({ deviceId, rearrangeMode = false } : { 
   }, [adapter]);
 
   // Calculate and assign orders to profiles
+  // Returns profiles with new orders assigned evenly from ccc to xxx based on position
   const calculateOrders = useCallback((newOrder: Array<Profile & { selected: boolean }>, oldOrder: Array<Profile & { selected: boolean }>) => {
-    // Parse orders from existing profiles (old order)
-    const oldProfilesWithOrders = oldOrder.map(profile => {
+    const minOrder = 2 * 26 * 26 + 2 * 26 + 2; // 'ccc' = 1406
+    const maxOrder = 23 * 26 * 26 + 23 * 26 + 23; // 'xxx' = 16169
+    const total = newOrder.length;
+    const step = total > 1 ? Math.floor((maxOrder - minOrder) / (total - 1)) : 0;
+
+    // Parse current names from profiles
+    return newOrder.map((profile, index) => {
       const parsed = parseMetadataOnly(profile);
       return {
         profile,
-        order: parsed.order,
+        order: minOrder + (index * step),
         name: parsed.name
       };
     });
-
-    // Create a map of old positions by iccid
-    const oldPositionMap = new Map<string, number>();
-    oldProfilesWithOrders.forEach((p, idx) => {
-      if (p.profile.iccid) {
-        oldPositionMap.set(p.profile.iccid, idx);
-      }
-    });
-
-    // Parse new profiles
-    const newProfilesWithOrders = newOrder.map(profile => {
-      const parsed = parseMetadataOnly(profile);
-      const oldProfile = oldProfilesWithOrders.find(op => op.profile.iccid === profile.iccid);
-      return {
-        profile,
-        order: parsed.order,
-        name: parsed.name,
-        oldOrder: oldProfile?.order ?? -1
-      };
-    });
-
-    // Check if any profile doesn't have order set (order = -1)
-    const hasUnordered = newProfilesWithOrders.some(p => p.oldOrder === -1);
-
-    if (hasUnordered) {
-      // Assign orders evenly from 'ccc' (1406) to 'xxx' (16169)
-      const minOrder = 2 * 26 * 26 + 2 * 26 + 2; // 'ccc' = 1406
-      const maxOrder = 23 * 26 * 26 + 23 * 26 + 23; // 'xxx' = 16169
-      const total = newOrder.length;
-      const step = total > 1 ? Math.floor((maxOrder - minOrder) / (total - 1)) : 0;
-
-      return newProfilesWithOrders.map((p, index) => ({
-        ...p,
-        order: minOrder + (index * step)
-      }));
-    } else {
-      // All profiles have orders, calculate based on position
-      type ProfileWithOrder = {
-        profile: Profile & { selected: boolean };
-        order: number;
-        name: string;
-        oldOrder: number;
-      };
-
-      const result: ProfileWithOrder[] = [];
-
-      for (let index = 0; index < newProfilesWithOrders.length; index++) {
-        const p = newProfilesWithOrders[index];
-        if (index === 0) {
-          // First position: assign 'aaa' (0)
-          result.push({ ...p, order: 0 });
-        } else if (index === newProfilesWithOrders.length - 1) {
-          // Last position: assign 'zzz' (17575)
-          result.push({ ...p, order: 17575 });
-        } else {
-          // Middle position: average of previous profile's calculated order and next profile's old order
-          const prevOrder = result[index - 1]?.order ?? 0;
-          const nextProfile = newProfilesWithOrders[index + 1];
-          // Use next profile's old order if available, otherwise use previous order + estimated step
-          let nextOrder: number;
-          if (nextProfile.oldOrder !== -1) {
-            nextOrder = nextProfile.oldOrder;
-          } else {
-            // Estimate: use previous order + average step
-            const remainingProfiles = newProfilesWithOrders.length - index - 1;
-            const remainingSpace = 17575 - prevOrder;
-            nextOrder = remainingProfiles > 0 ? prevOrder + Math.floor(remainingSpace / (remainingProfiles + 1)) : 17575;
-          }
-          result.push({ ...p, order: Math.floor((prevOrder + nextOrder) / 2) });
-        }
-      }
-
-      // Handle first position: update previous first profile
-      const movedToFirst = newProfilesWithOrders[0];
-      const oldFirstProfile = oldProfilesWithOrders[0];
-      if (movedToFirst && oldFirstProfile && movedToFirst.profile.iccid !== oldFirstProfile.profile.iccid) {
-        // Find the old first profile in the new order
-        const oldFirstNewIndex = result.findIndex((r: ProfileWithOrder) => r.profile.iccid === oldFirstProfile.profile.iccid);
-        if (oldFirstNewIndex >= 0) {
-          const secondOrder = result[1]?.order ?? 0;
-          result[oldFirstNewIndex].order = Math.floor((0 + secondOrder) / 2);
-        }
-      }
-
-      // Handle last position: update previous last profile
-      const movedToLast = newProfilesWithOrders[newProfilesWithOrders.length - 1];
-      const oldLastProfile = oldProfilesWithOrders[oldProfilesWithOrders.length - 1];
-      if (movedToLast && oldLastProfile && movedToLast.profile.iccid !== oldLastProfile.profile.iccid) {
-        // Find the old last profile in the new order
-        const oldLastNewIndex = result.findIndex((r: ProfileWithOrder) => r.profile.iccid === oldLastProfile.profile.iccid);
-        if (oldLastNewIndex >= 0) {
-          const previousLastOrder = result[result.length - 2]?.order ?? 17575;
-          result[oldLastNewIndex].order = Math.floor((previousLastOrder + 17575) / 2);
-        }
-      }
-
-      // Check if any adjacent profiles have order difference < 1, and reassign if needed
-      let needsReassignment = false;
-      for (let i = 0; i < result.length - 1; i++) {
-        const currentOrder = result[i].order;
-        const nextOrder = result[i + 1].order;
-        if (Math.abs(nextOrder - currentOrder) < 1) {
-          needsReassignment = true;
-          break;
-        }
-      }
-
-      if (needsReassignment) {
-        // Reassign orders evenly from 'ccc' (1406) to 'xxx' (16169) based on current positions
-        const minOrder = 2 * 26 * 26 + 2 * 26 + 2; // 'ccc' = 1406
-        const maxOrder = 23 * 26 * 26 + 23 * 26 + 23; // 'xxx' = 16169
-        const total = result.length;
-        const step = total > 1 ? Math.floor((maxOrder - minOrder) / (total - 1)) : 0;
-
-        return result.map((p, index) => ({
-          ...p,
-          order: minOrder + (index * step)
-        }));
-      }
-
-      return result;
-    }
   }, []);
 
   // Handle drag end - update the order and save nicknames
@@ -208,72 +102,61 @@ export default function ProfileSelector({ deviceId, rearrangeMode = false } : { 
     const oldOrder = [...orderedProfiles];
     setOrderedProfiles(data);
 
-    // Find which profile was moved by comparing positions
-    const oldPositionMap = new Map<string, number>();
-    oldOrder.forEach((profile, index) => {
-      if (profile.iccid) {
-        oldPositionMap.set(profile.iccid, index);
-      }
+    const positionsChanged = data.some((profile, newIndex) => {
+      const oldIndex = oldOrder.findIndex(p => p.iccid === profile.iccid);
+      return oldIndex !== newIndex;
     });
 
-    const movedProfileIccid = data.find((profile, newIndex) => {
-      const oldIndex = profile.iccid ? oldPositionMap.get(profile.iccid) : -1;
-      return oldIndex !== undefined && oldIndex !== newIndex;
-    })?.iccid;
-
-    // If no profile moved, skip updates
-    if (!movedProfileIccid) {
+    // If no positions changed, skip updates
+    if (!positionsChanged) {
       return;
     }
 
-    const movedProfileNewIndex = data.findIndex(p => p.iccid === movedProfileIccid);
-    const movedProfileOldIndex = oldOrder.findIndex(p => p.iccid === movedProfileIccid);
+    const parsedOld = oldOrder.map(p => ({ iccid: p.iccid, ...parseMetadataOnly(p) }));
+    const oldOrderByIccid = new Map<string, number>();
+    parsedOld.forEach(p => { if (p.iccid) oldOrderByIccid.set(p.iccid, p.order); });
+    const oldOrders = parsedOld.map(p => p.order);
+    const hasUnordered = oldOrders.some(order => order === -1);
+    const nonNegative = oldOrders.filter(o => o !== -1);
+    const hasDuplicates = new Set(nonNegative).size !== nonNegative.length;
 
-    // Calculate new orders based on old and new order
+    // If there are unordered profiles or duplicates, update all profiles (even spacing ccc->xxx)
     const profilesWithOrders = calculateOrders(data, oldOrder);
+    const profilesToUpdate: typeof profilesWithOrders = [];
 
-    // Check if reassignment occurred (all profiles need updates if adjacent orders < 1)
-    let needsReassignment = false;
-    for (let i = 0; i < profilesWithOrders.length - 1; i++) {
-      const currentOrder = profilesWithOrders[i].order;
-      const nextOrder = profilesWithOrders[i + 1].order;
-      if (Math.abs(nextOrder - currentOrder) < 1) {
-        needsReassignment = true;
-        break;
+    if (hasUnordered || hasDuplicates) {
+      // Update all profiles
+      profilesToUpdate.push(...profilesWithOrders);
+    } else {
+      // Only update the moved profile using average of neighbors (bounds: aaa=0, zzz=17575)
+      const moved = data.find((profile, newIndex) => {
+        const oldIndex = oldOrder.findIndex(p => p.iccid === profile.iccid);
+        return oldIndex !== newIndex;
+      });
+
+      if (moved && moved.iccid) {
+        const idx = data.findIndex(p => p.iccid === moved.iccid);
+        const prev = idx > 0 ? data[idx - 1] : undefined;
+        const next = idx < data.length - 1 ? data[idx + 1] : undefined;
+
+        const prevOrder = prev && prev.iccid ? (oldOrderByIccid.get(prev.iccid) ?? 0) : 0;
+        const nextOrder = next && next.iccid ? (oldOrderByIccid.get(next.iccid) ?? 17575) : 17575;
+
+        const gap = nextOrder - prevOrder;
+        if (gap <= 1) {
+          // Not enough space, reassign all evenly
+          profilesToUpdate.push(...profilesWithOrders);
+        } else {
+          const newOrderValue = Math.floor((prevOrder + nextOrder) / 2);
+          const parsed = parseMetadataOnly(moved);
+          profilesToUpdate.push({ profile: moved, order: newOrderValue, name: parsed.name });
+        }
       }
     }
 
-    // Find the moved profile and profiles that need updates
-    const movedProfile = profilesWithOrders.find(p => p.profile.iccid === movedProfileIccid);
-    const profilesToUpdate: typeof profilesWithOrders = [];
-
-    if (needsReassignment) {
-      // If reassignment occurred, update all profiles
-      profilesToUpdate.push(...profilesWithOrders);
-    } else if (movedProfile) {
-      // Only update moved profile and displaced profiles
-      // Always update the moved profile
-      profilesToUpdate.push(movedProfile);
-
-      // If moved to first position, also update the previous first profile
-      if (movedProfileNewIndex === 0 && movedProfileOldIndex !== 0) {
-        const previousFirst = profilesWithOrders.find(p =>
-          p.profile.iccid === oldOrder[0]?.iccid && p.profile.iccid !== movedProfileIccid
-        );
-        if (previousFirst) {
-          profilesToUpdate.push(previousFirst);
-        }
-      }
-
-      // If moved to last position, also update the previous last profile
-      if (movedProfileNewIndex === data.length - 1 && movedProfileOldIndex !== data.length - 1) {
-        const previousLast = profilesWithOrders.find(p =>
-          p.profile.iccid === oldOrder[oldOrder.length - 1]?.iccid && p.profile.iccid !== movedProfileIccid
-        );
-        if (previousLast) {
-          profilesToUpdate.push(previousLast);
-        }
-      }
+    // If no profiles need updating, skip
+    if (profilesToUpdate.length === 0) {
+      return;
     }
 
     // Update nicknames sequentially (one by one) with loading indicator
@@ -281,13 +164,9 @@ export default function ProfileSelector({ deviceId, rearrangeMode = false } : { 
       setLoading(true);
 
       for (const { profile, order, name } of profilesToUpdate) {
-        // Get the current nickname without order suffix
-        const currentName = name;
-        // Add the order suffix
         const suffix = orderToBase26Suffix(order);
-        const newNickname = `${currentName}^${suffix}`;
+        const newNickname = `${name}^${suffix}`;
 
-        // Save the new nickname (one at a time)
         if (profile.iccid) {
           await adapter.setNicknameByIccId(profile.iccid, newNickname);
         }
