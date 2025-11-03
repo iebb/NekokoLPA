@@ -12,7 +12,7 @@ import {
   YStack
 } from 'tamagui';
 import {Camera, useCameraDevice, useCameraPermission, useCodeScanner} from "react-native-vision-camera";
-import { decodeBase64 } from 'vision-camera-zxing';
+import BarcodeScanning from '@react-native-ml-kit/barcode-scanning';
 import {Camera as CameraIcon, Download, Image as ImageIcon, QrCode, Search} from '@tamagui/lucide-icons';
 import React, {useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
@@ -156,17 +156,16 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
                       onPress={() => {
                         launchImageLibrary({
                           mediaType: "photo",
-                          includeBase64: true,
                         }, (result) => {
                           if (result.assets) {
                             for(const a of result.assets) {
                               (async () => {
                                 try {
-                                  if (a.base64) {
-                                    const results: any[] = await decodeBase64(a.base64, { multiple: true });
+                                  if (a.uri) {
+                                    const results: any[] = await BarcodeScanning.scan(a.uri);
                                     if (results && results.length > 0) {
                                       const r: any = results[0];
-                                      const text = r?.value ?? r?.text ?? r?.displayValue;
+                                      const text = r?.rawValue ?? r?.displayValue ?? r?.text ?? r?.value;
                                       if (text) processLPACode(String(text));
                                       else console.log('No QR code text found.');
                                     } else {
@@ -174,7 +173,7 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
                                     }
                                   }
                                 } catch (e) {
-                                  console.log('Failed to decode image with ZXing:', e);
+                                  console.log('Failed to decode image with ML Kit:', e);
                                 }
                               })();
                               break;

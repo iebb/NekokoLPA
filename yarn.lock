@@ -3417,6 +3417,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native-ml-kit/barcode-scanning@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@react-native-ml-kit/barcode-scanning@npm:2.0.0"
+  peerDependencies:
+    react: ">=16.8.1"
+    react-native: ">=0.60.0-rc.0 <1.0.x"
+  checksum: 7015548965824287ec65b3ddc781e90bc4e1b29baaa54b784ca5ab2c8f661a23b51cf03ba559dc857c26a6563e3aecca8b6188b7ae817dfb2aeaf8b63774bd4b
+  languageName: node
+  linkType: hard
+
 "@react-native/assets-registry@npm:0.82.1":
   version: 0.82.1
   resolution: "@react-native/assets-registry@npm:0.82.1"
@@ -5268,7 +5278,7 @@ __metadata:
   dependencies:
     "@tamagui/create-theme": 1.135.7
     "@tamagui/web": 1.135.7
-    color6k: ^2.0.2
+    color2k: ^2.0.2
   checksum: a22b8f82e4b66fe6afaaaf98451b516daff6f67525604a5be58b34a40c3b400d07f30af513790ec194c35e5f815a42f71c71e5dc63dbc82185d09f3c7b1d4466
   languageName: node
   linkType: hard
@@ -5294,7 +5304,7 @@ __metadata:
     "@tamagui/create-theme": 1.135.7
     "@tamagui/theme-builder": 1.135.7
     "@tamagui/web": 1.135.7
-    color6k: ^2.0.2
+    color2k: ^2.0.2
   checksum: bcd19e91ef5ffc4ae8d8dc2c3dd27bf1fc5bdfea0f2292b52f42188462a63c06d581b942affa532b150ffa6d64503da8d1fe2895c11f6da3478873ee79275251
   languageName: node
   linkType: hard
@@ -7157,9 +7167,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"color6k@npm:^2.0.2":
+"color2k@npm:^2.0.2":
   version: 2.0.3
-  resolution: "color6k@npm:2.0.3"
+  resolution: "color2k@npm:2.0.3"
   checksum: 0748e16e43c1740045af61f44de5d181f3f7a2a9cb0d5cccdccee23d04e3f107f02aaafebb7ca3335cca1d11849c6321aba702eb2f893e993a77f65761de7661
   languageName: node
   linkType: hard
@@ -11499,6 +11509,7 @@ __metadata:
     "@react-native-community/cli-platform-ios": ^20.0.0
     "@react-native-community/datetimepicker": ^8.4.4
     "@react-native-documents/picker": ^11.0.0
+    "@react-native-ml-kit/barcode-scanning": ^2.0.0
     "@react-native/babel-preset": ^0.82.0
     "@react-native/eslint-config": ^0.82.0
     "@react-native/metro-config": ^0.82.0
@@ -11544,13 +11555,11 @@ __metadata:
     react-native-svg: ^15.14.0
     react-native-vision-camera: ^4.7.2
     react-native-worklets: ^0.6.1
-    react-native-worklets-core: ^1.6.2
     react-redux: ^9.2.0
     reactotron-react-native: ^5.1.6
     reactotron-react-native-mmkv: ^0.2.6
     tamagui: 1.135.7
     typescript: 5.9.3
-    vision-camera-zxing: ^0.1.1
   languageName: unknown
   linkType: soft
 
@@ -12764,18 +12773,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-worklets-core@npm:^1.6.2":
-  version: 1.6.2
-  resolution: "react-native-worklets-core@npm:1.6.2"
-  dependencies:
-    string-hash-64: ^1.0.3
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: 367981bfc8adf2f989ae73300849a5b8ef89bcea0174480e6ff1614df075f1eab28e30899daefa081a5c06588ca2df4d629c3de74e69f5830cbe54e004cf7235
-  languageName: node
-  linkType: hard
-
 "react-native-worklets@npm:^0.6.1":
   version: 0.6.1
   resolution: "react-native-worklets@npm:0.6.1"
@@ -13838,13 +13835,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"string-hash-64@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "string-hash-64@npm:1.0.3"
-  checksum: 79de8431b4fa3e85a2429cd52a34f7948221ff167b7a094e05d6bcfd0173474b232e0c9845c96f74b0d7b6b0c8bbe2c3532a4cacb21635293ef0cf3cc8e77f06
-  languageName: node
-  linkType: hard
-
 "string-natural-compare@npm:^3.0.1":
   version: 3.0.1
   resolution: "string-natural-compare@npm:3.0.1"
@@ -14861,18 +14851,6 @@ __metadata:
   version: 1.1.2
   resolution: "vary@npm:1.1.2"
   checksum: ae0123222c6df65b437669d63dfa8c36cee20a504101b2fcd97b8bf76f91259c17f9f2b4d70a1e3c6bbcee7f51b28392833adb6b2770b23b01abec84e369660b
-  languageName: node
-  linkType: hard
-
-"vision-camera-zxing@npm:^0.1.1":
-  version: 0.1.1
-  resolution: "vision-camera-zxing@npm:0.1.1"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-    react-native-vision-camera: "*"
-    react-native-worklets-core: "*"
-  checksum: 6a479b6dc22649894e5a10768c6e9f84d614da4f5c2b0566d23689cbee0b7c0a1aeb5c0bcdd6e33857d613f6aa1f933f138aa1828ddc22d5bdb8217c67372192
   languageName: node
   linkType: hard
 
