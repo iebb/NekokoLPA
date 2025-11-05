@@ -1,4 +1,6 @@
 import {getColorTint, isDarkColor} from './colorUtils';
+import MaterialYou from 'react-native-material-you-colors';
+
 
 /**
  * Generate Tamagui theme variants based on a primary color
@@ -8,9 +10,13 @@ import {getColorTint, isDarkColor} from './colorUtils';
  * @returns Theme object with colors generated from primaryColor
  */
 export function generateTamaguiTheme(
-  primaryColor: string,
+  themeColor: string,
   baseTheme: 'light' | 'dark'
 ): Record<string, string> {
+
+  const palette = MaterialYou.getMaterialYouPalette();
+  const primaryColor = themeColor === "my" ? palette?.system_accent1[7] : themeColor || '#a575f6';
+
   const isPrimaryDark = isDarkColor(primaryColor);
 
   // btnBackground is the primaryColor (theme color)

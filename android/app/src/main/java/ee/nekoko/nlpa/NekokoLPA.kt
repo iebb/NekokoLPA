@@ -343,11 +343,46 @@ class NekokoLPA(reactContext: ReactApplicationContext) : NativeNekokoLPASpec(rea
             } else {
                 try {
                     val resp = chan.transmit(hexStringToByteArray(apdu))
-                    if (resp.toHex() == "6881") {
+                    val respHex = resp.toHex()
+                    if (respHex == "6881") {
                         Log.e(TAG, "Channel is actually closed.")
                         throw IOException()
                     }
-                    promise.resolve(resp.toHex())
+                    if (respHex == "6d00") {
+                        Log.e(TAG, "Received 6d00 error, disconnecting and reconnecting channel $device")
+                        // Close the channel and remove it
+                        try {
+                            chan.close()
+                        } catch (e: Exception) {
+                            Log.d(TAG, "Error closing channel: ${e.message}")
+                        }
+                        channelMappings.remove(device)
+                        // Reconnect and retry
+                        for (i in 1..5) {
+                            Log.e(TAG, "Reconnecting Channel after 6d00, count $i")
+                            val result = connectChannel(device)
+                            if (result) {
+                                chan = channelMappings[device]
+                                if (chan != null) {
+                                    try {
+                                        val retryResp = chan.transmit(hexStringToByteArray(apdu))
+                                        promise.resolve(retryResp.toHex())
+                                        return@Thread
+                                    } catch (e: IllegalStateException) {
+                                        Thread.sleep((500 * i).toLong())
+                                    } catch (e: IOException) {
+                                        Thread.sleep((500 * i).toLong())
+                                    }
+                                }
+                            } else {
+                                Thread.sleep((500 * i).toLong())
+                            }
+                        }
+                        Log.e(TAG, "Failed to reconnect after 6d00 error")
+                        promise.reject("TRANSMIT_ERROR", "Failed to reconnect after 6d00 error")
+                        return@Thread
+                    }
+                    promise.resolve(respHex)
                 } catch (e: Exception) {
                     when (e) {
                         is IllegalStateException, is IOException -> {

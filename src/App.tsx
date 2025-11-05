@@ -13,8 +13,18 @@ import React from 'react';
 import {useTheme, Theme} from 'tamagui';
 import {createTamaguiConfigWithColor} from "../tamagui.config";
 import {preferences} from "@/utils/mmkv";
+import MaterialYou from 'react-native-material-you-colors';
 
-const config = createTamaguiConfigWithColor(preferences.getString("themeColor") || '#a575f6');
+const getThemeColor = () => {
+  const themeColor = preferences.getString("themeColor") || '#a575f6';
+  if (themeColor === 'my' && Platform.OS === 'android') {
+    const palette = MaterialYou.getMaterialYouPalette();
+    return palette?.system_accent1[7] || '#a575f6';
+  }
+  return themeColor;
+};
+
+const config = createTamaguiConfigWithColor(getThemeColor());
 
 function App() {
   return (

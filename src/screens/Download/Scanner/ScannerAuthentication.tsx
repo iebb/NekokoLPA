@@ -91,7 +91,6 @@ export function ScannerAuthentication(
                       color={theme.textDefault?.val}
                       placeholderTextColor={theme.color6?.val}
                       fontSize={16}
-                      padding={14}
                       borderRadius={12}
                     />
                   </YStack>

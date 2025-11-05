@@ -4,7 +4,7 @@ import {RootState} from "@/redux/reduxDataStore";
 import {useTranslation} from "react-i18next";
 import {Alert, Dimensions, Linking, NativeModules, Platform, ScrollView, ToastAndroid} from "react-native";
 import {Adapters} from "@/native/adapters/registry";
-import {Tabs, Text as TText, XStack, YStack, View as TView, useTheme} from 'tamagui';
+import {Tabs, Text as TText, XStack, YStack, View as TView, Separator, AnimatePresence} from 'tamagui';
 import {Smartphone, Bluetooth, Usb} from '@tamagui/lucide-icons';
 import Clipboard from "@react-native-clipboard/clipboard";
 import {preferences} from "@/utils/mmkv";
@@ -13,13 +13,14 @@ import {getNicknames} from "@/configs/store";
 import {setTargetDevice} from "@/redux/stateStore";
 import ProfileCardHeader from "@/screens/Main/ProfileCardHeader";
 import ProfileSelector from "@/screens/Main/ProfileSelector";
+import {OMAPIBridge} from "@/native/modules";
 
 // Container component to manage rearrange mode state
 function ProfileSelectorContainer({ deviceId }: { deviceId: string }) {
   const [rearrangeMode, setRearrangeMode] = useState(false);
 
   return (
-    <YStack flex={1} minHeight={0} gap={10} key={deviceId} marginTop={5}>
+    <YStack flex={1} minHeight={0} gap={6} key={deviceId} marginTop={3}>
       <ProfileCardHeader
         deviceId={deviceId}
         rearrangeMode={rearrangeMode}
@@ -40,7 +41,6 @@ export default function SIMSelector() {
   const dispatch = useDispatch();
   const { t } = useTranslation(['main']);
   const showSlots = preferences.getString("showSlots");
-  const theme = useTheme();
 
   let deviceList = _deviceList ?? [];
 
@@ -50,29 +50,29 @@ export default function SIMSelector() {
     deviceList = _deviceList.filter(x => Adapters[x].device.available);
   }
 
+
   const firstAvailable = deviceList.map(x => Adapters[x].device.available).indexOf(true);
+  const [currentTab, setCurrentTab] = React.useState<string | undefined>(
+    firstAvailable < 0 ? deviceList[0] : deviceList[firstAvailable]
+  );
 
-  const [index, setIndex] = useState(firstAvailable < 0 ? 0 : firstAvailable);
-  const [dimensions, setDimensions] = useState(() => Dimensions.get('window'));
-  const selected = index < deviceList.length ? deviceList[index] : null;
+
+  const selected = currentTab;
   const adapter = selected ? Adapters[selected] : null;
-  const width = dimensions.width - 48;
 
-  const deviceCount = deviceList.length;
-  const displayWidth = width / deviceCount;
-  const displayWidth2 = (deviceCount === 1 ? 2 : 1) * width / deviceCount;
 
 
   useEffect(() => {
-    if (firstAvailable > 0 && !(adapter?.device.available)) {
-      setIndex(firstAvailable < 0 ? 0 : firstAvailable);
+    if (!currentTab && deviceList.length > 0) {
+      const firstAvailable = deviceList.map(x => Adapters[x].device.available).indexOf(true);
+      setCurrentTab(firstAvailable < 0 ? deviceList[0] : deviceList[firstAvailable]);
     }
-  }, [firstAvailable]);
+  }, [deviceList, currentTab]);
 
   useEffect(() => {
     if (targetDevice) {
       if (deviceList.indexOf(targetDevice) !== -1) {
-        setIndex(deviceList.indexOf(targetDevice));
+        setCurrentTab(targetDevice);
         dispatch(setTargetDevice(null));
       }
     }
@@ -88,19 +88,6 @@ export default function SIMSelector() {
       );
     }
   }, [deviceList.length]);
-
-  // Listen for dimension changes (orientation changes)
-  useEffect(() => {
-    const subscription = Dimensions.addEventListener('change', ({ window }) => {
-      setDimensions(window);
-    });
-
-    return () => {
-      subscription?.remove();
-    };
-  }, []);
-
-  if (width <= 0) return null;
 
 
   if (deviceList.length == 0) return (
@@ -129,22 +116,18 @@ export default function SIMSelector() {
       key={deviceList.length}
     >
       <Tabs
-        value={String(index)}
-        onValueChange={(val: string) => {
-          const next = Number(val);
-          if (!Number.isNaN(next)) setIndex(next);
-        }}
+        value={currentTab}
+        onValueChange={setCurrentTab}
+        borderRadius={12}
+        marginBottom={8}
       >
         <Tabs.List
-          backgroundColor="$surfaceSpecial"
           borderRadius={12}
-          style={{
-            height: 40,
-            overflow: 'hidden',
-            width: '100%',
-            marginBottom: 8,
-            borderWidth: 0,
-          }}
+          orientation="horizontal"
+          flexDirection="row"
+          borderColor="$surfaceSpecial"
+          backgroundColor="$surfaceSpecial"
+          width="100%"
         >
           {deviceList.map((name, _idx) => {
             const adapter = Adapters[name];
@@ -152,59 +135,74 @@ export default function SIMSelector() {
             const label = adapter.device.available ?
               ((nicknames[eid]) ? nicknames[eid] + ` (${adapter.device.displayName})` : adapter.device.displayName)
               : `${adapter.device.displayName}\nunavailable`;
-            const selected = index === _idx;
             return (
               <Tabs.Tab
                 key={`${name}-${_idx}`}
-                value={String(_idx)}
-                width={displayWidth}
+                value={name}
                 style={{ backgroundColor: 'transparent' }}
+                flex={1}
+                flexBasis={0}
               >
-                <XStack alignItems="center" gap={4} paddingHorizontal={8} paddingVertical={6}>
-                  {(() => {
-                    const IconComponent = adapter.device.deviceId.startsWith('omapi')
-                      ? Smartphone
-                      : adapter.device.deviceId.startsWith('ble')
-                        ? Bluetooth
-                        : Usb;
-                    return (
-                      <TView style={{ marginRight: 4, marginTop: -2 }}>
-                        <IconComponent size={15} color={selected ? "$primaryColor" : "$color6"} />
-                      </TView>
-                    );
-                  })()}
-                  <TText
-                    fontSize={12}
-                    lineHeight={16}
-                    color={selected ? '$primaryColor' : '$color6'}
-                    fontWeight={selected ? '600' as any : '400' as any}
-                    numberOfLines={2}
-                  >
-                    {label}
-                  </TText>
-                </XStack>
+                <YStack position="relative" width="100%">
+                  <XStack alignItems="center" justifyContent="center" gap={3} paddingHorizontal={6} paddingVertical={4} width="100%">
+                    {(() => {
+                      const IconComponent = adapter.device.deviceId.startsWith('omapi')
+                        ? Smartphone
+                        : adapter.device.deviceId.startsWith('ble')
+                          ? Bluetooth
+                          : Usb;
+                      return (
+                        <IconComponent
+                          size={12}
+                          color={name === currentTab ? "$primaryColor" : "$color6"}
+                        />
+                      );
+                    })()}
+                    <TText
+                      fontSize="$2"
+                      lineHeight="$2"
+                      color={name === currentTab ? '$primaryColor' : '$color6'}
+                      numberOfLines={2}
+                      flexShrink={1}
+                      textAlign="center"
+                    >
+                      {label}
+                    </TText>
+                  </XStack>
+                  <YStack
+                    position="absolute"
+                    bottom={0}
+                    left={0}
+                    height={2}
+                    backgroundColor="$primaryColor"
+                    width="100%"
+                    opacity={name === currentTab ? 1 : 0}
+                    scaleX={name === currentTab ? 1 : 0}
+                    originX={0}
+                    animation="medium"
+                    transition={{
+                      type: 'timing',
+                      duration: 300,
+                      easing: 'easeInOut',
+                    }}
+                  />
+                </YStack>
               </Tabs.Tab>
             );
           })}
-          {/* Selected tab underline indicator */}
-          <TView
-            backgroundColor="$btnBackground"
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              left: (index * displayWidth) + ((displayWidth - displayWidth2) / 2),
-              width: displayWidth2,
-              height: 2,
-              borderRadius: 1,
-            }}
-          />
         </Tabs.List>
       </Tabs>
-      {
-        selected && (adapter != null) && (
-          adapter.device.available ? (
+      {selected && (adapter != null) && (
+        <YStack
+          key={selected}
+          flex={1}
+          minHeight={0}
+          opacity={1}
+          x={0}
+        >
+          {adapter.device.available ? (
             <ProfileSelectorContainer deviceId={selected} />
-          ): (
+          ) : (
             <ScrollView
               bounces
               alwaysBounceVertical
@@ -253,9 +251,9 @@ export default function SIMSelector() {
                 </TText>
               </YStack>
             </ScrollView>
-          )
-        )
-      }
+          )}
+        </YStack>
+      )}
     </TView>
   )
 }

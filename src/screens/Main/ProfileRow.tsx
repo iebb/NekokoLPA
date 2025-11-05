@@ -276,11 +276,12 @@ const ProfileRowComponent = ({profile, deviceId, drag, isActive = false, press, 
       overshootFriction={8}
       friction={2}
       enabled={!isActive && !rearrangeMode}
+      containerStyle={{ borderRadius: 12 }}
     >
       <Card
         backgroundColor={isActive ? '$surfaceHover' : '$surfaceSpecial'}
         borderWidth={0}
-        borderRadius={12}
+        borderRadius={0}
         overflow="hidden"
         padding={0}
         opacity={isActive ? 0.95 : 1}

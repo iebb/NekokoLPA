@@ -9,7 +9,7 @@ export function toFriendlyName(eid: string, euiccInfo2: EuiccInfo2 | undefined) 
       case "36.9.3": return "9eSIM v2.1"
       case "36.9.17": return "9eSIM v2.1.1"
       case "36.17.4": return "9eSIM v2.2"
-      case "36.17.39": return "9eSIM v3.0 beta"
+      case "36.17.39": return "9eSIM v3.0b"
       case "36.18.5": return "9eSIM v3.0"
       case "37.1.33": return "9eSIM v3-mini"
       case "37.1.41": return "9eSIM v3.1"

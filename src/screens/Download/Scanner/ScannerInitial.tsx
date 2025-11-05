@@ -1,26 +1,14 @@
 import Screen from "@/components/common/Screen";
-import {Dimensions, TouchableOpacity, View} from 'react-native';
-import {
-  Button as TButton,
-  Card,
-  Checkbox,
-  Input,
-  Text as TText,
-  useTheme,
-  View as TView,
-  XStack,
-  YStack
-} from 'tamagui';
+import {Dimensions, View} from 'react-native';
+import {Button as TButton, Card, Input, Text as TText, useTheme, View as TView, XStack, YStack} from 'tamagui';
 import {Camera, useCameraDevice, useCameraPermission, useCodeScanner} from "react-native-vision-camera";
 import BarcodeScanning from '@react-native-ml-kit/barcode-scanning';
-import {Camera as CameraIcon, Download, Image as ImageIcon, QrCode, Search, Clipboard as ClipboardIcon} from '@tamagui/lucide-icons';
+import {Clipboard as ClipboardIcon, Download, Image as ImageIcon, QrCode, Search} from '@tamagui/lucide-icons';
 import React, {useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {makeLoading} from "@/components/utils/loading";
 import {LPACode} from "@/utils/lpaRegex";
 import {launchImageLibrary} from "react-native-image-picker";
-// Use Vision Camera's code scanner for decoding images
-// Using ZXing integration for live and image decoding
 import {Adapters} from "@/native/adapters/registry";
 import {useSelector} from "react-redux";
 import {selectDeviceState} from "@/redux/stateStore";
@@ -93,7 +81,6 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
   const cameraDevice = useCameraDevice('back');
 
   const size = Math.min(250, Dimensions.get('window').width - 50);
-  const sizeW = Math.min(size * 4/3, Dimensions.get('window').width - 50);
 
   const handleDiscovery = async () => {
     await makeLoading(
@@ -139,7 +126,7 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
                     size: formatSize(euiccInfo2?.extCardResource?.freeNonVolatileMemory),
                   })}
                 </TText>
-                <TText color="$color6" fontSize={14}>
+                <TText color="$color6" fontSize={14} maxWidth="50%">
                   CI: {DeviceState.euiccInfo2?.euiccCiPKIdListForSigning.map((x: any) => toCIName(x)).join(', ')}
                 </TText>
               </XStack>
@@ -153,9 +140,6 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
             backgroundColor="$surfaceSpecial"
             overflow="hidden"
             style={{
-              borderColor: showCamera ? (theme.outlineNeutral?.val || theme.borderColor?.val || '#ddd'): null,
-              borderWidth: showCamera ? 4 : 2,
-              borderStyle: 'dashed',
               justifyContent: 'center',
               alignItems: 'center'
             }}
@@ -163,126 +147,82 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
             {
               !showCamera && (
                 <YStack gap={24} alignItems="center">
-                  <QrCode size={48} color={theme.color6?.val || '#999'} />
-                  <XStack gap={24} alignItems="center" flexWrap="wrap" justifyContent="center">
-                    <TouchableOpacity
-                      onPress={() => {
-                        if (!showCamera)
-                          setShowCamera(true);
-                      }}
-                      style={{ alignItems: 'center', gap: 8 }}
-                    >
-                      <View style={{
-                        width: 64,
-                        height: 64,
-                        borderRadius: 16,
-                        backgroundColor: theme.primaryColor?.val || '#a575f6',
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                      }}>
-                        <CameraIcon size={32} color="#ffffff" />
-                      </View>
-                      <TText color="$color6" fontSize={12} marginTop={4}>
-                        Camera
-                      </TText>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => {
-                        launchImageLibrary({
-                          mediaType: "photo",
-                        }, (result) => {
-                          if (result.assets) {
-                            for(const a of result.assets) {
-                              (async () => {
-                                try {
-                                  if (a.uri) {
-                                    const results: any[] = await BarcodeScanning.scan(a.uri);
-                                    if (results && results.length > 0) {
-                                      const r: any = results[0];
-                                      const text = r?.rawValue ?? r?.displayValue ?? r?.text ?? r?.value;
-                                      if (text) processLPACode(String(text));
-                                      else console.log('No QR code text found.');
-                                    } else {
-                                      console.log('No barcode found.');
+                  <XStack gap={20} alignItems="center" flexWrap="wrap" justifyContent="center">
+                    <YStack gap={6} alignItems="center" justifyContent="center">
+                      <TButton
+                        w={64} h={64} backgroundColor="$btnBackground" borderRadius={16}
+                        icon={<QrCode size={32} color="#ffffff" />}
+                        onPress={() => setShowCamera(true)}
+                      />
+                      <TText color="$color6" fontSize={12}>Camera</TText>
+                    </YStack>
+                    <YStack gap={6} alignItems="center" justifyContent="center">
+                      <TButton
+                        w={64} h={64} backgroundColor="$btnBackground" borderRadius={16}
+                        icon={<ImageIcon size={32} color="#ffffff" />}
+                        onPress={() => {
+                          launchImageLibrary({
+                            mediaType: "photo",
+                          }, (result) => {
+                            if (result.assets) {
+                              for(const a of result.assets) {
+                                (async () => {
+                                  try {
+                                    if (a.uri) {
+                                      const results: any[] = await BarcodeScanning.scan(a.uri);
+                                      if (results && results.length > 0) {
+                                        const r: any = results[0];
+                                        const text = r?.rawValue ?? r?.displayValue ?? r?.text ?? r?.value;
+                                        if (text) processLPACode(String(text));
+                                        else console.log('No QR code text found.');
+                                      } else {
+                                        console.log('No barcode found.');
+                                      }
                                     }
+                                  } catch (e) {
+                                    console.log('Failed to decode image with ML Kit:', e);
                                   }
-                                } catch (e) {
-                                  console.log('Failed to decode image with ML Kit:', e);
-                                }
-                              })();
-                              break;
+                                })();
+                                break;
+                              }
                             }
-                          }
-                        });
-                      }}
-                      style={{ alignItems: 'center', gap: 8 }}
-                    >
-                      <View style={{
-                        width: 64,
-                        height: 64,
-                        borderRadius: 16,
-                        backgroundColor: theme.primaryColor?.val || '#a575f6',
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                      }}>
-                        <ImageIcon size={32} color="#ffffff" />
-                      </View>
-                      <TText color="$color6" fontSize={12} marginTop={4}>
-                        Gallery
-                      </TText>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={async () => {
-                        try {
-                          const text = await Clipboard.getString();
-                          if (text && text.trim().length > 0) {
-                            if (text.includes('$')) {
-                              processLPACode(text);
+                          });
+                        }}
+                      />
+                      <TText color="$color6" fontSize={12}>Gallery</TText>
+                    </YStack>
+                    <YStack gap={6} alignItems="center" justifyContent="center">
+                      <TButton
+                        w={64} h={64} backgroundColor="$btnBackground" borderRadius={16}
+                        icon={<ClipboardIcon size={32} color="#ffffff" />}
+                        onPress={async () => {
+                          try {
+                            const text = await Clipboard.getString();
+                            if (text && text.trim().length > 0) {
+                              if (text.includes('$')) {
+                                processLPACode(text);
+                                showToast('Pasted from clipboard.', 'success');
+                              } else {
+                                showToast('No valid LPA string found.', 'success');
+                              }
                             } else {
-                              setSmdp(text.trim());
-                              showToast('Pasted from clipboard.', 'success');
+                              showToast('Clipboard is empty.', 'error');
                             }
-                          } else {
-                            showToast('Clipboard is empty.', 'error');
+                          } catch (e) {
+                            console.log(e);
                           }
-                        } catch (e) {
-                          console.log(e);
-                        }
-                      }}
-                      style={{ alignItems: 'center', gap: 8 }}
-                    >
-                      <View style={{
-                        width: 64,
-                        height: 64,
-                        borderRadius: 16,
-                        backgroundColor: theme.primaryColor?.val || '#a575f6',
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                      }}>
-                        <ClipboardIcon size={32} color="#ffffff" />
-                      </View>
-                      <TText color="$color6" fontSize={12} marginTop={4}>
-                        Clipboard
-                      </TText>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={handleDiscovery}
-                      style={{ alignItems: 'center', gap: 8 }}
-                    >
-                      <View style={{
-                        width: 64,
-                        height: 64,
-                        borderRadius: 16,
-                        backgroundColor: theme.primaryColor?.val || '#a575f6',
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                      }}>
-                        <Search size={32} color="#ffffff" />
-                      </View>
-                      <TText color="$color6" fontSize={12} marginTop={4}>
-                        Discovery
-                      </TText>
-                    </TouchableOpacity>
+                        }}
+                      />
+                      <TText color="$color6" fontSize={12}>Paste</TText>
+                    </YStack>
+                    <YStack gap={6} alignItems="center" justifyContent="center">
+                      <TButton
+                        w={64} h={64} backgroundColor="$btnBackground" borderRadius={16}
+                        icon={<Search size={32} color="#ffffff" />}
+                        onPress={handleDiscovery}
+                      />
+                      <TText color="$color6" fontSize={12}>Discover</TText>
+                    </YStack>
                   </XStack>
                 </YStack>
               )
@@ -303,21 +243,14 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
           <YStack gap={20}>
             {/* SM-DP+ Address */}
             <YStack gap={8}>
-              <TText color="$color6" fontSize={13} fontWeight={"500" as any} textTransform="uppercase" letterSpacing={0.5}>
-                SM-DP+ Address
-              </TText>
               <View>
                 <Input
-                  placeholder="Enter SM-DP+ address or scan QR code"
+                  placeholder="SM-DP+ address"
                   value={smdp}
                   onChangeText={c => c.includes('$') ? processLPACode(c) : setSmdp(c.trim())}
-                  borderWidth={1}
-                  borderColor={theme.outlineNeutral?.val || theme.borderColor?.val || '#ddd'}
                   backgroundColor="$background"
                   color={theme.textDefault?.val}
                   placeholderTextColor={theme.color6?.val}
-                  fontSize={15}
-                  padding={12}
                   borderRadius={12}
                 />
               </View>
@@ -325,11 +258,8 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
 
             {/* Matching ID */}
             <YStack gap={8}>
-              <TText color="$color6" fontSize={13} fontWeight={"500" as any} textTransform="uppercase" letterSpacing={0.5}>
-                Matching ID
-              </TText>
               <Input
-                placeholder="Enter matching ID (optional)"
+                placeholder="Matching ID (optional)"
                 value={acToken}
                 onChangeText={c => c.includes('$') ? processLPACode(c) : setAcToken(c)}
                 borderWidth={1}
@@ -337,19 +267,14 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
                 backgroundColor="$background"
                 color={theme.textDefault?.val}
                 placeholderTextColor={theme.color6?.val}
-                fontSize={15}
-                padding={12}
                 borderRadius={12}
               />
             </YStack>
 
             {/* IMEI */}
             <YStack gap={8}>
-              <TText color="$color6" fontSize={13} fontWeight={"500" as any} textTransform="uppercase" letterSpacing={0.5}>
-                IMEI
-              </TText>
               <Input
-                placeholder="Enter IMEI (optional)"
+                placeholder="IMEI (optional)"
                 value={imei}
                 onChangeText={c => setImei(c)}
                 borderWidth={1}
@@ -357,8 +282,6 @@ export function ScannerInitial({ appLink, deviceId, finishAuthenticate }: any) {
                 backgroundColor="$background"
                 color={theme.textDefault?.val}
                 placeholderTextColor={theme.color6?.val}
-                fontSize={15}
-                padding={12}
                 borderRadius={12}
               />
             </YStack>
