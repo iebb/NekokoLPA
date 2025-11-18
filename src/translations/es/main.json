@@ -18,6 +18,7 @@
   "bluetooth_scan": "Bluetooth",
 
   "euiccInfo_euiccinfo": "Información EUICC",
+  "euiccInfo_subtitle": "Detalles del dispositivo y eUICC",
   "euiccInfo_sasAcreditationNumber": "Acreditación SAS",
   "euiccInfo_profileVersion": "Versión del perfil",
   "euiccInfo_globalplatformVersion": "Versión de Global Platform",
@@ -36,10 +37,12 @@
   "main_screen": "Pantalla principal",
 
   "backup": "Respaldo",
-  "backup_export": "Exportar tamaños",
-  "backup_import": "Importar tamaños",
+  "backup_description": "Se puede usar para exportar tamaños de perfiles descargados, configuraciones y otros datos almacenados localmente, para conservarlos entre reinstalaciones o cambios de dispositivo.",
+  "backup_export": "Exportar Datos",
+  "backup_import": "Importar Datos",
 
   "settings_settings": "Configuración",
+  "settings_subtitle": "Personalizar preferencias de la app",
   "settings_title_showSlots": "Reglas de visualización de ranuras SIM",
   "settings_item_showSlots_all": "Todas las ranuras de tarjetas SIM",
   "settings_item_showSlots_possible": "Ranuras con OMAPI habilitado",
@@ -80,7 +83,7 @@
   "settings_text_themeColor": "",
 
   "profile_profile_detail": "Detalles del perfil",
-  "profile_collection_stats": "Estadísticas de colección",
+  "profile_collection_stats": "Colección",
   "profile_name": "Nombre",
   "profile_plmn": "PLMN",
   "profile_country": "País",

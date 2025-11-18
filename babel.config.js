@@ -13,6 +13,18 @@ module.exports = {
 			},
 		],
 		'inline-dotenv',
+		// Temporarily disabled until we start using Tamagui components
+		// [
+		// 	'@tamagui/babel-plugin',
+		// 	{
+		// 		components: ['tamagui'],
+		// 		config: './tamagui.config.ts',
+		// 		logTimings: true,
+		// 		disableExtraction: process.env.NODE_ENV === 'development',
+		// 		disable: false,
+		// 		optimize: true,
+		// 	},
+		// ],
 		'react-native-reanimated/plugin', // needs to be last
 	],
 };

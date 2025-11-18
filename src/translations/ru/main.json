@@ -18,6 +18,7 @@
   "bluetooth_scan": "Bluetooth",
 
   "euiccInfo_euiccinfo": "Информация eUICC",
+  "euiccInfo_subtitle": "Сведения об устройстве и eUICC",
   "euiccInfo_sasAcreditationNumber": "Аккредитация SAS",
   "euiccInfo_profileVersion": "Версия профиля",
   "euiccInfo_globalplatformVersion": "Версия Global Platform",
@@ -36,10 +37,12 @@
   "main_screen": "Главный экран",
 
   "backup": "Резервная копия",
-  "backup_export": "Экспорт размеров",
-  "backup_import": "Импорт размеров",
+  "backup_description": "Можно использовать для экспорта размеров загруженных профилей, конфигураций и других локально сохраненных данных для сохранения при переустановке или смене устройства.",
+  "backup_export": "Экспорт Данных",
+  "backup_import": "Импорт Данных",
 
   "settings_settings": "Настройки",
+  "settings_subtitle": "Настроить параметры приложения",
   "settings_title_showSlots": "Правила отображения SIM-слотов",
   "settings_item_showSlots_all": "Все SIM-слоты",
   "settings_item_showSlots_possible": "Слоты с поддержкой OMAPI",
@@ -80,7 +83,7 @@
   "settings_text_themeColor": "",
 
   "profile_profile_detail": "Детали профиля",
-  "profile_collection_stats": "Статистика коллекции",
+  "profile_collection_stats": "Коллекция",
   "profile_name": "Имя",
   "profile_plmn": "PLMN",
   "profile_country": "Страна",

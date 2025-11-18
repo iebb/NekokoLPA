@@ -1,4 +1,4 @@
-import {AIDList} from "@/utils/aid";
+import {getAIDList} from "@/utils/aid";
 
 import {BleError, Characteristic, Device as BLEDevice} from 'react-native-ble-plx';
 import base64 from 'base64-js';
@@ -79,7 +79,7 @@ export class ESTKmeRED implements Device {
       this.channel = channel.substring(1);
 
 
-      for(const aid of AIDList.split(",")) {
+      for(const aid of getAIDList().split(",")) {
         try {
           const aidResp = await this.transmit(channel + "A4040010" + aid);
           console.log(aidResp);

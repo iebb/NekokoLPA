@@ -1,0 +1,17 @@
+diff --git a/node_modules/react-native/Libraries/Components/Keyboard/KeyboardAvoidingView.js b/node_modules/react-native/Libraries/Components/Keyboard/KeyboardAvoidingView.js
+index 860118d..ecca6dc 100644
+--- a/node_modules/react-native/Libraries/Components/Keyboard/KeyboardAvoidingView.js
++++ b/node_modules/react-native/Libraries/Components/Keyboard/KeyboardAvoidingView.js
+@@ -168,7 +168,11 @@ class KeyboardAvoidingView extends React.Component<Props, State> {
+       return;
+     }
+ 
+-    this._setBottom(height);
++    // THIS TEMPORARY FIX ANDROID ISSUE:
++    // https://github.com/facebook/react-native/issues/52596
++    const bottom = Keyboard.isVisible() ? height : 0;
++    this._setBottom(Platform.OS === 'ios' ? height : bottom);
++    // END OF TEMPORARY FIX
+ 
+     const enabled = this.props.enabled ?? true;
+     if (enabled && duration && easing) {

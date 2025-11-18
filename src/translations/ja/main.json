@@ -18,6 +18,7 @@
   "bluetooth_scan": "Bluetooth",
 
   "euiccInfo_euiccinfo": "EUICC 情報",
+  "euiccInfo_subtitle": "デバイスとeUICCの詳細",
   "euiccInfo_sasAcreditationNumber": "SAS 認定",
   "euiccInfo_profileVersion": "プロファイルバージョン",
   "euiccInfo_globalplatformVersion": "グローバルプラットフォームバージョン",
@@ -36,11 +37,13 @@
   "main_screen": "メイン画面",
 
   "backup": "バックアップ",
-  "backup_export": "エクスポートのサイズ",
-  "backup_import": "インポートのサイズ",
+  "backup_description": "ダウンロードしたプロファイルサイズ、設定、その他のローカルに保存されたデータをエクスポートできます。再インストールやデバイス変更後もデータを保持できます。",
+  "backup_export": "データのエクスポート",
+  "backup_import": "データのインポート",
 
 
   "settings_settings": "設定",
+  "settings_subtitle": "アプリの設定をカスタマイズ",
   "settings_title_showSlots": "SIM スロット表示ルール",
   "settings_item_showSlots_all": "すべての SIM カードスロット",
   "settings_item_showSlots_possible": "OMAPI 有効スロット",
@@ -90,7 +93,7 @@
   "settings_text_themeColor": "",
 
   "profile_profile_detail": "プロファイルの詳細",
-  "profile_collection_stats": "コレクションの状態",
+  "profile_collection_stats": "コレクション",
   "profile_name": "名前",
   "profile_plmn": "PLMN",
   "profile_country": "国",

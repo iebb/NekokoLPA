@@ -1,21 +1,38 @@
-import {Colors, Text, View} from "react-native-ui-lib";
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/redux/reduxDataStore";
-import {EUICCPage} from "@/screens/Main/EUICCPage";
 import {useTranslation} from "react-i18next";
-import {Dimensions, Linking, NativeModules, Platform, ScrollView, ToastAndroid} from "react-native";
+import {Alert, Dimensions, Linking, NativeModules, Platform, ScrollView, ToastAndroid} from "react-native";
 import {Adapters} from "@/native/adapters/registry";
-import TabController from "../../components/ui/Tab";
-import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
-import {faSimCard} from "@fortawesome/free-solid-svg-icons";
-import {faBluetooth, faUsb} from "@fortawesome/free-brands-svg-icons";
+import {Tabs, Text as TText, XStack, YStack, View as TView, Separator, AnimatePresence} from 'tamagui';
+import {Smartphone, Bluetooth, Usb} from '@tamagui/lucide-icons';
 import Clipboard from "@react-native-clipboard/clipboard";
 import {preferences} from "@/utils/mmkv";
-import {AppBuyLink} from "@/screens/Main/config";
+import {AppBuyLink} from "@/config";
 import {getNicknames} from "@/configs/store";
 import {setTargetDevice} from "@/redux/stateStore";
-import Config from 'react-native-config';
+import ProfileCardHeader from "@/screens/Main/ProfileCardHeader";
+import ProfileSelector from "@/screens/Main/ProfileSelector";
+import {OMAPIBridge} from "@/native/modules";
+
+// Container component to manage rearrange mode state
+function ProfileSelectorContainer({ deviceId }: { deviceId: string }) {
+  const [rearrangeMode, setRearrangeMode] = useState(false);
+
+  return (
+    <YStack flex={1} minHeight={0} gap={6} key={deviceId} marginTop={3}>
+      <ProfileCardHeader
+        deviceId={deviceId}
+        rearrangeMode={rearrangeMode}
+        setRearrangeMode={setRearrangeMode}
+      />
+      <ProfileSelector
+        deviceId={deviceId}
+        rearrangeMode={rearrangeMode}
+      />
+    </YStack>
+  );
+}
 
 export default function SIMSelector() {
   const ds = useSelector((state: RootState) => state.DeviceState);
@@ -33,181 +50,210 @@ export default function SIMSelector() {
     deviceList = _deviceList.filter(x => Adapters[x].device.available);
   }
 
+
   const firstAvailable = deviceList.map(x => Adapters[x].device.available).indexOf(true);
+  const [currentTab, setCurrentTab] = React.useState<string | undefined>(
+    firstAvailable < 0 ? deviceList[0] : deviceList[firstAvailable]
+  );
 
-  const [index, setIndex] = useState(firstAvailable < 0 ? 0 : firstAvailable);
-  const selected = index < deviceList.length ? deviceList[index] : null;
+
+  const selected = currentTab;
   const adapter = selected ? Adapters[selected] : null;
-  const width = Dimensions.get('window').width - 48;
 
-  const deviceCount = deviceList.length;
-  const displayWidth = width / deviceCount;
-  const displayWidth2 = (deviceCount === 1 ? 2 : 1) * width / deviceCount;
 
 
   useEffect(() => {
-    if (firstAvailable > 0 && !(adapter?.device.available)) {
-      setIndex(firstAvailable < 0 ? 0 : firstAvailable);
+    if (!currentTab && deviceList.length > 0) {
+      const firstAvailable = deviceList.map(x => Adapters[x].device.available).indexOf(true);
+      setCurrentTab(firstAvailable < 0 ? deviceList[0] : deviceList[firstAvailable]);
     }
-  }, [firstAvailable]);
+  }, [deviceList, currentTab]);
 
   useEffect(() => {
     if (targetDevice) {
       if (deviceList.indexOf(targetDevice) !== -1) {
-        setIndex(deviceList.indexOf(targetDevice));
+        setCurrentTab(targetDevice);
         dispatch(setTargetDevice(null));
       }
     }
   }, [targetDevice]);
 
-  if (width <= 0) return null;
+  // Show iOS notification when no compatible devices are found
+  useEffect(() => {
+    if (Platform.OS === 'ios' && deviceList.length === 0) {
+      Alert.alert(
+        'No Compatible Devices',
+        'A compatible external CCID reader is required for iOS.',
+        [{ text: 'OK' }]
+      );
+    }
+  }, [deviceList.length]);
+
+
   if (deviceList.length == 0) return (
     <ScrollView
       bounces
       alwaysBounceVertical
       overScrollMode="always"
     >
-      <View flex paddingT-20 gap-10>
-        <Text $textDefault center text70L>
+      <YStack flex={1} paddingTop={20} gap={10}>
+        <TText color="$textDefault" fontSize={18} textAlign="center">
           {t('main:no_device')}
-        </Text>
-        <Text $textPrimary center underline text60L marginT-40 onPress={() => {
+        </TText>
+        <TText color="$primaryColor" textDecorationLine="underline" fontSize={20} textAlign="center" marginTop={40} onPress={() => {
           Linking.openURL(AppBuyLink);
         }}>
           {t('main:purchase_note')}
-        </Text>
-      </View>
+        </TText>
+      </YStack>
     </ScrollView>
   );
 
   return (
-    <View
-      flexG-1
-      flexS-0
+    <TView
+      flex={1}
+      minHeight={0}
       key={deviceList.length}
     >
-      <TabController
-        items={
-          deviceList.map((name, _idx) => {
+      <Tabs
+        value={currentTab}
+        onValueChange={setCurrentTab}
+        borderRadius={12}
+        marginBottom={8}
+      >
+        <Tabs.List
+          borderRadius={12}
+          orientation="horizontal"
+          flexDirection="row"
+          borderColor="$surfaceSpecial"
+          backgroundColor="$surfaceSpecial"
+          width="100%"
+        >
+          {deviceList.map((name, _idx) => {
             const adapter = Adapters[name];
-            const eid = ds[name]?.eid ?? "";
-
+            const eid = ds[name]?.eid ?? '';
             const label = adapter.device.available ?
               ((nicknames[eid]) ? nicknames[eid] + ` (${adapter.device.displayName})` : adapter.device.displayName)
               : `${adapter.device.displayName}\nunavailable`;
-
-            return ({
-              label,
-              icon: (
-                <FontAwesomeIcon
-                  icon={
-                    adapter.device.deviceId.startsWith("omapi") ? faSimCard :
-                    adapter.device.deviceId.startsWith("ble") ? (faBluetooth as any) : (faUsb as any)
-                  }
-                  style={{
-                    color: Colors.$textPrimary,
-                    marginRight: 4,
-                    marginTop: -2,
-                  }}
-                  size={15}
-                />
-              ),
-              labelStyle: {
-                padding: 0,
-                margin: 0,
-                fontSize: 12,
-                lineHeight: 16,
-              },
-              selectedLabelStyle: {
-                padding: 0,
-                margin: 0,
-                fontSize: 12,
-                lineHeight: 16,
-                fontWeight: '500',
-              },
-              labelColor: Colors.$textNeutral,
-              selectedLabelColor: Colors.$textPrimary,
-              width: displayWidth,
-            })
-
-          })
-        }
-        initialIndex={index}
-        onChangeIndex={setIndex}
-      >
-        <TabController.TabBar
-          backgroundColor={Colors.cardBackground}
-          indicatorWidth={displayWidth2}
-          indicatorStyle={{
-            backgroundColor: Colors.$textPrimary,
-          }}
-          containerWidth={width}
-          containerStyle={{
-            width: '100%',
-            overflow: "hidden",
-            borderRadius: 20,
-            marginBottom: 10,
-            height: 40,
-          }}
-        />
-      </TabController>
-      {
-        selected && (adapter != null) && (
-          adapter.device.available ? (
-            <EUICCPage deviceId={selected} key={selected}/>
-          ): (
+            return (
+              <Tabs.Tab
+                key={`${name}-${_idx}`}
+                value={name}
+                style={{ backgroundColor: 'transparent' }}
+                flex={1}
+                flexBasis={0}
+              >
+                <YStack position="relative" width="100%">
+                  <XStack alignItems="center" justifyContent="center" gap={3} paddingHorizontal={6} paddingVertical={4} width="100%">
+                    {(() => {
+                      const IconComponent = adapter.device.deviceId.startsWith('omapi')
+                        ? Smartphone
+                        : adapter.device.deviceId.startsWith('ble')
+                          ? Bluetooth
+                          : Usb;
+                      return (
+                        <IconComponent
+                          size={12}
+                          color={name === currentTab ? "$primaryColor" : "$color6"}
+                        />
+                      );
+                    })()}
+                    <TText
+                      fontSize="$2"
+                      lineHeight="$2"
+                      color={name === currentTab ? '$primaryColor' : '$color6'}
+                      numberOfLines={2}
+                      flexShrink={1}
+                      textAlign="center"
+                    >
+                      {label}
+                    </TText>
+                  </XStack>
+                  <YStack
+                    position="absolute"
+                    bottom={0}
+                    left={0}
+                    height={2}
+                    backgroundColor="$primaryColor"
+                    width="100%"
+                    opacity={name === currentTab ? 1 : 0}
+                    scaleX={name === currentTab ? 1 : 0}
+                    originX={0}
+                    animation="medium"
+                    transition={{
+                      type: 'timing',
+                      duration: 300,
+                      easing: 'easeInOut',
+                    }}
+                  />
+                </YStack>
+              </Tabs.Tab>
+            );
+          })}
+        </Tabs.List>
+      </Tabs>
+      {selected && (adapter != null) && (
+        <YStack
+          key={selected}
+          flex={1}
+          minHeight={0}
+          opacity={1}
+          x={0}
+        >
+          {adapter.device.available ? (
+            <ProfileSelectorContainer deviceId={selected} />
+          ) : (
             <ScrollView
               bounces
               alwaysBounceVertical
               overScrollMode="always"
             >
-              <View flex paddingT-20 gap-10>
-                <Text $textDefault center text70L>
+              <YStack flex={1} paddingTop={20} gap={10}>
+                <TText color="$textDefault" fontSize={18} textAlign="center">
                   {t('main:error_device')}
-                </Text>
-                <Text $textMajor center text60L marginB-40>
+                </TText>
+                <TText color="$color" fontSize={20} textAlign="center" marginBottom={40}>
                   {adapter.device.description}
-                </Text>
+                </TText>
                 {
                   (Platform.OS === 'android' && adapter.device.signatures) && (
                     <>
-                      <Text $textDefault center text70L>
+                      <TText color="$textDefault" fontSize={18} textAlign="center">
                         {t('main:android_aram')}
-                      </Text>
-
-                      <View flex paddingB-40 gap-10>
+                      </TText>
+                      <YStack flex={1} paddingBottom={40} gap={10}>
                         {adapter.device.signatures.split(",").map((s: string) => (
-                          <Text $textDefault text80L center key={s} onPress={() => {
+                          <TText color="$textDefault" fontSize={14} textAlign="center" key={s} onPress={() => {
                             ToastAndroid.show(`ARA-M ${s} Copied`, ToastAndroid.SHORT);
                             Clipboard.setString(s)
-                          }}>{s}</Text>
+                          }}>{s}</TText>
                         ))}
-                      </View>
+                      </YStack>
                     </>
                   )
                 }
                 {
                   (Platform.OS === 'android') && (
                     <>
-                      <Text $textDefault center underline text60L marginT-40 onPress={() => {
-                        const { OMAPIBridge } = NativeModules;
+                      <TText color="$textDefault" textDecorationLine="underline" fontSize={20} textAlign="center" marginTop={40} onPress={() => {
+                        const { OMAPIBridge } = require("@/native/modules");
                         OMAPIBridge.openSTK(adapter.device.deviceName);
                       }}>
                         {t('main:open_stk_menu')}
-                      </Text>
+                      </TText>
                     </>
                   )
                 }
-                <Text $textPrimary center underline text60L marginT-40 onPress={() => {
+                <TText color="$primaryColor" textDecorationLine="underline" fontSize={20} textAlign="center" marginTop={40} onPress={() => {
                   Linking.openURL(AppBuyLink);
                 }}>
                   {t('main:purchase_note')}
-                </Text>
-              </View>
+                </TText>
+              </YStack>
             </ScrollView>
-          )
-        )
-      }
-    </View>
+          )}
+        </YStack>
+      )}
+    </TView>
   )
 }

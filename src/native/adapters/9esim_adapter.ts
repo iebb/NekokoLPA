@@ -1,4 +1,4 @@
-import {AIDList} from "@/utils/aid";
+import {getAIDList} from "@/utils/aid";
 
 import {BleError, Characteristic, Device as BLEDevice} from 'react-native-ble-plx';
 import {Device} from "@/native/adapters/adapter";
@@ -57,7 +57,7 @@ export class SimLinkAdapter implements Device {
         return false;
       }
 
-      for(const aid of AIDList.split(",")) {
+      for(const aid of getAIDList().split(",")) {
         try {
           const aidResp = await this.transmit(channel + "A4040010" + aid);
           if (aidResp.startsWith("61") || aidResp.startsWith("90")) {

@@ -1,41 +1,72 @@
-import {Colors, Text, View} from "react-native-ui-lib";
+import { View } from 'react-native';
+import { Text as TText, YStack, XStack } from 'tamagui';
 import React from "react";
 import {RemoteError} from "@/native/types";
+import {AlertCircle, Code, Info} from '@tamagui/lucide-icons';
 
 export default function RemoteErrorView({ remoteError }: { remoteError?: RemoteError }) {
 
   if (!remoteError) return null;
 
   return (
-    <View flex style={{ gap: 5 }}>
-      <Text
-        $textDefault
-        center
-        text70
-      >
-        Status: {remoteError.status}
-      </Text>
-      <Text
-        $textDefault
-        center
-        text70
-      >
-        {remoteError.message}
-      </Text>
-      <Text
-        $textDefault
-        center
-        text80
-      >
-        Reason: {remoteError.reasonCode}
-      </Text>
-      <Text
-        $textDefault
-        center
-        text80
-      >
-        Subject: {remoteError.subjectCode}
-      </Text>
-    </View>
+    <YStack gap={16}>
+      {remoteError.message && (
+        <YStack gap={8}>
+          <XStack gap={8} alignItems="center">
+            <AlertCircle size={18} color="$backgroundDangerHeavy" />
+            <TText color="$textDefault" fontSize={16} fontWeight={"600" as any}>
+              Error Message
+            </TText>
+          </XStack>
+          <TText color="$textDefault" fontSize={14} paddingLeft={26}>
+            {remoteError.message}
+          </TText>
+        </YStack>
+      )}
+
+      <YStack gap={12}>
+        {remoteError.status && (
+          <XStack justifyContent="space-between" alignItems="center" paddingVertical={8} borderBottomWidth={1} borderBottomColor="$outlineNeutral">
+            <XStack gap={8} alignItems="center">
+              <Info size={16} color="$color6" />
+              <TText color="$color6" fontSize={13} fontWeight={"500" as any}>
+                Status
+              </TText>
+            </XStack>
+            <TText color="$textDefault" fontSize={14}>
+              {remoteError.status}
+            </TText>
+          </XStack>
+        )}
+
+        {remoteError.reasonCode && (
+          <XStack justifyContent="space-between" alignItems="center" paddingVertical={8} borderBottomWidth={1} borderBottomColor="$outlineNeutral">
+            <XStack gap={8} alignItems="center">
+              <Code size={16} color="$color6" />
+              <TText color="$color6" fontSize={13} fontWeight={"500" as any}>
+                Reason Code
+              </TText>
+            </XStack>
+            <TText color="$textDefault" fontSize={14}>
+              {remoteError.reasonCode}
+            </TText>
+          </XStack>
+        )}
+
+        {remoteError.subjectCode && (
+          <XStack justifyContent="space-between" alignItems="center" paddingVertical={8}>
+            <XStack gap={8} alignItems="center">
+              <Code size={16} color="$color6" />
+              <TText color="$color6" fontSize={13} fontWeight={"500" as any}>
+                Subject Code
+              </TText>
+            </XStack>
+            <TText color="$textDefault" fontSize={14}>
+              {remoteError.subjectCode}
+            </TText>
+          </XStack>
+        )}
+      </YStack>
+    </YStack>
   )
 }

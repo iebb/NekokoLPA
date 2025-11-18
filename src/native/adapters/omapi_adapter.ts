@@ -2,8 +2,7 @@ import {NativeModules} from "react-native";
 import {setupDevice} from "@/native/jsnative/setup";
 import {Device} from "@/native/adapters/adapter";
 import {Adapters} from "@/native/adapters/registry";
-
-const { OMAPIBridge } = NativeModules;
+import {OMAPIBridge} from "@/native/modules";
 
 
 export class OMAPIDevice implements Device {

@@ -249,8 +249,9 @@ export class Adapter {
   }
 
   async processNotifications(iccid: string) {
-    await this.execute("process_notifications", [iccid, 0x90, 0]);
-    await this.execute("process_notifications", [iccid, 0x60, 1]);
+    await this.execute("process_notifications", [iccid, 0x10, 0]); // delete notifications, don't delete them
+    await this.execute("process_notifications", [iccid, 0x20 | 0x40 | 0x80, 1]); // process install, enable, disable notifications
+    await this.getNotifications();
     return
   }
 

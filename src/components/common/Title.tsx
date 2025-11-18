@@ -1,17 +1,21 @@
-import {Text, View} from "react-native-ui-lib";
+import {View} from "react-native";
+import {Text, YStack} from 'tamagui';
 import React from "react";
 
 
-export default function Title({ children }: { children: string }) {
+export default function Title({ children, subtitle }: { children: string; subtitle?: string }) {
   return (
-    <View
-      paddingH-20
-      paddingT-20
-      paddingB-10
-    >
-      <Text $textDefault text40BO>
-        {children}
-      </Text>
+    <View style={{ paddingHorizontal: 20, paddingTop: 20, paddingBottom: 10 }}>
+      <YStack gap={4}>
+        <Text color="$textDefault" fontSize={28} fontWeight={"700" as any}>
+          {children}
+        </Text>
+        {subtitle && (
+          <Text color="$color6" fontSize={14}>
+            {subtitle}
+          </Text>
+        )}
+      </YStack>
     </View>
   )
 }

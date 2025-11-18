@@ -1,12 +1,11 @@
 import React from 'react';
 import {useTranslation} from 'react-i18next';
-import {Button, Colors, Text, View} from "react-native-ui-lib";
-import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
-import {faArrowLeftLong, faCancel, faCheck, faCheckCircle} from "@fortawesome/free-solid-svg-icons";
+import { View } from 'react-native';
+import { Button as TButton, Text as TText, XStack, YStack, useTheme, Card } from 'tamagui';
+import {ArrowLeft, X, Check, CheckCircle, AlertCircle} from '@tamagui/lucide-icons';
 import RemoteErrorView from "@/screens/Download/RemoteErrorView";
 import MetadataView from "@/components/common/MetadataView";
-import Title from "@/components/common/Title";
-import Container from "@/components/common/Container";
+import Screen from "@/components/common/Screen";
 import {makeLoading} from "@/components/utils/loading";
 import {Adapters} from "@/native/adapters/registry";
 import {useLoading} from "@/components/common/LoadingProvider";
@@ -21,44 +20,74 @@ export function ScannerResult(
   }: any
 ) {
   const { t } = useTranslation(['main']);
+  const theme = useTheme();
   const { setLoading } = useLoading();
   const adapter = Adapters[deviceId];
 
   return (
-    <View>
-      <Title>{t('main:profile_title_download_profile')}</Title>
+    <Screen title={t('main:profile_title_download_profile')} keyboardAvoiding={false} scrollViewProps={{ nestedScrollEnabled: true }}>
       {
         (downloadResult?.success) ?
           (
-            <Container>
-              <View center style={{ marginVertical: 20 }}>
-                <FontAwesomeIcon icon={faCheckCircle} size={80} color={Colors.green30} />
-              </View>
-              <Text center text60>
-                {t('main:profile_download_success')}
-              </Text>
-              <MetadataView metadata={authenticateResult.profile} />
-              <View flex>
-                <View flex row gap-10>
-                  <Button
-                    marginV-12 flex
-                    backgroundColor={Colors.$backgroundNeutralHeavy}
+            <YStack gap={24}>
+              {/* Success State */}
+              <Card backgroundColor="$surfaceSpecial" borderRadius={16} padding={32} borderWidth={0}>
+                <YStack gap={20} alignItems="center">
+                  <View style={{
+                    width: 96,
+                    height: 96,
+                    borderRadius: 48,
+                    backgroundColor: theme.backgroundSuccess?.val || '#dcfce7',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                  }}>
+                    <CheckCircle size={56} color={theme.backgroundSuccessHeavy?.val || '#22c55e'} />
+                  </View>
+                  <YStack gap={8} alignItems="center">
+                    <TText textAlign="center" fontSize={22} color="$textDefault" fontWeight={"600" as any}>
+                      {t('main:profile_download_success')}
+                    </TText>
+                    <TText textAlign="center" fontSize={14} color="$color6">
+                      Profile has been successfully downloaded to your device
+                    </TText>
+                  </YStack>
+                </YStack>
+              </Card>
+
+              {/* Profile Metadata */}
+              <Card backgroundColor="$surfaceSpecial" borderRadius={16} padding={20} borderWidth={0}>
+                <YStack gap={16}>
+                  <TText color="$textDefault" fontSize={18} fontWeight={"600" as any} marginBottom={4}>
+                    Profile Information
+                  </TText>
+                  <MetadataView metadata={authenticateResult.profile} />
+                </YStack>
+              </Card>
+
+              {/* Action Buttons */}
+              <YStack gap={12}>
+                <XStack gap={12}>
+                  <TButton
+                    flex={1}
+                    height={52}
+                    borderRadius={16}
+                    backgroundColor="$color6"
                     onPress={() => {
                       goBack();
                     }}
                   >
-                    <FontAwesomeIcon
-                      icon={faArrowLeftLong}
-                      style={{ color: Colors.white }}
-                    />
-                    <Text
-                      marginL-10
-                      color={Colors.white}
-                    >{t('main:profile_ui_back')}</Text>
-                  </Button>
-                  <Button
-                    marginV-12 flex
-                    backgroundColor={Colors.green500}
+                    <XStack alignItems="center" gap={10}>
+                      <ArrowLeft size={18} color="$btnForeground" />
+                      <TText color="$btnForeground" fontSize={16} fontWeight={"500" as any}>
+                        {t('main:profile_ui_back')}
+                      </TText>
+                    </XStack>
+                  </TButton>
+                  <TButton
+                    flex={1}
+                    height={52}
+                    borderRadius={16}
+                    backgroundColor={theme.backgroundSuccessHeavy?.val || '#22c55e'}
                     onPress={() => {
                       makeLoading(
                         setLoading,
@@ -69,53 +98,70 @@ export function ScannerResult(
                       )
                     }}
                   >
-                    <FontAwesomeIcon
-                      icon={faCheck}
-                      style={{ color: Colors.white }}
-                    />
-                    <Text
-                      marginL-10
-                      color={Colors.white}
-                    >{t('main:profile_ui_enable')}</Text>
-                  </Button>
-                </View>
-              </View>
-            </Container>
+                    <XStack alignItems="center" gap={12}>
+                      <Check size={20} color="#ffffff" />
+                      <TText color="#ffffff" fontSize={17} fontWeight={"600" as any}>
+                        {t('main:profile_ui_enable')}
+                      </TText>
+                    </XStack>
+                  </TButton>
+                </XStack>
+              </YStack>
+            </YStack>
           ) : (
-            <Container>
-              <View flex style={{ gap: 20 }}>
-                <Text center text60>
-                  {t('main:profile_download_failure')}
-                </Text>
-                <RemoteErrorView remoteError={downloadResult} />
-                <View flex>
-                  <View flex style={{ flexDirection: "row", gap: 10 }}>
-                    <Button
-                      marginV-12 flex
-                      backgroundColor={Colors.red20}
-                      onPress={() => {
-                        makeLoading(setLoading,
-                          async () => {
-                            await adapter.getProfiles();
-                            goBack();
-                          });
-                      }}
-                    >
-                      <FontAwesomeIcon
-                        icon={faCancel}
-                        style={{ color: Colors.white }}
-                      />
-                      <Text
-                        marginL-10
-                        color={Colors.white}
-                      >{t('main:profile_ui_back')}</Text>
-                    </Button>
+            <YStack gap={24}>
+              {/* Failure State */}
+              <Card backgroundColor="$surfaceSpecial" borderRadius={16} padding={32} borderWidth={0}>
+                <YStack gap={20} alignItems="center">
+                  <View style={{
+                    width: 96,
+                    height: 96,
+                    borderRadius: 48,
+                    backgroundColor: theme.backgroundDangerLight?.val || '#fee2e2',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                  }}>
+                    <AlertCircle size={56} color={theme.backgroundDangerHeavy?.val || '#dc2626'} />
                   </View>
-                </View>
-              </View>
-            </Container>
+                  <YStack gap={8} alignItems="center">
+                    <TText textAlign="center" fontSize={22} color="$textDefault" fontWeight={"600" as any}>
+                      {t('main:profile_download_failure')}
+                    </TText>
+                    <TText textAlign="center" fontSize={14} color="$color6">
+                      Unable to download the profile. Please try again.
+                    </TText>
+                  </YStack>
+                </YStack>
+              </Card>
+
+              {/* Error Details */}
+              <Card backgroundColor="$surfaceSpecial" borderRadius={16} padding={20} borderWidth={0}>
+                <RemoteErrorView remoteError={downloadResult} />
+              </Card>
+
+              {/* Back Button */}
+              <TButton
+                height={52}
+                borderRadius={16}
+                backgroundColor="$backgroundDangerHeavy"
+                onPress={() => {
+                  makeLoading(setLoading,
+                    async () => {
+                      await adapter.getProfiles();
+                      goBack();
+                    });
+                }}
+              >
+                <XStack alignItems="center" gap={10}>
+                  <X size={18} color="#ffffff" />
+                  <TText color="#ffffff" fontSize={16} fontWeight={"500" as any}>
+                    {t('main:profile_ui_back')}
+                  </TText>
+                </XStack>
+              </TButton>
+            </YStack>
           )
       }
-    </View>
+    </Screen>
   );
 }

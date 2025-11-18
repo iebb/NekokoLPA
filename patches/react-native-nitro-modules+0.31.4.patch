@@ -1,0 +1,12 @@
+diff --git a/node_modules/react-native-nitro-modules/android/src/main/java/com/margelo/nitro/NitroModulesPackage.kt b/node_modules/react-native-nitro-modules/android/src/main/java/com/margelo/nitro/NitroModulesPackage.kt
+index f55986b..33c430b 100644
+--- a/node_modules/react-native-nitro-modules/android/src/main/java/com/margelo/nitro/NitroModulesPackage.kt
++++ b/node_modules/react-native-nitro-modules/android/src/main/java/com/margelo/nitro/NitroModulesPackage.kt
+@@ -28,6 +28,7 @@ class NitroModulesPackage : BaseReactPackage() {
+           NitroModules.NAME,
+           canOverrideExistingModule = false,
+           needsEagerInit = false,
++          hasConstants = false,
+           isCxxModule = false,
+           isTurboModule = isTurboModule,
+         )

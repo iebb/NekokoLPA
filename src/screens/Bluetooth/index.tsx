@@ -1,15 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {ScrollView,} from 'react-native';
+import {TouchableOpacity} from 'react-native';
 import {useTranslation} from 'react-i18next';
-import SafeScreen from '@/theme/SafeScreen';
+import Screen from '@/components/common/Screen';
 import type {RootScreenProps} from "@/screens/navigation";
-import Title from "@/components/common/Title";
-import Container from "@/components/common/Container";
-import {Colors, LoaderScreen, Text, TouchableOpacity, View} from "react-native-ui-lib";
+import UnifiedLoader from "@/components/common/UnifiedLoader";
+import {Text as TText, View as TView, XStack, YStack, useTheme} from 'tamagui';
+import {Bed, Package, HardDrive} from '@tamagui/lucide-icons';
 import {bleManager, requestBluetoothPermission} from "@/utils/blue";
 import {Device} from 'react-native-ble-plx';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {fa9, faMattressPillow, faSdCard} from '@fortawesome/free-solid-svg-icons';
 import {connectDevice} from "@/screens/Bluetooth/connection";
 import {setupDevices} from "@/native/setup";
 import {useDispatch} from 'react-redux';
@@ -17,106 +15,104 @@ import {makeLoading} from "@/components/utils/loading";
 import {useLoading} from "@/components/common/LoadingProvider";
 
 function BluetoothScan({ route,  navigation }: RootScreenProps<'BluetoothScan'>) {
+  const { t } = useTranslation(['main']);
+  const [devices, setDevices] = useState<Device[]>([]);
+  const dispatch = useDispatch();
+  const { setLoading } = useLoading();
+  const [scanning, setScanning] = useState(false);
+  const theme = useTheme();
 
-	const { t } = useTranslation(['main']);
-	const [devices, setDevices] = useState<Device[]>([]);
-	const dispatch = useDispatch();
-	const { setLoading } = useLoading();
-	const [scanning, setScanning] = useState(false);
 
+  const addDevice = (scannedDevice: Device) => {
+    if (!devices.map(d => d.id).includes(scannedDevice.id)) {
+      devices.push(scannedDevice);
+      setDevices([...devices]);
+    }
+  }
 
-	const addDevice = (scannedDevice: Device) => {
-		if (!devices.map(d => d.id).includes(scannedDevice.id)) {
-			devices.push(scannedDevice);
-			setDevices([...devices]);
-		}
-	}
+  useEffect(() => {
+    const subscription = bleManager.onStateChange(state => {
+      if (state === 'PoweredOn') {
+        requestBluetoothPermission().then(() => {
+          bleManager.startDeviceScan(
+            null, // ?Array<UUID>
+            {}, // options: ? ScanOptions
+            (error, scannedDevice) => {
+              setScanning(true); // listener: (error: ?Error, scannedDevice: ?Device) => void
+              if (scannedDevice !== null) {
+                if (
+                  scannedDevice.name?.startsWith("ESTKme-RED")
+                  || scannedDevice.name?.startsWith("eSIM_Writer")
+                ) {
+                  addDevice(scannedDevice);
+                }
+              }
+            }
+          );
+        })
+        subscription.remove()
+      }
+    }, true)
 
-	useEffect(() => {
-		const subscription = bleManager.onStateChange(state => {
-			if (state === 'PoweredOn') {
-				requestBluetoothPermission().then(() => {
-					bleManager.startDeviceScan(
-						null, // ?Array<UUID>
-						{}, // options: ? ScanOptions
-						(error, scannedDevice) => {
-							setScanning(true); // listener: (error: ?Error, scannedDevice: ?Device) => void
-							if (scannedDevice !== null) {
-								if (
-									scannedDevice.name?.startsWith("ESTKme-RED")
-									|| scannedDevice.name?.startsWith("eSIM_Writer")
-								) {
-									addDevice(scannedDevice);
-								}
-							}
-						}
-					);
-				})
-				subscription.remove()
-			}
-		}, true)
+    return () => {
+      subscription.remove();
+      bleManager.stopDeviceScan();
+    }
 
-		return () => {
-			subscription.remove();
-			bleManager.stopDeviceScan();
-		}
+  }, []);
 
-	}, []);
-
-	return (
-		<SafeScreen>
-			<Title>{t('main:bluetooth_scan')}</Title>
-			<Container>
-				<ScrollView>
-					<View flex flexG style={{ gap: 10 }}>
-						<View gap-10>
-							{
-								devices.map(device => {
-									return (
-										<TouchableOpacity
-											key={device.id}
-											paddingV-10
-											onPress={async () => {
-												makeLoading(setLoading, async () => {
-													setScanning(false);
-													bleManager.stopDeviceScan();
-													await connectDevice(device);
-													await setupDevices(dispatch, "ble:" + device.id);
-													navigation.goBack();
-												})
-											}}
-										>
-											<View row gap-10>
-												<FontAwesomeIcon icon={
-													device!.name!.startsWith("ESTKme") ? faMattressPillow : device!.name!.startsWith("eSIM_Writer") ? fa9 : faSdCard
-												} size={40} style={{ color: Colors.$textPrimary }} />
-												<View flexG>
-													<Text text70M style={{ marginTop: -2 }} flexG $textDefault>
-														{device.name}
-													</Text>
-													<View>
-														<Text $textNeutral text90M flexG>
-															{device.id}
-														</Text>
-													</View>
-												</View>
-											</View>
-										</TouchableOpacity>
-									)})
-							}
-							{
-								scanning && (
-									<View>
-										<LoaderScreen color={Colors.$textPrimary} size="large" loaderColor={Colors.$backgroundNeutral} />
-									</View>
-								)
-							}
-						</View>
-					</View>
-				</ScrollView>
-			</Container>
-		</SafeScreen>
-	);
+  return (
+    <Screen title={t('main:bluetooth_scan')}>
+      <YStack gap={10} flex={1}>
+        <YStack gap={10}>
+          {
+            devices.map(device => {
+              return (
+                <TouchableOpacity
+                  key={device.id}
+                  style={{ paddingVertical: 10 }}
+                  onPress={async () => {
+                    makeLoading(setLoading, async () => {
+                      setScanning(false);
+                      bleManager.stopDeviceScan();
+                      await connectDevice(device);
+                      await setupDevices(dispatch, "ble:" + device.id);
+                      navigation.goBack();
+                    })
+                  }}
+                >
+                  <XStack gap={10} alignItems="center">
+                    {(() => {
+                      const IconComponent = device!.name!.startsWith("ESTKme")
+                        ? Bed
+                        : device!.name!.startsWith("eSIM_Writer")
+                          ? Package
+                          : HardDrive;
+                      return (
+                        <IconComponent size={40} color={theme.primaryColor?.val as string} />
+                      );
+                    })()}
+                    <YStack flex={1}>
+                      <TText color="$textDefault" fontSize={14} fontWeight={"500" as any} style={{ marginTop: -2 }}>
+                        {device.name}
+                      </TText>
+                      <TView>
+                        <TText color="$color6" fontSize={12} fontWeight={"500" as any}>
+                          {device.id}
+                        </TText>
+                      </TView>
+                    </YStack>
+                  </XStack>
+                </TouchableOpacity>
+              )})
+          }
+          {scanning && (
+            <UnifiedLoader variant="circular" compact text={t('main:bluetooth_scan')} />
+          )}
+        </YStack>
+      </YStack>
+    </Screen>
+  );
 
 }
 

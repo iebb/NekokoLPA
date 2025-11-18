@@ -1,20 +1,20 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 ext {
     // Android (Compile/Target) SDK Version
-    sdk_version = 35
+    sdk_version = 36
     minSdkVersion = 28
-    targetSdkVersion = 35
-    compileSdkVersion = 35
+    targetSdkVersion = 36
+    compileSdkVersion = 36
 }
 
 buildscript {
     ext {
-        buildToolsVersion = "35.0.0"
+        buildToolsVersion = "36.0.0"
         minSdkVersion = 28
-        targetSdkVersion = 35
-        compileSdkVersion = 35
-        ndkVersion = "26.1.10909125"
-        kotlinVersion = "1.8.10"
+        compileSdkVersion = 36
+        targetSdkVersion = 36
+        ndkVersion = "27.1.12297006"
+        kotlinVersion = "2.1.20"
     }
     repositories {
         google()

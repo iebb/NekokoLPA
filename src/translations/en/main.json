@@ -18,6 +18,7 @@
   "bluetooth_scan": "Bluetooth",
 
   "euiccInfo_euiccinfo": "EUICC Info",
+  "euiccInfo_subtitle": "Device and eUICC details",
   "euiccInfo_sasAcreditationNumber": "SAS Accreditation",
   "euiccInfo_profileVersion": "Profile Version",
   "euiccInfo_globalplatformVersion": "Global Platform Version",
@@ -36,11 +37,13 @@
   "main_screen": "Main Screen",
 
   "backup": "Backup",
-  "backup_export": "Export Sizes",
-  "backup_import": "Import Sizes",
+  "backup_description": "This can be used to export downloaded profile sizes, configurations and other locally stored data, to preserve across reinstalls or device changes.",
+  "backup_export": "Export Data",
+  "backup_import": "Import Data",
 
 
   "settings_settings": "Settings",
+  "settings_subtitle": "Customize app preferences",
   "settings_title_showSlots": "SIM Slot display rules",
   "settings_item_showSlots_all": "All SIM card slots",
   "settings_item_showSlots_possible": "OMAPI-enabled slots",
@@ -90,7 +93,7 @@
   "settings_text_themeColor": "",
 
   "profile_profile_detail": "Profile Detail",
-  "profile_collection_stats": "Collection Stats",
+  "profile_collection_stats": "Collection",
   "profile_name": "Name",
   "profile_plmn": "PLMN",
   "profile_country": "Country",
@@ -139,6 +142,7 @@
   "profile_ui_download": "Download",
 
   "notifications_notifications": "Notifications",
+  "notifications_subtitle": "These messages update your carrier about changes to your eSIM profiles. Some profiles need these messages to work properly or download again.",
   "notifications_send": "Send Notifications",
   "notifications_send_success": "Notification sent successfully",
   "notifications_send_failed": "Notification failed to send",
@@ -147,7 +151,9 @@
   "notifications_delete_alert": "Are you sure to delete this notification? It cannot be recovered",
   "notifications_delete_ok": "OK",
   "notifications_delete_cancel": "Cancel",
-
+  "notifications_handle_all": "Handle Notifications",
+  "notifications_processing_all": "Processing all notifications. This may take some time.",
+  "notifications_processing_all_success": "All notifications processed successfully.",
 
   "progress_download.step1.es10b_get_euicc_challenge_and_info": "(1/4) Checking card",
   "progress_download.step2.es9p_initiate_authentication": "(2/4) Communicating with Server",
