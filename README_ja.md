@@ -12,7 +12,7 @@ Android と iOS の LPA アプリ。
 
 ## Google Play バリアント
 
-* [ShiinaSekiu](https://github.com/ShiinaSekiu) のコミュニティキー版の [NekokoLPA アプリ](https://play.google.com/store/apps/details?id=ee.nekoko.nlpa)
+* [ShiinaSekiu](https://github.com/ShiinaSekiu) コミュニティキー版の [NekokoLPA アプリ](https://play.google.com/store/apps/details?id=ee.nekoko.nlpa)
 * [9eSIM リムーバブルカード](https://9es.im/)用の [9eSIM アプリ](https://play.google.com/store/apps/details?id=ee.nekoko.nlpa.flavor1)
 
 ## その他のカードについて
