@@ -64,6 +64,39 @@ class Ccid(
         return receiveCcidRdrToPcMessage(seq).data
     }
 
+    fun paramBlock(param: ByteArray): ByteArray {
+        val seq = currentSeq++
+        val command = byteArrayOf(
+            0x61.toByte(),
+            param.size.toByte(),
+            (param.size shr 8).toByte(),
+            (param.size shr 16).toByte(),
+            (param.size shr 24).toByte(),
+            0x00,
+            seq,
+            0x00,
+            0x00,
+            0x00
+        )
+        val data = command + param
+
+        var bytesSent = 0
+        while (bytesSent < data.size) {
+            val chunkSize = minOf(data.size - bytesSent, bulkOut.maxPacketSize)
+            val chunk = data.copyOfRange(bytesSent, bytesSent + chunkSize)
+            sendCcidPcToRdrMessage(chunk)
+            bytesSent += chunkSize
+        }
+
+	var retries = 3
+        var bytesRead: Int
+        val buffer = ByteArray(bulkIn.maxPacketSize)
+        do {
+            bytesRead = usbDeviceConnection.bulkTransfer(bulkIn, buffer, buffer.size, USB_TIMEOUT)
+        } while (bytesRead <= 0 && retries-- > 0)
+
+        return buffer.sliceArray(0..bytesRead)
+    }
 
     @OptIn(ExperimentalStdlibApi::class)
     fun getDescriptor(interfaceIdx: Int): CcidDescriptor? {
