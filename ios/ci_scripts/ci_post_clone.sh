@@ -10,7 +10,11 @@ cd ../..
 
 # 1. Install Node.js dependencies
 # We use yarn as indicated by yarn.lock and package.json
-corepack enable
+# Xcode Cloud may not have corepack enabled by default.
+if ! command -v yarn &> /dev/null; then
+    echo "Yarn not found, installing..."
+    npm install -g yarn
+fi
 yarn install
 
 # 2. Apply the default variant 'store'
