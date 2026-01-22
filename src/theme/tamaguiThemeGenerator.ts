@@ -1,4 +1,4 @@
-import {getColorTint, isDarkColor} from './colorUtils';
+import { getColorTint, isDarkColor } from './colorUtils';
 import MaterialYou from 'react-native-material-you-colors';
 
 
@@ -15,7 +15,7 @@ export function generateTamaguiTheme(
 ): Record<string, string> {
 
   const palette = MaterialYou.getMaterialYouPalette();
-  const primaryColor = themeColor === "my" ? palette?.system_accent1[7] : themeColor || '#a575f6';
+  const primaryColor = themeColor === "my" ? palette?.system_accent1[7] : themeColor || '#813ff3';
 
   const isPrimaryDark = isDarkColor(primaryColor);
 

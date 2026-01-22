@@ -1,5 +1,5 @@
 var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
+    __assign = Object.assign || function (t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
             for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -17,7 +17,8 @@ import { shorthands } from '@tamagui/shorthands';
 // @ts-ignore - Metro resolves subpath exports at runtime
 var defaultConfig = require('@tamagui/config').config;
 var interFont = createInterFont();
-var appTokens = createTokens(__assign(__assign({}, defaultConfig.tokens), { size: __assign(__assign({}, defaultConfig.tokens.size), { xs: 10, sm: 12, md: 14, lg: 16, xl: 18, '2xl': 20, '3xl': 24, '4xl': 32 }), space: __assign(__assign({}, defaultConfig.tokens.space), { 1: 4, 2: 8, 3: 12, 4: 16, 5: 20, 6: 24, 7: 28, 8: 32, 9: 36, 10: 40 }), 
+var appTokens = createTokens(__assign(__assign({}, defaultConfig.tokens), {
+    size: __assign(__assign({}, defaultConfig.tokens.size), { xs: 10, sm: 12, md: 14, lg: 16, xl: 18, '2xl': 20, '3xl': 24, '4xl': 32 }), space: __assign(__assign({}, defaultConfig.tokens.space), { 1: 4, 2: 8, 3: 12, 4: 16, 5: 20, 6: 24, 7: 28, 8: 32, 9: 36, 10: 40 }),
     // Keep default v4 color tokens - rely on theme overrides rather than custom keys
     color: __assign({}, defaultConfig.tokens.color), radius: {
         0: 0,
@@ -38,10 +39,11 @@ var appTokens = createTokens(__assign(__assign({}, defaultConfig.tokens), { size
         3: 3,
         4: 4,
         5: 5,
-    } }));
-// Default themes with default primary color (#a575f6)
+    }
+}));
+// Default themes with default primary color (#813ff3)
 import { generateTamaguiThemes } from '@/theme/tamaguiThemeGenerator';
-var defaultPrimaryColor = '#a575f6';
+var defaultPrimaryColor = '#813ff3';
 var defaultThemes = generateTamaguiThemes(defaultPrimaryColor);
 // Base themes structure - will be merged with generated themes
 var baseLightTheme = __assign(__assign({}, defaultConfig.themes.light), { borderColor: '#e6e6ea', shadowColor: 'rgba(0,0,0,0.06)' });

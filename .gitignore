@@ -93,7 +93,13 @@ src/assets/images/logo.png
 
 
 
-android/app/build.gradle
+# The following files are modified by apply_variant.sh but SHOULD be committed 
+# in their 'store' (default) state so CI builds can work correctly.
+# Reversion is handled by .git/hooks/pre-commit.
+# android/app/build.gradle
+# ios/NekokoLPA.xcodeproj/project.pbxproj
+# ios/NekokoLPA/Info.plist
+
 android/app/src/main/res/drawable/turtle_card.png
 android/app/src/main/res/mipmap-hdpi/ic_launcher.png
 android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.png
@@ -110,7 +116,6 @@ android/app/src/main/res/mipmap-xxhdpi/ic_launcher_monochrome.png
 android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
 android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png
 android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_monochrome.png
-ios/NekokoLPA.xcodeproj/project.pbxproj
 ios/NekokoLPA/Images.xcassets/AppIcon.appiconset/AppIcon-20@2x.png
 ios/NekokoLPA/Images.xcassets/AppIcon.appiconset/AppIcon-20@2x~ipad.png
 ios/NekokoLPA/Images.xcassets/AppIcon.appiconset/AppIcon-20@3x.png
@@ -135,4 +140,3 @@ ios/NekokoLPA/Images.xcassets/AppIcon.appiconset/AppIcon~ipad.png
 ios/NekokoLPA/Images.xcassets/SplashIcon.imageset/9eSIM.png
 ios/NekokoLPA/Images.xcassets/SplashIcon.imageset/Contents.json
 ios/NekokoLPA/Images.xcassets/SplashIcon.imageset/splash@1x.png
-ios/NekokoLPA/Info.plist

@@ -61,10 +61,10 @@ const appTokens = createTokens({
   },
 })
 
-// Default themes with default primary color (#a575f6)
+// Default themes with default primary color (#813ff3)
 import { generateTamaguiThemes } from '@/theme/tamaguiThemeGenerator'
 
-const defaultPrimaryColor = '#a575f6'
+const defaultPrimaryColor = '#813ff3'
 const defaultThemes = generateTamaguiThemes(defaultPrimaryColor)
 
 // Base themes structure - will be merged with generated themes
@@ -118,7 +118,7 @@ const config = createTamaguiConfigWithColor(defaultPrimaryColor)
 export type AppConfig = typeof config
 
 declare module 'tamagui' {
-  interface TamaguiCustomConfig extends AppConfig {}
+  interface TamaguiCustomConfig extends AppConfig { }
 }
 
 export default config

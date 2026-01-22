@@ -28,20 +28,14 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = NekokoLPA/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = NekokoLPA/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = NekokoLPA/main.m; sourceTree = "<group>"; };
-		14DA95A0AD0BBB649C91A49E /* Pods-NekokoLPA-9eSIM.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NekokoLPA-9eSIM.debug.xcconfig"; path = "Target Support Files/Pods-NekokoLPA-9eSIM/Pods-NekokoLPA-9eSIM.debug.xcconfig"; sourceTree = "<group>"; };
-		19F6CBCC0A4E27FBF8BF4A61 /* libPods-NekokoLPA-NekokoLPATests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NekokoLPA-NekokoLPATests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		201C54C75A27686A90E8E10B /* Pods-NekokoLPA.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NekokoLPA.release.xcconfig"; path = "Target Support Files/Pods-NekokoLPA/Pods-NekokoLPA.release.xcconfig"; sourceTree = "<group>"; };
-		5B7EB9410499542E8C5724F5 /* Pods-NekokoLPA-NekokoLPATests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NekokoLPA-NekokoLPATests.debug.xcconfig"; path = "Target Support Files/Pods-NekokoLPA-NekokoLPATests/Pods-NekokoLPA-NekokoLPATests.debug.xcconfig"; sourceTree = "<group>"; };
 		5FE7F0A3B73D3051C94B0584 /* Pods-NekokoLPA.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NekokoLPA.debug.xcconfig"; path = "Target Support Files/Pods-NekokoLPA/Pods-NekokoLPA.debug.xcconfig"; sourceTree = "<group>"; };
 		6CEC0F080363983D3A3A9F20 /* libPods-NekokoLPA.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NekokoLPA.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		89C6BE57DB24E9ADA2F236DE /* Pods-NekokoLPA-NekokoLPATests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NekokoLPA-NekokoLPATests.release.xcconfig"; path = "Target Support Files/Pods-NekokoLPA-NekokoLPATests/Pods-NekokoLPA-NekokoLPATests.release.xcconfig"; sourceTree = "<group>"; };
 		8CC7D2CD2CDBE2C900EE91E7 /* NekokoLPA-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NekokoLPA-Bridging-Header.h"; sourceTree = "<group>"; };
 		8CC7D2CE2CDBE2C900EE91E7 /* CCIDPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CCIDPlugin.swift; sourceTree = "<group>"; };
 		8CC7D2D02CDBE3EB00EE91E7 /* CCIDPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CCIDPlugin.m; sourceTree = "<group>"; };
 		8CC7D2D92CDC9D5A00EE91E7 /* CustomHttp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHttp.swift; sourceTree = "<group>"; };
 		8CC7D2DB2CDC9D7600EE91E7 /* CustomHttp.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CustomHttp.m; sourceTree = "<group>"; };
-		D7636A76561FAA26267B54E3 /* Pods-NekokoLPA-9eSIM.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NekokoLPA-9eSIM.release.xcconfig"; path = "Target Support Files/Pods-NekokoLPA-9eSIM/Pods-NekokoLPA-9eSIM.release.xcconfig"; sourceTree = "<group>"; };
-		DC2DB43DD295127BE85963DC /* libPods-NekokoLPA-9eSIM.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NekokoLPA-9eSIM.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F571B3872BD7A3F80014213C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -83,8 +77,6 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				19F6CBCC0A4E27FBF8BF4A61 /* libPods-NekokoLPA-NekokoLPATests.a */,
-				DC2DB43DD295127BE85963DC /* libPods-NekokoLPA-9eSIM.a */,
 				6CEC0F080363983D3A3A9F20 /* libPods-NekokoLPA.a */,
 			);
 			name = Frameworks;
@@ -130,12 +122,8 @@
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				5B7EB9410499542E8C5724F5 /* Pods-NekokoLPA-NekokoLPATests.debug.xcconfig */,
-				89C6BE57DB24E9ADA2F236DE /* Pods-NekokoLPA-NekokoLPATests.release.xcconfig */,
 				5FE7F0A3B73D3051C94B0584 /* Pods-NekokoLPA.debug.xcconfig */,
 				201C54C75A27686A90E8E10B /* Pods-NekokoLPA.release.xcconfig */,
-				14DA95A0AD0BBB649C91A49E /* Pods-NekokoLPA-9eSIM.debug.xcconfig */,
-				D7636A76561FAA26267B54E3 /* Pods-NekokoLPA-9eSIM.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
