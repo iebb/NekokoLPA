@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0C80B921A6F3F58F76C31292 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
+		0C80B921A6F3F58F76C31292 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -16,7 +16,7 @@
 		8CC7D2D12CDBE3EB00EE91E7 /* CCIDPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC7D2D02CDBE3EB00EE91E7 /* CCIDPlugin.m */; };
 		8CC7D2DA2CDC9D5A00EE91E7 /* CustomHttp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC7D2D92CDC9D5A00EE91E7 /* CustomHttp.swift */; };
 		8CC7D2DC2CDC9D7600EE91E7 /* CustomHttp.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC7D2DB2CDC9D7600EE91E7 /* CustomHttp.m */; };
-		984F582519C4230BA4307B6C /* (null) in Frameworks */ = {isa = PBXBuildFile; };
+		984F582519C4230BA4307B6C /* BuildFile in Frameworks */ = {isa = PBXBuildFile; };
 		F559F192714A9331A2D2540A /* libPods-NekokoLPA.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6CEC0F080363983D3A3A9F20 /* libPods-NekokoLPA.a */; };
 		F571B3882BD7A3F80014213C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F571B3872BD7A3F80014213C /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
@@ -46,8 +46,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				8C5BB0FF2CEB583A0089737C /* AsyncHTTPClient in Frameworks */,
-				0C80B921A6F3F58F76C31292 /* (null) in Frameworks */,
-				984F582519C4230BA4307B6C /* (null) in Frameworks */,
+				0C80B921A6F3F58F76C31292 /* BuildFile in Frameworks */,
+				984F582519C4230BA4307B6C /* BuildFile in Frameworks */,
 				F559F192714A9331A2D2540A /* libPods-NekokoLPA.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -178,7 +178,7 @@
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			packageReferences = (
-				8C5BB0FD2CEB583A0089737C /* XCRemoteSwiftPackageReference "async-http-client" */,
+				8C5BB0FD2CEB583A0089737C /* XCRemoteSwiftPackageReference "async-http-client.git" */,
 			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
@@ -240,13 +240,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-NekokoLPA/Pods-NekokoLPA-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-NekokoLPA/Pods-NekokoLPA-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -283,13 +279,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-NekokoLPA/Pods-NekokoLPA-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-NekokoLPA/Pods-NekokoLPA-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -601,7 +593,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		8C5BB0FD2CEB583A0089737C /* XCRemoteSwiftPackageReference "async-http-client" */ = {
+		8C5BB0FD2CEB583A0089737C /* XCRemoteSwiftPackageReference "async-http-client.git" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/swift-server/async-http-client.git";
 			requirement = {
@@ -614,7 +606,7 @@
 /* Begin XCSwiftPackageProductDependency section */
 		8C5BB0FE2CEB583A0089737C /* AsyncHTTPClient */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 8C5BB0FD2CEB583A0089737C /* XCRemoteSwiftPackageReference "async-http-client" */;
+			package = 8C5BB0FD2CEB583A0089737C /* XCRemoteSwiftPackageReference "async-http-client.git" */;
 			productName = AsyncHTTPClient;
 		};
 /* End XCSwiftPackageProductDependency section */

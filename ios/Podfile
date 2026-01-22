@@ -35,7 +35,6 @@ target 'NekokoLPA' do
     )
     installer.pods_project.build_configurations.each do |config|
       config.build_settings['OTHER_CPLUSPLUSFLAGS'] ||= ['$(OTHER_CFLAGS)']
-      config.build_settings['OTHER_CPLUSPLUSFLAGS'] << ' -DFOLLY_CFG_NO_COROUTINES=1'
     end
 
     # User-suggested fix for Folly coroutines
