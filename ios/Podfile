@@ -5,10 +5,10 @@ require Pod::Executable.execute_command('node', ['-p',
     {paths: [process.argv[1]]},
   )', __dir__]).strip
 
-platform :ios, min_ios_version_supported
+platform :ios, '15.1'
 prepare_react_native_project!
 
-ENV['RCT_NEW_ARCH_ENABLED'] = '0'
+ENV['RCT_NEW_ARCH_ENABLED'] = '1'
 
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
@@ -26,9 +26,6 @@ target 'NekokoLPA' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  target '9eSIM' do
-    inherit! :complete
-  end
 
   post_install do |installer|
     react_native_post_install(

@@ -43,8 +43,6 @@
 	<string>This app uses Bluetooth to connect to external reader. Location is not actually required.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>$(PRODUCT_NAME) needs access to your Camera to scan QR codes.</string>
-	<key>RCTNewArchEnabled</key>
-	<true/>
 	<key>UIAppFonts</key>
 	<array/>
 	<key>UILaunchScreen</key>

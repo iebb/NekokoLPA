@@ -5,5 +5,8 @@
     "githubLink": "https://github.com/iebb/NekokoLPA/",
     "displayGithubLink": false,
     "appId": "ee.nekoko.nlpa.flavor1",
-    "flavor": "flavor1"
+    "flavor": "flavor1",
+    "iOSTeamId": "465NH4KUMT",
+    "iOSAppId": "com.9esim.nlpa",
+    "versionSuffix": "-9e"
 }

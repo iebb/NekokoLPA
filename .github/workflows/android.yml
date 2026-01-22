@@ -38,7 +38,7 @@ jobs:
           SIGN_PASS_WENZI: ${{ secrets.SIGN_PASS_WENZI }}
         run: |
           mkdir -p output
-          chmod +x apply_variant.sh generate_variant.sh build_variant.sh variants/*/signing.sh payments/google/signing.sh
+          chmod +x apply_variant.sh generate_variant.sh build_variant.sh variants/*/signing.sh
           
           ./build_variant.sh multisign NekokoLPA-multisign.apk
 

@@ -5,5 +5,8 @@
     "githubLink": "https://github.com/iebb/NekokoLPA/",
     "displayGithubLink": true,
     "appId": "ee.nekoko.nlpa.multisign",
-    "flavor": "multisign"
+    "flavor": "multisign",
+    "iOSTeamId": "9733K94JUG",
+    "iOSAppId": "ee.nekoko.nlpa.multisign",
+    "versionSuffix": "-debug"
 }
