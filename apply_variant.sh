@@ -115,6 +115,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     # Normalize Info.plist and Icon Name usage 
     sed -i '' "s/INFOPLIST_FILE = .*.plist;/INFOPLIST_FILE = NekokoLPA\/Info.plist;/g" "$PBXPROJ"
     sed -i '' "s/ASSETCATALOG_COMPILER_APPICON_NAME = .*/ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;/g" "$PBXPROJ"
+    sed -i '' "s/IPHONEOS_DEPLOYMENT_TARGET = [^;]*;/IPHONEOS_DEPLOYMENT_TARGET = 16.0;/g" "$PBXPROJ"
     
     # Update Display Name in Info.plist (which is now the replaced one)
     if [ -n "$APP_TITLE" ]; then

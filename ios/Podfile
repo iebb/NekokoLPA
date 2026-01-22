@@ -5,7 +5,7 @@ require Pod::Executable.execute_command('node', ['-p',
     {paths: [process.argv[1]]},
   )', __dir__]).strip
 
-platform :ios, '15.6'
+platform :ios, '16.0'
 prepare_react_native_project!
 
 ENV['RCT_NEW_ARCH_ENABLED'] = '1'
@@ -33,5 +33,9 @@ target 'NekokoLPA' do
       config[:reactNativePath],
       :mac_catalyst_enabled => false,
     )
+    installer.pods_project.build_configurations.each do |config|
+      config.build_settings['OTHER_CPLUSPLUSFLAGS'] ||= ['$(OTHER_CFLAGS)']
+      config.build_settings['OTHER_CPLUSPLUSFLAGS'] << '-DFOLLY_CFG_NO_COROUTINES=1'
+    end
   end
 end
