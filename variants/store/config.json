@@ -1,0 +1,9 @@
+{
+    "appTitle": "NekokoLPA",
+    "buyLink": "https://lpa.nekoko.ee/products",
+    "checkForUpdates": true,
+    "githubLink": "https://github.com/iebb/NekokoLPA/",
+    "displayGithubLink": true,
+    "appId": "ee.nekoko.nlpa",
+    "flavor": "store"
+}

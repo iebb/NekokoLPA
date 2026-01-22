@@ -1,8 +1,8 @@
-import {Adapters} from "@/native/adapters/registry";
-import {setupDevice} from "@/native/jsnative/setup";
-import {setDeviceState} from "@/redux/stateStore";
-import {Dispatch} from "@reduxjs/toolkit";
-import {Notification} from "@/native/types/LPA";
+import { Adapters } from "@/native/adapters/registry";
+import { setupDevice } from "@/native/jsnative/setup";
+import { setDeviceState } from "@/redux/stateStore";
+import { Dispatch } from "@reduxjs/toolkit";
+import { Notification } from "@/native/types/LPA";
 
 export interface Device {
   available: boolean;

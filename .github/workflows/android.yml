@@ -8,7 +8,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     environment: Android auto-builder
 
@@ -21,31 +20,27 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      # Step 2: Set up Node.js (required for package.json)
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'  # You can adjust the version as needed
+          node-version: '20'
 
-      # Step 3: Install dependencies (if necessary)
       - name: Install dependencies
-        run: npm install  --legacy-peer-deps
+        run: npm install --legacy-peer-deps
 
-      # Step 4: Get version from package.json
       - name: Extract version from package.json
         id: extract_version
         run: echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
 
-      # Step 5: Run the build script
-      - name: Build APK
-        run: chmod +x build_for_github.sh && bash ./build_for_github.sh
-
-      # Step 5: Run the build script
-      - name: Sign APK
+      - name: Build and Sign Multisign Variant
         env:
           SIGN_PASS_NEKOKO_BEEF: ${{ secrets.SIGN_PASS_NEKOKO_BEEF }}
           SIGN_PASS_WENZI: ${{ secrets.SIGN_PASS_WENZI }}
-        run: chmod +x sign.sh && bash ./sign.sh
+        run: |
+          mkdir -p output
+          chmod +x apply_variant.sh generate_variant.sh build_variant.sh variants/*/signing.sh payments/google/signing.sh
+          
+          ./build_variant.sh multisign NekokoLPA-multisign.apk
 
       - name: Create Release
         id: create_release
@@ -60,45 +55,22 @@ jobs:
           body: |
             Auto-Release for version ${{ env.VERSION }}.
 
-      # Step 4: Upload APK to the release
-      - name: Upload APK to Release
+      - name: Upload Multisign APK to Release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./outputs/ee.nekoko.nlpa.multisign-arm64-v8a-${{ env.VERSION }}.apk
-          asset_name: ee.nekoko.nlpa.multisign-arm64-v8a-${{ env.VERSION }}.apk
+          asset_path: ./output/NekokoLPA-multisign.apk
+          asset_name: NekokoLPA-multisign-v${{ env.VERSION }}.apk
           asset_content_type: application/vnd.android.package-archive
 
-      # Step 4: Upload APK to the release
-      - name: Upload APK to Release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./outputs/ee.nekoko.nlpa.multisign-4signers-arm64-v8a-${{ env.VERSION }}.apk
-          asset_name: ee.nekoko.nlpa.multisign-signers4-arm64-v8a-${{ env.VERSION }}.apk
-          asset_content_type: application/vnd.android.package-archive
-
-      - name: Upload files to Telegram
+      - name: Upload Multisign to Telegram
         uses: xz-dev/TelegramFileUploader@v1.1.1
         with:
           to-who: 'NekokoLPA'
-          message: 'Version ${{ env.VERSION }} (Github: https://github.com/iebb/NekokoLPA/releases/tag/v${{ env.VERSION }})'
-          files: ./outputs/ee.nekoko.nlpa.multisign-arm64-v8a-${{ env.VERSION }}.apk
-        env:
-          API_ID: ${{ secrets.API_ID }}
-          API_HASH: ${{ secrets.API_HASH }}
-          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
-
-      - name: Upload files to Telegram
-        uses: xz-dev/TelegramFileUploader@v1.1.1
-        with:
-          to-who: 'NekokoLPA'
-          message: 'Version ${{ env.VERSION }} [4 signers]'
-          files: ./outputs/ee.nekoko.nlpa.multisign-4signers-arm64-v8a-${{ env.VERSION }}.apk
+          message: 'NekokoLPA Multisign v${{ env.VERSION }} (Github: https://github.com/iebb/NekokoLPA/releases/tag/v${{ env.VERSION }})'
+          files: ./output/NekokoLPA-multisign.apk
         env:
           API_ID: ${{ secrets.API_ID }}
           API_HASH: ${{ secrets.API_HASH }}

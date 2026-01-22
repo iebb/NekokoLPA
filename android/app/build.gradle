@@ -5,18 +5,6 @@ plugins {
     id "com.android.application"
 }
 
-project.ext.envConfigFiles = [
-   storerelease: "env.release.store.env",
-   flavor1release: "env.release.flavor1.env",
-   multisignrelease: "env.release.multisign.env",
-
-   storedebug: "env.release.store.env",
-   flavor1debug: "env.release.flavor1.env",
-   multisigndebug: "env.release.multisign.env",
-]
-
-apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
-
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 
@@ -112,6 +100,10 @@ android {
         versionCode packageJson["buildVersion"]
         versionName packageJson["version"]
         resValue "string", "build_config_package", "ee.nekoko.nlpa"
+        manifestPlaceholders = [
+                appLabel: 'NekokoLPA',
+                appIcon: "@mipmap/ic_launcher"
+        ]
     }
     signingConfigs {
         community {
@@ -119,12 +111,6 @@ android {
             storePassword 'CommunityKey'
             keyAlias 'CommunityKey'
             keyPassword 'CommunityKey'
-        }
-        esim9 {
-            storeFile file('9eSIMCommunityKey.jks')
-            storePassword '147258369'
-            keyAlias 'key0'
-            keyPassword '147258369'
         }
     }
     splits {
@@ -148,34 +134,6 @@ android {
             signingConfig signingConfigs.community
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-        }
-    }
-    flavorDimensions "version"
-    productFlavors {
-        multisign {
-            applicationIdSuffix ".multisign"
-            dimension "version"
-            manifestPlaceholders = [
-                    appLabel: 'NekokoLPA M',
-                    appIcon: "@mipmap/ic_launcher_multi"
-            ]
-       }
-       flavor1 {
-           applicationIdSuffix ".flavor1"
-           dimension "version"
-           versionNameSuffix "-9e"
-           signingConfig signingConfigs.esim9
-           manifestPlaceholders = [
-                   appLabel: '9eSIM-nLPA',
-                   appIcon: "@mipmap/ic_launcher_9esim"
-           ]
-       }
-        store {
-            dimension "version"
-            manifestPlaceholders = [
-                    appLabel: 'NekokoLPA',
-                    appIcon: "@mipmap/ic_launcher"
-            ]
         }
     }
 }

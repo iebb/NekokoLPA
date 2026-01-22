@@ -1,25 +1,27 @@
 import "react-native-gesture-handler";
-import {ThemeProvider, useColorScheme} from "@/theme/context";
+import { ThemeProvider, useColorScheme } from "@/theme/context";
 import "./translations";
-import {NativeListener} from "@/native/NativeListener";
-import {store} from "@/redux/reduxDataStore";
-import {Provider} from "react-redux";
+import { NativeListener } from "@/native/NativeListener";
+import { store } from "@/redux/reduxDataStore";
+import { Provider } from "react-redux";
 import ApplicationNavigator from "@/screens/Application";
-import {TamaguiProvider} from "@tamagui/core";
-import {KeyboardAvoidingView, Platform} from 'react-native';
-import {PortalProvider} from '@tamagui/portal';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import { TamaguiProvider } from "@tamagui/core";
+import { KeyboardAvoidingView, Platform } from 'react-native';
+import { PortalProvider } from '@tamagui/portal';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import React from 'react';
-import {useTheme, Theme} from 'tamagui';
-import {createTamaguiConfigWithColor} from "../tamagui.config";
-import {preferences} from "@/utils/mmkv";
+import { useTheme, Theme } from 'tamagui';
+import { createTamaguiConfigWithColor } from "../tamagui.config";
+import { preferences } from "@/utils/mmkv";
 import MaterialYou from 'react-native-material-you-colors';
+import { isSimplifiedMode } from "@/utils/featureConfig";
 
 const getThemeColor = () => {
-  const themeColor = preferences.getString("themeColor") || '#a575f6';
+  if (isSimplifiedMode()) return '#813ff3';
+  const themeColor = preferences.getString("themeColor") || '#813ff3';
   if (themeColor === 'my' && Platform.OS === 'android') {
     const palette = MaterialYou.getMaterialYouPalette();
-    return palette?.system_accent1[7] || '#a575f6';
+    return palette?.system_accent1[7] || '#813ff3';
   }
   return themeColor;
 };

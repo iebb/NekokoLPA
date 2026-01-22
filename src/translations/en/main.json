@@ -6,7 +6,7 @@
   "insert_supported_sim": "Try insert a supported SIM card or relaunch the app.",
   "open_stk_menu": "Open STK Menu",
   "android_aram": "This application supports following ARA-Ms.",
-  "purchase_note": "Buy supported devices",
+  "purchase_note": "Buy Device",
   "set_nickname": "Set Nickname",
   "set_nickname_prompt": "Set a nickname for this card. Works locally only",
   "download_profile": "Download Profile",
@@ -16,7 +16,6 @@
   "remote_device": "PIN for Remote Device",
   "remote_device_pin": "Remote Endpoint\n{{remote}}\nrequires a PIN to connect to.",
   "bluetooth_scan": "Bluetooth",
-
   "euiccInfo_euiccinfo": "EUICC Info",
   "euiccInfo_subtitle": "Device and eUICC details",
   "euiccInfo_sasAcreditationNumber": "SAS Accreditation",
@@ -32,18 +31,17 @@
   "euiccInfo_euiccCiPKIdListForVerification": "EUICC Verify CI",
   "euiccInfo_defaultDpAddress": "Default SM-DP+ Address",
   "euiccInfo_rootDsAddress": "Root SM-DS Address",
-
   "go_back": "Back",
   "main_screen": "Main Screen",
-
   "backup": "Backup",
   "backup_description": "This can be used to export downloaded profile sizes, configurations and other locally stored data, to preserve across reinstalls or device changes.",
   "backup_export": "Export Data",
   "backup_import": "Import Data",
-
-
   "settings_settings": "Settings",
   "settings_subtitle": "Customize app preferences",
+  "settings_group_general": "General",
+  "settings_group_display": "Display",
+  "settings_group_advanced": "Advanced",
   "settings_title_showSlots": "SIM Slot display rules",
   "settings_item_showSlots_all": "All SIM card slots",
   "settings_item_showSlots_possible": "OMAPI-enabled slots",
@@ -87,11 +85,11 @@
   "settings_title_disableProtection": "Profile Disable Protection",
   "settings_item_disableProtection_on": "On",
   "settings_item_disableProtection_off": "Off",
+  "settings_title_aid": "AID Management",
   "settings_title_remoteDevice": "Remote Reader URL",
   "settings_text_remoteDevice": "Connect to a remote reader with HTTPS",
   "settings_title_themeColor": "Theme Color (restart to take effect)",
   "settings_text_themeColor": "",
-
   "profile_profile_detail": "Profile Detail",
   "profile_collection_stats": "Collection",
   "profile_name": "Name",
@@ -140,7 +138,6 @@
   "profile_ui_back": "Back",
   "profile_ui_cancel": "Cancel",
   "profile_ui_download": "Download",
-
   "notifications_notifications": "Notifications",
   "notifications_subtitle": "These messages update your carrier about changes to your eSIM profiles. Some profiles need these messages to work properly or download again.",
   "notifications_send": "Send Notifications",
@@ -154,23 +151,17 @@
   "notifications_handle_all": "Handle Notifications",
   "notifications_processing_all": "Processing all notifications. This may take some time.",
   "notifications_processing_all_success": "All notifications processed successfully.",
-
   "progress_download.step1.es10b_get_euicc_challenge_and_info": "(1/4) Checking card",
   "progress_download.step2.es9p_initiate_authentication": "(2/4) Communicating with Server",
   "progress_download.step3.es10b_authenticate_server": "(3/4) Check Server Response",
   "progress_download.step4.es9p_authenticate_client": "(4/4) Requesting Metadata",
   "progress_download.step4.es11_authenticate_client": "(4/4) Requesting Servers",
   "progress_download.step5.finished": "(4/4) Finished",
-
   "progress_download.step5.es10b_prepare_download": "(1/5) Confirming Download",
   "progress_download.step6.es9p_get_bound_profile_package": "(2/5) Requesting Profile from Server",
   "progress_download.step7.es10b_load_bound_profile_package": "(3/5) Processing Profile Package",
   "progress_download.step7.es10b_load_bound_profile_package_tx_1": "(3/5) Processing Profile Package {{total}}/6",
   "progress_download.step8.load_bpp": "(4/5) Writing Profile {{progress}}/{{total}}B",
   "progress_download.step9.finalize": "(5/5) Finalize Download",
-
-
-
   "_": ""
 }
-

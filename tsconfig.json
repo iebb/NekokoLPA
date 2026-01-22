@@ -1,20 +1,34 @@
 {
-  "extends": "@react-native/typescript-config/tsconfig.json",
+  "extends": "@react-native/typescript-config",
   "compilerOptions": {
-    "types": ["jest", "node"],
+    "types": [
+      "node"
+    ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ],
+      "reactotron-core-client": [
+        "./node_modules/reactotron-core-client/dist/types/src/index.d.ts"
+      ],
+      "reactotron-react-native": [
+        "./node_modules/reactotron-react-native/dist/types/src/index.d.ts"
+      ]
     },
     "allowImportingTsExtensions": false,
     "module": "esnext",
+    "skipLibCheck": true,
   },
   "include": [
     "./src/**/*",
     "index.d.ts",
     ".eslintrc.js",
-    "jest.setup.js",
-    "jest.config.js",
     "babel.config.js",
     "index.js"
   ],
+  "exclude": [
+    "node_modules",
+    "**/node_modules/*",
+    "**/Pods/**"
+  ]
 }

@@ -1,43 +1,25 @@
-import React, {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "@/redux/reduxDataStore";
-import {useTranslation} from "react-i18next";
-import {Alert, Dimensions, Linking, NativeModules, Platform, ScrollView, ToastAndroid} from "react-native";
-import {Adapters} from "@/native/adapters/registry";
-import {Tabs, Text as TText, XStack, YStack, View as TView, Separator, AnimatePresence} from 'tamagui';
-import {Smartphone, Bluetooth, Usb} from '@tamagui/lucide-icons';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/reduxDataStore";
+import { useTranslation } from "react-i18next";
+import { Alert, Dimensions, Linking, NativeModules, Platform, ScrollView, ToastAndroid } from "react-native";
+import { Adapters } from "@/native/adapters/registry";
+import { Tabs, Text as TText, XStack, YStack, View as TView, Separator, AnimatePresence } from 'tamagui';
+import { Smartphone, Bluetooth, Usb } from '@tamagui/lucide-icons';
 import Clipboard from "@react-native-clipboard/clipboard";
-import {preferences} from "@/utils/mmkv";
-import {AppBuyLink} from "@/config";
-import {getNicknames} from "@/configs/store";
-import {setTargetDevice} from "@/redux/stateStore";
+import { preferences } from "@/utils/mmkv";
+import { AppBuyLink } from "@/config";
+
+import { setTargetDevice } from "@/redux/stateStore";
 import ProfileCardHeader from "@/screens/Main/ProfileCardHeader";
 import ProfileSelector from "@/screens/Main/ProfileSelector";
-import {OMAPIBridge} from "@/native/modules";
+import { OMAPIBridge } from "@/native/modules";
 
-// Container component to manage rearrange mode state
-function ProfileSelectorContainer({ deviceId }: { deviceId: string }) {
-  const [rearrangeMode, setRearrangeMode] = useState(false);
 
-  return (
-    <YStack flex={1} minHeight={0} gap={6} key={deviceId} marginTop={3}>
-      <ProfileCardHeader
-        deviceId={deviceId}
-        rearrangeMode={rearrangeMode}
-        setRearrangeMode={setRearrangeMode}
-      />
-      <ProfileSelector
-        deviceId={deviceId}
-        rearrangeMode={rearrangeMode}
-      />
-    </YStack>
-  );
-}
 
 export default function SIMSelector() {
   const ds = useSelector((state: RootState) => state.DeviceState);
-  const {deviceList: _deviceList, targetDevice} = useSelector((state: RootState) => state.LPA);
-  const nicknames = getNicknames();
+  const { deviceList: _deviceList, targetDevice } = useSelector((state: RootState) => state.LPA);
   const dispatch = useDispatch();
   const { t } = useTranslation(['main']);
   const showSlots = preferences.getString("showSlots");
@@ -119,7 +101,6 @@ export default function SIMSelector() {
         value={currentTab}
         onValueChange={setCurrentTab}
         borderRadius={12}
-        marginBottom={8}
       >
         <Tabs.List
           borderRadius={12}
@@ -131,9 +112,8 @@ export default function SIMSelector() {
         >
           {deviceList.map((name, _idx) => {
             const adapter = Adapters[name];
-            const eid = ds[name]?.eid ?? '';
             const label = adapter.device.available ?
-              ((nicknames[eid]) ? nicknames[eid] + ` (${adapter.device.displayName})` : adapter.device.displayName)
+              adapter.device.displayName
               : `${adapter.device.displayName}\nunavailable`;
             return (
               <Tabs.Tab
@@ -178,13 +158,6 @@ export default function SIMSelector() {
                     width="100%"
                     opacity={name === currentTab ? 1 : 0}
                     scaleX={name === currentTab ? 1 : 0}
-                    originX={0}
-                    animation="medium"
-                    transition={{
-                      type: 'timing',
-                      duration: 300,
-                      easing: 'easeInOut',
-                    }}
                   />
                 </YStack>
               </Tabs.Tab>
@@ -201,7 +174,10 @@ export default function SIMSelector() {
           x={0}
         >
           {adapter.device.available ? (
-            <ProfileSelectorContainer deviceId={selected} />
+            <YStack flex={1} minHeight={0} key={selected}>
+              <ProfileCardHeader deviceId={selected} />
+              <ProfileSelector deviceId={selected} />
+            </YStack>
           ) : (
             <ScrollView
               bounces

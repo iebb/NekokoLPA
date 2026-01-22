@@ -1,11 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import {Platform, View} from 'react-native';
-import {useTranslation} from 'react-i18next';
-import Svg, {Defs, LinearGradient as SvgLinearGradient, Rect, Stop} from 'react-native-svg';
-import {Button as TButton, Input, Slider, Text as TText, useTheme, XStack, YStack} from 'tamagui';
-import {preferences} from '@/utils/mmkv';
+import React, { useEffect, useState } from 'react';
+import { Platform, View, TouchableOpacity } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import Svg, { Defs, LinearGradient as SvgLinearGradient, Rect, Stop } from 'react-native-svg';
+import { Button as TButton, Slider, Text as TText, useTheme, XStack, YStack } from 'tamagui';
+import { preferences } from '@/utils/mmkv';
 import AppSheet from '@/components/common/AppSheet';
-import {Paintbrush} from '@tamagui/lucide-icons';
 import MaterialYou from 'react-native-material-you-colors';
 
 export type SettingDataType = {
@@ -13,11 +12,12 @@ export type SettingDataType = {
   options?: string[];
   type: string;
   defaultValue?: string;
+  icon: any;
   onChange?: (value: string) => void;
   validate?: (value: string) => boolean;
 }
 
-const PickerRow = React.memo(function PickerRow({row} : {row: SettingDataType}) {
+const PickerRow = React.memo(function PickerRow({ row }: { row: SettingDataType }) {
   const { t } = useTranslation(['main']);
   const theme = useTheme();
   const currentValue = preferences.getString(row.key) ?? (row.defaultValue ?? '');
@@ -30,83 +30,58 @@ const PickerRow = React.memo(function PickerRow({row} : {row: SettingDataType}) 
 
   if (row.type === 'select') return null;
 
-  if (row.type === 'text') {
-    return (
-      <View style={{width: '100%'}}>
-        <TText color="$color6" fontSize={12} marginBottom={4}>{t(`main:settings_title_${row.key}`)}</TText>
-        <Input
-          placeholder={t(`main:settings_title_${row.key}`)}
-          value={v}
-          onChangeText={value => {
-            setV(value);
-            if (!row.validate || row.validate(value)) preferences.set(row.key, value);
-          }}
-          borderWidth={0.5}
-          borderColor={theme.outlineNeutral?.val || theme.borderColor?.val || '#777'}
-          borderBottomWidth={0.5}
-          backgroundColor="transparent"
-          color={theme.textDefault?.val}
-          placeholderTextColor={theme.color6?.val}
-          fontSize={16}
-          padding={0}
-          paddingBottom={8}
-        />
-      </View>
-    );
-  }
+  const Icon = row.icon;
 
   if (row.type === 'color') {
     const [picker, showPicker] = useState<boolean>(false);
-    
-    // Get Material You color if available
+
     const getMaterialYouColor = () => {
       if (Platform.OS === 'android') {
         const palette = MaterialYou.getMaterialYouPalette();
-        return palette?.system_accent1[7] || '#a575f6';
+        return palette?.system_accent1[7] || '#813ff3';
       }
-      return '#a575f6';
+      return '#813ff3';
     };
-    
+
     const materialYouColor = getMaterialYouColor();
     const isMaterialYou = v === 'my';
     const displayColor = isMaterialYou ? materialYouColor : v;
-    
+
     const hexToHsl = (hex: string) => {
-      const parsed = hex.replace('#','');
-      const full = parsed.length === 3 ? parsed.split('').map(c=>c+c).join('') : parsed;
+      const parsed = hex.replace('#', '');
+      const full = parsed.length === 3 ? parsed.split('').map(c => c + c).join('') : parsed;
       const bigint = parseInt(full, 16);
       const r = ((bigint >> 16) & 255) / 255;
       const g = ((bigint >> 8) & 255) / 255;
       const b = (bigint & 255) / 255;
-      const max = Math.max(r,g,b), min = Math.min(r,g,b);
-      let h = 0, s = 0; const l = (max+min)/2;
-      if(max !== min){
-        const d = max-min;
-        s = l > 0.5 ? d/(2-max-min) : d/(max+min);
-        switch(max){
-          case r: h = (g-b)/d + (g < b ? 6 : 0); break;
-          case g: h = (b-r)/d + 2; break;
-          case b: h = (r-g)/d + 4; break;
+      const max = Math.max(r, g, b), min = Math.min(r, g, b);
+      let h = 0, s = 0; const l = (max + min) / 2;
+      if (max !== min) {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+          case g: h = (b - r) / d + 2; break;
+          case b: h = (r - g) / d + 4; break;
         }
         h /= 6;
       }
-      return { h: Math.round(h*360), s: Math.round(s*100), l: Math.round(l*100) };
+      return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
     };
     const hslToHex = (h: number, s: number, l: number) => {
-      const s1 = s/100, l1 = l/100;
-      const k = (n: number) => (n + h/30) % 12;
+      const s1 = s / 100, l1 = l / 100;
+      const k = (n: number) => (n + h / 30) % 12;
       const a = s1 * Math.min(l1, 1 - l1);
       const f = (n: number) => l1 - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
-      const toHex = (x: number) => Math.round(255*x).toString(16).padStart(2,'0');
+      const toHex = (x: number) => Math.round(255 * x).toString(16).padStart(2, '0');
       return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`.toUpperCase();
     };
-    const initial = hexToHsl(isMaterialYou ? materialYouColor : (v || '#a575f6'));
+    const initial = hexToHsl(isMaterialYou ? materialYouColor : (v || '#813ff3'));
     const [h, setH] = useState<number>(initial.h);
     const [s, setS] = useState<number>(initial.s);
     const [lVal, setLVal] = useState<number>(initial.l);
     const currentHex = hslToHex(h, s, lVal);
-    
-    // Update sliders when Material You is selected and picker opens
+
     useEffect(() => {
       if (picker && isMaterialYou) {
         const myInitial = hexToHsl(materialYouColor);
@@ -120,24 +95,44 @@ const PickerRow = React.memo(function PickerRow({row} : {row: SettingDataType}) 
         setLVal(customInitial.l);
       }
     }, [picker, isMaterialYou, materialYouColor, v]);
+
     return (
-      <View style={{width: '100%'}}>
-        <View>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
-            <View>
-              <TText color="$textDefault" fontSize={14}>{t(`main:settings_title_${row.key}`)}</TText>
-            </View>
-            <View style={{ flex: 1 }} />
-          </View>
-          <View style={{ flexDirection: 'row', width: '100%' }}>
-            <View style={{ flex: 1 }} />
-            <View>
-              <TButton backgroundColor={displayColor} onPress={() => showPicker(true)} style={{ maxWidth: 100 }}>
-                <Paintbrush size={18} color={theme.background?.val || '#fff'} />
-              </TButton>
-            </View>
-          </View>
-        </View>
+      <View style={{ width: '100%' }}>
+        <TouchableOpacity activeOpacity={0.6} onPress={() => showPicker(true)}>
+          <XStack alignItems="center" gap={16}>
+            <YStack
+              padding={8}
+              borderRadius={10}
+              position="relative"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <YStack position="absolute" top={0} left={0} right={0} bottom={0} backgroundColor="$primaryColor" borderRadius={10} opacity={0.15} />
+              <Icon size={20} color={theme.primaryColor?.val} />
+            </YStack>
+
+            <YStack flex={1}>
+              <TText color="$textDefault" fontSize={16} fontWeight="500">
+                {t(`main:settings_title_${row.key}`)}
+              </TText>
+              <TText color="$color6" fontSize={13}>
+                {isMaterialYou ? "Material You" : currentHex}
+              </TText>
+            </YStack>
+
+            <View
+              style={{
+                width: 24,
+                height: 24,
+                borderRadius: 12,
+                backgroundColor: displayColor,
+                borderWidth: 2,
+                borderColor: theme.borderColor?.val
+              }}
+            />
+          </XStack>
+        </TouchableOpacity>
+
         <AppSheet open={picker} onOpenChange={showPicker} title={t(`main:settings_title_${row.key}`)}>
           <YStack gap={16}>
             <XStack gap={12} alignItems="center" justifyContent="space-between">
@@ -146,8 +141,8 @@ const PickerRow = React.memo(function PickerRow({row} : {row: SettingDataType}) 
                 <TText color="$textDefault" fontSize={14}>{currentHex}</TText>
               </XStack>
               {Platform.OS === 'android' && (
-                <TButton 
-                  backgroundColor={materialYouColor} 
+                <TButton
+                  backgroundColor={materialYouColor}
                   onPress={() => {
                     setV('my');
                     preferences.set(row.key, 'my');
@@ -236,7 +231,6 @@ const PickerRow = React.memo(function PickerRow({row} : {row: SettingDataType}) 
                 <TText color="$textDefault">Cancel</TText>
               </TButton>
               <TButton backgroundColor={currentHex} onPress={() => {
-                // Save as hex color (not "my") when applying custom color
                 setV(currentHex);
                 preferences.set(row.key, currentHex);
                 row.onChange?.(currentHex);
@@ -255,5 +249,3 @@ const PickerRow = React.memo(function PickerRow({row} : {row: SettingDataType}) 
 });
 
 export default PickerRow;
-
-

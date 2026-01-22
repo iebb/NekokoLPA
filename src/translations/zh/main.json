@@ -6,22 +6,19 @@
   "insert_supported_sim": "请尝试插入受支持的卡片，刷新或者重启应用再次尝试。",
   "open_stk_menu": "打开 STK 菜单",
   "android_aram": "本应用版本支持以下 ARA-M 值。\n卡片需要支持以下任意值才可以使用",
-  "purchase_note": "购买支持的设备",
+  "purchase_note": "购买设备",
   "set_nickname": "设置昵称",
   "set_nickname_prompt": "为这张卡片设置昵称。仅在当前设备生效",
   "download_profile": "配置下载",
   "manage_notifications": "通知管理",
   "eid_copy": "复制 EID",
-
   "go_back": "返回",
   "main_screen": "主界面",
   "bluetooth_scan": "蓝牙",
-
   "backup": "备份",
   "backup_description": "此功能可用于导出已下载的配置文件大小、配置和其他本地存储的数据，以便在重新安装或更换设备后保留数据。",
   "backup_export": "导出数据",
   "backup_import": "导入数据",
-
   "euiccInfo_euiccinfo": "EUICC Info",
   "euiccInfo_subtitle": "设备和eUICC详细信息",
   "euiccInfo_sasAcreditationNumber": "SAS Accreditation",
@@ -37,7 +34,6 @@
   "euiccInfo_euiccCiPKIdListForVerification": "EUICC Verify CI",
   "euiccInfo_defaultDpAddress": "Default SM-DP+ Address",
   "euiccInfo_rootDsAddress": "Root SM-DS Address",
-
   "settings_settings": "设置",
   "settings_subtitle": "自定义应用偏好设置",
   "settings_title_showSlots": "卡槽显示",
@@ -78,7 +74,6 @@
   "settings_text_remoteDevice": "通过 HTTPS 连接至远程读卡器",
   "settings_title_themeColor": "主题色 (重启生效)",
   "settings_text_themeColor": "",
-
   "profile_profile_detail": "配置详情",
   "profile_collection_stats": "收集",
   "profile_name": "名称",
@@ -127,8 +122,6 @@
   "profile_ui_back": "返回",
   "profile_ui_cancel": "取消",
   "profile_ui_download": "下载",
-
-
   "notifications_notifications": "通知",
   "notifications_send": "发送通知",
   "notifications_send_success": "通知发送成功",
@@ -138,13 +131,10 @@
   "notifications_delete_alert": "确认删除通知？此操作不可逆。",
   "notifications_delete_ok": "确认删除",
   "notifications_delete_cancel": "取消",
-
-
   "progress_download.step1.es10b_get_euicc_challenge_and_info": "(1/4) 检测卡片状态",
   "progress_download.step2.es9p_initiate_authentication": "(2/4) 与服务器通信",
   "progress_download.step3.es10b_authenticate_server": "(3/4) 校验服务器请求",
   "progress_download.step4.es9p_authenticate_client": "(4/4) 获取配置信息",
-
   "progress_download.step5.es10b_prepare_download": "(1/5) 准备确认下载",
   "progress_download.step6.es9p_get_bound_profile_package": "(2/5) 从服务器获取配置包",
   "progress_download.step7.es10b_load_bound_profile_package": "(3/5) 准备写入配置包",
@@ -152,4 +142,3 @@
   "progress_download.step8.load_bpp": "(4/5) 写入配置包 {{progress}}/{{total}}",
   "progress_download.step9.finalize": "(5/5) 下载完成"
 }
-

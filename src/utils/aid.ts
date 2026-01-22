@@ -1,4 +1,5 @@
-import {preferences} from "@/utils/mmkv";
+import { preferences } from "@/utils/mmkv";
+import { isSimplifiedMode } from "@/utils/featureConfig";
 
 // GSMA default AID
 export const GSMA_AID = "A0000005591010FFFFFFFF8900000100";
@@ -30,6 +31,7 @@ export const ESTK_SE1_LIST = [
 
 // Backward-compatible export used by native adapters; reads from preferences each time
 export function getAIDList(): string {
+    if (isSimplifiedMode()) return PRESET_AID_LIST;
     const stored = preferences.getString('aid.list');
     if (stored && stored.trim().length > 0) return sanitizeAIDList(stored);
     return PRESET_AID_LIST;

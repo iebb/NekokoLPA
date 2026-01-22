@@ -1,20 +1,24 @@
-import {parseMetadata} from "@/utils/parser";
-import {findPhoneNumbersInText} from "libphonenumber-js/min";
-import {preferences, sizeStats} from "@/utils/mmkv";
-import {Swipeable} from 'react-native-gesture-handler';
-import {Card, Stack, Switch, Text, useTheme, XStack, YStack} from 'tamagui';
+import { parseMetadata } from "@/utils/parser";
+import { findPhoneNumbersInText } from "libphonenumber-js/min";
+import { preferences } from "@/utils/mmkv";
+import { Swipeable } from 'react-native-gesture-handler';
+import { Card, Stack, Switch, Text, useTheme, XStack, YStack } from 'tamagui';
 // useTheme covers dynamic color; no need for useColorScheme here
-import {Pencil, Trash2, GripVertical} from '@tamagui/lucide-icons';
-import {Alert, Image, PixelRatio, Pressable, ToastAndroid, TouchableOpacity, View} from "react-native";
-import {makeLoading} from "@/components/utils/loading";
-import {Flags} from "@/assets/flags";
-import {formatSize} from "@/utils/size";
-import React, {useCallback, useMemo} from "react";
-import {useTranslation} from "react-i18next";
-import {useNavigation} from "@react-navigation/native";
-import {Profile} from "@/native/types";
-import {Adapters} from "@/native/adapters/registry";
-import {useLoading} from "@/components/common/LoadingProvider";
+import { Pencil, Trash2 } from '@tamagui/lucide-icons';
+import { Alert, Image, PixelRatio, Pressable, ToastAndroid, TouchableOpacity } from "react-native";
+import { makeLoading } from "@/components/utils/loading";
+import { Flags } from "@/assets/flags";
+import { formatSize, getEstimatedProfileSize, getExactProfileSize } from "@/utils/size";
+import React, { useCallback, useMemo } from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigation } from "@react-navigation/native";
+import { Profile } from "@/native/types";
+import { Adapters } from "@/native/adapters/registry";
+import { useLoading } from "@/components/common/LoadingProvider";
+import { useSelector } from "react-redux";
+import { selectDeviceState } from "@/redux/stateStore";
+
+import { isSimplifiedMode } from "@/utils/featureConfig";
 
 interface ProfileExt extends Profile {
   selected: boolean;
@@ -67,207 +71,130 @@ const ProfileSubtitle = React.memo(({
   // Theme-aware; no direct Appearance usage needed
 
   return (
-    <Text color="$color6" numberOfLines={1} fontSize={11}>
+    <Text color="$color6" numberOfLines={1} fontSize={12}>
       {subtitleText}
     </Text>
   );
 });
 
-const ProfileRowComponent = ({profile, deviceId, drag, isActive = false, press, rearrangeMode = false} : {profile: ProfileExt, deviceId: string, drag: any, isActive?: boolean, press?: (pressed: boolean) => void, rearrangeMode?: boolean}) => {
+const ProfileRowComponent = ({ profile, deviceId }: { profile: ProfileExt, deviceId: string }) => {
   const { t } = useTranslation(['main']);
   const adapter = Adapters[deviceId];
   const { setLoading, isLoading } = useLoading();
   const navigation = useNavigation<any>();
   const theme = useTheme();
 
-  // Memoize preferences
-  const stealthMode = useMemo(() =>
-    preferences.getString("redactMode") ?? "none",
-    []
-  );
+  const DeviceState = useSelector(selectDeviceState(deviceId));
+  const eid = DeviceState?.eid || "";
+
+  const stealthMode = useMemo(() => preferences.getString("redactMode") ?? "none", []);
+  const isSimplified = isSimplifiedMode();
+
   const displaySubtitle = useMemo(() =>
-    preferences.getString("displaySubtitle") ?? "profileProvider",
-    []
-  );
+    isSimplified ? "provider" : (preferences.getString("displaySubtitle") ?? "profileProvider"),
+    [isSimplified]);
 
-  // Memoize metadata processing
-  const metadata = profile;
-  const { tags, name, country, mccMnc, order } = useMemo(() =>
-    parseMetadata(metadata, t),
-    [metadata, t]
-  );
+  const { tags, name, country, mccMnc } = useMemo(() => parseMetadata(profile, t), [profile, t]);
 
-  // Memoize ICCID calculations
-  const { numICCID, hueICCID } = useMemo(() => {
-    const iccid = String(metadata?.iccid ?? "");
-    const numICCID = iccid.replaceAll(/\D/g, '');
-    const hueICCID = numICCID.length >= 7
-      ? (parseInt(numICCID.substring(numICCID.length - 7), 10) * 17.84) % 360
-      : 0;
-    return { numICCID, hueICCID };
-  }, [metadata?.iccid]);
+  const { hueICCID } = useMemo(() => {
+    const iccid = String(profile?.iccid ?? "");
+    const numICCID = iccid.replace(/\D/g, ''); // Using replace for better compatibility
+    const hue = numICCID.length >= 7 ? (parseInt(numICCID.substring(numICCID.length - 7), 10) * 17.84) % 360 : 0;
+    return { hueICCID: hue };
+  }, [profile?.iccid]);
 
-  // Memoize phone number processing
   const replacedName = useMemo(() => {
     if (!name) return "";
     const phoneNumbers = findPhoneNumbersInText(name, country as any);
     let result = name;
-
     for (const p of phoneNumbers) {
       if (p.startsAt >= 0 && p.endsAt <= name.length) {
         const match = name.substring(p.startsAt, p.endsAt);
         if (match[0] !== "+") continue;
         const formatted = p.number.formatInternational();
-
         if (stealthMode === 'medium') {
-          const ccPrefix = "+" + p.number.countryCallingCode + " ";
-          const toReplace = formatted.length > ccPrefix.length
-            ? formatted.substring(ccPrefix.length)
-            : "";
-          result = result.replaceAll(
-            match, ccPrefix + toReplace.replaceAll(/\d/g, '*')
-          );
+          const ccPrefix = `+${p.number.countryCallingCode} `;
+          const toReplace = formatted.length > ccPrefix.length ? formatted.substring(ccPrefix.length) : "";
+          result = result.split(match).join(ccPrefix + toReplace.replace(/\d/g, '*')); // Using split/join as replaceAll polyfill
         } else {
-          result = result.replaceAll(match, formatted);
+          result = result.split(match).join(formatted);
         }
       }
     }
-
-
-
     return result;
   }, [name, country, stealthMode]);
 
-  // Memoize size calculation
-  const Size = useMemo(() => {
-    if (metadata?.iccid) {
-      return sizeStats.getNumber(metadata?.iccid) || 0;
-    }
-    return 0;
-  }, [metadata?.iccid]);
+  const Size = useMemo(() => getExactProfileSize(profile.iccid || ""), [profile.iccid]);
 
-  // Row surface tone handled via theme token `$surfaceRow`
-
-  // Memoize handlers
   const handleProfilePress = useCallback(() => {
-    // Disable navigation in rearrange mode
-    if (rearrangeMode) return;
-    // @ts-ignore
-    navigation.navigate('Profile', {
-      iccid: metadata.iccid,
-      metadata: metadata,
-      deviceId: deviceId,
-    });
-  }, [navigation, metadata, deviceId, rearrangeMode]);
-
-  const handleEditPress = useCallback(() => {
-    handleProfilePress();
-  }, [handleProfilePress]);
+    navigation.navigate('Profile', { iccid: profile.iccid, metadata: profile, deviceId });
+  }, [navigation, profile, deviceId]);
 
   const handleDeletePress = useCallback(() => {
-    Alert.alert(
-      t('main:profile_delete_profile'),
-      t('main:profile_delete_profile_alert_body'),
-      [
-        {
-          text: t('main:profile_delete_tag_cancel'),
-          onPress: () => {},
-          style: 'cancel',
-        },
-        {
-          text: t('main:profile_delete_tag_ok'),
-          style: 'destructive',
-          onPress: () => {
-            Alert.alert(
-              t('main:profile_delete_profile_alert2'),
-              t('main:profile_delete_profile_alert2_body'),
-              [
-                {
-                  text: t('main:profile_delete_tag_ok'),
-                  style: 'destructive',
-                  onPress: () => {
-                    makeLoading(setLoading, async () => {
-                      setLoading("Deleting Profile");
-                      await adapter.deleteProfileByIccId(metadata.iccid);
-                      setLoading("Loading Notifications");
-                      await adapter.processNotifications(metadata.iccid);
-                      setLoading(false);
-                    });
-                  }
-                },
-                {
-                  text: t('main:profile_delete_tag_cancel'),
-                  onPress: () => {},
-                  style: 'cancel',
-                },
-              ]
-            );
-          }
-        },
-      ]
-    );
-  }, [t, setLoading, adapter, metadata.iccid]);
+    Alert.alert(t('main:profile_delete_profile'), t('main:profile_delete_profile_alert_body'), [
+      { text: t('main:profile_delete_tag_cancel'), style: 'cancel' },
+      {
+        text: t('main:profile_delete_tag_ok'), style: 'destructive', onPress: () => {
+          Alert.alert(t('main:profile_delete_profile_alert2'), t('main:profile_delete_profile_alert2_body'), [
+            {
+              text: t('main:profile_delete_tag_ok'), style: 'destructive', onPress: () => {
+                makeLoading(setLoading, async () => {
+                  setLoading("Deleting Profile");
+                  await adapter.deleteProfileByIccId(profile.iccid);
+                  setLoading("Loading Notifications");
+                  await adapter.processNotifications(profile.iccid);
+                  setLoading(false);
+                });
+              }
+            },
+            { text: t('main:profile_delete_tag_cancel'), style: 'cancel' },
+          ]);
+        }
+      }
+    ]);
+  }, [t, setLoading, adapter, profile.iccid]);
 
-  const handleSwitchChange = useCallback(async (value2: boolean) => {
+  const handleSwitchChange = useCallback(async () => {
+    const isOMAPI = adapter.device.type === "omapi";
+    const protectionEnabled = isSimplified || preferences.getString("disableProtection") !== 'off';
+
     makeLoading(setLoading, async () => {
       if (profile.selected) {
-        if (adapter.device.type !== "omapi" || preferences.getString("disableProtection") === 'off') {
-          await adapter.disableProfileByIccId(metadata.iccid);
+        if (!isOMAPI || !protectionEnabled) {
+          await adapter.disableProfileByIccId(profile.iccid);
         } else {
           ToastAndroid.show(`Disabling Profile on Android may have unintended effects.`, ToastAndroid.SHORT);
         }
       } else {
-        await adapter.enableProfileByIccId(metadata.iccid);
+        await adapter.enableProfileByIccId(profile.iccid);
       }
     });
-  }, [profile.selected, adapter, metadata.iccid, setLoading]);
+  }, [profile.selected, adapter, profile.iccid, setLoading, isSimplified]);
 
-  // Memoize display name
-  const displayName = useMemo(() => {
-    return (stealthMode === 'none' || stealthMode === 'medium')
-      ? replacedName
-      : metadata?.serviceProviderName;
-  }, [stealthMode, replacedName, metadata?.serviceProviderName]);
+  const displayName = useMemo(() => (stealthMode === 'none' || stealthMode === 'medium') ? replacedName : profile?.serviceProviderName, [stealthMode, replacedName, profile?.serviceProviderName]);
 
   const renderRightActions = useCallback(() => {
     if (profile.selected) return null;
     return (
-      <TouchableOpacity
-        onPress={handleDeletePress}
-        activeOpacity={0.8}
-        style={{
-          width: 60,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: (theme.backgroundDangerHeavy?.val || '#ff6b6b'),
-          borderTopRightRadius: 12,
-          borderBottomRightRadius: 12,
-        }}
-      >
+      <TouchableOpacity onPress={handleDeletePress} activeOpacity={0.8} style={{
+        width: 60, justifyContent: 'center', alignItems: 'center',
+        backgroundColor: (theme.backgroundDangerHeavy?.val || '#ff6b6b'),
+        borderTopRightRadius: 12, borderBottomRightRadius: 12,
+      }}>
         <Trash2 size={18} color={theme.backgroundDefault?.val || '#fff'} />
       </TouchableOpacity>
     );
   }, [handleDeletePress, profile.selected, theme.backgroundDangerHeavy?.val, theme.backgroundDefault?.val]);
 
   const renderLeftActions = useCallback(() => (
-    <TouchableOpacity
-      onPress={handleEditPress}
-      activeOpacity={0.8}
-      style={{
-        width: 60,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: (theme.backgroundSuccessLight?.val || '#f3c969'),
-        borderTopLeftRadius: 12,
-        borderBottomLeftRadius: 12,
-      }}
-    >
+    <TouchableOpacity onPress={handleProfilePress} activeOpacity={0.8} style={{
+      width: 60, justifyContent: 'center', alignItems: 'center',
+      backgroundColor: (theme.backgroundSuccessLight?.val || '#f3c969'),
+      borderTopLeftRadius: 12, borderBottomLeftRadius: 12,
+    }}>
       <Pencil size={18} color={theme.backgroundDefault?.val || '#fff'} />
     </TouchableOpacity>
-  ), [handleEditPress, theme.backgroundSuccessLight?.val, theme.backgroundDefault?.val]);
-
-  // Use tamagui theme token directly (updates on theme change)
-  const primaryColor = theme.buttonBackground?.val || theme.primaryColor?.val;
+  ), [handleProfilePress, theme.backgroundSuccessLight?.val, theme.backgroundDefault?.val]);
 
   return (
     <Swipeable
@@ -275,117 +202,94 @@ const ProfileRowComponent = ({profile, deviceId, drag, isActive = false, press, 
       renderLeftActions={renderLeftActions}
       overshootFriction={8}
       friction={2}
-      enabled={!isActive && !rearrangeMode}
-      containerStyle={{ borderRadius: 12 }}
+      containerStyle={{
+        borderRadius: 12,
+        backgroundColor: theme.surfaceSpecial?.val
+      }}
     >
       <Card
-        backgroundColor={isActive ? '$surfaceHover' : '$surfaceSpecial'}
+        backgroundColor="$surfaceSpecial"
         borderWidth={0}
-        borderRadius={0}
+        borderRadius={12}
         overflow="hidden"
-        padding={0}
-        opacity={isActive ? 0.95 : 1}
-        shadowColor={isActive ? "$buttonBackground" : 'transparent'}
-        style={{
-          transform: [{ scale: isActive ? 1.02 : 1 }],
-          shadowOffset: isActive ? { width: 0, height: 4 } : { width: 0, height: 0 },
-          shadowOpacity: isActive ? 0.3 : 0,
-          shadowRadius: isActive ? 8 : 0,
-          elevation: isActive ? 8 : 0,
-        }}
+        paddingTop={4}
+        elevation={2}
       >
-        <YStack paddingTop={5} paddingLeft={rearrangeMode ? 0 : 15} paddingRight={15} gap={5}>
-          <XStack width="100%" alignItems="flex-start" gap={8}>
-            {rearrangeMode && (
-              <TouchableOpacity
-                onLongPress={drag}
-                onPressIn={() => press?.(true)}
-                onPressOut={() => press?.(false)}
-                delayLongPress={100}
-                style={{ padding: 8 }}
-                activeOpacity={0.6}
-              >
-                <GripVertical size={18} color={theme.color6?.val || '#888'} />
-              </TouchableOpacity>
-            )}
-
-            {/* Main content - scrollable area, no drag interference */}
-            <Pressable
-              style={{ flexShrink: 1, flexGrow: 1 }}
-              onPress={handleProfilePress}
-              delayLongPress={10000}
-            >
-              <XStack gap={6} alignItems="center">
-                <Image
-                  style={{
-                    width: 20 * PixelRatio.getFontScale(),
-                    height: 20 * PixelRatio.getFontScale()
-                  }}
-                  source={Flags[country] || Flags.UN}
-                />
-                <Text color="$textDefault" fontSize={16} style={{ marginTop: -2 }} numberOfLines={1}>
-                  {displayName}
-                </Text>
-              </XStack>
-              <XStack>
-                <ProfileSubtitle
-                  metadata={metadata}
-                  mccMnc={mccMnc}
-                  displaySubtitle={displaySubtitle}
-                />
-              </XStack>
-              <ProfileTags tags={tags} stealthMode={stealthMode} />
+        <YStack paddingHorizontal={12}>
+          <XStack width="100%" alignItems="center" gap={10}>
+            {/* Flag and Main Info */}
+            <Pressable style={{ flex: 1 }} onPress={handleProfilePress}>
+              <YStack gap={3}>
+                <XStack alignItems="center">
+                  <Image
+                    style={{
+                      width: 22.5 * PixelRatio.getFontScale(),
+                      height: 15 * PixelRatio.getFontScale(),
+                      marginRight: 7.5,
+                      borderRadius: 2
+                    }}
+                    source={Flags[country] || Flags.UN}
+                  />
+                  <Text
+                    color="$textDefault"
+                    fontSize={17}
+                    fontWeight="600"
+                    numberOfLines={1}
+                    flex={1}
+                  >
+                    {displayName}
+                  </Text>
+                </XStack>
+                <ProfileSubtitle metadata={profile} mccMnc={mccMnc} displaySubtitle={displaySubtitle} />
+              </YStack>
             </Pressable>
 
-            <XStack padding={5} width={50}>
+            {/* Switch Control */}
+            <XStack alignItems="center" gap={10}>
+              {Size > 1536 && (
+                <Text color="$color8" fontSize={11} fontWeight="500">
+                  {formatSize(Size)}
+                </Text>
+              )}
               <Switch
                 checked={profile.selected}
                 disabled={isLoading}
                 size={"$2.5" as any}
+                onCheckedChange={handleSwitchChange}
                 borderColor={profile.selected ? "$primaryColor" : "$color6"}
-                style={{
-                  marginTop: -4,
-                  borderWidth: 1,
-                }}
                 backgroundColor={profile.selected ? "$primaryColor" : "$color6"}
-                onCheckedChange={(val: boolean) => handleSwitchChange(val)}
               >
-                <Switch.Thumb
-                  backgroundColor={"$backgroundDefault"}
-                  borderColor={"$color6"}
-                  style={{ borderWidth: 0, borderColor: "$color6" }}
-                />
+                <Switch.Thumb backgroundColor="$backgroundDefault" elevation={2} />
               </Switch>
             </XStack>
-            {Size > 1536 && (
-              <Text
-                color="$textNeutral"
-                fontSize={10}
-                style={{ position: "absolute", right: 2, bottom: 0 }}
-                numberOfLines={1}
-              >
-                {formatSize(Size)}
-              </Text>
-            )}
           </XStack>
+
+          <ProfileTags tags={tags} stealthMode={stealthMode} />
         </YStack>
 
-        {/* Underline inside the card to avoid overflow past rounded corners */}
-        <Stack height={2} width="100%" backgroundColor={`hsl(${hueICCID}, 50%, 50%)`} />
+        {/* Status indicator bar */}
+        <YStack height={2} width="100%" position="relative">
+          <YStack
+            fullscreen
+            backgroundColor={`hsl(${hueICCID}, 70%, 50%)`}
+            opacity={0.3}
+          />
+          <YStack
+            height="100%"
+            width="100%"
+            backgroundColor={`hsl(${hueICCID}, 80%, 50%)`}
+            borderRadius={999}
+          />
+        </YStack>
       </Card>
     </Swipeable>
   );
 };
 
-// Memoize ProfileRow to prevent unnecessary re-renders when rearrangeMode changes
-export const ProfileRow = React.memo(ProfileRowComponent, (prevProps, nextProps) => {
-  // Only re-render if these props change
-  return (
-    prevProps.profile.iccid === nextProps.profile.iccid &&
-    prevProps.profile.profileState === nextProps.profile.profileState &&
-    prevProps.profile.profileNickname === nextProps.profile.profileNickname &&
-    prevProps.isActive === nextProps.isActive &&
-    prevProps.rearrangeMode === nextProps.rearrangeMode &&
-    prevProps.deviceId === nextProps.deviceId
-  );
-});
+export const ProfileRow = React.memo(ProfileRowComponent, (prevProps, nextProps) => (
+  prevProps.profile.iccid === nextProps.profile.iccid &&
+  prevProps.profile.profileState === nextProps.profile.profileState &&
+  prevProps.profile.profileNickname === nextProps.profile.profileNickname &&
+  prevProps.deviceId === nextProps.deviceId
+));
+
