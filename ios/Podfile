@@ -35,7 +35,15 @@ target 'NekokoLPA' do
     )
     installer.pods_project.build_configurations.each do |config|
       config.build_settings['OTHER_CPLUSPLUSFLAGS'] ||= ['$(OTHER_CFLAGS)']
-      config.build_settings['OTHER_CPLUSPLUSFLAGS'] << '-DFOLLY_CFG_NO_COROUTINES=1'
+      config.build_settings['OTHER_CPLUSPLUSFLAGS'] << ' -DFOLLY_CFG_NO_COROUTINES=1'
+    end
+
+    # User-suggested fix for Folly coroutines
+    system("chmod -R u+w Pods/RCT-Folly")
+    Dir.glob("Pods/RCT-Folly/folly/Portability.h").each do |file|
+      text = File.read(file)
+      new_contents = text.gsub('#define FOLLY_HAS_COROUTINES 1', '#define FOLLY_HAS_COROUTINES 0')
+      File.open(file, "w") { |file| file.puts new_contents }
     end
   end
 end

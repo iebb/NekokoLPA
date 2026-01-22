@@ -125,7 +125,7 @@ android {
         debug {
             signingConfig signingConfigs.community
             debuggable true
-            versionNameSuffix "-debug"
+            versionNameSuffix ""
             manifestPlaceholders = [
                     appIcon: "@mipmap/ic_launcher_debug"
             ]
