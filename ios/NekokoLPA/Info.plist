@@ -45,11 +45,8 @@
 	<string>$(PRODUCT_NAME) needs access to your Camera to scan QR codes.</string>
 	<key>UIAppFonts</key>
 	<array/>
-	<key>UILaunchScreen</key>
-	<dict>
-		<key>UIImageName</key>
-		<string>SplashIcon</string>
-	</dict>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen.storyboard</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

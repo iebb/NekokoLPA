@@ -11,6 +11,7 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		8ABAD091F6F0B828E9B6EDCA /* libPods-NekokoLPA.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C05BA37A0013A6A45F5EDF6 /* libPods-NekokoLPA.a */; };
+		8C16C0E32F236E4600AFA3FA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8C16C0E22F236E4600AFA3FA /* LaunchScreen.storyboard */; };
 		8C5BB0FF2CEB583A0089737C /* AsyncHTTPClient in Frameworks */ = {isa = PBXBuildFile; productRef = 8C5BB0FE2CEB583A0089737C /* AsyncHTTPClient */; };
 		8CB9EF582F23031F002A31A0 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 8CB9EF572F23031F002A31A0 /* AppIcon.icon */; };
 		8CC7D2CF2CDBE2C900EE91E7 /* CCIDPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC7D2CE2CDBE2C900EE91E7 /* CCIDPlugin.swift */; };
@@ -29,6 +30,7 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = NekokoLPA/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = NekokoLPA/main.m; sourceTree = "<group>"; };
 		6C05BA37A0013A6A45F5EDF6 /* libPods-NekokoLPA.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NekokoLPA.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8C16C0E22F236E4600AFA3FA /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8CB9EF572F23031F002A31A0 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		8CC7D2CD2CDBE2C900EE91E7 /* NekokoLPA-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NekokoLPA-Bridging-Header.h"; sourceTree = "<group>"; };
 		8CC7D2CE2CDBE2C900EE91E7 /* CCIDPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CCIDPlugin.swift; sourceTree = "<group>"; };
@@ -68,6 +70,7 @@
 				8CC7D2CE2CDBE2C900EE91E7 /* CCIDPlugin.swift */,
 				8CC7D2D02CDBE3EB00EE91E7 /* CCIDPlugin.m */,
 				8CC7D2CD2CDBE2C900EE91E7 /* NekokoLPA-Bridging-Header.h */,
+				8C16C0E22F236E4600AFA3FA /* LaunchScreen.storyboard */,
 			);
 			name = NekokoLPA;
 			sourceTree = "<group>";
@@ -193,6 +196,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F571B3882BD7A3F80014213C /* PrivacyInfo.xcprivacy in Resources */,
+				8C16C0E32F236E4600AFA3FA /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				8CB9EF582F23031F002A31A0 /* AppIcon.icon in Resources */,
 			);
@@ -225,9 +229,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-NekokoLPA/Pods-NekokoLPA-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-NekokoLPA/Pods-NekokoLPA-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -264,9 +272,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-NekokoLPA/Pods-NekokoLPA-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-NekokoLPA/Pods-NekokoLPA-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -316,6 +328,7 @@
 			baseConfigurationReference = BACEF333BE79796466667E38 /* Pods-NekokoLPA.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 303;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -355,6 +368,7 @@
 			baseConfigurationReference = 0975D178E63A50440C9E8CAF /* Pods-NekokoLPA.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 303;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
