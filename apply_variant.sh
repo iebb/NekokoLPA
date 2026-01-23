@@ -71,12 +71,12 @@ echo "Updating iOS config: Team $IOS_TEAM_ID, ID $IOS_APP_ID"
 
 # Sources
 PLIST_SRC="variants/$VARIANT/ios/Info.plist"
-ICON_SRC="variants/$VARIANT/ios/AppIcon.appiconset"
+ICON_SRC="variants/$VARIANT/AppIcon.icon"
 SPLASH_SRC="variants/$VARIANT/ios/SplashIcon.imageset"
 
 # Fallbacks
 if [ ! -f "$PLIST_SRC" ]; then PLIST_SRC="variants/store/ios/Info.plist"; fi
-if [ ! -d "$ICON_SRC" ]; then ICON_SRC="variants/store/ios/AppIcon.appiconset"; fi
+if [ ! -d "$ICON_SRC" ]; then ICON_SRC="variants/store/ios/AppIcon.icon"; fi
 if [ ! -d "$SPLASH_SRC" ]; then SPLASH_SRC="variants/store/ios/SplashIcon.imageset"; fi
 
 # Apply Plist
@@ -88,8 +88,8 @@ fi
 
 # Apply Icons
 if [ -d "$ICON_SRC" ]; then
-    rm -rf "ios/NekokoLPA/Images.xcassets/AppIcon.appiconset"
-    cp -R "$ICON_SRC" "ios/NekokoLPA/Images.xcassets/AppIcon.appiconset"
+    rm -rf "ios/AppIcon.icon"
+    cp -R "$ICON_SRC" "ios/AppIcon.icon"
 fi
 
 # Apply Splash
