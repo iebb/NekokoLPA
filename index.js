@@ -2,7 +2,8 @@
  * @format
  */
 
-import { AppRegistry } from "react-native";
+import { AppRegistry, NativeEventEmitter } from "react-native";
+// This import ensures NativeEventEmitter (which replaces RCTEventEmitter) is initialized
 import App from "./src/App";
 
 

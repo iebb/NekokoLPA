@@ -10,32 +10,32 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		8ABAD091F6F0B828E9B6EDCA /* libPods-NekokoLPA.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C05BA37A0013A6A45F5EDF6 /* libPods-NekokoLPA.a */; };
 		8C5BB0FF2CEB583A0089737C /* AsyncHTTPClient in Frameworks */ = {isa = PBXBuildFile; productRef = 8C5BB0FE2CEB583A0089737C /* AsyncHTTPClient */; };
 		8CB9EF582F23031F002A31A0 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 8CB9EF572F23031F002A31A0 /* AppIcon.icon */; };
 		8CC7D2CF2CDBE2C900EE91E7 /* CCIDPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC7D2CE2CDBE2C900EE91E7 /* CCIDPlugin.swift */; };
 		8CC7D2D12CDBE3EB00EE91E7 /* CCIDPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC7D2D02CDBE3EB00EE91E7 /* CCIDPlugin.m */; };
 		8CC7D2DA2CDC9D5A00EE91E7 /* CustomHttp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC7D2D92CDC9D5A00EE91E7 /* CustomHttp.swift */; };
 		8CC7D2DC2CDC9D7600EE91E7 /* CustomHttp.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC7D2DB2CDC9D7600EE91E7 /* CustomHttp.m */; };
-		F559F192714A9331A2D2540A /* libPods-NekokoLPA.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6CEC0F080363983D3A3A9F20 /* libPods-NekokoLPA.a */; };
 		F571B3882BD7A3F80014213C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F571B3872BD7A3F80014213C /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0975D178E63A50440C9E8CAF /* Pods-NekokoLPA.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NekokoLPA.release.xcconfig"; path = "Target Support Files/Pods-NekokoLPA/Pods-NekokoLPA.release.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* NekokoLPA.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NekokoLPA.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = NekokoLPA/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = NekokoLPA/AppDelegate.mm; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = NekokoLPA/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = NekokoLPA/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = NekokoLPA/main.m; sourceTree = "<group>"; };
-		201C54C75A27686A90E8E10B /* Pods-NekokoLPA.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NekokoLPA.release.xcconfig"; path = "Target Support Files/Pods-NekokoLPA/Pods-NekokoLPA.release.xcconfig"; sourceTree = "<group>"; };
-		5FE7F0A3B73D3051C94B0584 /* Pods-NekokoLPA.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NekokoLPA.debug.xcconfig"; path = "Target Support Files/Pods-NekokoLPA/Pods-NekokoLPA.debug.xcconfig"; sourceTree = "<group>"; };
-		6CEC0F080363983D3A3A9F20 /* libPods-NekokoLPA.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NekokoLPA.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6C05BA37A0013A6A45F5EDF6 /* libPods-NekokoLPA.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NekokoLPA.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8CB9EF572F23031F002A31A0 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		8CC7D2CD2CDBE2C900EE91E7 /* NekokoLPA-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NekokoLPA-Bridging-Header.h"; sourceTree = "<group>"; };
 		8CC7D2CE2CDBE2C900EE91E7 /* CCIDPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CCIDPlugin.swift; sourceTree = "<group>"; };
 		8CC7D2D02CDBE3EB00EE91E7 /* CCIDPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CCIDPlugin.m; sourceTree = "<group>"; };
 		8CC7D2D92CDC9D5A00EE91E7 /* CustomHttp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHttp.swift; sourceTree = "<group>"; };
 		8CC7D2DB2CDC9D7600EE91E7 /* CustomHttp.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CustomHttp.m; sourceTree = "<group>"; };
+		BACEF333BE79796466667E38 /* Pods-NekokoLPA.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NekokoLPA.debug.xcconfig"; path = "Target Support Files/Pods-NekokoLPA/Pods-NekokoLPA.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F571B3872BD7A3F80014213C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -46,7 +46,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8C5BB0FF2CEB583A0089737C /* AsyncHTTPClient in Frameworks */,
-				F559F192714A9331A2D2540A /* libPods-NekokoLPA.a in Frameworks */,
+				8ABAD091F6F0B828E9B6EDCA /* libPods-NekokoLPA.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -76,7 +76,7 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				6CEC0F080363983D3A3A9F20 /* libPods-NekokoLPA.a */,
+				6C05BA37A0013A6A45F5EDF6 /* libPods-NekokoLPA.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -121,8 +121,8 @@
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				5FE7F0A3B73D3051C94B0584 /* Pods-NekokoLPA.debug.xcconfig */,
-				201C54C75A27686A90E8E10B /* Pods-NekokoLPA.release.xcconfig */,
+				BACEF333BE79796466667E38 /* Pods-NekokoLPA.debug.xcconfig */,
+				0975D178E63A50440C9E8CAF /* Pods-NekokoLPA.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -134,14 +134,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "NekokoLPA" */;
 			buildPhases = (
-				C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */,
+				ABD389D5CF3292507CDCAF2B /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
-				912A59699B4F1100BAFEDF66 /* [CP] Embed Pods Frameworks */,
+				48E6341FC5900C1E0345D921 /* [CP] Embed Pods Frameworks */,
+				DCE1C2888118E1E59BFC2A5C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -217,7 +217,7 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
 		};
-		912A59699B4F1100BAFEDF66 /* [CP] Embed Pods Frameworks */ = {
+		48E6341FC5900C1E0345D921 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -234,7 +234,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-NekokoLPA/Pods-NekokoLPA-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */ = {
+		ABD389D5CF3292507CDCAF2B /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -256,7 +256,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		E235C05ADACE081382539298 /* [CP] Copy Pods Resources */ = {
+		DCE1C2888118E1E59BFC2A5C /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -313,7 +313,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5FE7F0A3B73D3051C94B0584 /* Pods-NekokoLPA.debug.xcconfig */;
+			baseConfigurationReference = BACEF333BE79796466667E38 /* Pods-NekokoLPA.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -352,7 +352,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 201C54C75A27686A90E8E10B /* Pods-NekokoLPA.release.xcconfig */;
+			baseConfigurationReference = 0975D178E63A50440C9E8CAF /* Pods-NekokoLPA.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
