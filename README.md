@@ -3,7 +3,7 @@
 
 The new NekokoLPA 2 does support Telephony API in addition to OMAPI on rooted devices, and now also works on Windows, macOS and Linux.
 
-It will be open source in same MIT license in later 2026, pending codebase improvements.
+It will be open source in same MIT license in late 2026, pending codebase improvements.
 
 Website: https://n.lpa.ee , or download here: https://github.com/iebb/NekokoLPA2/releases
 
