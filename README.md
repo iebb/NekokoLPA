@@ -1,4 +1,15 @@
-# Nekoko LPA
+
+# <img width="32" height="32" src="https://github.com/user-attachments/assets/22ea9c6f-134e-43e9-8e45-5a683ea7722e" /> NekokoLPA 2 is now available.
+
+The new NekokoLPA 2 does support Telephony API in addition to OMAPI on rooted devices, and now also works on Windows, macOS and Linux.
+
+It will be open source in same MIT license in later 2026, pending codebase improvements.
+
+Website: https://n.lpa.ee , or download here: https://github.com/iebb/NekokoLPA2/releases
+
+
+# NekokoLPA 1
+
 [日本語](./README_ja.md)
 
 Android and iOS LPA App.
