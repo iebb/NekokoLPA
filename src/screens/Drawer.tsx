@@ -6,7 +6,7 @@ import {version} from '../../package.json';
 import { View, Image } from 'react-native';
 import {Text as TText, useTheme} from 'tamagui';
 import {ArrowLeft, Download, Code, Settings, Flag, ShoppingCart, Bluetooth} from '@tamagui/lucide-icons';
-import {AppBuyLink, AppLogo, AppTitle, GithubLink} from "@/config";
+import {AppBuyLink, AppLogo, AppTitle, GithubLink, AppBuyLinkEsimData} from "@/config";
 import {Linking} from 'react-native';
 
 
@@ -30,6 +30,10 @@ export default function LeftSidebarDrawer({ navigation }: DrawerContentComponent
       title: 'Devices', label: 'main:purchase_note',
       icon: ShoppingCart, onPress: (navigation: any) => Linking.openURL(AppBuyLink)
     },
+    ...(AppBuyLinkEsimData ? [{
+      title: 'eSIM Data', label: 'main:buy_esim_data',
+      icon: ShoppingCart, onPress: (navigation: any) => Linking.openURL(AppBuyLinkEsimData)
+    }] : []),
     {
       title: 'Github', label: 'main:github',
       icon: Code, onPress: (navigation: any) => Linking.openURL(GithubLink)

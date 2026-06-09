@@ -1,10 +1,11 @@
 {
     "appTitle": "9eSIM",
     "buyLink": "https://www.9esim.com/?coupon=apple&src=LPA",
+    "buyLinkEsimData": "https://esim.cc/",
     "checkForUpdates": false,
     "githubLink": "https://github.com/iebb/NekokoLPA/",
     "displayGithubLink": false,
-    "appId": "ee.nekoko.nlpa.flavor1",
+    "appId": "uk.simlink.lpa",
     "flavor": "flavor1",
     "iOSTeamId": "465NH4KUMT",
     "iOSAppId": "com.9esim.nlpa",

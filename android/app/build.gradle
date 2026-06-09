@@ -94,7 +94,7 @@ android {
         buildConfig true
     }
     defaultConfig {
-        applicationId "ee.nekoko.nlpa"
+        applicationId "ee.nekoko.nlpa1"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode packageJson["buildVersion"]

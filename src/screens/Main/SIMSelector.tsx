@@ -8,7 +8,7 @@ import { Tabs, Text as TText, XStack, YStack, View as TView, Separator, AnimateP
 import { Smartphone, Bluetooth, Usb } from '@tamagui/lucide-icons';
 import Clipboard from "@react-native-clipboard/clipboard";
 import { preferences } from "@/utils/mmkv";
-import { AppBuyLink } from "@/config";
+import { AppBuyLink, AppBuyLinkEsimData } from "@/config";
 
 import { setTargetDevice } from "@/redux/stateStore";
 import ProfileCardHeader from "@/screens/Main/ProfileCardHeader";
@@ -87,6 +87,13 @@ export default function SIMSelector() {
         }}>
           {t('main:purchase_note')}
         </TText>
+        {AppBuyLinkEsimData && (
+          <TText color="$primaryColor" textDecorationLine="underline" fontSize={20} textAlign="center" marginTop={20} onPress={() => {
+            Linking.openURL(AppBuyLinkEsimData);
+          }}>
+            {t('main:buy_esim_data')}
+          </TText>
+        )}
       </YStack>
     </ScrollView>
   );
@@ -225,6 +232,13 @@ export default function SIMSelector() {
                 }}>
                   {t('main:purchase_note')}
                 </TText>
+                {AppBuyLinkEsimData && (
+                  <TText color="$primaryColor" textDecorationLine="underline" fontSize={20} textAlign="center" marginTop={20} onPress={() => {
+                    Linking.openURL(AppBuyLinkEsimData);
+                  }}>
+                    {t('main:buy_esim_data')}
+                  </TText>
+                )}
               </YStack>
             </ScrollView>
           )}
