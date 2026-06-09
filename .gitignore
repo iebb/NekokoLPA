@@ -140,3 +140,8 @@ ios/NekokoLPA/Images.xcassets/AppIcon.appiconset/AppIcon~ipad.png
 ios/NekokoLPA/Images.xcassets/SplashIcon.imageset/9eSIM.png
 ios/NekokoLPA/Images.xcassets/SplashIcon.imageset/Contents.json
 ios/NekokoLPA/Images.xcassets/SplashIcon.imageset/splash@1x.png
+
+
+
+# variants/pri_*
+src/translations/overrides.json

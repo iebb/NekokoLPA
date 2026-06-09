@@ -6,7 +6,7 @@
 VARIANT=$1
 if [ -z "$VARIANT" ]; then
     echo "Usage: $0 <variant_name>"
-    echo "Available variants: store, flavor1, multisign"
+    echo "Available variants: store, flavor1, multisign, pri_esimhome"
     exit 1
 fi
 
@@ -46,6 +46,10 @@ if [ -f "variants/$VARIANT/logo.png" ]; then
     cp "variants/$VARIANT/logo.png" "src/assets/images/logo.png"
 fi
 
+# 1.6 Layered Translations
+echo "Applying variant localizations to overrides.json..."
+python3 scripts/generate_overrides.py "variants/$VARIANT" "src/translations/overrides.json"
+
 # 2. Replace Android icons
 cp -R variants/$VARIANT/res/* android/app/src/main/res/
 
@@ -71,7 +75,7 @@ echo "Updating iOS config: Team $IOS_TEAM_ID, ID $IOS_APP_ID"
 
 # Sources
 PLIST_SRC="variants/$VARIANT/ios/Info.plist"
-ICON_SRC="variants/$VARIANT/AppIcon.icon"
+ICON_SRC="variants/$VARIANT/ios/AppIcon.icon"
 SPLASH_SRC="variants/$VARIANT/ios/SplashIcon.imageset"
 
 # Fallbacks
@@ -98,6 +102,9 @@ if [ -d "$SPLASH_SRC" ]; then
     cp -R "$SPLASH_SRC" "ios/NekokoLPA/Images.xcassets/SplashIcon.imageset"
 fi
 
+IOS_DISPLAY_NAME=$(get_config_value "iosDisplayName" "$VARIANT_CONFIG")
+if [ -z "$IOS_DISPLAY_NAME" ]; then IOS_DISPLAY_NAME="$APP_TITLE"; fi
+
 # Update Project Settings (Team, BundleID, normalized paths)
 if [[ "$OSTYPE" == "darwin"* ]]; then
     PBXPROJ="ios/NekokoLPA.xcodeproj/project.pbxproj"
@@ -116,12 +123,12 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     sed -i '' "s/INFOPLIST_FILE = .*.plist;/INFOPLIST_FILE = NekokoLPA\/Info.plist;/g" "$PBXPROJ"
     sed -i '' "s/ASSETCATALOG_COMPILER_APPICON_NAME = .*/ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;/g" "$PBXPROJ"
     sed -i '' "s/IPHONEOS_DEPLOYMENT_TARGET = [^;]*;/IPHONEOS_DEPLOYMENT_TARGET = 16.0;/g" "$PBXPROJ"
-    sed -i '' "s/INFOPLIST_KEY_CFBundleDisplayName = .*;/INFOPLIST_KEY_CFBundleDisplayName = \"$APP_TITLE\";/g" "$PBXPROJ"
+    sed -i '' "s/INFOPLIST_KEY_CFBundleDisplayName = .*;/INFOPLIST_KEY_CFBundleDisplayName = \"$IOS_DISPLAY_NAME\";/g" "$PBXPROJ"
     
     # Update Display Name in Info.plist (which is now the replaced one)
-    if [ -n "$APP_TITLE" ]; then
+    if [ -n "$IOS_DISPLAY_NAME" ]; then
         if [ -f "ios/NekokoLPA/Info.plist" ]; then
-             /usr/libexec/PlistBuddy -c "Set :CFBundleDisplayName '$APP_TITLE'" ios/NekokoLPA/Info.plist 2>/dev/null || echo "Info.plist update failed"
+             /usr/libexec/PlistBuddy -c "Set :CFBundleDisplayName '$IOS_DISPLAY_NAME'" ios/NekokoLPA/Info.plist 2>/dev/null || echo "Info.plist update failed"
         fi
     fi
 fi

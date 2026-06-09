@@ -1,7 +1,7 @@
 {
   "name": "nekokolpa",
-  "buildVersion": 370,
-  "version": "1.12.370",
+  "buildVersion": 371,
+  "version": "1.12.371",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -10,8 +10,11 @@
     "start": "watchman watch-del-all && npx react-native start --reset-cache",
     "type-check": "tsc",
     "pod-install": "cd ios && pod install && cd ..",
-    "build": "bash build.sh",
-    "build-and-upload": "bash build.sh && bash release.sh",
+    "build": "bash build_variant.sh",
+    "build:aab": "bash build_aab.sh",
+    "build-all": "bash build_all_variants.sh",
+    "build-all:aab": "bash build_all_aabs.sh",
+    "build-and-upload": "bash build_variant.sh && bash release.sh",
     "bump": "python3 bump_version.py",
     "postinstall": "npx patch-package"
   },
