@@ -25,8 +25,15 @@ jobs:
         with:
           node-version: '20'
 
+      # This is a Yarn 3 project with a committed yarn.lock. Installing with npm
+      # ignored that lockfile and re-resolved every range, which is what broke
+      # the build: reanimated ^4.2.0 and worklets ^0.7.0 resolved to 4.5.3 and
+      # 0.7.4, a pairing reanimated rejects ("Please install Worklets 0.10.x or
+      # newer"), while the lockfile pins the compatible 4.2.0 / 0.7.1.
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
+        run: |
+          corepack enable
+          yarn install --immutable
 
       - name: Extract version from package.json
         id: extract_version
