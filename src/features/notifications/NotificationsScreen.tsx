@@ -16,6 +16,7 @@ import {useToast} from '@/app/providers/ToastProvider';
 import {useLoading} from '@/app/providers/LoadingProvider';
 import {makeLoading} from '@/shared/utils/loading';
 import {Button as TButton} from 'tamagui';
+import {fontSize, radius} from '@/shared/theme/tokens';
 
 /** GSMA profile-management operation bit flags, as reported by the card. */
 const OPERATION_LABELS: Record<number, string> = {
@@ -136,7 +137,7 @@ function Notifications({route}: RootScreenProps<'Notifications'>) {
             {/* Card surface inside to keep rounded corners */}
             <View
               style={{
-                borderRadius: 12,
+                borderRadius: radius.md,
                 backgroundColor: rowBg,
                 borderWidth: 1,
                 borderColor: borderCol,
@@ -157,24 +158,24 @@ function Notifications({route}: RootScreenProps<'Notifications'>) {
                     }}
                     source={Flags[country] || Flags.UN}
                   />
-                  <Text color="$textDefault" numberOfLines={1} fontSize={14} flex={1}>
+                  <Text color="$textDefault" numberOfLines={1} fontSize={fontSize.md} flex={1}>
                     {metadata ? ` ${name}` : ` ${row.iccid}`}
                   </Text>
-                  <Text color={badgeBg} fontSize={12}>
+                  <Text color={badgeBg} fontSize={fontSize.sm}>
                     {type.toUpperCase()}
                   </Text>
                 </XStack>
 
                 <XStack gap={5}>
                   <YStack flex={1}>
-                    <Text color="$color6" fontSize={12}>
+                    <Text color="$color6" fontSize={fontSize.sm}>
                       {row.notificationAddress}
                     </Text>
-                    <Text color="$color6" fontSize={12}>
+                    <Text color="$color6" fontSize={fontSize.sm}>
                       ICCID: {row.iccid}
                     </Text>
                   </YStack>
-                  <Text color="$textDefault" fontSize={12}>
+                  <Text color="$textDefault" fontSize={fontSize.sm}>
                     #{row.seqNumber}
                   </Text>
                 </XStack>
@@ -205,10 +206,10 @@ function Notifications({route}: RootScreenProps<'Notifications'>) {
           <TButton
             onPress={handleProcessAllNotifications}
             backgroundColor="$btnBackground"
-            borderRadius={8}
+            borderRadius={radius.sm}
             paddingHorizontal={16}
             paddingVertical={10}>
-            <Text color={theme.background?.val} fontSize={14} fontWeight="600">
+            <Text color={theme.background?.val} fontSize={fontSize.md} fontWeight="600">
               {t('main:notifications_handle_all')}
             </Text>
           </TButton>

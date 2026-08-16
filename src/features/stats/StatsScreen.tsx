@@ -8,6 +8,7 @@ import _MCC from '@/data/mcc.json';
 import {Flags} from '@/assets/flags';
 import {View} from 'react-native';
 import {Text as TText, XStack, YStack} from 'tamagui';
+import {fontSize} from '@/shared/theme/tokens';
 
 function Stats(_props: RootScreenProps<'Stats'>) {
   const {t} = useTranslation(['main']);
@@ -48,14 +49,18 @@ function Stats(_props: RootScreenProps<'Stats'>) {
                     <YStack flex={1}>
                       <TText
                         color="$textDefault"
-                        fontSize={14}
+                        fontSize={fontSize.md}
                         fontWeight={'500' as any}
                         style={{marginTop: -2}}>
                         {countryData[country].country.ISO1} {countryData[country].country.Country}
                       </TText>
                       <YStack>
                         {Object.keys(countryData[country].mncs).map((mnc: string) => (
-                          <TText key={mnc} color="$color6" fontSize={12} fontWeight={'500' as any}>
+                          <TText
+                            key={mnc}
+                            color="$color6"
+                            fontSize={fontSize.sm}
+                            fontWeight={'500' as any}>
                             {mnc} {countryData[country].mncs[mnc]}
                           </TText>
                         ))}

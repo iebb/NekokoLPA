@@ -18,6 +18,7 @@ import {
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import {Trash2, ChevronRight} from '@tamagui/lucide-icons';
 import type {SettingRow} from '@/features/settings/types';
+import {fontSize, radius} from '@/shared/theme/tokens';
 
 const AIDRow = React.memo(function AIDRow({row}: {row: SettingRow}) {
   const {t} = useTranslation(['main']);
@@ -69,7 +70,7 @@ const AIDRow = React.memo(function AIDRow({row}: {row: SettingRow}) {
       <XStack alignItems="center" gap={16}>
         <YStack
           padding={8}
-          borderRadius={10}
+          borderRadius={radius.sm}
           position="relative"
           alignItems="center"
           justifyContent="center">
@@ -80,17 +81,17 @@ const AIDRow = React.memo(function AIDRow({row}: {row: SettingRow}) {
             right={0}
             bottom={0}
             backgroundColor="$primaryColor"
-            borderRadius={10}
+            borderRadius={radius.sm}
             opacity={0.15}
           />
           <Icon size={20} color={theme.primaryColor?.val} />
         </YStack>
 
         <YStack flex={1}>
-          <TText color="$textDefault" fontSize={16} fontWeight="500">
+          <TText color="$textDefault" fontSize={fontSize.lg} fontWeight="500">
             {t(`main:settings_title_${row.key}`)}
           </TText>
-          <TText color="$color6" fontSize={13}>
+          <TText color="$color6" fontSize={fontSize.sm}>
             {aidCount} AID{aidCount !== 1 ? 's' : ''} configured
           </TText>
         </YStack>
@@ -103,7 +104,7 @@ const AIDRow = React.memo(function AIDRow({row}: {row: SettingRow}) {
           <YStack flex={1} paddingBottom={Platform.OS === 'ios' ? 20 : 0}>
             {/* Input Section */}
             <YStack gap={8} marginBottom={16}>
-              <TText color="$color6" fontSize={13} marginLeft={4}>
+              <TText color="$color6" fontSize={fontSize.sm} marginLeft={4}>
                 Add New AID
               </TText>
               <XStack gap={10}>
@@ -118,14 +119,14 @@ const AIDRow = React.memo(function AIDRow({row}: {row: SettingRow}) {
                   color={theme.textDefault?.val}
                   placeholderTextColor={theme.color6?.val}
                   height={44}
-                  borderRadius={12}
+                  borderRadius={radius.md}
                 />
                 <Button
                   onPress={addAid}
                   disabled={!inputValid}
                   backgroundColor="$primaryColor"
                   height={44}
-                  borderRadius={12}
+                  borderRadius={radius.md}
                   paddingHorizontal={20}
                   opacity={inputValid ? 1 : 0.5}
                   pressStyle={{opacity: 0.8}}>
@@ -157,14 +158,14 @@ const AIDRow = React.memo(function AIDRow({row}: {row: SettingRow}) {
                         paddingHorizontal={16}
                         gap={12}
                         backgroundColor={isActive ? '$color4' : '$surfaceSpecial'}
-                        borderRadius={12}
+                        borderRadius={radius.md}
                         borderWidth={1}
                         borderColor="$borderColor"
                         opacity={isActive ? 0.9 : 1}>
                         <TText
                           flex={1}
                           color="$textDefault"
-                          fontSize={15}
+                          fontSize={fontSize.md}
                           style={{fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace'}}>
                           {item}
                         </TText>
@@ -189,14 +190,14 @@ const AIDRow = React.memo(function AIDRow({row}: {row: SettingRow}) {
                   justifyContent="center"
                   alignItems="center"
                   backgroundColor="$color2"
-                  borderRadius={12}
+                  borderRadius={radius.md}
                   borderStyle="dashed"
                   borderWidth={1}
                   borderColor="$color6">
-                  <TText color="$color6" fontSize={14}>
+                  <TText color="$color6" fontSize={fontSize.md}>
                     No AIDs configured
                   </TText>
-                  <TText color="$color8" fontSize={12} marginTop={4}>
+                  <TText color="$color8" fontSize={fontSize.sm} marginTop={4}>
                     Add one or use a preset
                   </TText>
                 </YStack>
@@ -205,7 +206,7 @@ const AIDRow = React.memo(function AIDRow({row}: {row: SettingRow}) {
 
             {/* Presets Section */}
             <YStack gap={10}>
-              <TText color="$color6" fontSize={13} marginLeft={4}>
+              <TText color="$color6" fontSize={fontSize.sm} marginLeft={4}>
                 Quick Presets
               </TText>
               <XStack flexWrap="wrap" gap={8}>
@@ -221,10 +222,10 @@ const AIDRow = React.memo(function AIDRow({row}: {row: SettingRow}) {
                     backgroundColor="transparent"
                     borderWidth={1}
                     borderColor="$borderColor"
-                    borderRadius={10}
+                    borderRadius={radius.sm}
                     height={36}
                     paddingHorizontal={12}>
-                    <TText fontSize={13} color="$textDefault">
+                    <TText fontSize={fontSize.sm} color="$textDefault">
                       {preset.label}
                     </TText>
                   </Button>

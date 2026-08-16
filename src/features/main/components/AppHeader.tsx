@@ -2,6 +2,7 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {Image, Linking, PixelRatio, Platform, TouchableOpacity} from 'react-native';
 import {Text as TText, useTheme, XStack} from 'tamagui';
 import {AppCheckForUpdates, AppLogo, AppTitle, AppVersion} from '@/shared/config/app';
+import {fontSize} from '@/shared/theme/tokens';
 
 export default function AppHeader({navigation}: {navigation: any}) {
   const theme = useTheme();
@@ -60,19 +61,21 @@ export default function AppHeader({navigation}: {navigation: any}) {
       </TouchableOpacity>
       <TouchableOpacity onPress={handleUpdatePress} style={{flexShrink: 1}}>
         <TText
-          fontSize={16 / PixelRatio.getFontScale()}
+          fontSize={fontSize.lg / PixelRatio.getFontScale()}
           fontWeight={'700' as any}
           color="$textDefault"
           numberOfLines={1}>
           {AppTitle}
         </TText>
         <TText
-          fontSize={12 / PixelRatio.getFontScale()}
+          fontSize={fontSize.sm / PixelRatio.getFontScale()}
           color={isLatest ? theme.color6?.val : theme.backgroundDangerHeavy?.val}>
           v{AppVersion} {!isLatest && '↑'}
         </TText>
         {!isLatest && (
-          <TText fontSize={12 / PixelRatio.getFontScale()} color={theme.backgroundDangerHeavy?.val}>
+          <TText
+            fontSize={fontSize.sm / PixelRatio.getFontScale()}
+            color={theme.backgroundDangerHeavy?.val}>
             {release.tag_name} available
           </TText>
         )}

@@ -13,6 +13,7 @@ import {setTargetDevice} from '@/store/slices';
 import ProfileCardHeader from '@/features/main/ProfileCardHeader';
 import ProfileSelector from '@/features/main/ProfileSelector';
 import {OMAPIBridge} from '@/lpa/bridge/nativeModules';
+import {fontSize, radius} from '@/shared/theme/tokens';
 
 export default function SIMSelector() {
   const {
@@ -84,7 +85,7 @@ export default function SIMSelector() {
     return (
       <ScrollView bounces alwaysBounceVertical overScrollMode="always">
         <YStack flex={1} paddingTop={20} gap={10}>
-          <TText color="$textDefault" fontSize={18} textAlign="center">
+          <TText color="$textDefault" fontSize={fontSize.xl} textAlign="center">
             {t('main:no_device')}
           </TText>
           <PurchaseLinks />
@@ -94,9 +95,9 @@ export default function SIMSelector() {
 
   return (
     <TView flex={1} minHeight={0} key={deviceList.length}>
-      <Tabs value={currentTab} onValueChange={setCurrentTab} borderRadius={12}>
+      <Tabs value={currentTab} onValueChange={setCurrentTab} borderRadius={radius.md}>
         <Tabs.List
-          borderRadius={12}
+          borderRadius={radius.md}
           orientation="horizontal"
           flexDirection="row"
           borderColor="$surfaceSpecial"
@@ -171,22 +172,22 @@ export default function SIMSelector() {
           ) : (
             <ScrollView bounces alwaysBounceVertical overScrollMode="always">
               <YStack flex={1} paddingTop={20} gap={10}>
-                <TText color="$textDefault" fontSize={18} textAlign="center">
+                <TText color="$textDefault" fontSize={fontSize.xl} textAlign="center">
                   {t('main:error_device')}
                 </TText>
-                <TText color="$color" fontSize={20} textAlign="center" marginBottom={40}>
+                <TText color="$color" fontSize={fontSize.xxl} textAlign="center" marginBottom={40}>
                   {adapter.device.description}
                 </TText>
                 {Platform.OS === 'android' && adapter.device.signatures && (
                   <>
-                    <TText color="$textDefault" fontSize={18} textAlign="center">
+                    <TText color="$textDefault" fontSize={fontSize.xl} textAlign="center">
                       {t('main:android_aram')}
                     </TText>
                     <YStack flex={1} paddingBottom={40} gap={10}>
                       {adapter.device.signatures.split(',').map((s: string) => (
                         <TText
                           color="$textDefault"
-                          fontSize={14}
+                          fontSize={fontSize.md}
                           textAlign="center"
                           key={s}
                           onPress={() => {
@@ -204,7 +205,7 @@ export default function SIMSelector() {
                     <TText
                       color="$textDefault"
                       textDecorationLine="underline"
-                      fontSize={20}
+                      fontSize={fontSize.xxl}
                       textAlign="center"
                       marginTop={40}
                       onPress={() => {

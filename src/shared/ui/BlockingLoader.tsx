@@ -2,6 +2,7 @@ import React from 'react';
 import {View} from 'react-native';
 import {AlertTriangle, CheckCircle, Info} from '@tamagui/lucide-icons';
 import {Card, Spinner, Text as TText, useTheme, XStack, YStack} from 'tamagui';
+import {fontSize, radius} from '@/shared/theme/tokens';
 
 export type LoaderState = 'loading' | 'success' | 'error' | 'info' | 'warning';
 
@@ -93,7 +94,7 @@ export default function BlockingLoader({
         size="$4"
         backgroundColor={theme.surfaceRow?.val || theme.background?.val}
         borderColor={theme.borderColor?.val}
-        borderRadius={12}
+        borderRadius={radius.md}
         padding={20}
         maxWidth={320}
         minWidth={260}>
@@ -110,30 +111,30 @@ export default function BlockingLoader({
                 style={{
                   width: '100%',
                   height: 8,
-                  borderRadius: 999,
+                  borderRadius: radius.pill,
                   backgroundColor: theme.color0?.val,
                 }}>
                 <View
                   style={{
                     width: `${normalizedProgress}%`,
                     height: '100%',
-                    borderRadius: 999,
+                    borderRadius: radius.pill,
                     backgroundColor: stateColor,
                   }}
                 />
               </View>
-              <TText fontSize={12} color="$color6" textAlign="center">
+              <TText fontSize={fontSize.sm} color="$color6" textAlign="center">
                 {normalizedProgress}%
               </TText>
             </YStack>
           )}
           {title ? (
-            <TText fontSize={16} fontWeight="700" color="$textDefault" textAlign="center">
+            <TText fontSize={fontSize.lg} fontWeight="700" color="$textDefault" textAlign="center">
               {title}
             </TText>
           ) : null}
           {effectiveSubtitle ? (
-            <TText fontSize={13} color="$color6" textAlign="center">
+            <TText fontSize={fontSize.sm} color="$color6" textAlign="center">
               {effectiveSubtitle}
             </TText>
           ) : null}

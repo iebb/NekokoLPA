@@ -13120,16 +13120,15 @@ __metadata:
   linkType: hard
 
 "react-native-svg@npm:^15.15.1":
-  version: 15.15.1
-  resolution: "react-native-svg@npm:15.15.1"
+  version: 15.15.5
+  resolution: "react-native-svg@npm:15.15.5"
   dependencies:
     css-select: ^5.1.0
     css-tree: ^1.1.3
-    warn-once: 0.1.1
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: a65590d7344e39179b5f7de305001d821d1d25ab17d915781039fdd0b46f71115682fddd9617295ea4c0c0f6bd484633d993abc8f9a3444ea3f72e6cb40cde8a
+  checksum: 78f5aa54150be40075af77bea0d01f0f25c942bb3a8114c25386426f6af114d3602e7ccae94da4ba6ff0f85f6087b544c7067ab3415dd600924995c730aa4a60
   languageName: node
   linkType: hard
 
@@ -15242,7 +15241,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"warn-once@npm:0.1.1, warn-once@npm:^0.1.0":
+"warn-once@npm:^0.1.0":
   version: 0.1.1
   resolution: "warn-once@npm:0.1.1"
   checksum: e6a5a1f5a8dba7744399743d3cfb571db4c3947897875d4962a7c5b1bf2195ab4518c838cb4cea652e71729f21bba2e98dc75686f5fccde0fabbd894e2ed0c0d

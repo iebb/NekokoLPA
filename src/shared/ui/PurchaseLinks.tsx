@@ -4,6 +4,7 @@ import {useTranslation} from 'react-i18next';
 import {Text as TText} from 'tamagui';
 
 import {AppBuyLink, AppBuyLinkEsimData} from '@/shared/config/app';
+import {fontSize} from '@/shared/theme/tokens';
 
 /**
  * "Buy a device" / "Buy eSIM data" call-to-action links.
@@ -21,7 +22,7 @@ export default function PurchaseLinks({topMargin = 40}: {topMargin?: number}) {
       <TText
         color="$primaryColor"
         textDecorationLine="underline"
-        fontSize={20}
+        fontSize={fontSize.xxl}
         textAlign="center"
         marginTop={topMargin}
         onPress={() => Linking.openURL(AppBuyLink)}>
@@ -31,7 +32,7 @@ export default function PurchaseLinks({topMargin = 40}: {topMargin?: number}) {
         <TText
           color="$primaryColor"
           textDecorationLine="underline"
-          fontSize={20}
+          fontSize={fontSize.xxl}
           textAlign="center"
           marginTop={20}
           onPress={() => Linking.openURL(esimDataLink)}>

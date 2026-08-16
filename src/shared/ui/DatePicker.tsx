@@ -2,6 +2,7 @@ import React, {useMemo, useState} from 'react';
 import {TouchableOpacity} from 'react-native';
 import {ChevronLeft, ChevronRight} from '@tamagui/lucide-icons';
 import {Text as TText, useTheme, XStack, YStack} from 'tamagui';
+import {fontSize, radius} from '@/shared/theme/tokens';
 
 /** Monday-first weekday index (0 = Monday) for a given Date. */
 function mondayFirstWeekday(date: Date): number {
@@ -100,7 +101,7 @@ export default function DatePicker({value, onChange, locale}: DatePickerProps) {
           accessibilityLabel="Previous month">
           <ChevronLeft size={20} color={theme.textDefault?.val} />
         </TouchableOpacity>
-        <TText color="$textDefault" fontSize={15} fontWeight="600">
+        <TText color="$textDefault" fontSize={fontSize.md} fontWeight="600">
           {monthLabel}
         </TText>
         <TouchableOpacity
@@ -115,7 +116,7 @@ export default function DatePicker({value, onChange, locale}: DatePickerProps) {
       <XStack>
         {weekdays.map((label, i) => (
           <YStack key={i} flex={1} alignItems="center">
-            <TText color="$color6" fontSize={11} fontWeight="600">
+            <TText color="$color6" fontSize={fontSize.xs} fontWeight="600">
               {label}
             </TText>
           </YStack>
@@ -139,12 +140,12 @@ export default function DatePicker({value, onChange, locale}: DatePickerProps) {
                     <YStack
                       width={36}
                       height={36}
-                      borderRadius={18}
+                      borderRadius={radius.pill}
                       alignItems="center"
                       justifyContent="center"
                       backgroundColor={selected ? '$primaryColor' : 'transparent'}>
                       <TText
-                        fontSize={14}
+                        fontSize={fontSize.md}
                         fontWeight={selected ? '700' : '400'}
                         color={selected ? theme.background?.val : theme.textDefault?.val}>
                         {day}

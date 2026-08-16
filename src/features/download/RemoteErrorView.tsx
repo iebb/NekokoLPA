@@ -2,6 +2,7 @@ import {Text as TText, YStack, XStack} from 'tamagui';
 import React from 'react';
 import {RemoteError} from '@/lpa/types/profile';
 import {AlertCircle, Code, Info} from '@tamagui/lucide-icons';
+import {fontSize} from '@/shared/theme/tokens';
 
 export default function RemoteErrorView({remoteError}: {remoteError?: RemoteError}) {
   if (!remoteError) return null;
@@ -12,11 +13,11 @@ export default function RemoteErrorView({remoteError}: {remoteError?: RemoteErro
         <YStack gap={8}>
           <XStack gap={8} alignItems="center">
             <AlertCircle size={18} color="$backgroundDangerHeavy" />
-            <TText color="$textDefault" fontSize={16} fontWeight={'600' as any}>
+            <TText color="$textDefault" fontSize={fontSize.lg} fontWeight={'600' as any}>
               Error Message
             </TText>
           </XStack>
-          <TText color="$textDefault" fontSize={14} paddingLeft={26}>
+          <TText color="$textDefault" fontSize={fontSize.md} paddingLeft={26}>
             {remoteError.message}
           </TText>
         </YStack>
@@ -32,11 +33,11 @@ export default function RemoteErrorView({remoteError}: {remoteError?: RemoteErro
             borderBottomColor="$outlineNeutral">
             <XStack gap={8} alignItems="center">
               <Info size={16} color="$color6" />
-              <TText color="$color6" fontSize={13} fontWeight={'500' as any}>
+              <TText color="$color6" fontSize={fontSize.sm} fontWeight={'500' as any}>
                 Status
               </TText>
             </XStack>
-            <TText color="$textDefault" fontSize={14}>
+            <TText color="$textDefault" fontSize={fontSize.md}>
               {remoteError.status}
             </TText>
           </XStack>
@@ -51,11 +52,11 @@ export default function RemoteErrorView({remoteError}: {remoteError?: RemoteErro
             borderBottomColor="$outlineNeutral">
             <XStack gap={8} alignItems="center">
               <Code size={16} color="$color6" />
-              <TText color="$color6" fontSize={13} fontWeight={'500' as any}>
+              <TText color="$color6" fontSize={fontSize.sm} fontWeight={'500' as any}>
                 Reason Code
               </TText>
             </XStack>
-            <TText color="$textDefault" fontSize={14}>
+            <TText color="$textDefault" fontSize={fontSize.md}>
               {remoteError.reasonCode}
             </TText>
           </XStack>
@@ -65,11 +66,11 @@ export default function RemoteErrorView({remoteError}: {remoteError?: RemoteErro
           <XStack justifyContent="space-between" alignItems="center" paddingVertical={8}>
             <XStack gap={8} alignItems="center">
               <Code size={16} color="$color6" />
-              <TText color="$color6" fontSize={13} fontWeight={'500' as any}>
+              <TText color="$color6" fontSize={fontSize.sm} fontWeight={'500' as any}>
                 Subject Code
               </TText>
             </XStack>
-            <TText color="$textDefault" fontSize={14}>
+            <TText color="$textDefault" fontSize={fontSize.md}>
               {remoteError.subjectCode}
             </TText>
           </XStack>

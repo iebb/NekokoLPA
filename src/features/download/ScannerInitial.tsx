@@ -37,6 +37,7 @@ import {useLoading} from '@/app/providers/LoadingProvider';
 import {useToast} from '@/app/providers/ToastProvider';
 import {toCIName} from '@/shared/utils/friendlyName';
 import Clipboard from '@react-native-clipboard/clipboard';
+import {fontSize, radius} from '@/shared/theme/tokens';
 
 export function ScannerInitial({appLink, deviceId, finishAuthenticate}: any) {
   const theme = useTheme();
@@ -131,18 +132,22 @@ export function ScannerInitial({appLink, deviceId, finishAuthenticate}: any) {
     <Screen title={t('main:profile_title_download_profile')}>
       <YStack gap={20}>
         {/* Device Info Card */}
-        <Card backgroundColor="$surfaceSpecial" borderRadius={16} padding={16} borderWidth={0}>
+        <Card
+          backgroundColor="$surfaceSpecial"
+          borderRadius={radius.lg}
+          padding={16}
+          borderWidth={0}>
           <YStack gap={8}>
-            <TText color="$textDefault" fontSize={16} fontWeight={'600' as any}>
+            <TText color="$textDefault" fontSize={fontSize.lg} fontWeight={'600' as any}>
               {t('main:profile_current_euicc', {device: adapter.device.deviceName})}
             </TText>
             <XStack gap={8}>
-              <TText color="$color6" fontSize={14} flex={1}>
+              <TText color="$color6" fontSize={fontSize.md} flex={1}>
                 {t('main:available_space', {
                   size: formatSize(euiccInfo2?.extCardResource?.freeNonVolatileMemory),
                 })}
               </TText>
-              <TText color="$color6" fontSize={14} maxWidth="50%">
+              <TText color="$color6" fontSize={fontSize.md} maxWidth="50%">
                 CI:{' '}
                 {DeviceState.euiccInfo2?.euiccCiPKIdListForSigning
                   .map((x: any) => toCIName(x))
@@ -154,7 +159,7 @@ export function ScannerInitial({appLink, deviceId, finishAuthenticate}: any) {
 
         {/* QR Scanner */}
         <TView
-          borderRadius={16}
+          borderRadius={radius.lg}
           padding={showCamera ? 0 : 24}
           backgroundColor="$surfaceSpecial"
           overflow="hidden"
@@ -170,11 +175,11 @@ export function ScannerInitial({appLink, deviceId, finishAuthenticate}: any) {
                     w={64}
                     h={64}
                     backgroundColor="$btnBackground"
-                    borderRadius={16}
+                    borderRadius={radius.lg}
                     icon={<QrCode size={32} color="#ffffff" />}
                     onPress={() => setShowCamera(true)}
                   />
-                  <TText color="$color6" fontSize={12}>
+                  <TText color="$color6" fontSize={fontSize.sm}>
                     Camera
                   </TText>
                 </YStack>
@@ -184,7 +189,7 @@ export function ScannerInitial({appLink, deviceId, finishAuthenticate}: any) {
                       w={64}
                       h={64}
                       backgroundColor="$btnBackground"
-                      borderRadius={16}
+                      borderRadius={radius.lg}
                       icon={<ImageIcon size={32} color="#ffffff" />}
                       onPress={() => {
                         launchImageLibrary(
@@ -212,7 +217,7 @@ export function ScannerInitial({appLink, deviceId, finishAuthenticate}: any) {
                         );
                       }}
                     />
-                    <TText color="$color6" fontSize={12}>
+                    <TText color="$color6" fontSize={fontSize.sm}>
                       Gallery
                     </TText>
                   </YStack>
@@ -222,7 +227,7 @@ export function ScannerInitial({appLink, deviceId, finishAuthenticate}: any) {
                     w={64}
                     h={64}
                     backgroundColor="$btnBackground"
-                    borderRadius={16}
+                    borderRadius={radius.lg}
                     icon={<ClipboardIcon size={32} color="#ffffff" />}
                     onPress={async () => {
                       try {
@@ -242,7 +247,7 @@ export function ScannerInitial({appLink, deviceId, finishAuthenticate}: any) {
                       }
                     }}
                   />
-                  <TText color="$color6" fontSize={12}>
+                  <TText color="$color6" fontSize={fontSize.sm}>
                     Paste
                   </TText>
                 </YStack>
@@ -251,11 +256,11 @@ export function ScannerInitial({appLink, deviceId, finishAuthenticate}: any) {
                     w={64}
                     h={64}
                     backgroundColor="$btnBackground"
-                    borderRadius={16}
+                    borderRadius={radius.lg}
                     icon={<Search size={32} color="#ffffff" />}
                     onPress={handleDiscovery}
                   />
-                  <TText color="$color6" fontSize={12}>
+                  <TText color="$color6" fontSize={fontSize.sm}>
                     Discover
                   </TText>
                 </YStack>
@@ -272,7 +277,11 @@ export function ScannerInitial({appLink, deviceId, finishAuthenticate}: any) {
           )}
         </TView>
         {/* Input Form Card */}
-        <Card backgroundColor="$surfaceSpecial" borderRadius={16} padding={20} borderWidth={0}>
+        <Card
+          backgroundColor="$surfaceSpecial"
+          borderRadius={radius.lg}
+          padding={20}
+          borderWidth={0}>
           <YStack gap={20}>
             {/* SM-DP+ Address */}
             <YStack gap={8}>
@@ -284,7 +293,7 @@ export function ScannerInitial({appLink, deviceId, finishAuthenticate}: any) {
                   backgroundColor="$background"
                   color={theme.textDefault?.val}
                   placeholderTextColor={theme.color6?.val}
-                  borderRadius={12}
+                  borderRadius={radius.md}
                 />
               </View>
             </YStack>
@@ -300,7 +309,7 @@ export function ScannerInitial({appLink, deviceId, finishAuthenticate}: any) {
                 backgroundColor="$background"
                 color={theme.textDefault?.val}
                 placeholderTextColor={theme.color6?.val}
-                borderRadius={12}
+                borderRadius={radius.md}
               />
             </YStack>
 
@@ -315,7 +324,7 @@ export function ScannerInitial({appLink, deviceId, finishAuthenticate}: any) {
                 backgroundColor="$background"
                 color={theme.textDefault?.val}
                 placeholderTextColor={theme.color6?.val}
-                borderRadius={12}
+                borderRadius={radius.md}
               />
             </YStack>
           </YStack>
@@ -326,7 +335,7 @@ export function ScannerInitial({appLink, deviceId, finishAuthenticate}: any) {
           marginTop={8}
           marginBottom={12}
           height={56}
-          borderRadius={16}
+          borderRadius={radius.lg}
           disabled={smdp.length === 0 && !euiccAddress?.defaultDpAddress}
           backgroundColor="$btnBackground"
           opacity={smdp.length === 0 && !euiccAddress?.defaultDpAddress ? 0.5 : 1}
@@ -355,7 +364,7 @@ export function ScannerInitial({appLink, deviceId, finishAuthenticate}: any) {
           }}>
           <XStack alignItems="center" gap={12}>
             <Download size={20} color="$btnForeground" />
-            <TText color="$btnForeground" fontSize={17} fontWeight={'600' as any}>
+            <TText color="$btnForeground" fontSize={fontSize.lg} fontWeight={'600' as any}>
               {t('main:profile_ui_download')}
             </TText>
           </XStack>

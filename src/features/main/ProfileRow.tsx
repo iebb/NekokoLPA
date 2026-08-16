@@ -16,6 +16,7 @@ import {Adapters} from '@/lpa/adapters/registry';
 import {useLoading} from '@/app/providers/LoadingProvider';
 
 import {isSimplifiedMode} from '@/shared/config/features';
+import {fontSize, radius} from '@/shared/theme/tokens';
 
 interface ProfileExt extends Profile {
   selected: boolean;
@@ -25,8 +26,12 @@ interface ProfileExt extends Profile {
 const ProfileTags = React.memo(({tags, stealthMode}: {tags: any[]; stealthMode: string}) => (
   <XStack gap={5} marginVertical={2}>
     {tags.map((t, i) => (
-      <XStack key={i} paddingHorizontal={5} borderRadius={4} backgroundColor={t.backgroundColor}>
-        <Text fontSize={10} fontWeight={'500' as any} color={t.color}>
+      <XStack
+        key={i}
+        paddingHorizontal={5}
+        borderRadius={radius.xs}
+        backgroundColor={t.backgroundColor}>
+        <Text fontSize={fontSize.xs} fontWeight={'500' as any} color={t.color}>
           {stealthMode === 'none' ? t.value : stealthMode === 'medium' ? t.value : '***'}
         </Text>
       </XStack>
@@ -56,7 +61,7 @@ const ProfileSubtitle = React.memo(
     // Theme-aware; no direct Appearance usage needed
 
     return (
-      <Text color="$color6" numberOfLines={1} fontSize={12}>
+      <Text color="$color6" numberOfLines={1} fontSize={fontSize.sm}>
         {subtitleText}
       </Text>
     );
@@ -223,13 +228,13 @@ const ProfileRowComponent = ({profile, deviceId}: {profile: ProfileExt; deviceId
       overshootFriction={8}
       friction={2}
       containerStyle={{
-        borderRadius: 12,
+        borderRadius: radius.md,
         backgroundColor: theme.surfaceSpecial?.val,
       }}>
       <Card
         backgroundColor="$surfaceSpecial"
         borderWidth={0}
-        borderRadius={12}
+        borderRadius={radius.md}
         overflow="hidden"
         paddingTop={4}
         elevation={2}>
@@ -244,13 +249,13 @@ const ProfileRowComponent = ({profile, deviceId}: {profile: ProfileExt; deviceId
                       width: 22.5 * PixelRatio.getFontScale(),
                       height: 15 * PixelRatio.getFontScale(),
                       marginRight: 7.5,
-                      borderRadius: 2,
+                      borderRadius: radius.xs,
                     }}
                     source={Flags[country] || Flags.UN}
                   />
                   <Text
                     color="$textDefault"
-                    fontSize={17}
+                    fontSize={fontSize.lg}
                     fontWeight="600"
                     numberOfLines={1}
                     flex={1}>
@@ -289,7 +294,7 @@ const ProfileRowComponent = ({profile, deviceId}: {profile: ProfileExt; deviceId
             height="100%"
             width="100%"
             backgroundColor={`hsl(${hueICCID}, 80%, 50%)`}
-            borderRadius={999}
+            borderRadius={radius.pill}
           />
         </YStack>
       </Card>

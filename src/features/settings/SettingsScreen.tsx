@@ -23,6 +23,8 @@ import PickerRow from '@/features/settings/components/PickerRow';
 import SelectRow from '@/features/settings/components/SelectRow';
 import AIDRow from '@/features/settings/components/AIDRow';
 import type {SettingRow} from '@/features/settings/types';
+import {DEFAULT_THEME_COLOR} from '@/shared/theme/presetColors';
+import {fontSize, radius} from '@/shared/theme/tokens';
 
 /** Which rows belong to which section, in display order. */
 const SECTIONS = [
@@ -58,12 +60,16 @@ const SettingsSection = ({
       <H5
         paddingHorizontal={12}
         color="$color8"
-        fontSize={13}
+        fontSize={fontSize.sm}
         textTransform="uppercase"
         letterSpacing={1}>
         {title}
       </H5>
-      <Card backgroundColor="$surfaceSpecial" borderRadius={16} overflow="hidden" elevation={2}>
+      <Card
+        backgroundColor="$surfaceSpecial"
+        borderRadius={radius.lg}
+        overflow="hidden"
+        elevation={2}>
         <YStack>
           {items.map((item, index) => (
             <React.Fragment key={item.key}>
@@ -144,7 +150,7 @@ export default function Settings(_props: RootScreenProps<'Settings'>) {
       androidOnly: true,
     },
     {key: 'aid', icon: Fingerprint, type: 'aid'},
-    {key: 'themeColor', icon: Palette, defaultValue: '#813ff3', type: 'color'},
+    {key: 'themeColor', icon: Palette, defaultValue: DEFAULT_THEME_COLOR, type: 'color'},
   ];
 
   const filteredItems = allItems.filter(item => {

@@ -11,6 +11,7 @@ import {Adapters} from '@/lpa/adapters/registry';
 import {useSelector} from 'react-redux';
 import {selectDeviceState} from '@/store';
 import {formatSize} from '@/shared/utils/size';
+import {fontSize, radius} from '@/shared/theme/tokens';
 
 export function ScannerAuthentication({
   authenticateResult,
@@ -48,9 +49,17 @@ export function ScannerAuthentication({
       {authenticateResult?.success ? (
         <YStack gap={20}>
           {/* Profile Metadata Card */}
-          <Card backgroundColor="$surfaceSpecial" borderRadius={16} padding={20} borderWidth={0}>
+          <Card
+            backgroundColor="$surfaceSpecial"
+            borderRadius={radius.lg}
+            padding={20}
+            borderWidth={0}>
             <YStack gap={16}>
-              <TText color="$textDefault" fontSize={18} fontWeight={'600' as any} marginBottom={4}>
+              <TText
+                color="$textDefault"
+                fontSize={fontSize.xl}
+                fontWeight={'600' as any}
+                marginBottom={4}>
                 Profile Information
               </TText>
               <MetadataView metadata={authenticateResult.profile} />
@@ -59,9 +68,13 @@ export function ScannerAuthentication({
 
           {/* Confirmation Code Card */}
           {(authenticateResult.isCcRequired || confirmationCode) && (
-            <Card backgroundColor="$surfaceSpecial" borderRadius={16} padding={20} borderWidth={0}>
+            <Card
+              backgroundColor="$surfaceSpecial"
+              borderRadius={radius.lg}
+              padding={20}
+              borderWidth={0}>
               <YStack gap={12}>
-                <TText color="$textDefault" fontSize={16} fontWeight={'600' as any}>
+                <TText color="$textDefault" fontSize={fontSize.lg} fontWeight={'600' as any}>
                   {t('main:profile_conf_code')}
                 </TText>
                 <Input
@@ -73,24 +86,28 @@ export function ScannerAuthentication({
                   backgroundColor="$background"
                   color={theme.textDefault?.val}
                   placeholderTextColor={theme.color6?.val}
-                  fontSize={16}
-                  borderRadius={12}
+                  fontSize={fontSize.lg}
+                  borderRadius={radius.md}
                 />
               </YStack>
             </Card>
           )}
 
           {/* Storage Info Card */}
-          <Card backgroundColor="$surfaceSpecial" borderRadius={16} padding={20} borderWidth={0}>
+          <Card
+            backgroundColor="$surfaceSpecial"
+            borderRadius={radius.lg}
+            padding={20}
+            borderWidth={0}>
             <YStack gap={16}>
-              <TText color="$textDefault" fontSize={16} fontWeight={'600' as any}>
+              <TText color="$textDefault" fontSize={fontSize.lg} fontWeight={'600' as any}>
                 Storage Information
               </TText>
               <XStack justifyContent="space-between" alignItems="center">
-                <TText color="$color6" fontSize={14} fontWeight={'500' as any}>
+                <TText color="$color6" fontSize={fontSize.md} fontWeight={'500' as any}>
                   {t('main:profile_available_space')}
                 </TText>
-                <TText color="$textDefault" fontSize={14} fontWeight={'500' as any}>
+                <TText color="$textDefault" fontSize={fontSize.md} fontWeight={'500' as any}>
                   {formatSize(freeSpace)}
                 </TText>
               </XStack>
@@ -103,7 +120,7 @@ export function ScannerAuthentication({
               <TButton
                 flex={1}
                 height={52}
-                borderRadius={16}
+                borderRadius={radius.lg}
                 backgroundColor="$color6"
                 onPress={() => {
                   makeLoading(setLoading, async () => {
@@ -113,7 +130,7 @@ export function ScannerAuthentication({
                 }}>
                 <XStack alignItems="center" gap={10}>
                   <X size={18} color="$btnForeground" />
-                  <TText color="$btnForeground" fontSize={16} fontWeight={'500' as any}>
+                  <TText color="$btnForeground" fontSize={fontSize.lg} fontWeight={'500' as any}>
                     {t('main:profile_ui_cancel')}
                   </TText>
                 </XStack>
@@ -121,7 +138,7 @@ export function ScannerAuthentication({
               <TButton
                 flex={2}
                 height={52}
-                borderRadius={16}
+                borderRadius={radius.lg}
                 backgroundColor="$btnBackground"
                 onPress={() => {
                   makeLoading(setLoading, async () => {
@@ -138,7 +155,7 @@ export function ScannerAuthentication({
                 }}>
                 <XStack alignItems="center" gap={12}>
                   <Download size={20} color="$btnForeground" />
-                  <TText color="$btnForeground" fontSize={17} fontWeight={'600' as any}>
+                  <TText color="$btnForeground" fontSize={fontSize.lg} fontWeight={'600' as any}>
                     {t('main:profile_ui_download')}
                   </TText>
                 </XStack>
@@ -148,11 +165,15 @@ export function ScannerAuthentication({
         </YStack>
       ) : (
         <YStack gap={24} flex={1}>
-          <Card backgroundColor="$surfaceSpecial" borderRadius={16} padding={24} borderWidth={0}>
+          <Card
+            backgroundColor="$surfaceSpecial"
+            borderRadius={radius.lg}
+            padding={24}
+            borderWidth={0}>
             <YStack gap={16} alignItems="center">
               <TText
                 textAlign="center"
-                fontSize={20}
+                fontSize={fontSize.xxl}
                 color="$textDefault"
                 fontWeight={'600' as any}>
                 {t('main:profile_download_failure')}
@@ -162,14 +183,14 @@ export function ScannerAuthentication({
           </Card>
           <TButton
             height={52}
-            borderRadius={16}
+            borderRadius={radius.lg}
             backgroundColor="$color6"
             onPress={() => {
               goBack();
             }}>
             <XStack alignItems="center" gap={10}>
               <X size={18} color="$btnForeground" />
-              <TText color="$btnForeground" fontSize={16} fontWeight={'500' as any}>
+              <TText color="$btnForeground" fontSize={fontSize.lg} fontWeight={'500' as any}>
                 {t('main:profile_ui_back')}
               </TText>
             </XStack>

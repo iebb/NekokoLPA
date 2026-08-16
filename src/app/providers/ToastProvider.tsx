@@ -9,6 +9,7 @@ import React, {
   useState,
 } from 'react';
 import {Text, YStack} from 'tamagui';
+import {fontSize, radius} from '@/shared/theme/tokens';
 
 export type ToastType = 'error' | 'success';
 
@@ -53,10 +54,10 @@ export const ToastProvider = ({children}: PropsWithChildren) => {
           <YStack
             paddingHorizontal={14}
             paddingVertical={10}
-            borderRadius={8}
+            borderRadius={radius.sm}
             backgroundColor={toast.type === 'error' ? '$backgroundDanger' : '$primaryColor'}
             maxWidth={360}>
-            <Text color="$background" fontSize={14} textAlign="center">
+            <Text color="$background" fontSize={fontSize.md} textAlign="center">
               {toast.message}
             </Text>
           </YStack>

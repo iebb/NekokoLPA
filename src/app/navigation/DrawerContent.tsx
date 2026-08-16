@@ -21,6 +21,7 @@ import {
   AppVersion,
 } from '@/shared/config/app';
 import {Linking} from 'react-native';
+import {fontSize} from '@/shared/theme/tokens';
 
 export default function LeftSidebarDrawer({navigation}: DrawerContentComponentProps) {
   const {t} = useTranslation(['main']);
@@ -82,12 +83,12 @@ export default function LeftSidebarDrawer({navigation}: DrawerContentComponentPr
         <Image source={AppLogo} style={{width: 42, height: 42}} />
         <View>
           <View>
-            <TText color="$textDefault" fontSize={16} fontWeight={'700' as any}>
+            <TText color="$textDefault" fontSize={fontSize.lg} fontWeight={'700' as any}>
               {AppTitle}
             </TText>
           </View>
           <View>
-            <TText color="$color6" fontSize={12}>
+            <TText color="$color6" fontSize={fontSize.sm}>
               v{AppVersion}
             </TText>
           </View>

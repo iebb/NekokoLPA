@@ -18,6 +18,7 @@ import {Adapters} from '@/lpa/adapters/registry';
 import {selectDeviceState} from '@/store';
 import {getUTF8Length} from '@/shared/utils/encoding';
 import {useLoading} from '@/app/providers/LoadingProvider';
+import {fontSize, radius} from '@/shared/theme/tokens';
 
 // Metadata Row Component
 function MetadataRow({
@@ -37,13 +38,13 @@ function MetadataRow({
     <TouchableOpacity onPress={() => value && onCopy?.(value)} activeOpacity={0.7}>
       <YStack paddingVertical={10}>
         <XStack alignItems="center" justifyContent="space-between" gap={12}>
-          <TText color="$color6" fontSize={12} style={{minWidth: 100, flexShrink: 0}}>
+          <TText color="$color6" fontSize={fontSize.sm} style={{minWidth: 100, flexShrink: 0}}>
             {label}
           </TText>
           <XStack alignItems="center" gap={8} flex={1} flexShrink={1}>
             <TText
               color="$textDefault"
-              fontSize={15}
+              fontSize={fontSize.md}
               fontWeight="600"
               flex={1}
               numberOfLines={1}
@@ -121,7 +122,7 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
         <YStack gap={16}>
           {/* Toggle group */}
           <XStack alignItems="center" gap={12}>
-            <TText color="$textDefault" fontSize={16}>
+            <TText color="$textDefault" fontSize={fontSize.lg}>
               {t('main:profile_add_tag_type')}:
             </TText>
             <XStack gap={8}>
@@ -137,10 +138,10 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
                 }
                 paddingHorizontal={12}
                 paddingVertical={8}
-                borderRadius={8}>
+                borderRadius={radius.sm}>
                 <TText
                   color={newTagType === 'date' ? theme.background?.val : theme.textDefault?.val}
-                  fontSize={14}>
+                  fontSize={fontSize.md}>
                   {t('main:profile_tags_date')}
                 </TText>
               </TButton>
@@ -156,10 +157,10 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
                 }
                 paddingHorizontal={12}
                 paddingVertical={8}
-                borderRadius={8}>
+                borderRadius={radius.sm}>
                 <TText
                   color={newTagType === 'text' ? theme.background?.val : theme.textDefault?.val}
-                  fontSize={14}>
+                  fontSize={fontSize.md}>
                   {t('main:profile_tags_text')}
                 </TText>
               </TButton>
@@ -186,13 +187,13 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
                 }}
                 paddingHorizontal={12}
                 paddingVertical={10}
-                borderRadius={8}
+                borderRadius={radius.sm}
                 borderWidth={1}
                 borderColor={theme.outlineNeutral?.val || theme.borderColor?.val}
                 backgroundColor="transparent"
                 color={theme.textDefault?.val}
                 placeholderTextColor={theme.color6?.val}
-                fontSize={16}
+                fontSize={fontSize.lg}
               />
             ) : null}
           </YStack>
@@ -206,7 +207,7 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
                 setTagModal(false);
               }}
               backgroundColor="$btnBackground">
-              <TText color={theme.background?.val} fontSize={16}>
+              <TText color={theme.background?.val} fontSize={fontSize.lg}>
                 Save
               </TText>
             </TButton>
@@ -224,17 +225,17 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
             value={nickname}
             onChangeText={c => setNickname(c)}
             borderWidth={1}
-            borderRadius={8}
+            borderRadius={radius.sm}
             borderColor={theme.outlineNeutral?.val || theme.borderColor?.val}
             backgroundColor="transparent"
             color={theme.textDefault?.val}
             placeholderTextColor={theme.color6?.val}
-            fontSize={16}
+            fontSize={fontSize.lg}
             paddingHorizontal={12}
             paddingVertical={10}
           />
           <XStack justifyContent="space-between" alignItems="center">
-            <TText color="$color6" fontSize={11}>{`${getUTF8Length(
+            <TText color="$color6" fontSize={fontSize.xs}>{`${getUTF8Length(
               nickname + tagChars,
             )}/64`}</TText>
             <TButton
@@ -244,7 +245,7 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
                 setRenameModal(false);
               }}
               backgroundColor="$btnBackground">
-              <TText color={theme.background?.val} fontSize={14}>
+              <TText color={theme.background?.val} fontSize={fontSize.md}>
                 Save
               </TText>
             </TButton>
@@ -267,7 +268,7 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
                 }}>
                 <TText
                   color="$textDefault"
-                  fontSize={22}
+                  fontSize={fontSize.xxl}
                   fontWeight="600"
                   numberOfLines={1}
                   adjustsFontSizeToFit>
@@ -283,12 +284,12 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
               height={36}
               minWidth={36}
               padding={0}
-              borderRadius={8}>
+              borderRadius={radius.sm}>
               <Pencil size={14} color={theme.color6?.val} />
             </TButton>
           </XStack>
           {metadata?.serviceProviderName && (
-            <TText color="$color6" fontSize={14} numberOfLines={1} adjustsFontSizeToFit>
+            <TText color="$color6" fontSize={fontSize.md} numberOfLines={1} adjustsFontSizeToFit>
               {metadata.serviceProviderName}
             </TText>
           )}
@@ -296,10 +297,10 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
 
         {/* Tags Section */}
         <YStack gap={10}>
-          <TText color="$textDefault" fontSize={16} fontWeight="700">
+          <TText color="$textDefault" fontSize={fontSize.lg} fontWeight="700">
             Tags
           </TText>
-          <YStack backgroundColor="$surfaceSpecial" borderRadius={12} padding={12}>
+          <YStack backgroundColor="$surfaceSpecial" borderRadius={radius.md} padding={12}>
             <XStack gap={8} flexWrap="wrap">
               {tags.map((tag, i) => {
                 return (
@@ -341,9 +342,9 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
                       backgroundColor={tag.backgroundColor}
                       paddingHorizontal={10}
                       paddingVertical={6}
-                      borderRadius={999}
+                      borderRadius={radius.pill}
                       gap={6}>
-                      <TText color={tag.color} fontSize={14} fontWeight="500">
+                      <TText color={tag.color} fontSize={fontSize.md} fontWeight="500">
                         {tag.value}
                       </TText>
                       <X size={10} color={tag.color} />
@@ -356,10 +357,10 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
               <TButton
                 onPress={() => setTagModal(true)}
                 backgroundColor="$btnBackground"
-                borderRadius={8}
+                borderRadius={radius.sm}
                 height={32}
                 paddingHorizontal={10}>
-                <TText color={theme.background?.val} fontSize={14}>
+                <TText color={theme.background?.val} fontSize={fontSize.md}>
                   Add tag
                 </TText>
               </TButton>
@@ -372,10 +373,10 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
 
         {/* Metadata Section */}
         <YStack gap={8}>
-          <TText color="$textDefault" fontSize={16} fontWeight="700">
+          <TText color="$textDefault" fontSize={fontSize.lg} fontWeight="700">
             Profile Information
           </TText>
-          <YStack backgroundColor="$surfaceSpecial" borderRadius={12} padding={20} gap={10}>
+          <YStack backgroundColor="$surfaceSpecial" borderRadius={radius.md} padding={20} gap={10}>
             {metadata && (
               <>
                 {metadata.iccid && (
@@ -495,7 +496,7 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
                   ],
                 )
               }>
-              <TText color={theme.backgroundDangerHeavy?.val} fontSize={16}>
+              <TText color={theme.backgroundDangerHeavy?.val} fontSize={fontSize.lg}>
                 {t('main:profile_delete_profile')}
               </TText>
             </TButton>

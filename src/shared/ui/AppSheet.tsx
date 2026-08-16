@@ -2,6 +2,7 @@ import React from 'react';
 import {TouchableOpacity} from 'react-native';
 import {Sheet, Text as TText, useTheme, View, XStack, YStack} from 'tamagui';
 import {X} from '@tamagui/lucide-icons';
+import {fontSize} from '@/shared/theme/tokens';
 
 type AppSheetProps = {
   open: boolean;
@@ -53,7 +54,7 @@ export default function AppSheet({
             borderBottomColor={theme.outlineNeutral?.val || theme.borderColor?.val}
             alignItems="center"
             justifyContent="space-between">
-            <TText color="$textDefault" fontSize={18} fontWeight="700" {...titleProps}>
+            <TText color="$textDefault" fontSize={fontSize.xl} fontWeight="700" {...titleProps}>
               {title}
             </TText>
             <TouchableOpacity onPress={() => onOpenChange(false)}>

@@ -15,6 +15,7 @@ import {createTamaguiConfigWithColor} from '../../tamagui.config';
 import {preferences} from '@/shared/storage';
 import MaterialYou from 'react-native-material-you-colors';
 import {isSimplifiedMode} from '@/shared/config/features';
+import {DEFAULT_THEME_COLOR, MATERIAL_YOU} from '@/shared/theme/presetColors';
 
 // @react-navigation/stack still calls InteractionManager from its Card view,
 // which RN 0.83 deprecated, so every launch raises a LogBox warning we cannot
@@ -23,11 +24,11 @@ import {isSimplifiedMode} from '@/shared/config/features';
 LogBox.ignoreLogs(['InteractionManager has been deprecated']);
 
 const getThemeColor = () => {
-  if (isSimplifiedMode()) return '#813ff3';
-  const themeColor = preferences.getString('themeColor') || '#813ff3';
-  if (themeColor === 'my' && Platform.OS === 'android') {
+  if (isSimplifiedMode()) return DEFAULT_THEME_COLOR;
+  const themeColor = preferences.getString('themeColor') || DEFAULT_THEME_COLOR;
+  if (themeColor === MATERIAL_YOU && Platform.OS === 'android') {
     const palette = MaterialYou.getMaterialYouPalette();
-    return palette?.system_accent1[7] || '#813ff3';
+    return palette?.system_accent1[7] || DEFAULT_THEME_COLOR;
   }
   return themeColor;
 };

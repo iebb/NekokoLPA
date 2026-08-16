@@ -6,6 +6,7 @@ import AppSheet from '@/shared/ui/AppSheet';
 import {preferences} from '@/shared/storage';
 import {ChevronRight} from '@tamagui/lucide-icons';
 import type {SettingRow} from '@/features/settings/types';
+import {fontSize, radius} from '@/shared/theme/tokens';
 
 const SelectRow = React.memo(function SelectRow({row}: {row: SettingRow}) {
   const {t} = useTranslation(['main']);
@@ -31,7 +32,7 @@ const SelectRow = React.memo(function SelectRow({row}: {row: SettingRow}) {
       <XStack alignItems="center" gap={16}>
         <YStack
           padding={8}
-          borderRadius={10}
+          borderRadius={radius.sm}
           position="relative"
           alignItems="center"
           justifyContent="center">
@@ -42,17 +43,17 @@ const SelectRow = React.memo(function SelectRow({row}: {row: SettingRow}) {
             right={0}
             bottom={0}
             backgroundColor="$primaryColor"
-            borderRadius={10}
+            borderRadius={radius.sm}
             opacity={0.15}
           />
           <Icon size={20} color={theme.primaryColor?.val} />
         </YStack>
 
         <YStack flex={1}>
-          <TText color="$textDefault" fontSize={16} fontWeight="500">
+          <TText color="$textDefault" fontSize={fontSize.lg} fontWeight="500">
             {t(`main:settings_title_${row.key}`)}
           </TText>
-          <TText color="$color6" fontSize={13}>
+          <TText color="$color6" fontSize={fontSize.sm}>
             {currentLabel}
           </TText>
         </YStack>
@@ -89,7 +90,7 @@ const SelectRow = React.memo(function SelectRow({row}: {row: SettingRow}) {
                     key={opt}
                     value={opt}
                     index={i}
-                    borderRadius={8}
+                    borderRadius={radius.sm}
                     paddingVertical={12}
                     paddingHorizontal={16}
                     backgroundColor={v === opt ? '$primaryColor' : 'transparent'}

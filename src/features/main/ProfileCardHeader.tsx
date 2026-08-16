@@ -26,6 +26,7 @@ import {useToast} from '@/app/providers/ToastProvider';
 import {useLoading} from '@/app/providers/LoadingProvider';
 import {selectDeviceState} from '@/store';
 import {OMAPIBridge} from '@/lpa/bridge/nativeModules';
+import {fontSize, radius} from '@/shared/theme/tokens';
 
 // Extracted components
 const ActionSheetOptions = React.memo(
@@ -109,10 +110,14 @@ const ActionSheetOptions = React.memo(
     return (
       <AppSheet open={euiccMenu} onOpenChange={setEuiccMenu} title="eUICC Management">
         <YStack gap={8} paddingBottom={20}>
-          <YStack backgroundColor="$surfaceSpecial" padding={12} borderRadius={12} marginBottom={8}>
+          <YStack
+            backgroundColor="$surfaceSpecial"
+            padding={12}
+            borderRadius={radius.md}
+            marginBottom={8}>
             <TText
               color="$color6"
-              fontSize={11}
+              fontSize={fontSize.xs}
               textTransform="uppercase"
               letterSpacing={1}
               marginBottom={4}>
@@ -120,7 +125,7 @@ const ActionSheetOptions = React.memo(
             </TText>
             <TText
               color="$textDefault"
-              fontSize={14}
+              fontSize={fontSize.md}
               fontWeight="600"
               style={{fontFamily: 'monospace'}}>
               {DeviceState?.eid}
@@ -135,7 +140,7 @@ const ActionSheetOptions = React.memo(
                 opt.onPress();
               }}>
               <XStack alignItems="center" gap={12} paddingVertical={12}>
-                <YStack padding={8} borderRadius={8} position="relative">
+                <YStack padding={8} borderRadius={radius.sm} position="relative">
                   <YStack
                     position="absolute"
                     top={0}
@@ -143,12 +148,12 @@ const ActionSheetOptions = React.memo(
                     right={0}
                     bottom={0}
                     backgroundColor="$primaryColor"
-                    borderRadius={8}
+                    borderRadius={radius.sm}
                     opacity={0.1}
                   />
                   <opt.icon size={18} color={theme.primaryColor?.val} />
                 </YStack>
-                <TText color="$textDefault" fontSize={15} flex={1}>
+                <TText color="$textDefault" fontSize={fontSize.md} flex={1}>
                   {opt.label}
                 </TText>
                 <ChevronRight size={18} color="$color6" />
@@ -209,7 +214,7 @@ export default function ProfileCardHeader({deviceId}: {deviceId: string}) {
 
       <Card
         backgroundColor="$surfaceSpecial"
-        borderRadius={16}
+        borderRadius={radius.lg}
         padding={12}
         onPress={() => setEuiccMenu(true)}>
         <YStack gap={10}>
@@ -218,13 +223,13 @@ export default function ProfileCardHeader({deviceId}: {deviceId: string}) {
               <XStack gap={6} alignItems="center">
                 <TText
                   color="$primaryColor"
-                  fontSize={11}
+                  fontSize={fontSize.xs}
                   fontWeight="700"
                   textTransform="uppercase"
                   letterSpacing={0.5}>
                   {supplementText || 'eUICC Status'}
                 </TText>
-                <YStack padding={2} borderRadius={4} position="relative">
+                <YStack padding={2} borderRadius={radius.xs} position="relative">
                   <YStack
                     position="absolute"
                     top={0}
@@ -232,7 +237,7 @@ export default function ProfileCardHeader({deviceId}: {deviceId: string}) {
                     right={0}
                     bottom={0}
                     backgroundColor="$primaryColor"
-                    borderRadius={4}
+                    borderRadius={radius.xs}
                     opacity={0.2}
                   />
                   <HardDrive size={9} color={theme.primaryColor?.val} />
@@ -240,7 +245,7 @@ export default function ProfileCardHeader({deviceId}: {deviceId: string}) {
               </XStack>
               <TText
                 color="$textDefault"
-                fontSize={15}
+                fontSize={fontSize.md}
                 fontWeight="600"
                 style={{fontFamily: 'monospace'}}>
                 {maskedEid}
@@ -253,7 +258,7 @@ export default function ProfileCardHeader({deviceId}: {deviceId: string}) {
                 style={{
                   backgroundColor: theme.primaryColor?.val,
                   padding: 8,
-                  borderRadius: 10,
+                  borderRadius: radius.sm,
                   elevation: 2,
                 }}>
                 <Plus size={18} color={theme.background?.val} />
@@ -263,7 +268,7 @@ export default function ProfileCardHeader({deviceId}: {deviceId: string}) {
                 style={{
                   backgroundColor: theme.color3?.val,
                   padding: 8,
-                  borderRadius: 10,
+                  borderRadius: radius.sm,
                   borderWidth: 1,
                   borderColor: theme.borderColor?.val,
                 }}>
@@ -274,10 +279,10 @@ export default function ProfileCardHeader({deviceId}: {deviceId: string}) {
 
           <YStack gap={4}>
             <XStack justifyContent="space-between" alignItems="center">
-              <TText color="$color9" fontSize={11} fontWeight="500">
+              <TText color="$color9" fontSize={fontSize.xs} fontWeight="500">
                 Available Storage
               </TText>
-              <TText color="$textDefault" fontSize={11} fontWeight="700">
+              <TText color="$textDefault" fontSize={fontSize.xs} fontWeight="700">
                 {formatSize(exactFreeBytes)}
               </TText>
             </XStack>

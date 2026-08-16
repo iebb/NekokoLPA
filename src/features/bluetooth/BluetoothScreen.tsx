@@ -13,6 +13,7 @@ import {setupDevices} from '@/lpa/deviceManager';
 import {useDispatch} from 'react-redux';
 import {makeLoading} from '@/shared/utils/loading';
 import {useLoading} from '@/app/providers/LoadingProvider';
+import {fontSize} from '@/shared/theme/tokens';
 
 function BluetoothScan({navigation}: RootScreenProps<'BluetoothScan'>) {
   const {t} = useTranslation(['main']);
@@ -91,13 +92,13 @@ function BluetoothScan({navigation}: RootScreenProps<'BluetoothScan'>) {
                   <YStack flex={1}>
                     <TText
                       color="$textDefault"
-                      fontSize={14}
+                      fontSize={fontSize.md}
                       fontWeight={'500' as any}
                       style={{marginTop: -2}}>
                       {device.name}
                     </TText>
                     <TView>
-                      <TText color="$color6" fontSize={12} fontWeight={'500' as any}>
+                      <TText color="$color6" fontSize={fontSize.sm} fontWeight={'500' as any}>
                         {device.id}
                       </TText>
                     </TView>

@@ -1,86 +1,156 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Platform, TouchableOpacity, View} from 'react-native';
 import {useTranslation} from 'react-i18next';
-import Svg, {Defs, LinearGradient as SvgLinearGradient, Rect, Stop} from 'react-native-svg';
-import {Button as TButton, Slider, Text as TText, useTheme, XStack, YStack} from 'tamagui';
+import {Check} from '@tamagui/lucide-icons';
+import {Text as TText, useTheme, XStack, YStack} from 'tamagui';
 import MaterialYou from 'react-native-material-you-colors';
 
 import {preferences} from '@/shared/storage';
 import AppSheet from '@/shared/ui/AppSheet';
-import {hexToHsl, hslToHex} from '@/shared/theme/colorUtils';
+import {fontSize, radius} from '@/shared/theme/tokens';
+import {
+  DEFAULT_THEME_COLOR,
+  isPresetColor,
+  MATERIAL_YOU,
+  PRESET_COLORS,
+} from '@/shared/theme/presetColors';
 import type {SettingRow} from '@/features/settings/types';
 
-const DEFAULT_COLOR = '#813ff3';
-/** Sentinel stored in preferences meaning "follow the Material You palette". */
-const MATERIAL_YOU = 'my';
+const SWATCH = 44;
+const CELL = SWATCH + 20;
+/**
+ * Fixed columns rather than `flexWrap`: the sheet uses snapPointsMode="fit",
+ * which measures the frame once and would size it for a single row, clipping
+ * everything that wraps. Four cells fit the narrowest phone we support.
+ */
+const COLUMNS = 4;
 
-/** Lightness is clamped to keep generated themes legible in both schemes. */
-const LIGHTNESS_MIN = 40;
-const LIGHTNESS_MAX = 60;
-
-function getMaterialYouColor(): string {
-  if (Platform.OS !== 'android') {
-    return DEFAULT_COLOR;
+function chunk<T>(items: T[], size: number): T[][] {
+  const out: T[][] = [];
+  for (let i = 0; i < items.length; i += size) {
+    out.push(items.slice(i, i + size));
   }
-  const palette = MaterialYou.getMaterialYouPalette();
-  return palette?.system_accent1[7] || DEFAULT_COLOR;
+  return out;
+}
+
+function materialYouColor(): string {
+  if (Platform.OS !== 'android') {
+    return DEFAULT_THEME_COLOR;
+  }
+  return MaterialYou.getMaterialYouPalette()?.system_accent1[7] || DEFAULT_THEME_COLOR;
+}
+
+/** One tappable colour swatch. */
+function Swatch({
+  color,
+  label,
+  selected,
+  onPress,
+}: {
+  color: string;
+  label: string;
+  selected: boolean;
+  onPress: () => void;
+}) {
+  const theme = useTheme();
+  return (
+    <YStack alignItems="center" gap={6} width={CELL}>
+      <TouchableOpacity
+        onPress={onPress}
+        activeOpacity={0.7}
+        accessibilityRole="button"
+        accessibilityLabel={label}
+        accessibilityState={{selected}}>
+        <YStack
+          width={SWATCH}
+          height={SWATCH}
+          borderRadius={radius.pill}
+          backgroundColor={color}
+          alignItems="center"
+          justifyContent="center"
+          borderWidth={selected ? 3 : 1}
+          borderColor={selected ? theme.textDefault?.val : theme.outlineNeutral?.val}>
+          {selected ? <Check size={20} color="#ffffff" /> : null}
+        </YStack>
+      </TouchableOpacity>
+      <TText color="$color6" fontSize={fontSize.xs} numberOfLines={1}>
+        {label}
+      </TText>
+    </YStack>
+  );
 }
 
 /**
- * Settings row for choosing the app's accent colour via an HSL picker,
- * with a shortcut to the system Material You accent on Android.
+ * Settings row for choosing the app's accent colour from a fixed palette.
+ *
+ * Replaces a free-form HSL picker. generateThemes derives foregrounds, tints
+ * and button colours from this value, and an arbitrary hex could land somewhere
+ * that reads poorly in one scheme. A colour already stored that is not in the
+ * palette is preserved and shown as an extra "Current" swatch, so upgrading
+ * never silently changes someone's theme.
  */
 const PickerRow = React.memo(function PickerRow({row}: {row: SettingRow}) {
   const {t} = useTranslation(['main']);
   const theme = useTheme();
 
   const [value, setValue] = useState<string>(
-    () => preferences.getString(row.key) ?? row.defaultValue ?? DEFAULT_COLOR,
+    () => preferences.getString(row.key) ?? row.defaultValue ?? DEFAULT_THEME_COLOR,
   );
-  const [pickerOpen, setPickerOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
-  const materialYouColor = getMaterialYouColor();
-  const isMaterialYou = value === MATERIAL_YOU;
-  const swatchColor = isMaterialYou ? materialYouColor : value;
-
-  const [hsl, setHsl] = useState(() =>
-    hexToHsl(isMaterialYou ? materialYouColor : value || DEFAULT_COLOR),
-  );
-  const currentHex = hslToHex(hsl.h, hsl.s, hsl.l);
-
-  // Keep the local value in sync if preferences changed elsewhere.
   useEffect(() => {
-    const stored = preferences.getString(row.key) ?? row.defaultValue ?? DEFAULT_COLOR;
+    const stored = preferences.getString(row.key) ?? row.defaultValue ?? DEFAULT_THEME_COLOR;
     setValue(prev => (stored === prev ? prev : stored));
   }, [row.key, row.defaultValue]);
-
-  // Re-seed the sliders from the active colour each time the sheet opens.
-  useEffect(() => {
-    if (!pickerOpen) {
-      return;
-    }
-    setHsl(hexToHsl(isMaterialYou ? materialYouColor : value || DEFAULT_COLOR));
-  }, [pickerOpen, isMaterialYou, materialYouColor, value]);
 
   const commit = useCallback(
     (next: string) => {
       setValue(next);
       preferences.set(row.key, next);
       row.onChange?.(next);
-      setPickerOpen(false);
+      setOpen(false);
     },
     [row],
   );
+
+  const myColor = materialYouColor();
+  const isMaterialYou = value === MATERIAL_YOU;
+  const swatchColor = isMaterialYou ? myColor : value;
+  const label = isMaterialYou
+    ? 'Material You'
+    : PRESET_COLORS.find(c => c.value.toLowerCase() === value.toLowerCase())?.label ?? value;
+
+  const swatches: {color: string; label: string; selected: boolean; next: string}[] = [
+    ...PRESET_COLORS.map(preset => ({
+      color: preset.value,
+      label: preset.label,
+      selected: !isMaterialYou && value.toLowerCase() === preset.value.toLowerCase(),
+      next: preset.value,
+    })),
+  ];
+  if (Platform.OS === 'android') {
+    swatches.push({
+      color: myColor,
+      label: 'Material You',
+      selected: isMaterialYou,
+      next: MATERIAL_YOU,
+    });
+  }
+  // Keep an unrecognised stored colour selectable rather than dropping it.
+  if (!isMaterialYou && !isPresetColor(value)) {
+    swatches.push({color: value, label: 'Current', selected: true, next: value});
+  }
+  const rows = chunk(swatches, COLUMNS);
 
   const Icon = row.icon;
 
   return (
     <View style={{width: '100%'}}>
-      <TouchableOpacity activeOpacity={0.6} onPress={() => setPickerOpen(true)}>
+      <TouchableOpacity activeOpacity={0.6} onPress={() => setOpen(true)}>
         <XStack alignItems="center" gap={16}>
           <YStack
             padding={8}
-            borderRadius={10}
+            borderRadius={radius.sm}
             position="relative"
             alignItems="center"
             justifyContent="center">
@@ -91,18 +161,18 @@ const PickerRow = React.memo(function PickerRow({row}: {row: SettingRow}) {
               right={0}
               bottom={0}
               backgroundColor="$primaryColor"
-              borderRadius={10}
+              borderRadius={radius.sm}
               opacity={0.15}
             />
             <Icon size={20} color={theme.primaryColor?.val} />
           </YStack>
 
           <YStack flex={1}>
-            <TText color="$textDefault" fontSize={16} fontWeight="500">
+            <TText color="$textDefault" fontSize={fontSize.lg} fontWeight="500">
               {t(`main:settings_title_${row.key}`)}
             </TText>
-            <TText color="$color6" fontSize={13}>
-              {isMaterialYou ? 'Material You' : currentHex}
+            <TText color="$color6" fontSize={fontSize.sm}>
+              {label}
             </TText>
           </YStack>
 
@@ -110,7 +180,7 @@ const PickerRow = React.memo(function PickerRow({row}: {row: SettingRow}) {
             style={{
               width: 24,
               height: 24,
-              borderRadius: 12,
+              borderRadius: radius.pill,
               backgroundColor: swatchColor,
               borderWidth: 2,
               borderColor: theme.borderColor?.val,
@@ -119,148 +189,25 @@ const PickerRow = React.memo(function PickerRow({row}: {row: SettingRow}) {
         </XStack>
       </TouchableOpacity>
 
-      <AppSheet
-        open={pickerOpen}
-        onOpenChange={setPickerOpen}
-        title={t(`main:settings_title_${row.key}`)}>
-        <YStack gap={16}>
-          <XStack gap={12} alignItems="center" justifyContent="space-between">
-            <XStack gap={12} alignItems="center" flex={1}>
-              <View
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 8,
-                  backgroundColor: currentHex,
-                  borderWidth: 1,
-                  borderColor: theme.outlineNeutral?.val,
-                }}
-              />
-              <TText color="$textDefault" fontSize={14}>
-                {currentHex}
-              </TText>
+      <AppSheet open={open} onOpenChange={setOpen} title={t(`main:settings_title_${row.key}`)}>
+        <YStack gap={12} paddingBottom={12} alignItems="center">
+          {rows.map(cells => (
+            <XStack key={cells[0].next} gap={8} justifyContent="center">
+              {cells.map(cell => (
+                <Swatch
+                  key={cell.next}
+                  color={cell.color}
+                  label={cell.label}
+                  selected={cell.selected}
+                  onPress={() => commit(cell.next)}
+                />
+              ))}
             </XStack>
-            {Platform.OS === 'android' && (
-              <TButton backgroundColor={materialYouColor} onPress={() => commit(MATERIAL_YOU)}>
-                <TText color={theme.background?.val}>Material You</TText>
-              </TButton>
-            )}
-          </XStack>
-
-          <GradientSlider
-            label="Hue"
-            gradientId="hueGrad"
-            stops={[
-              {offset: '0%', color: '#FF0000'},
-              {offset: '16.6%', color: '#FFFF00'},
-              {offset: '33.3%', color: '#00FF00'},
-              {offset: '50%', color: '#00FFFF'},
-              {offset: '66.6%', color: '#0000FF'},
-              {offset: '83.3%', color: '#FF00FF'},
-              {offset: '100%', color: '#FF0000'},
-            ]}
-            value={hsl.h}
-            max={360}
-            onChange={h => setHsl(prev => ({...prev, h}))}
-          />
-
-          <GradientSlider
-            label="Saturation"
-            gradientId="satGrad"
-            stops={[
-              {offset: '0%', color: hslToHex(hsl.h, 0, hsl.l)},
-              {offset: '100%', color: hslToHex(hsl.h, 100, hsl.l)},
-            ]}
-            value={hsl.s}
-            max={100}
-            onChange={s => setHsl(prev => ({...prev, s}))}
-          />
-
-          <GradientSlider
-            label="Lightness"
-            gradientId="lightGrad"
-            stops={[
-              {offset: '0%', color: hslToHex(hsl.h, hsl.s, LIGHTNESS_MIN)},
-              {offset: '50%', color: hslToHex(hsl.h, hsl.s, 50)},
-              {offset: '100%', color: hslToHex(hsl.h, hsl.s, LIGHTNESS_MAX)},
-            ]}
-            value={hsl.l}
-            min={LIGHTNESS_MIN}
-            max={LIGHTNESS_MAX}
-            onChange={l => setHsl(prev => ({...prev, l}))}
-          />
-
-          <XStack justifyContent="flex-end" gap={8}>
-            <TButton
-              backgroundColor="transparent"
-              borderWidth={1}
-              borderColor={theme.outlineNeutral?.val}
-              onPress={() => setPickerOpen(false)}>
-              <TText color="$textDefault">Cancel</TText>
-            </TButton>
-            <TButton backgroundColor={currentHex} onPress={() => commit(currentHex)}>
-              <TText color={theme.background?.val}>Apply</TText>
-            </TButton>
-          </XStack>
+          ))}
         </YStack>
       </AppSheet>
     </View>
   );
 });
-
-/** A slider rendered on top of an SVG gradient track. */
-function GradientSlider({
-  label,
-  gradientId,
-  stops,
-  value,
-  min = 0,
-  max,
-  onChange,
-}: {
-  label: string;
-  gradientId: string;
-  stops: {offset: string; color: string}[];
-  value: number;
-  min?: number;
-  max: number;
-  onChange: (value: number) => void;
-}) {
-  return (
-    <YStack gap={8}>
-      <TText color="$color6" fontSize={12}>
-        {label}
-      </TText>
-      <View style={{position: 'relative', height: 12, borderRadius: 6}}>
-        <View style={{height: 12, borderRadius: 12, overflow: 'hidden', top: -3}}>
-          <Svg width="100%" height="100%">
-            <Defs>
-              <SvgLinearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
-                {stops.map(stop => (
-                  <Stop key={stop.offset} offset={stop.offset} stopColor={stop.color} />
-                ))}
-              </SvgLinearGradient>
-            </Defs>
-            <Rect x="0" y="0" width="100%" height="100%" fill={`url(#${gradientId})`} />
-          </Svg>
-        </View>
-        <View style={{position: 'absolute', inset: 0, justifyContent: 'center', width: '100%'}}>
-          <Slider
-            value={[value]}
-            onValueChange={val => onChange(Math.round(val[0]))}
-            min={min}
-            max={max}
-            step={1}
-            style={{width: '100%'}}>
-            <Slider.Track backgroundColor="transparent">
-              <Slider.TrackActive backgroundColor="transparent" />
-            </Slider.Track>
-            <Slider.Thumb index={0} circular size="$2" />
-          </Slider>
-        </View>
-      </View>
-    </YStack>
-  );
-}
 
 export default PickerRow;
