@@ -6,7 +6,7 @@ import type {RootScreenProps} from '@/app/navigation/types';
 import Loader from '@/shared/ui/Loader';
 import {Text as TText, View as TView, XStack, YStack, useTheme} from 'tamagui';
 import {Bed, Package, HardDrive} from '@tamagui/lucide-icons';
-import {bleManager, requestBluetoothPermission} from '@/shared/utils/bluetooth';
+import {getBleManager, requestBluetoothPermission} from '@/shared/utils/bluetooth';
 import {Device} from 'react-native-ble-plx';
 import {connectDevice} from '@/features/bluetooth/connection';
 import {setupDevices} from '@/lpa/deviceManager';
@@ -31,6 +31,7 @@ function BluetoothScan({navigation}: RootScreenProps<'BluetoothScan'>) {
   }, []);
 
   useEffect(() => {
+    const bleManager = getBleManager();
     const subscription = bleManager.onStateChange(state => {
       if (state === 'PoweredOn') {
         requestBluetoothPermission().then(() => {
@@ -72,7 +73,7 @@ function BluetoothScan({navigation}: RootScreenProps<'BluetoothScan'>) {
                 onPress={async () => {
                   makeLoading(setLoading, async () => {
                     setScanning(false);
-                    bleManager.stopDeviceScan();
+                    getBleManager().stopDeviceScan();
                     await connectDevice(device);
                     await setupDevices(dispatch, 'ble:' + device.id);
                     navigation.goBack();
