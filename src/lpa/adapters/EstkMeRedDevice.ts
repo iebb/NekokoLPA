@@ -9,6 +9,7 @@ import {
 import {BleError, Characteristic, Device as BLEDevice} from 'react-native-ble-plx';
 import {Device} from '@/lpa/adapters/Adapter';
 import {base64ToBytes, bytesToBase64} from '@/shared/utils/base64';
+import {addHeaderToUint8Array, uint8ArrayToHex} from '@/lpa/adapters/estkMeFraming';
 
 /** ESTKme-RED GATT service and characteristic UUIDs. */
 const SERVICE_UUID = '4553';
@@ -21,36 +22,14 @@ const MTU_HEADROOM = 10;
 /** MTU we ask the peripheral for; it may negotiate down. */
 const REQUESTED_MTU = 233;
 
+/** How long to wait for the reader to answer before giving up. */
+const REPLY_TIMEOUT_MS = 30000;
+
 /** Reader control frames: claim ("ESTKme"), power on/off, disclaim. */
 const CMD_CLAIM = Uint8Array.of(2, 6, 0, 0x45, 0x53, 0x54, 0x4b, 0x6d, 0x65);
 const CMD_POWER_ON = Uint8Array.of(3, 2, 0, 1, 1);
 const CMD_POWER_OFF = Uint8Array.of(3, 0, 0);
 const CMD_DISCLAIM = Uint8Array.of(2, 0, 0);
-
-function hexToUint8Array(hexString: string): Uint8Array {
-  const byteArray = new Uint8Array(hexString.length / 2);
-  for (let i = 0; i < hexString.length; i += 2) {
-    byteArray[i / 2] = parseInt(hexString.substring(i, i + 2), 16);
-  }
-  return byteArray;
-}
-
-/** Prefixes a 2-byte little-endian length header to an APDU payload. */
-function addHeaderToUint8Array(hexString: string): Uint8Array {
-  const byteArray = hexToUint8Array(hexString);
-  const length = byteArray.length;
-  const header = new Uint8Array([length % 255, Math.floor(length / 256)]);
-  const result = new Uint8Array(header.length + byteArray.length);
-  result.set(header);
-  result.set(byteArray, header.length);
-  return result;
-}
-
-function uint8ArrayToHex(uint8Array: Uint8Array): string {
-  return Array.from(uint8Array)
-    .map(byte => byte.toString(16).padStart(2, '0'))
-    .join('');
-}
 
 export class EstkMeRed implements Device {
   type = 'ble';
@@ -130,6 +109,23 @@ export class EstkMeRed implements Device {
       let currentSize = 0;
       let settled = false;
 
+      const finish = (fn: () => void) => {
+        if (settled) {
+          return;
+        }
+        settled = true;
+        clearTimeout(timer);
+        subscription.remove();
+        fn();
+      };
+
+      // Without this a reader that stops answering mid-exchange leaves the
+      // promise pending forever, and the UI sits on a spinner with no error.
+      const timer = setTimeout(
+        () => finish(() => reject(new Error('ESTKme-RED reader did not answer'))),
+        REPLY_TIMEOUT_MS,
+      );
+
       const subscription = this.device.monitorCharacteristicForService(
         SERVICE_UUID,
         NOTIFY_UUID,
@@ -138,9 +134,7 @@ export class EstkMeRed implements Device {
             return;
           }
           if (error) {
-            settled = true;
-            subscription.remove();
-            reject(error);
+            finish(() => reject(error));
             return;
           }
           if (!characteristic?.value) {
@@ -151,17 +145,20 @@ export class EstkMeRed implements Device {
           if (resultSize === -1) {
             resultSize = value[1] + value[2] * 256;
             resultArray = new Uint8Array(resultSize);
-            resultArray.set(value.subarray(3));
-            currentSize += value.length - 3;
+            const body = value.subarray(3, 3 + resultSize);
+            resultArray.set(body);
+            currentSize += body.length;
           } else {
-            resultArray.set(value, currentSize);
-            currentSize += value.length;
+            // Clamp: a frame that runs past the declared length would throw a
+            // RangeError out of the notification handler, where nothing can
+            // catch it, and the promise would never settle.
+            const body = value.subarray(0, resultSize - currentSize);
+            resultArray.set(body, currentSize);
+            currentSize += body.length;
           }
 
-          if (currentSize === resultSize) {
-            settled = true;
-            subscription.remove();
-            resolve(resultArray);
+          if (currentSize >= resultSize) {
+            finish(() => resolve(resultArray));
           }
         },
       );
@@ -180,11 +177,7 @@ export class EstkMeRed implements Device {
             );
           }
         } catch (error) {
-          if (!settled) {
-            settled = true;
-            subscription.remove();
-            reject(error);
-          }
+          finish(() => reject(error));
         }
       })();
     });

@@ -51,6 +51,11 @@ module.exports = {
     'output/',
     'variants/',
     '_vendor/',
+    // design-sync working dirs: generated bundle output and staged converter
+    // scripts. Gitignored, but eslint has its own ignore list.
+    'ds-bundle/',
+    '.ds-sync/',
+    '.design-sync/',
   ],
   rules: {
     // Hooks correctness — these catch real bugs, so they are errors.

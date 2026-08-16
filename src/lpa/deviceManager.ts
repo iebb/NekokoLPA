@@ -21,12 +21,24 @@ interface OmapiSlot {
   signatures?: string;
 }
 
-/** Bluetooth device-name prefixes we know how to drive. */
+/**
+ * Bluetooth device-name prefixes we know how to drive.
+ *
+ * This is the single source of truth for which readers are supported over BLE:
+ * the scan screen filters advertisements through {@link isSupportedBleName}
+ * rather than keeping its own copy of the list, so adding an adapter here is
+ * enough to make it discoverable.
+ */
 const BLE_ADAPTERS: {prefix: string; create: (device: any) => Device}[] = [
   {prefix: 'ESTKme-RED', create: d => new EstkMeRed(d)},
   {prefix: 'eSIM_Writer', create: d => new SimLinkDevice(d)},
   {prefix: 'BeeSIM', create: d => new BeeSimDevice(d)},
 ];
+
+/** True when a scanned BLE advertisement names a reader we have an adapter for. */
+export function isSupportedBleName(name: string | null | undefined): boolean {
+  return !!name && BLE_ADAPTERS.some(a => name.startsWith(a.prefix));
+}
 
 async function discoverOmapiDevices(): Promise<Device[]> {
   if (Platform.OS !== 'android') {

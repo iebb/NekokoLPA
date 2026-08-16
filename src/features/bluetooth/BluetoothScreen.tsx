@@ -5,11 +5,11 @@ import Screen from '@/shared/ui/Screen';
 import type {RootScreenProps} from '@/app/navigation/types';
 import Loader from '@/shared/ui/Loader';
 import {Text as TText, View as TView, XStack, YStack, useTheme} from 'tamagui';
-import {Bed, Package, HardDrive} from '@tamagui/lucide-icons';
+import {Bed, HardDrive, Package, Usb} from '@tamagui/lucide-icons';
 import {getBleManager, requestBluetoothPermission} from '@/shared/utils/bluetooth';
 import {Device} from 'react-native-ble-plx';
 import {connectDevice} from '@/features/bluetooth/connection';
-import {setupDevices} from '@/lpa/deviceManager';
+import {isSupportedBleName, setupDevices} from '@/lpa/deviceManager';
 import {useDispatch} from 'react-redux';
 import {makeLoading} from '@/shared/utils/loading';
 import {useLoading} from '@/app/providers/LoadingProvider';
@@ -41,13 +41,8 @@ function BluetoothScan({navigation}: RootScreenProps<'BluetoothScan'>) {
             {}, // options: ? ScanOptions
             (_error, scannedDevice) => {
               setScanning(true); // listener: (error: ?Error, scannedDevice: ?Device) => void
-              if (scannedDevice !== null) {
-                if (
-                  scannedDevice.name?.startsWith('ESTKme-RED') ||
-                  scannedDevice.name?.startsWith('eSIM_Writer')
-                ) {
-                  addDevice(scannedDevice);
-                }
+              if (scannedDevice !== null && isSupportedBleName(scannedDevice.name)) {
+                addDevice(scannedDevice);
               }
             },
           );
@@ -82,10 +77,13 @@ function BluetoothScan({navigation}: RootScreenProps<'BluetoothScan'>) {
                 }}>
                 <XStack gap={10} alignItems="center">
                   {(() => {
-                    const IconComponent = device!.name!.startsWith('ESTKme')
+                    const name = device.name ?? '';
+                    const IconComponent = name.startsWith('ESTKme')
                       ? Bed
-                      : device!.name!.startsWith('eSIM_Writer')
+                      : name.startsWith('eSIM_Writer')
                       ? Package
+                      : name.startsWith('BeeSIM')
+                      ? Usb
                       : HardDrive;
                     return <IconComponent size={40} color={theme.primaryColor?.val as string} />;
                   })()}

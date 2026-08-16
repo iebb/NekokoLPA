@@ -8,8 +8,16 @@
 # returns nil and no CCID reader is ever found.
 #
 # The build is unsigned (CODE_SIGNING_ALLOWED=NO) and then ad-hoc signed here,
-# so no developer certificate is required. Running the binary directly rather
-# than via `open` avoids the Gatekeeper prompt an ad-hoc signature triggers.
+# so no developer certificate is required.
+#
+# It is launched with `open`, i.e. through LaunchServices. Do not "optimise"
+# this into running Contents/MacOS/NekokoLPA directly: exec'ing the binary from
+# a shell makes that shell the TCC *responsible process*, so macOS checks the
+# shell's Info.plist for usage descriptions instead of the app's and kills the
+# app on the first privacy-gated call — Bluetooth, camera or photo library —
+# with "must contain an NSBluetoothAlwaysUsageDescription key", no matter what
+# the app's own plist says. Clearing the quarantine attribute below is what
+# keeps Gatekeeper quiet for an ad-hoc signature.
 #
 # ML Kit is excluded from iOS/Catalyst builds by default (see
 # react-native.config.js): its binaries have no maccatalyst slice at all.
@@ -64,5 +72,6 @@ fi
 
 echo "==> Launching $APP"
 pkill -f "MacOS/$SCHEME" 2>/dev/null || true
-"$APP/Contents/MacOS/$SCHEME" &
+open -a "$APP"
 echo "==> Running. Metro: http://localhost:8081"
+echo "    Logs: /usr/bin/log stream --process $SCHEME --level debug"

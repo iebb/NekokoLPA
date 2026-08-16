@@ -11,14 +11,18 @@ import {Device} from '@/lpa/adapters/Adapter';
 import {base64ToBytes, bytesToBase64} from '@/shared/utils/base64';
 import {bytesToHex, hexToBytes} from '@/lpa/core';
 import {FrameAssembler, buildFrames} from '@/lpa/adapters/beeSimFraming';
+import {BeeSimCommandPacer} from '@/lpa/adapters/beeSimPacer';
 
 /**
  * BeeSIM BLE reader.
  *
- * The peripheral advertises a single vendor service and exposes exactly two
- * usable characteristics: one `writeWithoutResponse` and one `notify`. Their
- * UUIDs vary between firmware revisions, so they are located by property
- * rather than hardcoded.
+ * The peripheral advertises a vendor service (`ae30`) with a write
+ * characteristic (`ae01`) and a notify one (`ae02`). Firmware revisions
+ * renumber them, so resolution falls back to matching on properties.
+ *
+ * Commands are paced: the reader stops answering after a burst unless the
+ * client waits (see `beeSimPacer`). Every APDU goes through it, because a
+ * plain profile list already exceeds one burst.
  *
  * Framing is symmetric and very simple: an APDU is split into 18-byte
  * payloads, and every frame — in both directions — is prefixed with
@@ -53,6 +57,8 @@ export class BeeSimDevice implements Device {
   private serviceUuid = SERVICE_UUID;
   private writeUuid = '';
   private notifyUuid = '';
+  private writeNeedsResponse = false;
+  private readonly pacer = new BeeSimCommandPacer();
 
   constructor(device: BLEDevice) {
     this.deviceName = device.name!;
@@ -77,6 +83,7 @@ export class BeeSimDevice implements Device {
         this.device = await this.device.discoverAllServicesAndCharacteristics();
       }
       await this.resolveCharacteristics();
+      this.pacer.reset();
 
       await this.transmit(APDU_TERMINAL_CAPABILITIES);
       const channelResp = await this.transmit(APDU_OPEN_CHANNEL);
@@ -101,15 +108,24 @@ export class BeeSimDevice implements Device {
       await this.transmit(APDU_CLOSE_CHANNEL);
     } catch (error) {}
     await this.device.cancelConnection();
+    this.pacer.reset();
     this.available = false;
     return true;
   }
 
   /**
-   * Finds the write and notify characteristics by their properties.
+   * Finds the write and notify characteristics.
    *
-   * Both are required: without the notify characteristic no response can ever
-   * be reassembled, and the reader would appear to hang.
+   * Known firmware exposes `ae01` for TX and `ae02` for RX under the `ae30`
+   * service, so those are matched first; revisions that renumber them fall back
+   * to the first writable characteristic for TX and the first notify-or-
+   * indicate characteristic that is *not* the writer for RX.
+   *
+   * That "not the writer" clause matters: some revisions mark a single
+   * characteristic both writable and notifiable, and classifying by a simple
+   * if/else lets it claim the TX slot and leave RX empty — the reader then
+   * accepts every command and appears to hang, because no response can ever be
+   * reassembled.
    */
   private async resolveCharacteristics(): Promise<void> {
     if (this.writeUuid && this.notifyUuid) {
@@ -119,17 +135,45 @@ export class BeeSimDevice implements Device {
       const characteristics = await service.characteristics();
       let write = '';
       let notify = '';
+      let writeNeedsResponse = false;
+
       for (const characteristic of characteristics) {
-        if (characteristic.isWritableWithoutResponse) {
+        const uuid = characteristic.uuid.toLowerCase();
+        const canWrite =
+          characteristic.isWritableWithResponse || characteristic.isWritableWithoutResponse;
+        const canNotify = characteristic.isNotifiable || characteristic.isIndicatable;
+
+        if (uuid.includes('ae01') && canWrite) {
           write = characteristic.uuid;
-        } else if (characteristic.isNotifiable) {
+          writeNeedsResponse = !characteristic.isWritableWithoutResponse;
+        } else if (uuid.includes('ae02') && canNotify) {
           notify = characteristic.uuid;
         }
       }
+
+      if (!write) {
+        const candidate = characteristics.find(
+          c => c.isWritableWithResponse || c.isWritableWithoutResponse,
+        );
+        if (candidate) {
+          write = candidate.uuid;
+          writeNeedsResponse = !candidate.isWritableWithoutResponse;
+        }
+      }
+      if (!notify) {
+        const candidate = characteristics.find(
+          c => (c.isNotifiable || c.isIndicatable) && c.uuid !== write,
+        );
+        if (candidate) {
+          notify = candidate.uuid;
+        }
+      }
+
       if (write && notify) {
         this.serviceUuid = service.uuid;
         this.writeUuid = write;
         this.notifyUuid = notify;
+        this.writeNeedsResponse = writeNeedsResponse;
         return;
       }
     }
@@ -185,11 +229,23 @@ export class BeeSimDevice implements Device {
       void (async () => {
         try {
           for (const frame of buildFrames(apdu)) {
-            await this.device.writeCharacteristicWithoutResponseForService(
-              this.serviceUuid,
-              this.writeUuid,
-              bytesToBase64(frame),
-            );
+            // Firmware that only advertises write-with-response rejects the
+            // without-response call outright, so honour what the
+            // characteristic actually supports.
+            const payload = bytesToBase64(frame);
+            if (this.writeNeedsResponse) {
+              await this.device.writeCharacteristicWithResponseForService(
+                this.serviceUuid,
+                this.writeUuid,
+                payload,
+              );
+            } else {
+              await this.device.writeCharacteristicWithoutResponseForService(
+                this.serviceUuid,
+                this.writeUuid,
+                payload,
+              );
+            }
           }
         } catch (error) {
           finish(() => reject(error));
@@ -199,6 +255,11 @@ export class BeeSimDevice implements Device {
   }
 
   async transmit(apdu: string): Promise<string> {
+    // Pace before every command, not just inside a download: the profile list
+    // alone issues enough APDUs to exhaust a burst.
+    if (await this.pacer.beforeCommand()) {
+      console.warn('[BeeSIM] burst limit reached — waiting out the cooldown');
+    }
     return bytesToHex(await this.transmitRaw(hexToBytes(apdu)));
   }
 }
