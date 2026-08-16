@@ -1,4 +1,5 @@
-import {View as TView} from 'tamagui';
+import {useTheme, View as TView} from 'tamagui';
+import {radius} from '@/shared/theme/tokens';
 import {useSelector} from 'react-redux';
 import {Profile} from '@/lpa/types/profile';
 import {RefreshControl} from 'react-native-gesture-handler';
@@ -13,6 +14,7 @@ export default function ProfileSelector({deviceId}: {deviceId: string}) {
   const DeviceState = useSelector(selectDeviceState(deviceId));
   const [refreshing, setRefreshing] = useState(false);
   const {setLoading} = useLoading();
+  const theme = useTheme();
   const adapter = Adapters[deviceId];
 
   const profiles = useMemo(() => {
@@ -60,17 +62,28 @@ export default function ProfileSelector({deviceId}: {deviceId: string}) {
     }
   }, [adapter]);
 
+  // Rows sit flush inside one hairline-separated group, so the separator is
+  // the 1px of container showing between them rather than a margin. The last
+  // row must not add one, or the group gains a stray rule above its bottom
+  // corner.
   const renderItem = useCallback(
-    ({item}: {item: Profile & {selected: boolean}}) => (
-      <TView style={{marginBottom: 10}}>
+    ({item, index}: {item: Profile & {selected: boolean}; index: number}) => (
+      <TView style={{marginBottom: index === profiles.length - 1 ? 0 : 1}}>
         <ProfileRow deviceId={deviceId} profile={item} />
       </TView>
     ),
-    [deviceId],
+    [deviceId, profiles.length],
   );
 
   return (
     <FlatList
+      style={{
+        backgroundColor: theme.borderColor?.val,
+        borderWidth: 1,
+        borderColor: theme.borderColor?.val,
+        borderRadius: radius.lg,
+        overflow: 'hidden',
+      }}
       data={profiles}
       keyExtractor={item => item.iccid || String(item)}
       renderItem={renderItem}

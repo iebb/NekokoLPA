@@ -2,10 +2,10 @@ import {parseMetadata} from '@/shared/utils/parser';
 import {findPhoneNumbersInText} from 'libphonenumber-js/min';
 import {preferences} from '@/shared/storage';
 import {Swipeable} from 'react-native-gesture-handler';
-import {Card, Switch, Text, useTheme, XStack, YStack} from 'tamagui';
+import {Text, useTheme, XStack, YStack} from 'tamagui';
 // useTheme covers dynamic color; no need for useColorScheme here
 import {Pencil, Trash2} from '@tamagui/lucide-icons';
-import {Alert, Image, PixelRatio, Pressable, ToastAndroid, TouchableOpacity} from 'react-native';
+import {Alert, Image, Pressable, ToastAndroid, TouchableOpacity} from 'react-native';
 import {makeLoading} from '@/shared/utils/loading';
 import {Flags} from '@/assets/flags';
 import React, {useCallback, useMemo} from 'react';
@@ -17,6 +17,8 @@ import {useLoading} from '@/app/providers/LoadingProvider';
 
 import {isSimplifiedMode} from '@/shared/config/features';
 import {fontSize, radius} from '@/shared/theme/tokens';
+import Pill from '@/shared/ui/Pill';
+import Toggle from '@/shared/ui/Toggle';
 
 interface ProfileExt extends Profile {
   selected: boolean;
@@ -85,16 +87,6 @@ const ProfileRowComponent = ({profile, deviceId}: {profile: ProfileExt; deviceId
   );
 
   const {tags, name, country, mccMnc} = useMemo(() => parseMetadata(profile, t), [profile, t]);
-
-  const {hueICCID} = useMemo(() => {
-    const iccid = String(profile?.iccid ?? '');
-    const numICCID = iccid.replace(/\D/g, ''); // Using replace for better compatibility
-    const hue =
-      numICCID.length >= 7
-        ? (parseInt(numICCID.substring(numICCID.length - 7), 10) * 17.84) % 360
-        : 0;
-    return {hueICCID: hue};
-  }, [profile?.iccid]);
 
   const replacedName = useMemo(() => {
     if (!name) return '';
@@ -227,77 +219,55 @@ const ProfileRowComponent = ({profile, deviceId}: {profile: ProfileExt; deviceId
       renderLeftActions={renderLeftActions}
       overshootFriction={8}
       friction={2}
-      containerStyle={{
-        borderRadius: radius.md,
-        backgroundColor: theme.surfaceSpecial?.val,
-      }}>
-      <Card
-        backgroundColor="$surfaceSpecial"
-        borderWidth={0}
-        borderRadius={radius.md}
-        overflow="hidden"
-        paddingTop={4}
-        elevation={2}>
-        <YStack paddingHorizontal={12}>
-          <XStack width="100%" alignItems="center" gap={10}>
-            {/* Flag and Main Info */}
-            <Pressable style={{flex: 1}} onPress={handleProfilePress}>
-              <YStack gap={3}>
-                <XStack alignItems="center">
-                  <Image
-                    style={{
-                      width: 22.5 * PixelRatio.getFontScale(),
-                      height: 15 * PixelRatio.getFontScale(),
-                      marginRight: 7.5,
-                      borderRadius: radius.xs,
-                    }}
-                    source={Flags[country] || Flags.UN}
-                  />
-                  <Text
-                    color="$textDefault"
-                    fontSize={fontSize.lg}
-                    fontWeight="600"
-                    numberOfLines={1}
-                    flex={1}>
-                    {displayName}
-                  </Text>
-                </XStack>
-                <ProfileSubtitle
-                  metadata={profile}
-                  mccMnc={mccMnc}
-                  displaySubtitle={displaySubtitle}
-                />
-              </YStack>
-            </Pressable>
-
-            {/* Switch Control */}
-            <XStack alignItems="center" gap={10}>
-              <Switch
-                checked={profile.selected}
-                disabled={isLoading}
-                size={'$2.5' as any}
-                onCheckedChange={handleSwitchChange}
-                borderColor={profile.selected ? '$primaryColor' : '$color6'}
-                backgroundColor={profile.selected ? '$primaryColor' : '$color6'}>
-                <Switch.Thumb backgroundColor="$onFilled" elevation={2} />
-              </Switch>
-            </XStack>
-          </XStack>
-
-          <ProfileTags tags={tags} stealthMode={stealthMode} />
-        </YStack>
-
-        {/* Status indicator bar */}
-        <YStack height={2} width="100%" position="relative">
-          <YStack fullscreen backgroundColor={`hsl(${hueICCID}, 70%, 50%)`} opacity={0.3} />
+      containerStyle={{backgroundColor: theme.surfaceSpecial?.val}}>
+      {/* One row of the profile group. The rounded card, drop shadow and
+          per-profile hue stripe are gone: rank now comes from the group's
+          hairlines and from the accent, which marks the active profile only. */}
+      <YStack backgroundColor="$surfaceRow" paddingHorizontal={14} paddingVertical={12}>
+        <XStack width="100%" alignItems="center" gap={11}>
           <YStack
-            height="100%"
-            width="100%"
-            backgroundColor={`hsl(${hueICCID}, 80%, 50%)`}
-            borderRadius={radius.pill}
+            width={32}
+            height={32}
+            borderRadius={radius.sm}
+            backgroundColor="$surfaceSpecial"
+            alignItems="center"
+            justifyContent="center"
+            overflow="hidden">
+            <Image
+              style={{width: 21, height: 14, borderRadius: 2}}
+              source={Flags[country] || Flags.UN}
+            />
+          </YStack>
+
+          <Pressable style={{flex: 1}} onPress={handleProfilePress}>
+            <YStack gap={3}>
+              <XStack alignItems="center" gap={8}>
+                <Text
+                  color="$textDefault"
+                  fontSize={fontSize.xl}
+                  fontWeight={'600' as any}
+                  numberOfLines={1}
+                  flexShrink={1}>
+                  {displayName}
+                </Text>
+                {profile.selected && <Pill tone="accent">{t('main:profile_active')}</Pill>}
+              </XStack>
+              <ProfileSubtitle
+                metadata={profile}
+                mccMnc={mccMnc}
+                displaySubtitle={displaySubtitle}
+              />
+              <ProfileTags tags={tags} stealthMode={stealthMode} />
+            </YStack>
+          </Pressable>
+
+          <Toggle
+            value={profile.selected}
+            disabled={isLoading}
+            onPress={handleSwitchChange}
           />
-        </YStack>
-      </Card>
+        </XStack>
+      </YStack>
     </Swipeable>
   );
 };

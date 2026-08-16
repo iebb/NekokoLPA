@@ -2,20 +2,23 @@ import React, {useEffect, useRef} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Alert, Platform, ScrollView, ToastAndroid} from 'react-native';
 import {Adapters} from '@/lpa/adapters/registry';
-import {Tabs, Text as TText, XStack, YStack, View as TView} from 'tamagui';
-import {Smartphone, Bluetooth, Usb} from '@tamagui/lucide-icons';
+import {Text as TText, YStack, View as TView} from 'tamagui';
+import SlotTabs from '@/features/main/components/SlotTabs';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {preferences} from '@/shared/storage';
 import PurchaseLinks from '@/shared/ui/PurchaseLinks';
+
+import {useNavigation} from '@react-navigation/native';
 
 import {useAppDispatch, useAppSelector, selectDeviceList} from '@/store';
 import {setTargetDevice} from '@/store/slices';
 import ProfileCardHeader from '@/features/main/ProfileCardHeader';
 import ProfileSelector from '@/features/main/ProfileSelector';
 import {OMAPIBridge} from '@/lpa/bridge/nativeModules';
-import {fontSize, radius} from '@/shared/theme/tokens';
+import {fontSize} from '@/shared/theme/tokens';
 
 export default function SIMSelector() {
+  const navigation = useNavigation<any>();
   const {
     deviceList: allDevices,
     targetDevice,
@@ -95,73 +98,19 @@ export default function SIMSelector() {
 
   return (
     <TView flex={1} minHeight={0} key={deviceList.length}>
-      <Tabs value={currentTab} onValueChange={setCurrentTab} borderRadius={radius.md}>
-        <Tabs.List
-          borderRadius={radius.md}
-          orientation="horizontal"
-          flexDirection="row"
-          borderColor="$surfaceSpecial"
-          backgroundColor="$surfaceSpecial"
-          width="100%">
-          {deviceList.map((name, _idx) => {
-            const adapter = Adapters[name];
-            const label = adapter.device.available
-              ? adapter.device.displayName
-              : `${adapter.device.displayName}\nunavailable`;
-            return (
-              <Tabs.Tab
-                key={`${name}-${_idx}`}
-                value={name}
-                style={{backgroundColor: 'transparent'}}
-                flex={1}
-                flexBasis={0}>
-                <YStack position="relative" width="100%">
-                  <XStack
-                    alignItems="center"
-                    justifyContent="center"
-                    gap={3}
-                    paddingHorizontal={6}
-                    paddingVertical={4}
-                    width="100%">
-                    {(() => {
-                      const IconComponent = adapter.device.deviceId.startsWith('omapi')
-                        ? Smartphone
-                        : adapter.device.deviceId.startsWith('ble')
-                        ? Bluetooth
-                        : Usb;
-                      return (
-                        <IconComponent
-                          size={12}
-                          color={name === currentTab ? '$primaryColor' : '$color6'}
-                        />
-                      );
-                    })()}
-                    <TText
-                      fontSize="$2"
-                      lineHeight="$2"
-                      color={name === currentTab ? '$primaryColor' : '$color6'}
-                      numberOfLines={2}
-                      flexShrink={1}
-                      textAlign="center">
-                      {label}
-                    </TText>
-                  </XStack>
-                  <YStack
-                    position="absolute"
-                    bottom={0}
-                    left={0}
-                    height={2}
-                    backgroundColor="$primaryColor"
-                    width="100%"
-                    opacity={name === currentTab ? 1 : 0}
-                    scaleX={name === currentTab ? 1 : 0}
-                  />
-                </YStack>
-              </Tabs.Tab>
-            );
-          })}
-        </Tabs.List>
-      </Tabs>
+      <SlotTabs
+        tabs={deviceList.map(name => ({
+          key: name,
+          label: Adapters[name].device.available
+            ? Adapters[name].device.displayName
+            : `${Adapters[name].device.displayName} · unavailable`,
+        }))}
+        selected={currentTab ?? ''}
+        onSelect={setCurrentTab}
+        onBluetooth={() => navigation.navigate('Bluetooth')}
+        bluetoothActive={deviceList.some(name => Adapters[name].device.type === 'ble')}
+        emptyLabel={t('main:no_chip_detected')}
+      />
       {selected && adapter != null && (
         <YStack key={selected} flex={1} minHeight={0} opacity={1} x={0}>
           {adapter.device.available ? (

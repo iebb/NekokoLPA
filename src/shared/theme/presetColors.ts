@@ -17,13 +17,29 @@ export interface PresetColor {
 /** Sentinel meaning "follow the system Material You palette" (Android only). */
 export const MATERIAL_YOU = 'my';
 
-/** Used when nothing is stored, and as the fallback everywhere else. */
-export const DEFAULT_THEME_COLOR = '#813FF3';
+/**
+ * Used when nothing is stored, and as the fallback everywhere else.
+ *
+ * The 2026 redesign pins the accent to azure blue. The other presets stay
+ * available because the accent is a user preference, and every screen uses it
+ * for state rather than decoration, so any hue holds up.
+ */
+export const DEFAULT_THEME_COLOR = '#0A84FF';
+
+/**
+ * The pre-redesign default.
+ *
+ * A stored preference always beats {@link DEFAULT_THEME_COLOR}, so without a
+ * migration every existing install would keep the old purple and never see the
+ * new accent. `migrateLegacyDefaultColor` clears it — but only when it matches
+ * this value exactly, so anyone who actually chose purple keeps it.
+ */
+export const LEGACY_DEFAULT_THEME_COLOR = '#813FF3';
 
 export const PRESET_COLORS: PresetColor[] = [
+  {value: '#0A84FF', label: 'Azure'},
   {value: '#813FF3', label: 'Purple'},
   {value: '#6366F1', label: 'Indigo'},
-  {value: '#2563EB', label: 'Blue'},
   {value: '#0EA5E9', label: 'Sky'},
   {value: '#06B6D4', label: 'Cyan'},
   {value: '#0D9488', label: 'Teal'},
@@ -34,6 +50,17 @@ export const PRESET_COLORS: PresetColor[] = [
   {value: '#DC2626', label: 'Red'},
   {value: '#DB2777', label: 'Pink'},
 ];
+
+/**
+ * Drops a stored accent that is merely the old default, so the redesign's
+ * accent applies. Runs once at startup; a deliberate choice is left alone.
+ */
+export function migrateLegacyDefaultColor(stored: string | undefined): string | undefined {
+  if (stored && stored.toLowerCase() === LEGACY_DEFAULT_THEME_COLOR.toLowerCase()) {
+    return undefined;
+  }
+  return stored;
+}
 
 /** True when `value` is one of the presets (case-insensitive). */
 export function isPresetColor(value: string): boolean {

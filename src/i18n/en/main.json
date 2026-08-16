@@ -164,5 +164,11 @@
   "progress_download.step7.es10b_load_bound_profile_package_tx_1": "(3/5) Processing Profile Package {{total}}/6",
   "progress_download.step8.load_bpp": "(4/5) Writing Profile {{progress}}/{{total}}B",
   "progress_download.step9.finalize": "(5/5) Finalize Download",
-  "_": ""
+  "_": "",
+  "add_profile": "Add profile",
+  "manage": "Manage",
+  "one_profile": "1 profile",
+  "n_profiles": "{{count}} profiles",
+  "no_chip_detected": "No chip detected",
+  "profile_active": "Active"
 }

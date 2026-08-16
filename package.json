@@ -7,6 +7,8 @@
     "android": "react-native run-android",
     "ios": "bash scripts/run-ios.sh",
     "macos": "bash scripts/run-macos.sh",
+    "macos:release": "CONFIGURATION=Release bash scripts/run-macos.sh",
+    "macos:logs": "log stream --style compact --predicate 'process == \"NekokoLPA\"'",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "test": "jest",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
@@ -81,6 +83,8 @@
     "jest": "^29",
     "patch-package": "^8.0.1",
     "prettier": "2.8.8",
+    "react-dom": "19.2.0",
+    "react-native-web": "^0.21.2",
     "typescript": "5.9.3"
   },
   "engines": {

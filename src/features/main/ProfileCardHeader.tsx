@@ -3,18 +3,8 @@ import {Platform, ToastAndroid, TouchableOpacity} from 'react-native';
 import {useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import {useTranslation} from 'react-i18next';
-import {Card, Text as TText, useTheme, XStack, YStack} from 'tamagui';
-import {
-  ChevronRight,
-  Copy,
-  Settings,
-  Info,
-  Bell,
-  Menu,
-  HardDrive,
-  Plus,
-  GripVertical,
-} from '@tamagui/lucide-icons';
+import {Text as TText, useTheme, XStack, YStack} from 'tamagui';
+import {Bell, ChevronRight, Copy, Info, Menu, Settings} from '@tamagui/lucide-icons';
 import Clipboard from '@react-native-clipboard/clipboard';
 
 import AppSheet from '@/shared/ui/AppSheet';
@@ -26,7 +16,8 @@ import {useToast} from '@/app/providers/ToastProvider';
 import {useLoading} from '@/app/providers/LoadingProvider';
 import {selectDeviceState} from '@/store';
 import {OMAPIBridge} from '@/lpa/bridge/nativeModules';
-import {fontSize, radius} from '@/shared/theme/tokens';
+import {fontFamily, fontSize, radius} from '@/shared/theme/tokens';
+import SectionLabel from '@/shared/ui/SectionLabel';
 
 // Extracted components
 const ActionSheetOptions = React.memo(
@@ -167,6 +158,7 @@ const ActionSheetOptions = React.memo(
 );
 
 export default function ProfileCardHeader({deviceId}: {deviceId: string}) {
+  const {t} = useTranslation(['main']);
   const theme = useTheme();
   const navigation = useNavigation<any>();
   const [euiccMenu, setEuiccMenu] = useState(false);
@@ -178,22 +170,31 @@ export default function ProfileCardHeader({deviceId}: {deviceId: string}) {
   const {showToast} = useToast();
   const {setLoading} = useLoading();
 
-  const {eid, maskedEid} = useMemo(() => {
-    const eidStr = String(DeviceState?.eid ?? '');
-    if (stealthMode === 'hard') return {eid: eidStr, maskedEid: '**** **** **** ****'};
-    return {
-      eid: eidStr,
-      maskedEid:
-        eidStr.length > 20
-          ? eidStr.substring(0, 8) + '...' + eidStr.substring(eidStr.length - 8)
-          : eidStr,
-    };
+  const eid = String(DeviceState?.eid ?? '');
+
+  /**
+   * The EID as the card prints it: 32 digits in groups of four.
+   *
+   * Grouping is what makes it checkable by eye against the physical chip, so
+   * it applies to the redacted form too — masked digits keep their positions
+   * rather than collapsing to an ellipsis.
+   */
+  const groupedEid = useMemo(() => {
+    const source =
+      stealthMode === 'hard'
+        ? '•'.repeat(String(DeviceState?.eid ?? '').length)
+        : String(DeviceState?.eid ?? '');
+    return source.replace(/(.{4})/g, '$1 ').trim();
   }, [DeviceState?.eid, stealthMode]);
 
   const supplementText = useMemo(
     () => toFriendlyName(eid, DeviceState.euiccInfo2),
     [eid, DeviceState.euiccInfo2],
   );
+
+  const profileCount = DeviceState.profiles?.length ?? 0;
+  const profileCountLabel =
+    profileCount === 1 ? t('main:one_profile') : t('main:n_profiles', {count: profileCount});
 
   const exactFreeBytes = DeviceState.bytesFree ?? 0;
 
@@ -212,83 +213,71 @@ export default function ProfileCardHeader({deviceId}: {deviceId: string}) {
         />
       )}
 
-      <Card
-        backgroundColor="$surfaceSpecial"
+      {/* The chip card. Everything identifying the eUICC is mono — the EID is
+          grouped in fours so it can be read off against the card itself — and
+          the two actions live in a hairline-separated footer rather than as
+          floating icon buttons, so the card reads as one object. */}
+      <YStack
+        backgroundColor="$surfaceRow"
+        borderWidth={1}
+        borderColor="$borderColor"
         borderRadius={radius.lg}
-        padding={12}
-        onPress={() => setEuiccMenu(true)}>
-        <YStack gap={10}>
-          <XStack justifyContent="space-between" alignItems="flex-start">
-            <YStack gap={3} flex={1}>
-              <XStack gap={6} alignItems="center">
-                <TText
-                  color="$primaryColor"
-                  fontSize={fontSize.xs}
-                  fontWeight="700"
-                  textTransform="uppercase"
-                  letterSpacing={0.5}>
-                  {supplementText || 'eUICC Status'}
-                </TText>
-                <YStack padding={2} borderRadius={radius.xs} position="relative">
-                  <YStack
-                    position="absolute"
-                    top={0}
-                    left={0}
-                    right={0}
-                    bottom={0}
-                    backgroundColor="$primaryColor"
-                    borderRadius={radius.xs}
-                    opacity={0.2}
-                  />
-                  <HardDrive size={9} color={theme.primaryColor?.val} />
-                </YStack>
-              </XStack>
-              <TText
-                color="$textDefault"
-                fontSize={fontSize.md}
-                fontWeight="600"
-                style={{fontFamily: 'monospace'}}>
-                {maskedEid}
-              </TText>
-            </YStack>
-
-            <XStack gap={6}>
-              <TouchableOpacity
-                onPress={() => navigation.navigate('Scanner', {deviceId})}
-                style={{
-                  backgroundColor: theme.primaryColor?.val,
-                  padding: 8,
-                  borderRadius: radius.sm,
-                  elevation: 2,
-                }}>
-                <Plus size={18} color={theme.background?.val} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setEuiccMenu(true)}
-                style={{
-                  backgroundColor: theme.color3?.val,
-                  padding: 8,
-                  borderRadius: radius.sm,
-                  borderWidth: 1,
-                  borderColor: theme.borderColor?.val,
-                }}>
-                <GripVertical size={18} color={theme.color8?.val} />
-              </TouchableOpacity>
-            </XStack>
+        overflow="hidden">
+        <YStack padding={13} gap={7}>
+          <XStack alignItems="baseline" justifyContent="space-between" gap={10}>
+            <SectionLabel color="$primaryColor">{supplementText || 'eUICC'}</SectionLabel>
+            <TText color="$color9" fontSize={fontSize.sm}>
+              {profileCountLabel}
+            </TText>
           </XStack>
 
-          <YStack gap={4}>
-            <XStack justifyContent="space-between" alignItems="center">
-              <TText color="$color9" fontSize={fontSize.xs} fontWeight="500">
-                Available Storage
-              </TText>
-              <TText color="$textDefault" fontSize={fontSize.xs} fontWeight="700">
-                {formatSize(exactFreeBytes)}
-              </TText>
-            </XStack>
-          </YStack>
+          <TText
+            color="$color6"
+            fontFamily={fontFamily.mono as any}
+            fontSize={fontSize.xs}
+            lineHeight={16}>
+            {groupedEid}
+          </TText>
+
+          <XStack alignItems="baseline" gap={6} flexWrap="wrap">
+            <TText
+              color="$textDefault"
+              fontFamily={fontFamily.mono as any}
+              fontSize={fontSize.lg}
+              fontWeight={'600' as any}>
+              {formatSize(exactFreeBytes)}
+            </TText>
+            <TText color="$color9" fontSize={fontSize.sm}>
+              available
+            </TText>
+          </XStack>
         </YStack>
-      </Card>
+
+        <XStack backgroundColor="$borderColor" gap={1} borderTopWidth={1} borderTopColor="$borderColor">
+          <TouchableOpacity
+            style={{flex: 1, backgroundColor: theme.surfaceRow?.val, padding: 12}}
+            onPress={() => navigation.navigate('Scanner', {deviceId})}>
+            <TText
+              textAlign="center"
+              color="$primaryColor"
+              fontSize={fontSize.md}
+              fontWeight={'600' as any}>
+              {t('main:add_profile')}
+            </TText>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{flex: 1, backgroundColor: theme.surfaceRow?.val, padding: 12}}
+            onPress={() => setEuiccMenu(true)}>
+            <TText
+              textAlign="center"
+              color="$color6"
+              fontSize={fontSize.md}
+              fontWeight={'500' as any}>
+              {t('main:manage')}
+            </TText>
+          </TouchableOpacity>
+        </XStack>
+      </YStack>
     </YStack>
   );
 }

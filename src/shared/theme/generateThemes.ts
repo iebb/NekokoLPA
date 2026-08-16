@@ -1,4 +1,5 @@
 import {getColorTint, isDarkColor} from './colorUtils';
+import {rampFor} from './palette';
 import MaterialYou from 'react-native-material-you-colors';
 
 import {DEFAULT_THEME_COLOR, MATERIAL_YOU} from './presetColors';
@@ -32,24 +33,29 @@ export function generateTamaguiTheme(
   const isBtnAltBackgroundDark = isDarkColor(btnAltBackground);
   const btnAltForeground = isBtnAltBackgroundDark ? '#ffffff' : '#000000';
 
+  // Neutral ramps come from `palette`, which transcribes the redesign
+  // prototype. The named Tamagui keys below are the app's existing vocabulary,
+  // mapped onto that ramp so every screen picks the new surfaces up without
+  // being rewritten: surfaceRow is a card/row, surfaceSpecial is the recessed
+  // fill behind segmented controls and chips.
+  const ramp = rampFor(baseTheme);
+
   const baseLightTheme = {
-    background: '#f0f1f5',
-    color: '#0c0c0c',
-    borderColor: '#e6e6ea',
-    shadowColor: 'rgba(0,0,0,0.06)',
-    surfaceRow: '#ffffff',
-    // keep special surfaces pure white to appear lighter than page bg
-    surfaceSpecial: '#ffffff',
+    background: ramp.bg,
+    color: ramp.fg,
+    borderColor: ramp.line,
+    shadowColor: 'rgba(20,22,30,0.10)',
+    surfaceRow: ramp.surface,
+    surfaceSpecial: ramp.surface2,
   };
 
   const baseDarkTheme = {
-    background: '#0b0b0f',
-    color: '#e9e9ef',
-    borderColor: '#161620',
-    shadowColor: 'rgba(0,0,0,0.35)',
-    surfaceRow: '#16161d',
-    // make row surfaces lighter than background a bit more pronounced on dark
-    surfaceSpecial: '#292934',
+    background: ramp.bg,
+    color: ramp.fg,
+    borderColor: ramp.line,
+    shadowColor: 'rgba(0,0,0,0.45)',
+    surfaceRow: ramp.surface,
+    surfaceSpecial: ramp.surface2,
   };
 
   if (baseTheme === 'light') {
@@ -66,32 +72,32 @@ export function generateTamaguiTheme(
       btnAltBackground: btnAltBackground,
       btnAltForeground: btnAltForeground,
       // Success colors (keeping green as per original)
-      backgroundSuccess: '#22c55e',
+      backgroundSuccess: ramp.ok,
       backgroundSuccessLight: '#86efac',
-      backgroundSuccessHeavy: '#16a34a',
+      backgroundSuccessHeavy: ramp.ok,
       // Danger colors
-      backgroundDanger: '#ef4444',
+      backgroundDanger: ramp.danger,
       backgroundDangerLight: '#fca5a5',
-      backgroundDangerHeavy: '#dc2626',
+      backgroundDangerHeavy: ramp.danger,
       // Foreground for content sitting on a saturated fill (danger/success
       // swipe actions, switch thumbs). White in both schemes, because the
       // fills underneath are saturated in both.
       onFilled: '#ffffff',
       // Neutral colors
-      outlineNeutral: '#e6e6ea',
+      outlineNeutral: ramp.line,
       outlineDisabledHeavy: '#d1d5db',
-      textDefault: '#000000',
-      textNeutral: '#6b7280',
+      textDefault: ramp.fg,
+      textNeutral: ramp.fg2,
       color0: '#0a0a0d',
       color1: '#18181b',
       color2: '#26262a',
       color3: '#343438',
       color4: '#424246',
       color5: '#505055',
-      color6: '#5e5e63',
+      color6: ramp.fg2,
       color7: '#6c6c71',
-      color8: '#7a7a7f',
-      color9: '#89898e',
+      color8: ramp.fg3,
+      color9: ramp.fg3,
       color10: '#97979c',
       color11: '#a5a5aa',
       color12: '#b3b3b9',
@@ -115,32 +121,32 @@ export function generateTamaguiTheme(
       btnAltBackground: btnAltBackground,
       btnAltForeground: btnAltForeground,
       // Success colors
-      backgroundSuccess: '#22c55e',
+      backgroundSuccess: ramp.ok,
       backgroundSuccessLight: '#4ade80',
-      backgroundSuccessHeavy: '#16a34a',
+      backgroundSuccessHeavy: ramp.ok,
       // Danger colors
-      backgroundDanger: '#ef4444',
+      backgroundDanger: ramp.danger,
       backgroundDangerLight: '#f87171',
-      backgroundDangerHeavy: '#dc2626',
+      backgroundDangerHeavy: ramp.danger,
       // Foreground for content sitting on a saturated fill (danger/success
       // swipe actions, switch thumbs). White in both schemes, because the
       // fills underneath are saturated in both.
       onFilled: '#ffffff',
       // Neutral colors
-      outlineNeutral: '#2a2a34',
+      outlineNeutral: ramp.line,
       outlineDisabledHeavy: '#3a3a44',
-      textDefault: '#e9e9ef',
-      textNeutral: '#9ca3af',
+      textDefault: ramp.fg,
+      textNeutral: ramp.fg2,
       color0: '#ebebf2',
       color1: '#dddde4',
       color2: '#cfcfd5',
       color3: '#c1c1c7',
       color4: '#b3b3b9',
       color5: '#a5a5aa',
-      color6: '#97979c',
+      color6: ramp.fg2,
       color7: '#89898e',
-      color8: '#7a7a80',
-      color9: '#6c6c71',
+      color8: ramp.fg3,
+      color9: ramp.fg3,
       color10: '#5e5e63',
       color11: '#505055',
       color12: '#424246',
