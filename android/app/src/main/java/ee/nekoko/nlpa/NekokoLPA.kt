@@ -762,10 +762,25 @@ class NekokoLPA(reactContext: ReactApplicationContext) : NativeNekokoLPASpec(rea
         private const val EID_HEX_END = EID_HEX_START + 32
 
         /**
-         * WARNING: this trusts every TLS certificate and accepts any hostname,
-         * which leaves SM-DP+ traffic open to interception. It is kept as-is to
-         * preserve existing behaviour; replacing it with standard trust
-         * evaluation is strongly recommended.
+         * Accepts every TLS certificate and any hostname. This is deliberate.
+         *
+         * SM-DP+ servers present certificates chained to GSMA CI roots, and some
+         * cards are provisioned against non-GSMA CIs. None of those roots are in
+         * the Android system trust store, so ordinary trust evaluation rejects
+         * every SM-DP+ host and no profile can be downloaded.
+         *
+         * This is not as exposed as it looks: SGP.22 mutual authentication runs
+         * underneath, so the Bound Profile Package is signed and encrypted end to
+         * end and cannot be forged or read by an intermediary. What TLS is left
+         * protecting here is the surrounding metadata — activation codes,
+         * matching IDs, confirmation codes, ICCIDs and EIDs — plus resistance to
+         * a peer redirecting or stalling the session.
+         *
+         * The correct fix is pinning rather than system trust: build the
+         * X509TrustManager from a KeyStore holding the CI roots we support, so an
+         * unknown CI still fails closed. Hostname verification may need to stay
+         * relaxed if SM-DP+ certificates lack matching SANs. Mirrors the same
+         * decision in ios/CustomHttp.swift.
          */
         private val trustAllCertificates = arrayOf<TrustManager>(
             object : X509TrustManager {

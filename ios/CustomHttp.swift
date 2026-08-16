@@ -25,9 +25,26 @@ import NIOSSL
     resolvePromise resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    // WARNING: certificate verification is disabled. See CustomHttp.swift /
-    // NekokoLPA.kt — this makes SM-DP+ traffic interceptable and should be
-    // replaced with proper trust evaluation.
+    // Certificate verification is disabled deliberately.
+    //
+    // SM-DP+ servers present certificates chained to GSMA CI roots, and some
+    // cards are provisioned against non-GSMA CIs. None of those roots ship in
+    // the iOS trust store, so .fullVerification rejects every SM-DP+ host and
+    // no profile can be downloaded.
+    //
+    // This is not as exposed as it looks: SGP.22 mutual authentication runs
+    // underneath, so the Bound Profile Package is signed and encrypted end to
+    // end and cannot be forged or read by an intermediary. What TLS is left
+    // protecting here is the surrounding metadata — activation codes, matching
+    // IDs, confirmation codes, ICCIDs and EIDs — plus resistance to a peer
+    // redirecting or stalling the session.
+    //
+    // The correct fix is pinning rather than system trust: set
+    // `trustRoots = .certificates([...])` with the CI roots we support and turn
+    // certificateVerification back to .fullVerification, so an unknown CI still
+    // fails closed. Hostname verification may need to stay relaxed if SM-DP+
+    // certificates lack matching SANs. Mirrors the same decision in
+    // android/.../NekokoLPA.kt.
     var tlsConfiguration = TLSConfiguration.makeClientConfiguration()
     tlsConfiguration.certificateVerification = .none
 
