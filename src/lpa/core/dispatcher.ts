@@ -64,15 +64,6 @@ export class LpaDispatcher {
     return session;
   }
 
-  /** Free space, or 0 when the card will not report it. */
-  private async freeSpaceOrZero(): Promise<number> {
-    try {
-      return await this.lpa.getFreeSpace();
-    } catch (e) {
-      return 0;
-    }
-  }
-
   /**
    * Send every pending notification whose operation matches `mask`, optionally
    * removing it afterwards. `iccid` empty means "all profiles".
@@ -203,7 +194,6 @@ export class LpaDispatcher {
         try {
           const key = String(args[0]);
           const session = this.takeSession(key);
-          const before = await this.freeSpaceOrZero();
           const result = await this.lpa.downloadProfile(session, String(args[1] || ''));
           if (!result.success) {
             return {
@@ -217,9 +207,7 @@ export class LpaDispatcher {
             };
           }
           delete this.sessions[key];
-          const after = await this.freeSpaceOrZero();
-          const consumed = before > 0 && after > 0 ? before - after : 0;
-          return consumed > 0 ? { success: true, space_consumed: consumed } : { success: true };
+          return { success: true };
         } catch (e) {
           return failure(e);
         }

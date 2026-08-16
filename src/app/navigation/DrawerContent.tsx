@@ -6,7 +6,6 @@ import {View, Image} from 'react-native';
 import {Text as TText, useTheme} from 'tamagui';
 import {
   ArrowLeft,
-  Download,
   Code,
   Settings,
   Flag,
@@ -68,12 +67,6 @@ export default function LeftSidebarDrawer({navigation}: DrawerContentComponentPr
       label: 'main:github',
       icon: Code,
       onPress: () => Linking.openURL(GithubLink),
-    },
-    {
-      title: 'Backup',
-      label: 'main:backup',
-      icon: Download,
-      onPress: (navigation: any) => navigation.navigate('Stack', {screen: 'Backup'}),
     },
     {
       title: 'Settings',

@@ -1,16 +1,13 @@
 import React, {useState} from 'react';
-import {Alert} from 'react-native';
 import {useTranslation} from 'react-i18next';
-import {View} from 'react-native';
 import {Button as TButton, Text as TText, Input, XStack, YStack, useTheme, Card} from 'tamagui';
-import {X, Download, AlertTriangle} from '@tamagui/lucide-icons';
+import {X, Download} from '@tamagui/lucide-icons';
 import BlockingLoader from '@/shared/ui/BlockingLoader';
 import RemoteErrorView from '@/features/download/RemoteErrorView';
 import MetadataView from '@/shared/ui/MetadataView';
 import Screen from '@/shared/ui/Screen';
 import {makeLoading} from '@/shared/utils/loading';
 import {Adapters} from '@/lpa/adapters/registry';
-import sizeFile, {ProfileSizes} from '@/data/sizes';
 import {useSelector} from 'react-redux';
 import {selectDeviceState} from '@/store';
 import {formatSize} from '@/shared/utils/size';
@@ -30,15 +27,8 @@ export function ScannerAuthentication({
   const DeviceState = useSelector(selectDeviceState(deviceId));
 
   const adapter = Adapters[deviceId];
-  const {eid, euiccInfo2} = DeviceState;
+  const {euiccInfo2} = DeviceState;
 
-  const profileTag = `${authenticateResult?.profile?.profileOwnerMccMnc}|${authenticateResult?.profile?.serviceProviderName}`;
-  // @ts-ignore
-  const sizeDelta = (sizeFile as ProfileSizes).offset[eid.substring(0, 8)] ?? 0;
-  // @ts-ignore
-  const sizeValue = (sizeFile as ProfileSizes).sizes[profileTag] ?? null;
-  const sizeData = sizeValue ? sizeValue.map((d: number) => d + sizeDelta) : null;
-  const maxSizeData = sizeData ? sizeData[2] : 10000;
   const freeSpace = Math.round(euiccInfo2?.extCardResource?.freeNonVolatileMemory || 0);
 
   return (
@@ -91,60 +81,21 @@ export function ScannerAuthentication({
           )}
 
           {/* Storage Info Card */}
-          {sizeData && (
-            <Card backgroundColor="$surfaceSpecial" borderRadius={16} padding={20} borderWidth={0}>
-              <YStack gap={16}>
-                <TText color="$textDefault" fontSize={16} fontWeight={'600' as any}>
-                  Storage Information
+          <Card backgroundColor="$surfaceSpecial" borderRadius={16} padding={20} borderWidth={0}>
+            <YStack gap={16}>
+              <TText color="$textDefault" fontSize={16} fontWeight={'600' as any}>
+                Storage Information
+              </TText>
+              <XStack justifyContent="space-between" alignItems="center">
+                <TText color="$color6" fontSize={14} fontWeight={'500' as any}>
+                  {t('main:profile_available_space')}
                 </TText>
-                <YStack gap={12}>
-                  <XStack justifyContent="space-between" alignItems="center">
-                    <TText color="$color6" fontSize={14} fontWeight={'500' as any}>
-                      {t('main:profile_size')}
-                    </TText>
-                    <TText color="$textDefault" fontSize={14} fontWeight={'500' as any}>
-                      {formatSize(sizeData[1])}
-                    </TText>
-                  </XStack>
-                  <XStack justifyContent="space-between" alignItems="center">
-                    <TText color="$color6" fontSize={14} fontWeight={'500' as any}>
-                      Size Range
-                    </TText>
-                    <TText color="$color6" fontSize={13}>
-                      {formatSize(sizeData[0])} ~ {formatSize(sizeData[2])}
-                    </TText>
-                  </XStack>
-                  <View
-                    style={{
-                      height: 1,
-                      backgroundColor: theme.outlineNeutral?.val || theme.borderColor?.val,
-                      marginVertical: 4,
-                    }}
-                  />
-                  <XStack justifyContent="space-between" alignItems="center">
-                    <TText color="$color6" fontSize={14} fontWeight={'500' as any}>
-                      {t('main:profile_available_space')}
-                    </TText>
-                    <XStack gap={8} alignItems="center">
-                      {freeSpace <= maxSizeData && (
-                        <AlertTriangle size={16} color={theme.backgroundDangerHeavy?.val} />
-                      )}
-                      <TText
-                        color={
-                          freeSpace <= maxSizeData
-                            ? theme.backgroundDangerHeavy?.val
-                            : '$textDefault'
-                        }
-                        fontSize={14}
-                        fontWeight={freeSpace <= maxSizeData ? ('600' as any) : ('500' as any)}>
-                        {formatSize(freeSpace)}
-                      </TText>
-                    </XStack>
-                  </XStack>
-                </YStack>
-              </YStack>
-            </Card>
-          )}
+                <TText color="$textDefault" fontSize={14} fontWeight={'500' as any}>
+                  {formatSize(freeSpace)}
+                </TText>
+              </XStack>
+            </YStack>
+          </Card>
 
           {/* Action Buttons */}
           <YStack gap={12} marginTop={8}>
@@ -173,50 +124,17 @@ export function ScannerAuthentication({
                 borderRadius={16}
                 backgroundColor="$btnBackground"
                 onPress={() => {
-                  if (freeSpace <= maxSizeData) {
-                    Alert.alert(
-                      t('main:profile_title_confirm_profile'),
-                      t('main:profile_available_space_alert', {space: formatSize(freeSpace)}),
-                      [
-                        {
-                          text: t('main:profile_delete_tag_cancel'),
-                          onPress: () => {},
-                          style: 'cancel',
-                        },
-                        {
-                          text: t('main:profile_delete_tag_ok'),
-                          style: 'destructive',
-                          onPress: () => {
-                            makeLoading(setLoading, async () => {
-                              const downloadResult = await adapter.downloadProfile(
-                                authenticateResult._internal,
-                                confirmationCode,
-                                setProgress,
-                              );
-                              await adapter.processNotifications(authenticateResult.profile.iccid);
-                              // InfiLPA.refreshProfileList(device);
-                              confirmDownload({
-                                downloadResult,
-                              });
-                            });
-                          },
-                        },
-                      ],
+                  makeLoading(setLoading, async () => {
+                    const downloadResult = await adapter.downloadProfile(
+                      authenticateResult._internal,
+                      confirmationCode,
+                      setProgress,
                     );
-                  } else {
-                    makeLoading(setLoading, async () => {
-                      const downloadResult = await adapter.downloadProfile(
-                        authenticateResult._internal,
-                        confirmationCode,
-                        setProgress,
-                      );
-                      await adapter.processNotifications(authenticateResult.profile.iccid);
-                      // InfiLPA.refreshProfileList(device);
-                      confirmDownload({
-                        downloadResult,
-                      });
+                    await adapter.processNotifications(authenticateResult.profile.iccid);
+                    confirmDownload({
+                      downloadResult,
                     });
-                  }
+                  });
                 }}>
                 <XStack alignItems="center" gap={12}>
                   <Download size={20} color="$btnForeground" />

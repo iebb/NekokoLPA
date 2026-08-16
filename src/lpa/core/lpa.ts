@@ -489,12 +489,6 @@ export class Lpa {
       .filter((address: string) => !!address);
   }
 
-  /** Free non-volatile memory in bytes, used to report space consumed. */
-  async getFreeSpace(): Promise<number> {
-    const info = await this.getEuiccInfo2();
-    return info.extCardResource.freeNonVolatileMemory;
-  }
-
   /* ---------------------------------------------------------------------
    * Download: install step
    * ------------------------------------------------------------------ */

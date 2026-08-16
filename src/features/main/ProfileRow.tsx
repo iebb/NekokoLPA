@@ -8,7 +8,6 @@ import {Pencil, Trash2} from '@tamagui/lucide-icons';
 import {Alert, Image, PixelRatio, Pressable, ToastAndroid, TouchableOpacity} from 'react-native';
 import {makeLoading} from '@/shared/utils/loading';
 import {Flags} from '@/assets/flags';
-import {formatSize, getExactProfileSize} from '@/shared/utils/size';
 import React, {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from '@react-navigation/native';
@@ -114,7 +113,6 @@ const ProfileRowComponent = ({profile, deviceId}: {profile: ProfileExt; deviceId
     return result;
   }, [name, country, stealthMode]);
 
-  const Size = useMemo(() => getExactProfileSize(profile.iccid || ''), [profile.iccid]);
 
   const handleProfilePress = useCallback(() => {
     navigation.navigate('Profile', {iccid: profile.iccid, metadata: profile, deviceId});
@@ -269,11 +267,6 @@ const ProfileRowComponent = ({profile, deviceId}: {profile: ProfileExt; deviceId
 
             {/* Switch Control */}
             <XStack alignItems="center" gap={10}>
-              {Size > 1536 && (
-                <Text color="$color8" fontSize={11} fontWeight="500">
-                  {formatSize(Size)}
-                </Text>
-              )}
               <Switch
                 checked={profile.selected}
                 disabled={isLoading}

@@ -19,7 +19,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 
 import AppSheet from '@/shared/ui/AppSheet';
 import {Adapters} from '@/lpa/adapters/registry';
-import {formatSize, getEstimatedProfileSize} from '@/shared/utils/size';
+import {formatSize} from '@/shared/utils/size';
 import {toFriendlyName} from '@/shared/utils/friendlyName';
 import {makeLoading} from '@/shared/utils/loading';
 import {useToast} from '@/app/providers/ToastProvider';
@@ -190,23 +190,7 @@ export default function ProfileCardHeader({deviceId}: {deviceId: string}) {
     [eid, DeviceState.euiccInfo2],
   );
 
-  const {freeSpacePercent, exactFreeBytes} = useMemo(() => {
-    const used = (DeviceState.profiles ?? []).reduce(
-      (acc, p) => acc + getEstimatedProfileSize(p, DeviceState.eid ?? ''),
-      0,
-    );
-
-    // bytesFree is exact, but total capacity is unknown, so approximate
-    // Total = Free + EstimatedUsed.
-    const free = DeviceState.bytesFree ?? 0;
-    const estimatedTotal = free + used;
-
-    return {
-      freeSpacePercent:
-        estimatedTotal > 0 ? Math.max(0, Math.min(100, (free / estimatedTotal) * 100)) : 0,
-      exactFreeBytes: free,
-    };
-  }, [DeviceState.profiles, DeviceState.eid, DeviceState.bytesFree]);
+  const exactFreeBytes = DeviceState.bytesFree ?? 0;
 
   return (
     <YStack marginVertical={8} gap={8}>
@@ -297,14 +281,6 @@ export default function ProfileCardHeader({deviceId}: {deviceId: string}) {
                 {formatSize(exactFreeBytes)}
               </TText>
             </XStack>
-            <YStack height={5} backgroundColor="$color3" borderRadius={2.5} overflow="hidden">
-              <YStack
-                height="100%"
-                width={`${freeSpacePercent}%`}
-                backgroundColor="$primaryColor"
-                borderRadius={2.5}
-              />
-            </YStack>
           </YStack>
         </YStack>
       </Card>

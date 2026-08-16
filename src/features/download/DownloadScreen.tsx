@@ -1,17 +1,12 @@
 import React, {useState} from 'react';
-import {Platform} from 'react-native';
 import type {RootScreenProps} from '@/app/navigation/types';
 import {ScannerInitial} from '@/features/download/ScannerInitial';
 import {ScannerAuthentication} from '@/features/download/ScannerAuthentication';
 import {ScannerResult} from '@/features/download/ScannerResult';
-import {AppVersion} from '@/shared/config/app';
-import {sizeStats} from '@/shared/storage';
 import {Adapters} from '@/lpa/adapters/registry';
 import {useSelector} from 'react-redux';
 import {View} from 'react-native';
 import {selectDeviceState} from '@/store';
-
-const REPORTING_URL = 'https://nlpa-data.nekoko.ee/api/collection/v2';
 
 function Scanner({route, navigation}: RootScreenProps<'Scanner'>) {
   const {deviceId, appLink} = route.params;
@@ -22,7 +17,7 @@ function Scanner({route, navigation}: RootScreenProps<'Scanner'>) {
   const [authenticateResult, setAuthenticateResult] = useState(null);
   const [downloadResult, setDownloadResult] = useState(null);
   const [confirmationCode, setConfirmationCode] = useState('');
-  const [smdpAddress, setSmdpAddress] = useState('');
+  const [, setSmdpAddress] = useState('');
   const adapter = deviceId ? Adapters[deviceId] : null;
 
   return (
@@ -51,31 +46,6 @@ function Scanner({route, navigation}: RootScreenProps<'Scanner'>) {
             setScanState(0);
           }}
           confirmDownload={({downloadResult}: any) => {
-            // @ts-ignore
-            const m = authenticateResult.profile;
-            const v = {
-              smdpAddress,
-              ...downloadResult,
-              ...(authenticateResult || {}),
-              appVersion: AppVersion,
-              appOS: Platform.OS,
-            };
-            delete v['_internal'];
-            fetch(REPORTING_URL, {
-              method: 'POST',
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(v),
-            })
-              .then(d => d.json())
-              .catch(e => console.error('Failed to report download result', e));
-
-            if (downloadResult?.space_consumed) {
-              sizeStats.set(m.iccid, downloadResult.space_consumed);
-            }
-
             setDownloadResult(downloadResult);
             setScanState(3);
           }}

@@ -33,5 +33,4 @@ export interface AuthenticateResult {
 export interface DownloadResult {
   remoteError: RemoteError;
   success: boolean;
-  space_consumed?: number;
 }
