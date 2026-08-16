@@ -1,0 +1,28 @@
+import type {StackScreenProps} from '@react-navigation/stack';
+import {ProfileMetadataMap} from '@/lpa/types/profile';
+
+export type RootStackParamList = {
+  Main: {};
+  Stats: {};
+  Backup: {};
+  Settings: {};
+  BluetoothScan: {};
+  Notifications: {
+    deviceId: string;
+  };
+  EuiccInfo: {
+    deviceId: string;
+  };
+  Scanner: {
+    appLink?: string;
+    deviceId?: string;
+  };
+  Profile: {
+    iccid: string;
+    metadata: ProfileMetadataMap;
+    deviceId: string;
+  };
+};
+
+export type RootScreenProps<S extends keyof RootStackParamList = keyof RootStackParamList> =
+  StackScreenProps<RootStackParamList, S>;

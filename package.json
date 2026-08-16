@@ -6,9 +6,13 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "lint": "eslint .",
-    "start": "watchman watch-del-all && npx react-native start --reset-cache",
-    "type-check": "tsc",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx}\"",
+    "start": "react-native start",
+    "start:clean": "watchman watch-del-all && react-native start --reset-cache",
+    "type-check": "tsc --noEmit",
     "pod-install": "cd ios && pod install && cd ..",
     "build": "bash build_variant.sh",
     "build:aab": "bash build_aab.sh",
@@ -16,7 +20,7 @@
     "build-all:aab": "bash build_all_aabs.sh",
     "build-and-upload": "bash build_variant.sh && bash release.sh",
     "bump": "python3 bump_version.py",
-    "postinstall": "npx patch-package"
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@react-native-clipboard/clipboard": "^1.16.0",
@@ -27,7 +31,6 @@
     "@react-navigation/native": "^7.1.14",
     "@react-navigation/stack": "^7.4.2",
     "@reduxjs/toolkit": "2.5.1",
-    "@tamagui/babel-plugin": "1.135.7",
     "@tamagui/config": "1.135.7",
     "@tamagui/core": "1.135.7",
     "@tamagui/font-inter": "1.135.7",
@@ -41,7 +44,6 @@
     "react-i18next": "14.1.3",
     "react-native": "^0.83.0",
     "react-native-ble-plx": "3.2.1",
-    "react-native-config": "1.5.5",
     "react-native-draggable-flatlist": "^4.0.1",
     "react-native-fs": "^2.18.0",
     "react-native-gesture-handler": "^2.29.1",
@@ -52,7 +54,6 @@
     "react-native-reanimated": "^4.2.0",
     "react-native-safe-area-context": "^5.6.0",
     "react-native-screens": "^4.11.1",
-    "react-native-share": "12.2.0",
     "react-native-svg": "^15.15.1",
     "react-native-vision-camera": "^4.7.2",
     "react-native-worklets": "^0.7.0",
@@ -71,16 +72,12 @@
     "@react-native/metro-config": "^0.83.0",
     "@react-native/typescript-config": "^0.83.1",
     "@types/node": "^22.13.0",
-    "@types/react": "^18.2.6",
+    "@types/react": "^19",
     "@typescript-eslint/parser": "^6.13.1",
-    "babel-plugin-inline-dotenv": "^1.7.0",
     "babel-plugin-module-resolver": "^5.0.0",
-    "babel-plugin-root-import": "^6.6.0",
-    "dotenv": "^16.3.1",
     "eslint": "^8.19.0",
+    "patch-package": "^8.0.1",
     "prettier": "2.8.8",
-    "reactotron-react-native": "^5.1.6",
-    "reactotron-react-native-mmkv": "^0.2.6",
     "typescript": "5.9.3"
   },
   "engines": {
@@ -89,7 +86,7 @@
   "codegenConfig": {
     "name": "NekokoLPA",
     "type": "modules",
-    "jsSrcsDir": "src/native/specs",
+    "jsSrcsDir": "src/lpa/bridge/specs",
     "android": {
       "javaPackageName": "ee.nekoko.nlpa"
     },

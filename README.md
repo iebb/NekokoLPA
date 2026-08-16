@@ -26,6 +26,41 @@ Android and iOS LPA App.
 * [NekokoLPA App](https://play.google.com/store/apps/details?id=ee.nekoko.nlpa) for [ShiinaSekiu](https://github.com/ShiinaSekiu)'s Community Key
 * [9eSIM App](https://play.google.com/store/apps/details?id=ee.nekoko.nlpa.flavor1) for [9eSIM removable cards](https://9es.im/)
 
+## Development
+
+```bash
+yarn install
+yarn pod-install   # iOS only
+yarn android       # or: yarn ios
+```
+
+| Command | Purpose |
+| --- | --- |
+| `yarn type-check` | TypeScript, no emit |
+| `yarn lint` / `yarn lint:fix` | ESLint |
+| `yarn format` / `yarn format:check` | Prettier |
+| `yarn build` | Build a variant (see `build_variant.sh`) |
+
+`src/assets/config.json` and `src/assets/images/logo.png` are generated per
+build flavour by `apply_variant.sh` and are intentionally not tracked in git.
+
+### Project structure
+
+```
+src/
+  app/         App root, navigation, and context providers
+  features/    One folder per screen (main, profile, download, settings, …)
+  lpa/         eSIM domain: device adapters, wasm bridge, native modules, types
+  shared/      Reusable UI, hooks, storage, theme, and utilities
+  store/       Redux store and slices
+  data/        Static datasets (PLMN, MCC, profile sizes)
+  i18n/        Translations
+  assets/      Images and flags
+```
+
+Device support is added by implementing the `Device` interface in
+`src/lpa/adapters/` and registering it in `src/lpa/deviceManager.ts`.
+
 ## About Other Cards
 
 We are aware that several other eSIM brands have released applications derived from or modified versions of NekokoLPA.

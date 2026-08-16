@@ -1,12 +1,12 @@
-import { createTamagui, createTokens } from '@tamagui/core'
-import { createInterFont } from '@tamagui/font-inter'
-import { shorthands } from '@tamagui/shorthands'
+import {createTamagui, createTokens} from '@tamagui/core';
+import {createInterFont} from '@tamagui/font-inter';
+import {shorthands} from '@tamagui/shorthands';
 // Using require for React Native compatibility with subpath exports
 // Metro bundler should resolve this with unstable_enablePackageExports enabled
 // @ts-ignore - Metro resolves subpath exports at runtime
 const defaultConfig = require('@tamagui/config').config;
 
-const interFont = createInterFont()
+const interFont = createInterFont();
 
 const appTokens = createTokens({
   ...defaultConfig.tokens,
@@ -46,10 +46,10 @@ const appTokens = createTokens({
     4: 16,
     5: 20,
     // Standard border radius values for consistency
-    card: 12,      // Cards, modals, containers
-    button: 8,     // Buttons
-    tag: 999,      // Tags, chips, circular elements
-    small: 4,      // Small elements
+    card: 12, // Cards, modals, containers
+    button: 8, // Buttons
+    tag: 999, // Tags, chips, circular elements
+    small: 4, // Small elements
   },
   zIndex: {
     0: 0,
@@ -59,20 +59,19 @@ const appTokens = createTokens({
     4: 4,
     5: 5,
   },
-})
+});
 
 // Default themes with default primary color (#813ff3)
-import { generateTamaguiThemes } from '@/theme/tamaguiThemeGenerator'
+import {generateTamaguiThemes} from '@/shared/theme/generateThemes';
 
-const defaultPrimaryColor = '#813ff3'
-const defaultThemes = generateTamaguiThemes(defaultPrimaryColor)
+const defaultPrimaryColor = '#813ff3';
 
 // Base themes structure - will be merged with generated themes
 const baseLightTheme = {
   ...defaultConfig.themes.light,
   borderColor: '#e6e6ea',
   shadowColor: 'rgba(0,0,0,0.06)',
-}
+};
 
 const baseDarkTheme = {
   ...defaultConfig.themes.dark,
@@ -80,13 +79,13 @@ const baseDarkTheme = {
   color: '#e9e9ef',
   borderColor: '#2a2a34',
   shadowColor: 'rgba(0,0,0,0.35)',
-}
+};
 /**
  * Create a Tamagui config with custom primary color
  * @param primaryColor - Primary/accent color (hex string)
  */
 export function createTamaguiConfigWithColor(primaryColor: string = defaultPrimaryColor) {
-  const generatedThemes = generateTamaguiThemes(primaryColor)
+  const generatedThemes = generateTamaguiThemes(primaryColor);
 
   return createTamagui({
     // Use default animations from v4 config
@@ -110,16 +109,15 @@ export function createTamaguiConfigWithColor(primaryColor: string = defaultPrima
         ...generatedThemes.dark,
       },
     },
-  })
+  });
 }
 
-const config = createTamaguiConfigWithColor(defaultPrimaryColor)
+const config = createTamaguiConfigWithColor(defaultPrimaryColor);
 
-export type AppConfig = typeof config
+export type AppConfig = typeof config;
 
 declare module 'tamagui' {
-  interface TamaguiCustomConfig extends AppConfig { }
+  interface TamaguiCustomConfig extends AppConfig {}
 }
 
-export default config
-
+export default config;

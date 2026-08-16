@@ -62,6 +62,13 @@ yarn-error.log
 # Temporary files created by Metro to check the health of the file watcher
 .metro-health-check*
 
+# Build logs and generated native output
+*.log
+build.log
+ios/build/
+/output/
+_vendor/
+
 # testing
 /coverage
 
