@@ -11042,7 +11042,6 @@ __metadata:
     "@types/react": ^19
     "@typescript-eslint/parser": ^6.13.1
     babel-plugin-module-resolver: ^5.0.0
-    base64-js: ^1.5.1
     eslint: ^8.19.0
     i18next: 24.2.2
     libphonenumber-js: ^1.11.19

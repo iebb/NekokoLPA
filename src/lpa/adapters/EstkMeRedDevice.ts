@@ -7,8 +7,8 @@ import {
 } from '@/lpa/adapters/apdu';
 
 import {BleError, Characteristic, Device as BLEDevice} from 'react-native-ble-plx';
-import base64 from 'base64-js';
 import {Device} from '@/lpa/adapters/Adapter';
+import {base64ToBytes, bytesToBase64} from '@/shared/utils/base64';
 
 /** ESTKme-RED GATT service and characteristic UUIDs. */
 const SERVICE_UUID = '4553';
@@ -147,7 +147,7 @@ export class EstkMeRed implements Device {
             return;
           }
 
-          const value = base64.toByteArray(characteristic.value);
+          const value = base64ToBytes(characteristic.value);
           if (resultSize === -1) {
             resultSize = value[1] + value[2] * 256;
             resultArray = new Uint8Array(resultSize);
@@ -176,7 +176,7 @@ export class EstkMeRed implements Device {
             await this.device.writeCharacteristicWithoutResponseForService(
               SERVICE_UUID,
               WRITE_UUID,
-              base64.fromByteArray(arr.subarray(i, Math.min(i + mtu, arr.length))),
+              bytesToBase64(arr.subarray(i, Math.min(i + mtu, arr.length))),
             );
           }
         } catch (error) {
