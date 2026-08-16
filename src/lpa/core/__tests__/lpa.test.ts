@@ -425,6 +425,16 @@ describe('LpaDispatcher', () => {
           serverCertificate: Base64.fromHex(tlv('30', tlv('02', '01'))),
         });
       }
+      if (url.endsWith('es9plus/authenticateClient') && url.includes('lpa.ds.gsma.com')) {
+        // an SM-DS answers the same endpoint with event entries, not a profile
+        return JSON.stringify({
+          ...ok,
+          eventEntries: [
+            {eventId: 'evt-1', rspServerAddress: 'rsp.one.example'},
+            {eventId: 'evt-2', rspServerAddress: 'rsp.two.example'},
+          ],
+        });
+      }
       if (url.endsWith('es9plus/authenticateClient')) {
         return JSON.stringify({
           ...ok,
@@ -443,15 +453,6 @@ describe('LpaDispatcher', () => {
           boundProfilePackage: Base64.fromHex(
             tlv('BF36', tlv('BF23', tlv('80', '0102')) + tlv('A0', tlv('87', '0304'))),
           ),
-        });
-      }
-      if (url.endsWith('es11/authenticateClient')) {
-        return JSON.stringify({
-          ...ok,
-          eventEntries: [
-            { eventId: 'evt-1', rspServerAddress: 'rsp.one.example' },
-            { eventId: 'evt-2', rspServerAddress: 'rsp.two.example' },
-          ],
         });
       }
       return JSON.stringify(ok);
@@ -635,7 +636,8 @@ describe('LpaDispatcher', () => {
 
     const result = await bridge.execute('discover_profile', ['lpa.ds.gsma.com', '356303455555555']);
     expect(result).toEqual({ success: true, smdp_list: ['rsp.one.example', 'rsp.two.example'] });
-    expect(calls[1].url).toBe('https://lpa.ds.gsma.com/gsma/rsp2/es11/authenticateClient');
+    // ES11.AuthenticateClient lives on the ES9+ path; GSMA's root DS 404s on /es11/
+    expect(calls[1].url).toBe('https://lpa.ds.gsma.com/gsma/rsp2/es9plus/authenticateClient');
   });
 
   it('strips whitespace out of an SM-DP+ address', async () => {

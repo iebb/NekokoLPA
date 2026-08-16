@@ -22,11 +22,6 @@ export type LpaExecutor = (command: string, args: LpaArg[]) => Promise<any>;
  */
 const dispatchers: {[deviceId: string]: LpaDispatcher} = {};
 
-/** Forgets a device's LPA state, e.g. when it is unplugged. */
-export function resetDevice(deviceId: string): void {
-  delete dispatchers[deviceId];
-}
-
 /**
  * Builds (or reuses) the LPA for `adapter`'s device and installs the resulting
  * executor on the adapter.

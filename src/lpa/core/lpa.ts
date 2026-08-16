@@ -335,9 +335,13 @@ export class Lpa {
     try {
       parsed = JSON.parse(raw);
     } catch (e) {
+      // Include what actually came back: an HTML error page or a bare status
+      // string here means the endpoint is wrong or the server rejected us, and
+      // "malformed response" on its own sends you looking in the wrong place.
+      const snippet = raw.replace(/\s+/g, ' ').trim().slice(0, 120);
       throw new RemoteErrorException({
         status: 'Failed',
-        message: `Malformed response from ${path}`,
+        message: `Unexpected non-JSON response from ${path}: ${snippet}`,
         reasonCode: '',
         subjectCode: '',
       });
@@ -471,7 +475,11 @@ export class Lpa {
   async discover(smdsAddress: string, imei: string): Promise<string[]> {
     const { transactionId, authenticateServerResponse } = await this.beginAuthentication(smdsAddress, '', imei);
     this.progress('download.step4.es9p_authenticate_client');
-    const response = await this.rspCall(smdsAddress, 'es11/authenticateClient', {
+    // ES11.AuthenticateClient is served from the ES9+ path rather than an
+    // /es11/ one: the SM-DS reuses the same endpoint and only the response
+    // differs (eventEntries instead of profile metadata). GSMA's root DS
+    // answers 404 on /gsma/rsp2/es11/authenticateClient.
+    const response = await this.es9(smdsAddress, 'authenticateClient', {
       transactionId,
       authenticateServerResponse,
     });
