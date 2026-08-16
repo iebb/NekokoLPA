@@ -7,7 +7,7 @@ import {
   DarkTheme,
   Theme as NavTheme,
 } from '@react-navigation/native';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
+import SafeAreaCompatProvider from '@/app/providers/SafeAreaCompat';
 import type {RootStackParamList} from '@/app/navigation/types';
 import React from 'react';
 import EuiccInfo from '@/features/euicc/EuiccInfoScreen';
@@ -24,6 +24,14 @@ import BluetoothScan from '@/features/bluetooth/BluetoothScreen';
 import {LoadingProvider} from '@/app/providers/LoadingProvider';
 import Backup from '@/features/backup/BackupScreen';
 
+/**
+ * react-native-screens' native component views do not resolve on Mac
+ * Catalyst: RN falls back to a plain RCTView and then crashes applying
+ * RNSScreen props to it ("-[RCTView setSheetLargestUndimmedDetent:]:
+ * unrecognized selector"). The JS stack and drawer work without native
+ * screens — they just lose the native-screen optimisation — so turn them
+ * off there. iOS, Android and tvOS keep native screens.
+ */
 const Stack = createStackNavigator<RootStackParamList>();
 const Drawer = createDrawerNavigator();
 
@@ -100,7 +108,7 @@ function ApplicationNavigator() {
   };
 
   return (
-    <SafeAreaProvider style={{backgroundColor: tamaguiTheme.background?.val || '#000'}}>
+    <SafeAreaCompatProvider style={{backgroundColor: tamaguiTheme.background?.val || '#000'}}>
       <NavigationContainer theme={navTheme} ref={navigationRef}>
         <ToastProvider>
           <LoadingProvider>
@@ -121,7 +129,7 @@ function ApplicationNavigator() {
           </LoadingProvider>
         </ToastProvider>
       </NavigationContainer>
-    </SafeAreaProvider>
+    </SafeAreaCompatProvider>
   );
 }
 
