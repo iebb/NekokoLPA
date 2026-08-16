@@ -167,17 +167,17 @@ class NekokoLPA(reactContext: ReactApplicationContext) : NativeNekokoLPASpec(rea
         for (reader in seService.readers) {
             reader.closeSessions()
         }
-        Log.e(TAG, "Terminating all connections")
-        Log.e(TAG, "Host paused")
+        Log.d(TAG, "Terminating all connections")
+        Log.d(TAG, "Host paused")
     }
 
     override fun onHostResume() {
-        Log.e(TAG, "$channelMappings length: ${channelMappings.size}")
-        Log.e(TAG, "Host resumed")
+        Log.d(TAG, "$channelMappings length: ${channelMappings.size}")
+        Log.d(TAG, "Host resumed")
     }
 
     override fun onHostDestroy() {
-        Log.e(TAG, "Host destroyed")
+        Log.d(TAG, "Host destroyed")
     }
 
     // ==================== OMAPIBridge Methods ====================
@@ -212,73 +212,108 @@ class NekokoLPA(reactContext: ReactApplicationContext) : NativeNekokoLPASpec(rea
         return null
     }
 
+    /** Builds the JS-facing entry describing a slot we could not use. */
+    private fun unavailable(
+        readerName: String,
+        description: String,
+        slotAvailable: Boolean = false,
+        signatures: String? = null,
+        stack: String? = null
+    ): Map<String, String> = buildMap {
+        put("name", readerName)
+        put("available", "false")
+        put("description", description)
+        if (slotAvailable) put("slotAvailable", "true")
+        signatures?.let { put("signatures", it) }
+        stack?.let { put("stack", it) }
+    }
+
     private fun listOMAPIReaders(aidList: String): List<Map<String, String>> {
         aidListDefault = aidList
-        var aids = aidListDefault.split(",")
+        val aids = aidListDefault.split(",")
         val result = mutableListOf<Map<String, String>>()
         val signatureList = SystemInfo(reactApplicationContext as Context).signatureList().joinToString(",")
-        Log.e(TAG, "SE List Readers: $channelMappings length: ${channelMappings.size}")
-        if (seService.isConnected) {
-            Log.i(TAG, "SE List ${seService.readers.size} Readers:")
-            for (reader in seService.readers) {
-                Log.i(TAG, "SE Reader: " + reader.name)
-                if (!reader.name.startsWith("SIM")) continue
+        Log.d(TAG, "SE List Readers: $channelMappings length: ${channelMappings.size}")
+
+        if (!seService.isConnected) {
+            return listOf(unavailable("SIM", "OMAPI not supported"))
+        }
+
+        Log.i(TAG, "SE List ${seService.readers.size} Readers:")
+        for (reader in seService.readers) {
+            Log.i(TAG, "SE Reader: ${reader.name}")
+            if (!reader.name.startsWith("SIM")) continue
+            try {
+                var chan = channelMappings[reader.name] ?: openLogicalChannel(reader, aids)
+                if (chan == null) {
+                    result.add(unavailable(reader.name, "Open Channel Failed"))
+                    continue
+                }
+
+                val getEid = hexStringToByteArray(APDU_GET_EID)
+                var resp: ByteArray
                 try {
-                    var chan = channelMappings[reader.name] ?: openLogicalChannel(reader, aids)
+                    resp = chan.transmit(getEid)
+                } catch (e: IllegalStateException) {
+                    Log.w(TAG, "Channel is closed. Reopening it now.", e)
+                    chan = openLogicalChannel(reader, aids)
                     if (chan == null) {
-                        result.add(mapOf("name" to reader.name, "available" to "false", "description" to "Open Channel Failed"))
+                        result.add(unavailable(reader.name, "Open Channel Failed"))
                         continue
                     }
-
-                    var resp1: ByteArray
-                    try {
-                        resp1 = chan.transmit(hexStringToByteArray("81E2910006BF3E035C015A"))
-                    } catch (e: IllegalStateException) {
-                        Log.e(TAG, "Channel is closed. Reopen it now.", e)
-                        chan = openLogicalChannel(reader, aids)
-                        if (chan == null) {
-                            result.add(mapOf("name" to reader.name, "available" to "false", "description" to "Open Channel Failed"))
-                            continue
-                        }
-                        resp1 = chan.transmit(hexStringToByteArray("81E2910006BF3E035C015A"))
-                    }
-
-                    Log.i(TAG, "Transmit Response: ${resp1.toHex()}")
-                    if (resp1[0] == 0xbf.toByte()) {
-                        val eid = resp1.toHex().substring(10, 10 + 32)
-                        Log.i(TAG, "EID: ${eid}")
-                        result.add(hashMapOf("name" to reader.name, "eid" to eid, "slotAvailable" to "true", "available" to "true"))
-                    } else {
-                        result.add(hashMapOf("name" to reader.name, "available" to "false", "slotAvailable" to "true", "description" to "No EID Found", "signatures" to signatureList))
-                    }
-                } catch (e: SecurityException) {
-                    Log.e(TAG, "Opening eUICC connection ${reader.name} failed. [java.lang.SecurityException]", e)
-                    result.add(hashMapOf("name" to reader.name, "available" to "false", "slotAvailable" to "true", "description" to "ARA-M not supported", "signatures" to signatureList))
-                } catch (e: IOException) {
-                    Log.e(TAG, "Opening eUICC connection ${reader.name} failed. [IO]", e)
-                    result.add(hashMapOf("name" to reader.name, "available" to "false", "description" to "Card unavailable", "signatures" to signatureList))
-                } catch (e: NullPointerException) {
-                    Log.e(TAG, "Opening eUICC connection ${reader.name} failed. [NP] Message: ${e.message}", e)
-                    var sw = StringWriter()
-                    e.printStackTrace(PrintWriter(sw))
-                    result.add(hashMapOf("name" to reader.name, "available" to "false", "description" to "Unable to open a connection", "stack" to sw.toString(), "signatures" to signatureList))
-                } catch (e: NoSuchElementException) {
-                    Log.e(TAG, "Opening eUICC connection ${reader.name} failed: NoSuchElementException [EX]", e)
-                    result.add(hashMapOf("name" to reader.name, "available" to "false", "description" to "Secure Element not found", "signatures" to signatureList))
-                } catch (e: Exception) {
-                    Log.e(TAG, "Opening eUICC connection ${reader.name} failed. [EX]", e)
-                    result.add(hashMapOf("name" to reader.name, "available" to "false", "description" to e.message.toString(), "signatures" to signatureList))
+                    resp = chan.transmit(getEid)
                 }
-            }
-            if (seService.readers.filter { it.name.startsWith("SIM") }.isEmpty()) {
-                val subscriptionManager = SubscriptionManager.from(reactApplicationContext)
-                var simSlots = subscriptionManager.getActiveSubscriptionInfoCountMax()
-                for (i in 1..simSlots) {
-                    result.add(hashMapOf("name" to "SIM${i}", "available" to "false", "description" to "OMAPI not supported"))
+
+                Log.i(TAG, "Transmit Response: ${resp.toHex()}")
+                val hex = resp.toHex()
+                // Expect a BF3E TLV wrapping the 16-byte EID.
+                if (resp.isNotEmpty() && resp[0] == 0xbf.toByte() && hex.length >= EID_HEX_END) {
+                    val eid = hex.substring(EID_HEX_START, EID_HEX_END)
+                    Log.i(TAG, "EID: $eid")
+                    result.add(
+                        mapOf(
+                            "name" to reader.name,
+                            "eid" to eid,
+                            "slotAvailable" to "true",
+                            "available" to "true"
+                        )
+                    )
+                } else {
+                    result.add(unavailable(reader.name, "No EID Found", slotAvailable = true, signatures = signatureList))
                 }
+            } catch (e: SecurityException) {
+                Log.e(TAG, "Opening eUICC connection ${reader.name} failed. [SecurityException]", e)
+                result.add(unavailable(reader.name, "ARA-M not supported", slotAvailable = true, signatures = signatureList))
+            } catch (e: IOException) {
+                Log.e(TAG, "Opening eUICC connection ${reader.name} failed. [IO]", e)
+                result.add(unavailable(reader.name, "Card unavailable", signatures = signatureList))
+            } catch (e: NullPointerException) {
+                Log.e(TAG, "Opening eUICC connection ${reader.name} failed. [NP] Message: ${e.message}", e)
+                val sw = StringWriter()
+                e.printStackTrace(PrintWriter(sw))
+                result.add(
+                    unavailable(
+                        reader.name,
+                        "Unable to open a connection",
+                        signatures = signatureList,
+                        stack = sw.toString()
+                    )
+                )
+            } catch (e: NoSuchElementException) {
+                Log.e(TAG, "Opening eUICC connection ${reader.name} failed. [NoSuchElement]", e)
+                result.add(unavailable(reader.name, "Secure Element not found", signatures = signatureList))
+            } catch (e: Exception) {
+                Log.e(TAG, "Opening eUICC connection ${reader.name} failed. [EX]", e)
+                result.add(unavailable(reader.name, e.message.toString(), signatures = signatureList))
             }
-        } else {
-            result.add(hashMapOf("name" to "SIM", "available" to "false", "description" to "OMAPI not supported"))
+        }
+
+        if (seService.readers.none { it.name.startsWith("SIM") }) {
+            val simSlots = SubscriptionManager.from(reactApplicationContext)
+                .getActiveSubscriptionInfoCountMax()
+            for (i in 1..simSlots) {
+                result.add(unavailable("SIM$i", "OMAPI not supported"))
+            }
         }
         return result
     }
@@ -686,36 +721,19 @@ class NekokoLPA(reactContext: ReactApplicationContext) : NativeNekokoLPASpec(rea
 
     override fun sendHttpRequest(url: String, body: String, promise: Promise) {
         Log.d(TAG, "Use Custom HTTP: Server URL: $url")
-        val trustAllCertificates = arrayOf<TrustManager>(
-            object : X509TrustManager {
-                override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
-                override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
-                override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
-            }
-        )
-
-        val sslContext = SSLContext.getInstance("SSL")
-        sslContext.init(null, trustAllCertificates, SecureRandom())
-
-        val client = OkHttpClient.Builder()
-            .sslSocketFactory(sslContext.socketFactory, trustAllCertificates[0] as X509TrustManager)
-            .hostnameVerifier { _, _ -> true }
-            .build()
-
-        val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
 
         val request = Request.Builder()
             .url(url)
-            .post(body.toRequestBody(mediaType))
+            .post(body.toRequestBody(JSON_MEDIA_TYPE))
             .addHeader("Content-Type", "application/json")
             .addHeader("Accept", "application/json")
             .addHeader("User-Agent", "gsma-rsp-lpad")
             .addHeader("X-Admin-Protocol", "gsma/rsp/v2.2.0")
             .build()
 
-        client.newCall(request).enqueue(object : Callback {
+        httpClient.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                e.printStackTrace()
+                Log.e(TAG, "SM-DP+ request failed", e)
                 promise.reject("0", e.toString())
             }
 
@@ -733,6 +751,60 @@ class NekokoLPA(reactContext: ReactApplicationContext) : NativeNekokoLPASpec(rea
 
     companion object {
         private val TAG: String = NekokoLPA::class.java.name
+
+        private val JSON_MEDIA_TYPE = "application/json; charset=utf-8".toMediaTypeOrNull()
+
+        /** GET DATA for the EID (BF3E / 5C015A), per SGP.22. */
+        private const val APDU_GET_EID = "81E2910006BF3E035C015A"
+
+        /** Offsets of the 32 hex chars (16 bytes) of EID within the response. */
+        private const val EID_HEX_START = 10
+        private const val EID_HEX_END = EID_HEX_START + 32
+
+        /**
+         * Accepts every TLS certificate and any hostname. This is deliberate.
+         *
+         * SM-DP+ servers present certificates chained to GSMA CI roots, and some
+         * cards are provisioned against non-GSMA CIs. None of those roots are in
+         * the Android system trust store, so ordinary trust evaluation rejects
+         * every SM-DP+ host and no profile can be downloaded.
+         *
+         * This is not as exposed as it looks: SGP.22 mutual authentication runs
+         * underneath, so the Bound Profile Package is signed and encrypted end to
+         * end and cannot be forged or read by an intermediary. What TLS is left
+         * protecting here is the surrounding metadata — activation codes,
+         * matching IDs, confirmation codes, ICCIDs and EIDs — plus resistance to
+         * a peer redirecting or stalling the session.
+         *
+         * The correct fix is pinning rather than system trust: build the
+         * X509TrustManager from a KeyStore holding the CI roots we support, so an
+         * unknown CI still fails closed. Hostname verification may need to stay
+         * relaxed if SM-DP+ certificates lack matching SANs. Mirrors the same
+         * decision in ios/CustomHttp.swift.
+         */
+        private val trustAllCertificates = arrayOf<TrustManager>(
+            object : X509TrustManager {
+                override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
+                override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
+                override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
+            }
+        )
+
+        /**
+         * Shared client. Previously one was built per request, so every profile
+         * download allocated its own connection pool and dispatcher threads.
+         */
+        private val httpClient: OkHttpClient by lazy {
+            val sslContext = SSLContext.getInstance("TLS")
+            sslContext.init(null, trustAllCertificates, SecureRandom())
+            OkHttpClient.Builder()
+                .sslSocketFactory(
+                    sslContext.socketFactory,
+                    trustAllCertificates[0] as X509TrustManager
+                )
+                .hostnameVerifier { _, _ -> true }
+                .build()
+        }
     }
 
     private data class CCIDReader(

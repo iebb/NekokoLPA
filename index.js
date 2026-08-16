@@ -2,8 +2,7 @@
  * @format
  */
 
-import { AppRegistry } from "react-native";
-import App from "./src/App";
+import {AppRegistry} from 'react-native';
+import App from './src/app/App';
 
-
-AppRegistry.registerComponent("NekokoLPA", () => App);
+AppRegistry.registerComponent('NekokoLPA', () => App);
