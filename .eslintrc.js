@@ -47,8 +47,6 @@ module.exports = {
     'output/',
     'variants/',
     '_vendor/',
-    'src/native/jsnative/web.out.js', // generated emscripten bundle
-    'src/lpa/bridge/web.out.js',
   ],
   rules: {
     // Hooks correctness — these catch real bugs, so they are errors.

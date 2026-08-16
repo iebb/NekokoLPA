@@ -7,7 +7,7 @@ import type {DeviceState} from '@/store/slices';
 import type {EuiccInfoResult, Notification, ProgressUpdate} from '@/lpa/types/euicc';
 import type {ProfileMetadataMap} from '@/lpa/types/profile';
 
-/** Arguments accepted by the wasm LPA runtime. */
+/** Arguments accepted by an LPA command. */
 export type LpaArg = string | number;
 
 /**
@@ -147,7 +147,7 @@ export class Adapter {
    *
    * Only one command may be in flight at a time: the underlying APDU channel is
    * stateful, so interleaving two commands corrupts both. If the first attempt
-   * fails we re-initialise the wasm runtime once and retry, which recovers from
+   * fails we re-initialise the LPA once and retry, which recovers from
    * a dropped BLE/CCID link.
    */
   async execute(command: string, args: LpaArg[]): Promise<any> {

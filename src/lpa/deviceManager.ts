@@ -6,6 +6,7 @@ import {Adapters, ConnectedBluetoothDevices} from '@/lpa/adapters/registry';
 import {CcidDevice} from '@/lpa/adapters/CcidDevice';
 import {OmapiDevice} from '@/lpa/adapters/OmapiDevice';
 import {EstkMeRed} from '@/lpa/adapters/EstkMeRedDevice';
+import {BeeSimDevice} from '@/lpa/adapters/BeeSimDevice';
 import {SimLinkDevice} from '@/lpa/adapters/SimLinkDevice';
 import {CCIDPlugin, OMAPIBridge} from '@/lpa/bridge/nativeModules';
 import {setInternalDevices, setTargetDevice} from '@/store/slices';
@@ -24,6 +25,7 @@ interface OmapiSlot {
 const BLE_ADAPTERS: {prefix: string; create: (device: any) => Device}[] = [
   {prefix: 'ESTKme-RED', create: d => new EstkMeRed(d)},
   {prefix: 'eSIM_Writer', create: d => new SimLinkDevice(d)},
+  {prefix: 'BeeSIM', create: d => new BeeSimDevice(d)},
 ];
 
 async function discoverOmapiDevices(): Promise<Device[]> {

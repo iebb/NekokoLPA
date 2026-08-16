@@ -45,6 +45,12 @@ const appTokens = createTokens({
     3: 12,
     4: 16,
     5: 20,
+    // Every token category needs a `true` entry: it is what Tamagui resolves
+    // `$true` to, and components fall back to it whenever a radius prop is
+    // given without a step. Unlike size and space above, this category does
+    // not spread the defaults, so without this the app logs "missing token
+    // borderRadius in category radius - $true" on every launch.
+    true: 8,
     // Standard border radius values for consistency
     card: 12, // Cards, modals, containers
     button: 8, // Buttons
