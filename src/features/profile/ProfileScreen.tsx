@@ -469,16 +469,18 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
                               text: t('main:profile_delete_tag_ok'),
                               style: 'destructive',
                               onPress: () => {
-                                makeLoading(
-                                  () => {
-                                    setLoading(false);
-                                    navigation.goBack();
-                                  },
-                                  async () => {
-                                    await adapter.deleteProfileByIccId(iccid);
-                                    await adapter.processNotifications(iccid);
-                                  },
-                                );
+                                // makeLoading calls its first argument twice —
+                                // once with true up front, once with false when
+                                // the work resolves. Passing the navigation in
+                                // there popped the screen before the delete even
+                                // started, left no loader on screen during it,
+                                // and then fired a second GO_BACK with nothing
+                                // left to pop ("not handled by any navigator").
+                                makeLoading(setLoading, async () => {
+                                  await adapter.deleteProfileByIccId(iccid);
+                                  await adapter.processNotifications(iccid);
+                                  navigation.goBack();
+                                });
                               },
                             },
                             {

@@ -4,7 +4,20 @@ import NativeNekokoLPA from '@/lpa/bridge/specs/NativeNekokoLPA';
 const NekokoLPA = NativeNekokoLPA || NativeModules.NekokoLPA;
 
 if (!NekokoLPA) {
-  console.warn('NekokoLPA TurboModule not found, falling back to legacy modules');
+  // Mac Catalyst does not register the TurboModule, but the legacy bridge
+  // modules are present and work, so that is an expected fallback rather than
+  // a problem. Only the case where neither exists is worth warning about —
+  // otherwise every Catalyst launch raises a LogBox warning for a healthy app.
+  const hasLegacyModules = !!(
+    NativeModules.OMAPIBridge ||
+    NativeModules.CCIDPlugin ||
+    NativeModules.CustomHttp
+  );
+  if (hasLegacyModules) {
+    console.info('NekokoLPA TurboModule not registered; using the legacy bridge modules');
+  } else {
+    console.warn('No NekokoLPA native modules found: card access will not work');
+  }
 }
 
 export const OMAPIBridge = {
