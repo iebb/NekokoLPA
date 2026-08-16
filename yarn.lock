@@ -3257,25 +3257,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native-community/datetimepicker@npm:^8.4.4":
-  version: 8.5.0
-  resolution: "@react-native-community/datetimepicker@npm:8.5.0"
-  dependencies:
-    invariant: ^2.2.4
-  peerDependencies:
-    expo: ">=52.0.0"
-    react: "*"
-    react-native: "*"
-    react-native-windows: "*"
-  peerDependenciesMeta:
-    expo:
-      optional: true
-    react-native-windows:
-      optional: true
-  checksum: 0359355e241061611bce46e4a355f20b046826b97723f439f6bd120f564ae344d8a79d0b866bc56b2ff61e4e0a8efa7a2eee40d75a628fe8399cba7d0a4759b8
-  languageName: node
-  linkType: hard
-
 "@react-native-documents/picker@npm:^11.0.0":
   version: 11.0.0
   resolution: "@react-native-documents/picker@npm:11.0.0"
@@ -11041,7 +11022,6 @@ __metadata:
     "@react-native-community/cli": ^20.0.0
     "@react-native-community/cli-platform-android": ^20.0.0
     "@react-native-community/cli-platform-ios": ^20.0.0
-    "@react-native-community/datetimepicker": ^8.4.4
     "@react-native-documents/picker": ^11.0.0
     "@react-native-ml-kit/barcode-scanning": ^2.0.0
     "@react-native/babel-preset": ^0.83.0

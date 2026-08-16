@@ -39,8 +39,17 @@ export interface Tag {
   backgroundColor: string;
 }
 
+/**
+ * Formats a Date as YYYYMMDD using its **local** calendar fields.
+ *
+ * Must not go through toISOString(): that converts to UTC first, so a user east
+ * of UTC picking "16 Aug" during their morning would have stored 20260815.
+ */
 export function dateToDate8(d: Date): string {
-  return d.toISOString().split('T')[0].replace(/-/g, '');
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}${month}${day}`;
 }
 
 export function dateToDate6(d: Date): string {
@@ -68,13 +77,13 @@ export function parseMetadata(metadata: ProfileMetadataMap, t: TFunction, parseC
         const century = year - twoDigitYear;
         const inputYear = Number(eDate[2]);
         const resultYear = (eDate[1] ? Number(eDate[1]) * 100 : century) + inputYear;
-        const d = new Date(
-          +new Date(`${resultYear}-${eDate[3]}-${eDate[4]}`) -
-            new Date().getTimezoneOffset() * 1000 * 60,
-        );
+        // Build local midnight directly. Parsing "YYYY-MM-DD" yields UTC
+        // midnight and the previous offset correction had the wrong sign, so
+        // tags rendered a day early west of UTC and a day late east of it.
+        const d = new Date(resultYear, Number(eDate[3]) - 1, Number(eDate[4]));
 
         const days = Math.floor((+d - +new Date()) / 86400000);
-        const date8 = d.toISOString().split('T')[0].replace(/-/g, '');
+        const date8 = dateToDate8(d);
         const date6 = date8.substring(2);
         const colorSet =
           days < 0 ? TAG_COLORS.red : days < 7 ? TAG_COLORS.orange : TAG_COLORS.green;

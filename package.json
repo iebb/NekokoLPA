@@ -24,7 +24,6 @@
   },
   "dependencies": {
     "@react-native-clipboard/clipboard": "^1.16.0",
-    "@react-native-community/datetimepicker": "^8.4.4",
     "@react-native-documents/picker": "^11.0.0",
     "@react-native-ml-kit/barcode-scanning": "^2.0.0",
     "@react-navigation/drawer": "7.1.1",

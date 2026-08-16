@@ -1,15 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import {Alert, Image, Platform, ToastAndroid, TouchableOpacity} from 'react-native';
 import {useTranslation} from 'react-i18next';
+import i18n from 'i18next';
 import Screen from '@/shared/ui/Screen';
 import type {RootScreenProps} from '@/app/navigation/types';
 import {Button as TButton, Input, Text as TText, useTheme, XStack, YStack} from 'tamagui';
 import AppSheet from '@/shared/ui/AppSheet';
+import DatePicker from '@/shared/ui/DatePicker';
 import {useSelector} from 'react-redux';
 import {Copy, Pencil, X} from '@tamagui/lucide-icons';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {dateToDate6, parseMetadata, Tag} from '@/shared/utils/parser';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import {resolveMccMnc, T_PLMN} from '@/data/mccMncResolver';
 import {Flags} from '@/assets/flags';
 import {makeLoading} from '@/shared/utils/loading';
@@ -76,7 +77,6 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
   const [newTagType, setNewTagType] = useState('date');
   const [tagValue, setTagValue] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
 
   const DeviceState = useSelector(selectDeviceState(deviceId));
   const metadata = DeviceState?.profiles?.find(m => m.iccid === iccid);
@@ -126,7 +126,10 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
             </TText>
             <XStack gap={8}>
               <TButton
-                onPress={() => setNewTagType('date')}
+                onPress={() => {
+                  setNewTagType('date');
+                  setTagValue(`d:${dateToDate6(selectedDate)}`);
+                }}
                 backgroundColor={newTagType === 'date' ? theme.primaryColor?.val : 'transparent'}
                 borderWidth={1}
                 borderColor={
@@ -144,7 +147,10 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
                 </TText>
               </TButton>
               <TButton
-                onPress={() => setNewTagType('text')}
+                onPress={() => {
+                  setNewTagType('text');
+                  setTagValue('');
+                }}
                 backgroundColor={newTagType === 'text' ? theme.primaryColor?.val : 'transparent'}
                 borderWidth={1}
                 borderColor={
@@ -167,41 +173,14 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
           {/* Input area */}
           <YStack gap={12}>
             {newTagType === 'date' ? (
-              <>
-                <TouchableOpacity onPress={() => setShowDatePicker(true)} activeOpacity={0.7}>
-                  <Input
-                    value={new Date(
-                      selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000,
-                    )
-                      .toISOString()
-                      .slice(0, 10)}
-                    editable={false}
-                    borderWidth={0}
-                    borderBottomWidth={1}
-                    borderColor={theme.outlineNeutral?.val || theme.borderColor?.val || '#777'}
-                    backgroundColor="transparent"
-                    color={theme.textDefault?.val}
-                    fontSize={16}
-                    padding={0}
-                  />
-                </TouchableOpacity>
-                {showDatePicker && (
-                  <DateTimePicker
-                    value={selectedDate}
-                    mode="date"
-                    display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                    onChange={(_event: unknown, date?: Date) => {
-                      if (Platform.OS === 'android') {
-                        setShowDatePicker(false);
-                      }
-                      if (date) {
-                        setSelectedDate(date);
-                        setTagValue(`d:${dateToDate6(date)}`);
-                      }
-                    }}
-                  />
-                )}
-              </>
+              <DatePicker
+                value={selectedDate}
+                onChange={date => {
+                  setSelectedDate(date);
+                  setTagValue(`d:${dateToDate6(date)}`);
+                }}
+                locale={i18n.language}
+              />
             ) : newTagType === 'text' ? (
               <Input
                 placeholder={t('main:profile_tags_text_placeholder')}
