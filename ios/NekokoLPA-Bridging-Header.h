@@ -3,5 +3,4 @@
 //
 
 #import <React/RCTBridgeModule.h>
-#import "ASIHTTPRequest.h"
 

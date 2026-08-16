@@ -16,7 +16,7 @@ import {
   useCameraPermission,
   useCodeScanner,
 } from 'react-native-vision-camera';
-import BarcodeScanning from '@react-native-ml-kit/barcode-scanning';
+import {isImageScanningAvailable, scanBarcodeFromImage} from '@/shared/utils/barcodeScanner';
 import {
   Clipboard as ClipboardIcon,
   Download,
@@ -56,6 +56,8 @@ export function ScannerInitial({appLink, deviceId, finishAuthenticate}: any) {
   const {euiccAddress, euiccInfo2} = DeviceState;
   const adapter = Adapters[deviceId];
   const [smdp, setSmdp] = useState('');
+  // ML Kit is absent on Mac Catalyst builds; hide the gallery entry point there.
+  const imageScanningAvailable = isImageScanningAvailable();
 
   useEffect(() => {
     if (appLink) {
@@ -176,50 +178,45 @@ export function ScannerInitial({appLink, deviceId, finishAuthenticate}: any) {
                     Camera
                   </TText>
                 </YStack>
-                <YStack gap={6} alignItems="center" justifyContent="center">
-                  <TButton
-                    w={64}
-                    h={64}
-                    backgroundColor="$btnBackground"
-                    borderRadius={16}
-                    icon={<ImageIcon size={32} color="#ffffff" />}
-                    onPress={() => {
-                      launchImageLibrary(
-                        {
-                          mediaType: 'photo',
-                        },
-                        result => {
-                          if (result.assets) {
-                            for (const a of result.assets) {
-                              (async () => {
+                {imageScanningAvailable && (
+                  <YStack gap={6} alignItems="center" justifyContent="center">
+                    <TButton
+                      w={64}
+                      h={64}
+                      backgroundColor="$btnBackground"
+                      borderRadius={16}
+                      icon={<ImageIcon size={32} color="#ffffff" />}
+                      onPress={() => {
+                        launchImageLibrary(
+                          {
+                            mediaType: 'photo',
+                          },
+                          result => {
+                            const asset = result.assets?.[0];
+                            if (asset?.uri) {
+                              void (async () => {
                                 try {
-                                  if (a.uri) {
-                                    const results: any[] = await BarcodeScanning.scan(a.uri);
-                                    if (results && results.length > 0) {
-                                      const r: any = results[0];
-                                      const text =
-                                        r?.rawValue ?? r?.displayValue ?? r?.text ?? r?.value;
-                                      if (text) processLPACode(String(text));
-                                      else showToast('No QR code found in image.', 'error');
-                                    } else {
-                                      showToast('No QR code found in image.', 'error');
-                                    }
+                                  const text = await scanBarcodeFromImage(asset.uri!);
+                                  if (text) {
+                                    processLPACode(text);
+                                  } else {
+                                    showToast('No QR code found in image.', 'error');
                                   }
                                 } catch (e) {
-                                  console.error('Failed to decode image with ML Kit', e);
+                                  console.error('Failed to decode image', e);
+                                  showToast('Could not read that image.', 'error');
                                 }
                               })();
-                              break;
                             }
-                          }
-                        },
-                      );
-                    }}
-                  />
-                  <TText color="$color6" fontSize={12}>
-                    Gallery
-                  </TText>
-                </YStack>
+                          },
+                        );
+                      }}
+                    />
+                    <TText color="$color6" fontSize={12}>
+                      Gallery
+                    </TText>
+                  </YStack>
+                )}
                 <YStack gap={6} alignItems="center" justifyContent="center">
                   <TButton
                     w={64}

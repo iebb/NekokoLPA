@@ -19,7 +19,6 @@ end
 
 target 'NekokoLPA' do
   config = use_native_modules!
-  pod 'ASIHTTPRequest', '~> 1.8.0'
 
   use_react_native!(
     :path => config[:reactNativePath],
@@ -31,7 +30,7 @@ target 'NekokoLPA' do
     react_native_post_install(
       installer,
       config[:reactNativePath],
-      :mac_catalyst_enabled => false,
+      :mac_catalyst_enabled => true,
     )
     installer.pods_project.build_configurations.each do |config|
       config.build_settings['OTHER_CPLUSPLUSFLAGS'] ||= ['$(OTHER_CFLAGS)']
@@ -43,6 +42,23 @@ target 'NekokoLPA' do
       text = File.read(file)
       new_contents = text.gsub('#define FOLLY_HAS_COROUTINES 1', '#define FOLLY_HAS_COROUTINES 0')
       File.open(file, "w") { |file| file.puts new_contents }
+    end
+
+    # fmt 11.0.2 does not build under Apple clang 17+ (Xcode 26): its
+    # FMT_COMPILE_STRING consteval constructors are rejected as non-constant
+    # expressions. RCT-Folly pins fmt to exactly 11.0.2, so the version cannot
+    # be bumped; instead force the library onto its own pre-C++20 fallback,
+    # which makes FMT_CONSTEVAL expand to nothing. base.h defines
+    # FMT_USE_CONSTEVAL unconditionally, so a -D flag would just be overridden
+    # and the source has to be edited in place.
+    system("chmod -R u+w Pods/fmt")
+    Dir.glob("Pods/fmt/include/fmt/base.h").each do |file|
+      text = File.read(file)
+      patched = text.gsub("#  define FMT_USE_CONSTEVAL 1", "#  define FMT_USE_CONSTEVAL 0")
+      if text != patched
+        File.open(file, "w") { |f| f.write(patched) }
+        Pod::UI.puts "Patched fmt: forced FMT_USE_CONSTEVAL=0 for Apple clang compatibility".green
+      end
     end
   end
 end

@@ -44,6 +44,23 @@ yarn android       # or: yarn ios
 `src/assets/config.json` and `src/assets/images/logo.png` are generated per
 build flavour by `apply_variant.sh` and are intentionally not tracked in git.
 
+### macOS (Mac Catalyst)
+
+The iOS target also builds for Mac Catalyst. ML Kit ships iOS-only binary
+frameworks with no Catalyst slice, so it has to be excluded:
+
+```bash
+cd ios && RN_EXCLUDE_MLKIT=1 pod install
+```
+
+Then build for the "My Mac (Mac Catalyst)" destination. The only feature lost
+is decoding a QR code from a saved image; the button hides itself automatically.
+USB CCID readers work through CryptoTokenKit, which requires the
+`com.apple.security.smartcard` entitlement in `ios/NekokoLPA/NekokoLPA.entitlements` —
+Catalyst apps are always sandboxed, so every capability is declared there.
+
+Run `pod install` without the flag to restore ML Kit for iOS builds.
+
 ### Project structure
 
 ```

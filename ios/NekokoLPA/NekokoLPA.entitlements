@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!--
+	  Mac Catalyst apps are always sandboxed, so every capability the app needs
+	  has to be declared here. On iOS these keys are simply ignored.
+	-->
+	<key>com.apple.security.app-sandbox</key>
+	<true/>
+
+	<!-- CryptoTokenKit / TKSmartCard access for USB CCID readers. -->
+	<key>com.apple.security.smartcard</key>
+	<true/>
+
+	<!-- CoreBluetooth, for the ESTKme-RED and 9eSIM readers. -->
+	<key>com.apple.security.device.bluetooth</key>
+	<true/>
+
+	<!-- Camera, for QR code scanning. -->
+	<key>com.apple.security.device.camera</key>
+	<true/>
+
+	<!-- Outbound HTTPS to SM-DP+ servers and the GitHub release check. -->
+	<key>com.apple.security.network.client</key>
+	<true/>
+
+	<!-- Backup import/export via the document picker. -->
+	<key>com.apple.security.files.user-selected.read-write</key>
+	<true/>
+</dict>
+</plist>
