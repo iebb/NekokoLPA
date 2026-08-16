@@ -347,7 +347,6 @@ describe('ES10 command layer', () => {
 
   it('reports a bad status word', async () => {
     const card = new FakeCard(() => undefined);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (card as any).transmit = async () => '6a82';
     await expect(makeLpa(card).getEid()).rejects.toThrow(/File not found/);
   });

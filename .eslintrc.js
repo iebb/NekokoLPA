@@ -4,9 +4,13 @@
  * We deliberately do NOT `extends: '@react-native'`: that shared config pulls in
  * eslint-plugin-jest and @typescript-eslint/eslint-plugin, which only exist
  * nested under the shared config and are therefore unresolvable from here under
- * ESLint 8's eslintrc plugin resolution. Since this project has no test suite,
- * we compose the rules that actually matter from the plugins that are already
- * installed at the top level, keeping the dependency footprint small.
+ * ESLint 8's eslintrc plugin resolution. Instead we compose the rules that
+ * actually matter from the plugins already installed at the top level, keeping
+ * the dependency footprint small.
+ *
+ * Note that @typescript-eslint rules are therefore not available: an
+ * `eslint-disable` comment naming one is itself an error ("Definition for rule
+ * ... was not found").
  */
 module.exports = {
   root: true,
