@@ -272,7 +272,7 @@ export default function ProfileCardHeader({deviceId}: {deviceId: string}) {
                   borderRadius: 10,
                   elevation: 2,
                 }}>
-                <Plus size={18} color={theme.background?.val || '#fff'} />
+                <Plus size={18} color={theme.background?.val} />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => setEuiccMenu(true)}

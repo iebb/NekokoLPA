@@ -93,8 +93,8 @@ function ApplicationNavigator() {
     ...(tamaguiTheme.color?.val ? DarkTheme : DefaultTheme),
     colors: {
       ...(tamaguiTheme.color?.val ? DarkTheme : DefaultTheme).colors,
-      background: tamaguiTheme.background?.val || '#000',
-      card: tamaguiTheme.background?.val || '#000',
+      background: tamaguiTheme.background?.val,
+      card: tamaguiTheme.background?.val,
       border:
         tamaguiTheme.borderColor?.val ||
         (tamaguiTheme.color?.val ? DarkTheme : DefaultTheme).colors.border,
@@ -108,7 +108,7 @@ function ApplicationNavigator() {
   };
 
   return (
-    <SafeAreaProvider style={{backgroundColor: tamaguiTheme.background?.val || '#000'}}>
+    <SafeAreaProvider style={{backgroundColor: tamaguiTheme.background?.val}}>
       <NavigationContainer theme={navTheme} ref={navigationRef}>
         <ToastProvider>
           <LoadingProvider>
@@ -120,7 +120,7 @@ function ApplicationNavigator() {
                 drawerStyle: {
                   maxWidth: '67%',
                   width: 250,
-                  backgroundColor: tamaguiTheme.background?.val || '#fff',
+                  backgroundColor: tamaguiTheme.background?.val,
                   borderTopRightRadius: 0,
                 },
               }}>

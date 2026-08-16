@@ -34,7 +34,7 @@ function EuiccInfo({route}: RootScreenProps<'EuiccInfo'>) {
           style={{
             paddingVertical: 10,
             borderBottomWidth: 0.5,
-            borderBottomColor: theme.borderColor?.val || 'rgba(0,0,0,0.08)',
+            borderBottomColor: theme.borderColor?.val,
           }}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text color="$textDefault" numberOfLines={1} style={{flex: 1}}>

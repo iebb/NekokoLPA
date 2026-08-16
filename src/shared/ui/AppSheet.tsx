@@ -35,11 +35,11 @@ export default function AppSheet({
       snapPoints={snapPoints as any}>
       <Sheet.Overlay style={{opacity: 0.7}} />
       <Sheet.Frame
-        backgroundColor={theme.surfaceRow?.val || theme.background?.val || '#fff'}
+        backgroundColor={theme.surfaceRow?.val || theme.background?.val}
         padding={0}
         // top shadow
         style={{
-          shadowColor: theme.shadowColor?.val || 'rgba(0,0,0,0.15)',
+          shadowColor: theme.shadowColor?.val,
           shadowOpacity: 0.15,
           shadowRadius: 12,
           shadowOffset: {width: 0, height: -2},
@@ -50,14 +50,14 @@ export default function AppSheet({
             paddingHorizontal={20}
             paddingVertical={16}
             borderBottomWidth={0.5}
-            borderBottomColor={theme.outlineNeutral?.val || theme.borderColor?.val || '#777'}
+            borderBottomColor={theme.outlineNeutral?.val || theme.borderColor?.val}
             alignItems="center"
             justifyContent="space-between">
             <TText color="$textDefault" fontSize={18} fontWeight="700" {...titleProps}>
               {title}
             </TText>
             <TouchableOpacity onPress={() => onOpenChange(false)}>
-              <X size={18} color={theme.color6?.val || '#999'} />
+              <X size={18} color={theme.color6?.val} />
             </TouchableOpacity>
           </XStack>
           <View flex={1} paddingBottom={24} paddingTop={paddingTop ?? 12} paddingHorizontal={20}>

@@ -105,15 +105,15 @@ export default function LeftSidebarDrawer({navigation}: DrawerContentComponentPr
           return (
             <DrawerItem
               key={i}
-              inactiveTintColor={theme.color6?.val || theme.color?.val || '#888'}
-              activeTintColor={theme.primaryColor?.val || theme.color?.val || '#6c5ce7'}
+              inactiveTintColor={theme.color6?.val || theme.color?.val}
+              activeTintColor={theme.primaryColor?.val || theme.color?.val}
               icon={({size, color}) => {
                 const IconComponent = item.icon;
                 return <IconComponent size={size} color={color} />;
               }}
               label={t(item.label)}
               labelStyle={{
-                color: theme.textDefault?.val || theme.color?.val || '#000',
+                color: theme.textDefault?.val || theme.color?.val,
               }}
               onPress={() => item.onPress(navigation)}
             />

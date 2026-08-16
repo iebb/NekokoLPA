@@ -70,6 +70,10 @@ export function generateTamaguiTheme(
       backgroundDanger: '#ef4444',
       backgroundDangerLight: '#fca5a5',
       backgroundDangerHeavy: '#dc2626',
+      // Foreground for content sitting on a saturated fill (danger/success
+      // swipe actions, switch thumbs). White in both schemes, because the
+      // fills underneath are saturated in both.
+      onFilled: '#ffffff',
       // Neutral colors
       outlineNeutral: '#e6e6ea',
       outlineDisabledHeavy: '#d1d5db',
@@ -115,6 +119,10 @@ export function generateTamaguiTheme(
       backgroundDanger: '#ef4444',
       backgroundDangerLight: '#f87171',
       backgroundDangerHeavy: '#dc2626',
+      // Foreground for content sitting on a saturated fill (danger/success
+      // swipe actions, switch thumbs). White in both schemes, because the
+      // fills underneath are saturated in both.
+      onFilled: '#ffffff',
       // Neutral colors
       outlineNeutral: '#2a2a34',
       outlineDisabledHeavy: '#3a3a44',

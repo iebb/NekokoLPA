@@ -190,19 +190,14 @@ const ProfileRowComponent = ({profile, deviceId}: {profile: ProfileExt; deviceId
           width: 60,
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor: theme.backgroundDangerHeavy?.val || '#ff6b6b',
+          backgroundColor: theme.backgroundDangerHeavy?.val,
           borderTopRightRadius: 12,
           borderBottomRightRadius: 12,
         }}>
-        <Trash2 size={18} color={theme.backgroundDefault?.val || '#fff'} />
+        <Trash2 size={18} color={theme.onFilled?.val} />
       </TouchableOpacity>
     );
-  }, [
-    handleDeletePress,
-    profile.selected,
-    theme.backgroundDangerHeavy?.val,
-    theme.backgroundDefault?.val,
-  ]);
+  }, [handleDeletePress, profile.selected, theme.backgroundDangerHeavy?.val, theme.onFilled?.val]);
 
   const renderLeftActions = useCallback(
     () => (
@@ -213,14 +208,14 @@ const ProfileRowComponent = ({profile, deviceId}: {profile: ProfileExt; deviceId
           width: 60,
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor: theme.backgroundSuccessLight?.val || '#f3c969',
+          backgroundColor: theme.backgroundSuccessLight?.val,
           borderTopLeftRadius: 12,
           borderBottomLeftRadius: 12,
         }}>
-        <Pencil size={18} color={theme.backgroundDefault?.val || '#fff'} />
+        <Pencil size={18} color={theme.onFilled?.val} />
       </TouchableOpacity>
     ),
-    [handleProfilePress, theme.backgroundSuccessLight?.val, theme.backgroundDefault?.val],
+    [handleProfilePress, theme.backgroundSuccessLight?.val, theme.onFilled?.val],
   );
 
   return (
@@ -286,7 +281,7 @@ const ProfileRowComponent = ({profile, deviceId}: {profile: ProfileExt; deviceId
                 onCheckedChange={handleSwitchChange}
                 borderColor={profile.selected ? '$primaryColor' : '$color6'}
                 backgroundColor={profile.selected ? '$primaryColor' : '$color6'}>
-                <Switch.Thumb backgroundColor="$backgroundDefault" elevation={2} />
+                <Switch.Thumb backgroundColor="$onFilled" elevation={2} />
               </Switch>
             </XStack>
           </XStack>

@@ -51,7 +51,7 @@ function MetadataRow({
               {value || '[empty]'}
             </TText>
             {flag && <Image style={{width: 18, height: 18}} source={flag} />}
-            {value && <Copy size={12} color={theme.color6?.val || '#999'} />}
+            {value && <Copy size={12} color={theme.color6?.val} />}
           </XStack>
         </XStack>
       </YStack>
@@ -133,9 +133,7 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
                 backgroundColor={newTagType === 'date' ? theme.primaryColor?.val : 'transparent'}
                 borderWidth={1}
                 borderColor={
-                  newTagType === 'date'
-                    ? theme.primaryColor?.val
-                    : theme.outlineNeutral?.val || '#ccc'
+                  newTagType === 'date' ? theme.primaryColor?.val : theme.outlineNeutral?.val
                 }
                 paddingHorizontal={12}
                 paddingVertical={8}
@@ -154,9 +152,7 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
                 backgroundColor={newTagType === 'text' ? theme.primaryColor?.val : 'transparent'}
                 borderWidth={1}
                 borderColor={
-                  newTagType === 'text'
-                    ? theme.primaryColor?.val
-                    : theme.outlineNeutral?.val || '#ccc'
+                  newTagType === 'text' ? theme.primaryColor?.val : theme.outlineNeutral?.val
                 }
                 paddingHorizontal={12}
                 paddingVertical={8}
@@ -192,7 +188,7 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
                 paddingVertical={10}
                 borderRadius={8}
                 borderWidth={1}
-                borderColor={theme.outlineNeutral?.val || theme.borderColor?.val || '#777'}
+                borderColor={theme.outlineNeutral?.val || theme.borderColor?.val}
                 backgroundColor="transparent"
                 color={theme.textDefault?.val}
                 placeholderTextColor={theme.color6?.val}
@@ -210,7 +206,7 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
                 setTagModal(false);
               }}
               backgroundColor="$btnBackground">
-              <TText color={theme.background?.val || '#fff'} fontSize={16}>
+              <TText color={theme.background?.val} fontSize={16}>
                 Save
               </TText>
             </TButton>
@@ -229,7 +225,7 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
             onChangeText={c => setNickname(c)}
             borderWidth={1}
             borderRadius={8}
-            borderColor={theme.outlineNeutral?.val || theme.borderColor?.val || '#777'}
+            borderColor={theme.outlineNeutral?.val || theme.borderColor?.val}
             backgroundColor="transparent"
             color={theme.textDefault?.val}
             placeholderTextColor={theme.color6?.val}
@@ -248,7 +244,7 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
                 setRenameModal(false);
               }}
               backgroundColor="$btnBackground">
-              <TText color={theme.background?.val || '#fff'} fontSize={14}>
+              <TText color={theme.background?.val} fontSize={14}>
                 Save
               </TText>
             </TButton>
@@ -283,12 +279,12 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
               onPress={() => setRenameModal(true)}
               backgroundColor={theme.surfaceSpecial?.val}
               borderWidth={1}
-              borderColor={theme.outlineNeutral?.val || theme.borderColor?.val || '#777'}
+              borderColor={theme.outlineNeutral?.val || theme.borderColor?.val}
               height={36}
               minWidth={36}
               padding={0}
               borderRadius={8}>
-              <Pencil size={14} color={theme.color6?.val || '#777'} />
+              <Pencil size={14} color={theme.color6?.val} />
             </TButton>
           </XStack>
           {metadata?.serviceProviderName && (
@@ -341,7 +337,7 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
                     <XStack
                       alignItems="center"
                       borderWidth={1}
-                      borderColor={theme.outlineNeutral?.val || '#ddd'}
+                      borderColor={theme.outlineNeutral?.val}
                       backgroundColor={tag.backgroundColor}
                       paddingHorizontal={10}
                       paddingVertical={6}
@@ -363,7 +359,7 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
                 borderRadius={8}
                 height={32}
                 paddingHorizontal={10}>
-                <TText color={theme.background?.val || '#fff'} fontSize={14}>
+                <TText color={theme.background?.val} fontSize={14}>
                   Add tag
                 </TText>
               </TButton>
@@ -497,7 +493,7 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
                   ],
                 )
               }>
-              <TText color={theme.backgroundDangerHeavy?.val || '#dc2626'} fontSize={16}>
+              <TText color={theme.backgroundDangerHeavy?.val} fontSize={16}>
                 {t('main:profile_delete_profile')}
               </TText>
             </TButton>

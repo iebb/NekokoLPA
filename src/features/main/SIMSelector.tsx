@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Alert, Platform, ScrollView, ToastAndroid} from 'react-native';
 import {Adapters} from '@/lpa/adapters/registry';
@@ -15,7 +15,11 @@ import ProfileSelector from '@/features/main/ProfileSelector';
 import {OMAPIBridge} from '@/lpa/bridge/nativeModules';
 
 export default function SIMSelector() {
-  const {deviceList: allDevices, targetDevice} = useAppSelector(selectDeviceList);
+  const {
+    deviceList: allDevices,
+    targetDevice,
+    discoveryComplete,
+  } = useAppSelector(selectDeviceList);
   const dispatch = useAppDispatch();
   const {t} = useTranslation(['main']);
   const showSlots = preferences.getString('showSlots');
@@ -54,16 +58,27 @@ export default function SIMSelector() {
     }
   }, [targetDevice, deviceList, dispatch]);
 
-  // Show iOS notification when no compatible devices are found
+  // Tell Apple users a reader is required, but only once discovery has actually
+  // run and come back empty. Keying this on deviceList alone fired the alert on
+  // the initial render every launch, before discovery had a chance — so it
+  // appeared even with a reader attached and listed behind it.
+  const noDeviceAlertShown = useRef(false);
   useEffect(() => {
-    if (Platform.OS === 'ios' && deviceList.length === 0) {
-      Alert.alert(
-        'No Compatible Devices',
-        'A compatible external CCID reader is required for iOS.',
-        [{text: 'OK'}],
-      );
+    if (Platform.OS !== 'ios' || !discoveryComplete || allDevices.length > 0) {
+      return;
     }
-  }, [deviceList.length]);
+    if (noDeviceAlertShown.current) {
+      return;
+    }
+    noDeviceAlertShown.current = true;
+    Alert.alert(
+      'No Compatible Devices',
+      Platform.isMacCatalyst
+        ? 'A compatible external CCID reader is required.'
+        : 'A compatible external CCID reader is required for iOS.',
+      [{text: 'OK'}],
+    );
+  }, [discoveryComplete, allDevices.length]);
 
   if (deviceList.length === 0)
     return (

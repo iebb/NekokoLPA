@@ -31,11 +31,11 @@ export function ScannerResult({authenticateResult, downloadResult, deviceId, goB
                   width: 96,
                   height: 96,
                   borderRadius: 48,
-                  backgroundColor: theme.backgroundSuccess?.val || '#dcfce7',
+                  backgroundColor: theme.backgroundSuccess?.val,
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <CheckCircle size={56} color={theme.backgroundSuccessHeavy?.val || '#22c55e'} />
+                <CheckCircle size={56} color={theme.backgroundSuccessHeavy?.val} />
               </View>
               <YStack gap={8} alignItems="center">
                 <TText
@@ -84,7 +84,7 @@ export function ScannerResult({authenticateResult, downloadResult, deviceId, goB
                 flex={1}
                 height={52}
                 borderRadius={16}
-                backgroundColor={theme.backgroundSuccessHeavy?.val || '#22c55e'}
+                backgroundColor={theme.backgroundSuccessHeavy?.val}
                 onPress={() => {
                   makeLoading(setLoading, async () => {
                     await adapter.enableProfileByIccId(authenticateResult.profile.iccid);
@@ -111,11 +111,11 @@ export function ScannerResult({authenticateResult, downloadResult, deviceId, goB
                   width: 96,
                   height: 96,
                   borderRadius: 48,
-                  backgroundColor: theme.backgroundDangerLight?.val || '#fee2e2',
+                  backgroundColor: theme.backgroundDangerLight?.val,
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <AlertCircle size={56} color={theme.backgroundDangerHeavy?.val || '#dc2626'} />
+                <AlertCircle size={56} color={theme.backgroundDangerHeavy?.val} />
               </View>
               <YStack gap={8} alignItems="center">
                 <TText

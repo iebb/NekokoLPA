@@ -79,7 +79,7 @@ export function ScannerAuthentication({
                   value={confirmationCode}
                   onChangeText={c => setConfirmationCode(c)}
                   borderWidth={1}
-                  borderColor={theme.outlineNeutral?.val || theme.borderColor?.val || '#ddd'}
+                  borderColor={theme.outlineNeutral?.val || theme.borderColor?.val}
                   backgroundColor="$background"
                   color={theme.textDefault?.val}
                   placeholderTextColor={theme.color6?.val}
@@ -117,8 +117,7 @@ export function ScannerAuthentication({
                   <View
                     style={{
                       height: 1,
-                      backgroundColor:
-                        theme.outlineNeutral?.val || theme.borderColor?.val || '#ddd',
+                      backgroundColor: theme.outlineNeutral?.val || theme.borderColor?.val,
                       marginVertical: 4,
                     }}
                   />
@@ -128,15 +127,12 @@ export function ScannerAuthentication({
                     </TText>
                     <XStack gap={8} alignItems="center">
                       {freeSpace <= maxSizeData && (
-                        <AlertTriangle
-                          size={16}
-                          color={theme.backgroundDangerHeavy?.val || '#dc2626'}
-                        />
+                        <AlertTriangle size={16} color={theme.backgroundDangerHeavy?.val} />
                       )}
                       <TText
                         color={
                           freeSpace <= maxSizeData
-                            ? theme.backgroundDangerHeavy?.val || '#dc2626'
+                            ? theme.backgroundDangerHeavy?.val
                             : '$textDefault'
                         }
                         fontSize={14}

@@ -53,16 +53,16 @@ function Notifications({route}: RootScreenProps<'Notifications'>) {
 
     const type = OPERATION_LABELS[row.profileManagementOperation] ?? 'download';
 
-    const rowBg = theme.surfaceRow?.val || theme.background?.val || '#fff';
-    const borderCol = theme.borderColor?.val || 'rgba(0,0,0,0.06)';
+    const rowBg = theme.surfaceRow?.val || theme.background?.val;
+    const borderCol = theme.borderColor?.val;
     const badgeBg =
       type === 'delete'
-        ? theme.backgroundDangerHeavy?.val || '#dc2626'
+        ? theme.backgroundDangerHeavy?.val
         : type === 'disable'
-        ? theme.color6?.val || '#888'
+        ? theme.color6?.val
         : type === 'enable'
-        ? theme.primaryColor?.val || '#813ff3'
-        : theme.color?.val || '#555';
+        ? theme.primaryColor?.val
+        : theme.color?.val;
     const renderRight = () => (
       <TouchableOpacity
         onPress={async () => {
@@ -82,12 +82,11 @@ function Notifications({route}: RootScreenProps<'Notifications'>) {
           width: 60,
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor:
-            theme.backgroundSuccessHeavy?.val || theme.primaryColor?.val || '#22c55e',
+          backgroundColor: theme.backgroundSuccessHeavy?.val || theme.primaryColor?.val,
           borderTopRightRadius: 12,
           borderBottomRightRadius: 12,
         }}>
-        <Send size={18} color={theme.background?.val || '#fff'} />
+        <Send size={18} color={theme.background?.val} />
       </TouchableOpacity>
     );
 
@@ -118,11 +117,11 @@ function Notifications({route}: RootScreenProps<'Notifications'>) {
           width: 60,
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor: theme.backgroundDangerHeavy?.val || '#dc2626',
+          backgroundColor: theme.backgroundDangerHeavy?.val,
           borderTopLeftRadius: 12,
           borderBottomLeftRadius: 12,
         }}>
-        <Trash2 size={18} color={theme.background?.val || '#fff'} />
+        <Trash2 size={18} color={theme.background?.val} />
       </TouchableOpacity>
     );
 
@@ -209,7 +208,7 @@ function Notifications({route}: RootScreenProps<'Notifications'>) {
             borderRadius={8}
             paddingHorizontal={16}
             paddingVertical={10}>
-            <Text color={theme.background?.val || '#fff'} fontSize={14} fontWeight="600">
+            <Text color={theme.background?.val} fontSize={14} fontWeight="600">
               {t('main:notifications_handle_all')}
             </Text>
           </TButton>

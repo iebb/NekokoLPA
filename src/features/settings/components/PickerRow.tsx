@@ -133,7 +133,7 @@ const PickerRow = React.memo(function PickerRow({row}: {row: SettingRow}) {
                   borderRadius: 8,
                   backgroundColor: currentHex,
                   borderWidth: 1,
-                  borderColor: theme.outlineNeutral?.val || '#ddd',
+                  borderColor: theme.outlineNeutral?.val,
                 }}
               />
               <TText color="$textDefault" fontSize={14}>
@@ -142,7 +142,7 @@ const PickerRow = React.memo(function PickerRow({row}: {row: SettingRow}) {
             </XStack>
             {Platform.OS === 'android' && (
               <TButton backgroundColor={materialYouColor} onPress={() => commit(MATERIAL_YOU)}>
-                <TText color={theme.background?.val || '#fff'}>Material You</TText>
+                <TText color={theme.background?.val}>Material You</TText>
               </TButton>
             )}
           </XStack>
@@ -194,12 +194,12 @@ const PickerRow = React.memo(function PickerRow({row}: {row: SettingRow}) {
             <TButton
               backgroundColor="transparent"
               borderWidth={1}
-              borderColor={theme.outlineNeutral?.val || '#ddd'}
+              borderColor={theme.outlineNeutral?.val}
               onPress={() => setPickerOpen(false)}>
               <TText color="$textDefault">Cancel</TText>
             </TButton>
             <TButton backgroundColor={currentHex} onPress={() => commit(currentHex)}>
-              <TText color={theme.background?.val || '#fff'}>Apply</TText>
+              <TText color={theme.background?.val}>Apply</TText>
             </TButton>
           </XStack>
         </YStack>

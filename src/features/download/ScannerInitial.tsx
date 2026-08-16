@@ -296,7 +296,7 @@ export function ScannerInitial({appLink, deviceId, finishAuthenticate}: any) {
                 value={acToken}
                 onChangeText={c => (c.includes('$') ? processLPACode(c) : setAcToken(c))}
                 borderWidth={1}
-                borderColor={theme.outlineNeutral?.val || theme.borderColor?.val || '#ddd'}
+                borderColor={theme.outlineNeutral?.val || theme.borderColor?.val}
                 backgroundColor="$background"
                 color={theme.textDefault?.val}
                 placeholderTextColor={theme.color6?.val}
@@ -311,7 +311,7 @@ export function ScannerInitial({appLink, deviceId, finishAuthenticate}: any) {
                 value={imei}
                 onChangeText={c => setImei(c)}
                 borderWidth={1}
-                borderColor={theme.outlineNeutral?.val || theme.borderColor?.val || '#ddd'}
+                borderColor={theme.outlineNeutral?.val || theme.borderColor?.val}
                 backgroundColor="$background"
                 color={theme.textDefault?.val}
                 placeholderTextColor={theme.color6?.val}

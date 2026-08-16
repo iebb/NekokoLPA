@@ -68,15 +68,11 @@ export default function AppHeader({navigation}: {navigation: any}) {
         </TText>
         <TText
           fontSize={12 / PixelRatio.getFontScale()}
-          color={
-            isLatest ? theme.color6?.val || '#999' : theme.backgroundDangerHeavy?.val || '#d33'
-          }>
+          color={isLatest ? theme.color6?.val : theme.backgroundDangerHeavy?.val}>
           v{AppVersion} {!isLatest && '↑'}
         </TText>
         {!isLatest && (
-          <TText
-            fontSize={12 / PixelRatio.getFontScale()}
-            color={theme.backgroundDangerHeavy?.val || '#d33'}>
+          <TText fontSize={12 / PixelRatio.getFontScale()} color={theme.backgroundDangerHeavy?.val}>
             {release.tag_name} available
           </TText>
         )}

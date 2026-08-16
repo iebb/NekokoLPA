@@ -18,7 +18,7 @@ function SafeScreen({children}: PropsWithChildren) {
       flex={1}>
       <StatusBar
         barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'}
-        backgroundColor={theme.background?.val || '#fff'}
+        backgroundColor={theme.background?.val}
       />
       {children}
     </YStack>

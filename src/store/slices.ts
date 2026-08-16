@@ -23,10 +23,17 @@ interface DeviceListState {
   deviceList: string[];
   /** Device the UI should switch to once it appears in `deviceList`. */
   targetDevice?: string | null;
+  /**
+   * False until the first discovery pass finishes. An empty deviceList means
+   * "nothing found" only once this is true — before that it just means
+   * discovery has not run yet.
+   */
+  discoveryComplete: boolean;
 }
 
 const deviceListInitialState: DeviceListState = {
   deviceList: [],
+  discoveryComplete: false,
 };
 
 const deviceStateInitialState: DeviceStateMap = {};
@@ -37,6 +44,7 @@ export const deviceListSlice = createSlice({
   reducers: {
     setInternalDevices: (state, action: PayloadAction<string[]>) => {
       state.deviceList = action.payload;
+      state.discoveryComplete = true;
     },
     setTargetDevice: (state, action: PayloadAction<string | null>) => {
       state.targetDevice = action.payload;

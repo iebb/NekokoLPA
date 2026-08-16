@@ -113,10 +113,10 @@ const AIDRow = React.memo(function AIDRow({row}: {row: SettingRow}) {
                   value={input}
                   onChangeText={setInput}
                   autoCapitalize="characters"
-                  borderColor={theme.outlineNeutral?.val || theme.borderColor?.val || '#777'}
+                  borderColor={theme.outlineNeutral?.val || theme.borderColor?.val}
                   backgroundColor="transparent"
                   color={theme.textDefault?.val}
-                  placeholderTextColor={theme.color6?.val || '#999'}
+                  placeholderTextColor={theme.color6?.val}
                   height={44}
                   borderRadius={12}
                 />
@@ -177,7 +177,7 @@ const AIDRow = React.memo(function AIDRow({row}: {row: SettingRow}) {
                           backgroundColor="transparent"
                           padding={8}
                           circular>
-                          <Trash2 size={18} color={theme.colorError?.val || '#ff4d4d'} />
+                          <Trash2 size={18} color={theme.backgroundDangerHeavy?.val} />
                         </Button>
                       </XStack>
                     </TouchableOpacity>
