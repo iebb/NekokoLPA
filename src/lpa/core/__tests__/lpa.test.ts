@@ -101,7 +101,7 @@ describe('bytes', () => {
     }
     expect(Base64.fromHex('BF2000')).toBe('vyAA');
     expect(Base64.toHex('vyAA')).toBe('BF2000');
-    expect(Utf8.decode(Utf8.encode('BeeSIM 中文 🐝'))).toBe('BeeSIM 中文 🐝');
+    expect(Utf8.decode(Utf8.encode('Nekoko 中文 🐝'))).toBe('Nekoko 中文 🐝');
   });
 
   it('decodes BCD and version fields', () => {
@@ -169,7 +169,7 @@ describe('models', () => {
       tlv('4F', 'A0000005591010FFFFFFFF8900001000') +
       tlv('9F70', '01') +
       tlv('90', utf8('My SIM')) +
-      tlv('91', utf8('BeeSIM Mobile')) +
+      tlv('91', utf8('Nekoko Mobile')) +
       tlv('92', utf8('Data Plan')) +
       tlv('95', '02') +
       tlv('B7', tlv('80', '44F001'));
@@ -179,7 +179,7 @@ describe('models', () => {
       iccid: ICCID,
       profileState: 1,
       profileNickname: 'My SIM',
-      serviceProviderName: 'BeeSIM Mobile',
+      serviceProviderName: 'Nekoko Mobile',
       profileName: 'Data Plan',
       profileClass: 'operational',
       profileOwnerMccMnc: '44010',
@@ -239,14 +239,14 @@ describe('models', () => {
     const hex = tlv(
       'BF25',
       tlv('5A', ICCID_ENCODED) +
-        tlv('91', utf8('BeeSIM')) +
+        tlv('91', utf8('Nekoko')) +
         tlv('92', utf8('Data')) +
         tlv('95', '02') +
         tlv('B7', tlv('80', '130062')),
     );
     const metadata = parseStoreMetadata(Base64.fromHex(hex));
     expect(metadata.iccid).toBe(ICCID);
-    expect(metadata.serviceProviderName).toBe('BeeSIM');
+    expect(metadata.serviceProviderName).toBe('Nekoko');
     expect(metadata.profileOwnerMccMnc).toBe('310260');
   });
 
@@ -430,7 +430,7 @@ describe('LpaDispatcher', () => {
           ...ok,
           transactionId: 'AABBCCDD',
           profileMetadata: Base64.fromHex(
-            tlv('BF25', tlv('5A', ICCID_ENCODED) + tlv('91', utf8('BeeSIM')) + tlv('92', utf8('Data'))),
+            tlv('BF25', tlv('5A', ICCID_ENCODED) + tlv('91', utf8('Nekoko')) + tlv('92', utf8('Data'))),
           ),
           smdpSigned2,
           smdpSignature2: Base64.fromHex(tlv('5F37', '00')),
@@ -508,7 +508,7 @@ describe('LpaDispatcher', () => {
 
     expect(auth.success).toBe(true);
     expect(auth.isCcRequired).toBe(false);
-    expect(auth.profile).toMatchObject({ iccid: ICCID, serviceProviderName: 'BeeSIM' });
+    expect(auth.profile).toMatchObject({ iccid: ICCID, serviceProviderName: 'Nekoko' });
     expect(auth.profileMetadata).toBe(auth.profile);
     expect(auth._internal).toBeTruthy();
 
