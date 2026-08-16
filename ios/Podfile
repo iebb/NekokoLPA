@@ -30,7 +30,7 @@ target 'NekokoLPA' do
     react_native_post_install(
       installer,
       config[:reactNativePath],
-      :mac_catalyst_enabled => false,
+      :mac_catalyst_enabled => true,
     )
     installer.pods_project.build_configurations.each do |config|
       config.build_settings['OTHER_CPLUSPLUSFLAGS'] ||= ['$(OTHER_CFLAGS)']

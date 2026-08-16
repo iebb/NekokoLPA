@@ -6,6 +6,7 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "bash scripts/run-ios.sh",
+    "macos": "bash scripts/run-macos.sh",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx}\"",

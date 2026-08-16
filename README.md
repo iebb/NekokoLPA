@@ -46,20 +46,31 @@ build flavour by `apply_variant.sh` and are intentionally not tracked in git.
 
 ### macOS (Mac Catalyst)
 
-The iOS target also builds for Mac Catalyst. ML Kit ships iOS-only binary
-frameworks with no Catalyst slice, so it has to be excluded:
-
 ```bash
-cd ios && RN_EXCLUDE_MLKIT=1 pod install
+yarn macos
 ```
 
-Then build for the "My Mac (Mac Catalyst)" destination. The only feature lost
-is decoding a QR code from a saved image; the button hides itself automatically.
-USB CCID readers work through CryptoTokenKit, which requires the
-`com.apple.security.smartcard` entitlement in `ios/NekokoLPA/NekokoLPA.entitlements` —
-Catalyst apps are always sandboxed, so every capability is declared there.
+The iOS target also builds and runs as a Mac Catalyst app, including USB CCID
+readers via CryptoTokenKit. Catalyst apps are always sandboxed, so every
+capability is declared in `ios/NekokoLPA/NekokoLPA.entitlements` — notably
+`com.apple.security.smartcard`, without which no reader is ever found.
 
-Run `pod install` without the flag to restore ML Kit for iOS builds.
+The build is ad-hoc signed, so no developer certificate is needed.
+
+### ML Kit and iOS
+
+ML Kit ships fat frameworks whose arm64 slice is device-only, and no Catalyst
+slice at all. That makes the aggregate Pods target unbuildable for an arm64
+simulator (`ld: library 'Pods-NekokoLPA' not found`) and breaks Catalyst
+linking outright, so it is excluded from iOS builds by default. The only
+feature lost is decoding a QR code from a saved image — the button hides
+itself, and live camera scanning is unaffected. Android keeps it.
+
+To include it for an iOS device or release build:
+
+```bash
+cd ios && RN_WITH_MLKIT=1 pod install
+```
 
 ### Project structure
 
