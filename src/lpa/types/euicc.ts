@@ -1,5 +1,5 @@
 /**
- * Types describing the eUICC itself, as returned by the wasm LPA runtime.
+ * Types describing the eUICC itself, as returned by the LPA.
  * Profile-level types live in `./profile`.
  */
 
