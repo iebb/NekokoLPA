@@ -112,18 +112,24 @@ returning `eventEntries[].rspServerAddress`.
 
 ## Testing
 
-`npx jest src/lpa/core` — 36 tests covering SHA-256/base64 against known
+`yarn test` — 42 tests covering SHA-256/base64 against known
 vectors, TLV round trips (long-form lengths, multi-byte tags), every response
 parser, BPP segmentation, the STORE DATA/GET RESPONSE transport against a fake
 eUICC, and the full authenticate → download → notify flow against a scripted
 SM-DP+, asserting the exact command bytes.
 
-It was also run against a real eUICC: an eSTK.me RED over PC/SC, driving the
-compiled module through the same bring-up the CCID adapter performs. Read-only
-(`GetEID`, `GetEUICCInfo2`, `GetEuiccConfiguredAddresses`, `GetProfilesInfo`,
-`ListNotification`) — 24 profiles and the eUICC info decoded correctly,
-including a GetProfilesInfo response spanning several GET RESPONSE chunks.
-The download path has not been exercised against a live SM-DP+.
+It has also been run against real hardware: an eSTK.me RED (9ESIM V3.0), both
+through the app on Mac Catalyst and by driving the compiled module over PC/SC.
+
+A complete profile download against a live SM-DP+ (`smdp.io`) succeeded — the
+whole chain from `GetEUICCChallenge` through `initiateAuthentication`,
+`AuthenticateServer`, `authenticateClient`, `PrepareDownload`,
+`getBoundProfilePackage`, a 19 KB `LoadBoundProfilePackage` and finally
+`handleNotification` plus `RemoveNotificationFromList`, which left no install
+notification behind. Re-running the consumed activation code returned
+`3.8`/`8.2.6` from the server and surfaced as a `RemoteError`, so the failure
+path is covered too. `DeleteProfile` and its `0x10` notification have also been
+exercised on the same card.
 
 Note that `profileOwnerMccMnc` comes back empty from `GetProfilesInfo` on that
 card: the eUICC does not return tag `B7` for the default (no tag list) request.
