@@ -7,7 +7,7 @@ import {
   DarkTheme,
   Theme as NavTheme,
 } from '@react-navigation/native';
-import SafeAreaCompatProvider from '@/app/providers/SafeAreaCompat';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 import type {RootStackParamList} from '@/app/navigation/types';
 import React from 'react';
 import EuiccInfo from '@/features/euicc/EuiccInfoScreen';
@@ -108,7 +108,7 @@ function ApplicationNavigator() {
   };
 
   return (
-    <SafeAreaCompatProvider style={{backgroundColor: tamaguiTheme.background?.val || '#000'}}>
+    <SafeAreaProvider style={{backgroundColor: tamaguiTheme.background?.val || '#000'}}>
       <NavigationContainer theme={navTheme} ref={navigationRef}>
         <ToastProvider>
           <LoadingProvider>
@@ -129,7 +129,7 @@ function ApplicationNavigator() {
           </LoadingProvider>
         </ToastProvider>
       </NavigationContainer>
-    </SafeAreaCompatProvider>
+    </SafeAreaProvider>
   );
 }
 

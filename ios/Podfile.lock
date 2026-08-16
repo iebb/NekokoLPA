@@ -5,56 +5,11 @@ PODS:
   - FBLazyVector (0.83.0)
   - fmt (11.0.2)
   - glog (0.3.5)
-  - GoogleDataTransport (10.1.0):
-    - nanopb (~> 3.30910.0)
-    - PromisesObjC (~> 2.4)
-  - GoogleMLKit/BarcodeScanning (8.0.0):
-    - GoogleMLKit/MLKitCore
-    - MLKitBarcodeScanning (~> 7.0.0)
-  - GoogleMLKit/MLKitCore (8.0.0):
-    - MLKitCommon (~> 13.0.0)
-  - GoogleToolboxForMac/Defines (4.2.1)
-  - GoogleToolboxForMac/Logger (4.2.1):
-    - GoogleToolboxForMac/Defines (= 4.2.1)
-  - "GoogleToolboxForMac/NSData+zlib (4.2.1)":
-    - GoogleToolboxForMac/Defines (= 4.2.1)
-  - GoogleUtilities/Environment (8.1.2):
-    - GoogleUtilities/Privacy
-  - GoogleUtilities/Logger (8.1.2):
-    - GoogleUtilities/Environment
-    - GoogleUtilities/Privacy
-  - GoogleUtilities/Privacy (8.1.2)
-  - GoogleUtilities/UserDefaults (8.1.2):
-    - GoogleUtilities/Logger
-    - GoogleUtilities/Privacy
-  - GTMSessionFetcher/Core (3.5.0)
   - hermes-engine (0.14.0):
     - hermes-engine/Pre-built (= 0.14.0)
   - hermes-engine/Pre-built (0.14.0)
-  - MLImage (1.0.0-beta7)
-  - MLKitBarcodeScanning (7.0.0):
-    - MLKitCommon (~> 13.0)
-    - MLKitVision (~> 9.0)
-  - MLKitCommon (13.0.0):
-    - GoogleDataTransport (~> 10.0)
-    - GoogleToolboxForMac/Logger (< 5.0, >= 4.2.1)
-    - "GoogleToolboxForMac/NSData+zlib (< 5.0, >= 4.2.1)"
-    - GoogleUtilities/Logger (~> 8.0)
-    - GoogleUtilities/UserDefaults (~> 8.0)
-    - GTMSessionFetcher/Core (< 4.0, >= 3.3.2)
-  - MLKitVision (9.0.0):
-    - GoogleToolboxForMac/Logger (< 5.0, >= 4.2.1)
-    - "GoogleToolboxForMac/NSData+zlib (< 5.0, >= 4.2.1)"
-    - GTMSessionFetcher/Core (< 4.0, >= 3.3.2)
-    - MLImage (= 1.0.0-beta7)
-    - MLKitCommon (~> 13.0)
   - MMKVCore (2.2.4)
   - MultiplatformBleAdapter (0.2.0)
-  - nanopb (3.30910.0):
-    - nanopb/decode (= 3.30910.0)
-    - nanopb/encode (= 3.30910.0)
-  - nanopb/decode (3.30910.0)
-  - nanopb/encode (3.30910.0)
   - NitroMmkv (4.0.0):
     - boost
     - DoubleConversion
@@ -115,7 +70,6 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - PromisesObjC (2.4.1)
   - RCT-Folly (2024.11.18.00):
     - boost
     - DoubleConversion
@@ -2787,9 +2741,6 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - RNMLKitBarcodeScanning (2.0.0):
-    - GoogleMLKit/BarcodeScanning (= 8.0.0)
-    - React
   - RNReanimated (4.2.0):
     - boost
     - DoubleConversion
@@ -3183,7 +3134,6 @@ DEPENDENCIES:
   - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
   - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
-  - "RNMLKitBarcodeScanning (from `../node_modules/@react-native-ml-kit/barcode-scanning`)"
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
@@ -3194,19 +3144,8 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - GoogleDataTransport
-    - GoogleMLKit
-    - GoogleToolboxForMac
-    - GoogleUtilities
-    - GTMSessionFetcher
-    - MLImage
-    - MLKitBarcodeScanning
-    - MLKitCommon
-    - MLKitVision
     - MMKVCore
     - MultiplatformBleAdapter
-    - nanopb
-    - PromisesObjC
     - SocketRocket
 
 EXTERNAL SOURCES:
@@ -3381,8 +3320,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-fs"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
-  RNMLKitBarcodeScanning:
-    :path: "../node_modules/@react-native-ml-kit/barcode-scanning"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
@@ -3403,22 +3340,11 @@ SPEC CHECKSUMS:
   FBLazyVector: a293a88992c4c33f0aee184acab0b64a08ff9458
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
   glog: 5683914934d5b6e4240e497e0f4a3b42d1854183
-  GoogleDataTransport: aae35b7ea0c09004c3797d53c8c41f66f219d6a7
-  GoogleMLKit: ddd51d7dff36ff28defa69afedd9cdce684fd857
-  GoogleToolboxForMac: d1a2cbf009c453f4d6ded37c105e2f67a32206d8
-  GoogleUtilities: 766ace00c6b10d8148408f329d10c4f051931850
-  GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
   hermes-engine: c460da2fe2c215cc9475e1352f4a4b8b3271c60a
-  MLImage: 2ab9c968e75f57911c16f4c9d9e8a8e9604a86a1
-  MLKitBarcodeScanning: 72c6437f13a900833b400136be53a8a5d86f42fa
-  MLKitCommon: 26b779f072a182c1603d4c88a101c350cac837b1
-  MLKitVision: fa8dea9012ac59497c79ddbe9ebf32051047ac4c
   MMKVCore: f2dd4c9befea04277a55e84e7812f930537993df
   MultiplatformBleAdapter: b1fddd0d499b96b607e00f0faa8e60648343dc1d
-  nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
   NitroMmkv: 515799c03a56c23def39625baaee36bf1e65290e
   NitroModules: a08d4fbf973527df2d061c5f02cb192c2c261a09
-  PromisesObjC: 752c3227f599e3467650e47ea36f433eeb10c273
   RCT-Folly: 846fda9475e61ec7bcbf8a3fe81edfcaeb090669
   RCTDeprecation: 2b70c6e3abe00396cefd8913efbf6a2db01a2b36
   RCTRequired: f3540eee8094231581d40c5c6d41b0f170237a81
@@ -3495,7 +3421,6 @@ SPEC CHECKSUMS:
   RNCClipboard: 4b58c780f63676367640f23c8e114e9bd0cf86ac
   RNFS: 89de7d7f4c0f6bafa05343c578f61118c8282ed8
   RNGestureHandler: 73726300d4c5ca4d80378cae85f9dad8908b3289
-  RNMLKitBarcodeScanning: a1a23bcc83fea2a94e6b6ceeb3a0ff80d773392f
   RNReanimated: c86c4fdafbeb0ecff9ae8bbc65a16dd09c0e2fde
   RNScreens: d821082c6dd1cb397cc0c98b026eeafaa68be479
   RNSVG: ba3c3bc3cf413f32d1a7012274fe503c6fc1eadd
