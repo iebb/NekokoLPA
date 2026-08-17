@@ -1,16 +1,23 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {Image, Linking, PixelRatio, Platform, TouchableOpacity} from 'react-native';
-import {Text as TText, useTheme, XStack} from 'tamagui';
-import {AppCheckForUpdates, AppLogo, AppTitle, AppVersion} from '@/shared/config/app';
-import {fontSize} from '@/shared/theme/tokens';
+import {Linking, Platform, TouchableOpacity} from 'react-native';
+import {Text as TText, useTheme, XStack, YStack} from 'tamagui';
 
+import {AppCheckForUpdates, AppTitle, AppVersion} from '@/shared/config/app';
+import {fontFamily, fontSize, tracking} from '@/shared/theme/tokens';
+
+/**
+ * The app-name lockup in the home header.
+ *
+ * No logo mark: the design gives the header a single line of identity and
+ * spends the rest of the strip on controls, so a 42px icon next to a 17px
+ * title was the loudest thing on a screen that is meant to be about the card.
+ * The version sits under it in mono, tertiary — it is a diagnostic detail, and
+ * the only time it should draw the eye is when an update is available.
+ */
 export default function AppHeader({navigation}: {navigation: any}) {
   const theme = useTheme();
-  const [release, setRelease] = useState({
-    tag_name: `v${AppVersion}`,
-  });
+  const [release, setRelease] = useState({tag_name: `v${AppVersion}`});
 
-  // Memoize version comparison logic
   const isLatest = useMemo(() => {
     const getBuild = (versionStr: string) => {
       try {
@@ -23,8 +30,7 @@ export default function AppHeader({navigation}: {navigation: any}) {
     return getBuild(release.tag_name) <= getBuild(AppVersion);
   }, [release.tag_name]);
 
-  // Memoize update press handler
-  const handleUpdatePress = useCallback(() => {
+  const handlePress = useCallback(() => {
     if (Platform.OS === 'android' && !isLatest && (release as any).assets) {
       try {
         // @ts-ignore
@@ -32,10 +38,11 @@ export default function AppHeader({navigation}: {navigation: any}) {
       } catch (e) {
         // Handle error silently
       }
+    } else {
+      navigation.openDrawer?.();
     }
-  }, [isLatest, release]);
+  }, [isLatest, release, navigation]);
 
-  // Fetch latest release on mount
   useEffect(() => {
     if (AppCheckForUpdates && Platform.OS === 'android') {
       const fetchLatestRelease = async () => {
@@ -49,37 +56,35 @@ export default function AppHeader({navigation}: {navigation: any}) {
           // Handle error silently
         }
       };
-
       fetchLatestRelease();
     }
   }, []);
 
   return (
-    <XStack alignItems="center" gap={10} flex={1}>
-      <TouchableOpacity onPress={() => navigation.openDrawer()}>
-        <Image source={AppLogo} style={{width: 42, height: 42}} />
-      </TouchableOpacity>
-      <TouchableOpacity onPress={handleUpdatePress} style={{flexShrink: 1}}>
+    <TouchableOpacity onPress={handlePress} style={{flexShrink: 1}}>
+      <YStack gap={3}>
         <TText
-          fontSize={fontSize.lg / PixelRatio.getFontScale()}
-          fontWeight={'700' as any}
           color="$textDefault"
+          fontSize={fontSize.xxl}
+          fontWeight={'600' as any}
+          letterSpacing={tracking.title}
           numberOfLines={1}>
           {AppTitle}
         </TText>
-        <TText
-          fontSize={fontSize.sm / PixelRatio.getFontScale()}
-          color={isLatest ? theme.color6?.val : theme.backgroundDangerHeavy?.val}>
-          v{AppVersion} {!isLatest && '↑'}
-        </TText>
-        {!isLatest && (
+        <XStack alignItems="center" gap={6}>
           <TText
-            fontSize={fontSize.sm / PixelRatio.getFontScale()}
-            color={theme.backgroundDangerHeavy?.val}>
-            {release.tag_name} available
+            color={isLatest ? '$color9' : theme.backgroundDangerHeavy?.val}
+            fontFamily={fontFamily.mono as any}
+            fontSize={fontSize.xs}>
+            v{AppVersion}
           </TText>
-        )}
-      </TouchableOpacity>
-    </XStack>
+          {!isLatest && (
+            <TText color={theme.backgroundDangerHeavy?.val} fontSize={fontSize.xs}>
+              {release.tag_name} available
+            </TText>
+          )}
+        </XStack>
+      </YStack>
+    </TouchableOpacity>
   );
 }

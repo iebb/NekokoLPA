@@ -201,7 +201,7 @@ export default function ProfileCardHeader({deviceId}: {deviceId: string}) {
   const exactFreeBytes = DeviceState.bytesFree ?? 0;
 
   return (
-    <YStack marginVertical={8} gap={8}>
+    <YStack gap={8}>
       {DeviceState?.eid && euiccMenu && (
         <ActionSheetOptions
           deviceId={deviceId}

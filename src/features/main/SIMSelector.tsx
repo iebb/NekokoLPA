@@ -9,6 +9,8 @@ import {preferences} from '@/shared/storage';
 import PurchaseLinks from '@/shared/ui/PurchaseLinks';
 
 import {useNavigation} from '@react-navigation/native';
+import type {StackNavigationProp} from '@react-navigation/stack';
+import type {RootStackParamList} from '@/app/navigation/types';
 
 import {useAppDispatch, useAppSelector, selectDeviceList} from '@/store';
 import {setTargetDevice} from '@/store/slices';
@@ -18,7 +20,10 @@ import {OMAPIBridge} from '@/lpa/bridge/nativeModules';
 import {fontSize} from '@/shared/theme/tokens';
 
 export default function SIMSelector() {
-  const navigation = useNavigation<any>();
+  // Typed rather than `any`: an untyped navigator is how a wrong route name
+  // (`Bluetooth` for `BluetoothScan`) shipped as a button that silently did
+  // nothing.
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const {
     deviceList: allDevices,
     targetDevice,
@@ -107,14 +112,16 @@ export default function SIMSelector() {
         }))}
         selected={currentTab ?? ''}
         onSelect={setCurrentTab}
-        onBluetooth={() => navigation.navigate('Bluetooth')}
+        onBluetooth={() => navigation.navigate('BluetoothScan', {})}
         bluetoothActive={deviceList.some(name => Adapters[name].device.type === 'ble')}
         emptyLabel={t('main:no_chip_detected')}
       />
       {selected && adapter != null && (
         <YStack key={selected} flex={1} minHeight={0} opacity={1} x={0}>
           {adapter.device.available ? (
-            <YStack flex={1} minHeight={0} key={selected}>
+            // The gutters live here rather than in a PageContainer: the tab
+            // strip above must run edge to edge, so padding cannot wrap both.
+            <YStack flex={1} minHeight={0} key={selected} paddingHorizontal={16} paddingTop={14} gap={12}>
               <ProfileCardHeader deviceId={selected} />
               <ProfileSelector deviceId={selected} />
             </YStack>
