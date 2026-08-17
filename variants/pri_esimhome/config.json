@@ -1,0 +1,13 @@
+{
+    "appTitle": "ESim Home",
+    "iosDisplayName": "ESim Home",
+    "buyLink": "https://esim-home.com/tmobile-esim/",
+    "checkForUpdates": false,
+    "githubLink": "https://github.com/iebb/NekokoLPA/",
+    "displayGithubLink": false,
+    "appId": "com.tianlianke.esim-home",
+    "flavor": "pri_esimhome",
+    "iOSTeamId": "9733K94JUG",
+    "iOSAppId": "com.tianlianke.esim-home",
+    "versionSuffix": ""
+}
