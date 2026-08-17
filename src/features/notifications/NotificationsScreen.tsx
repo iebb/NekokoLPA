@@ -59,8 +59,6 @@ function Notifications({route}: RootScreenProps<'Notifications'>) {
 
     const type = OPERATION_LABELS[row.profileManagementOperation] ?? 'download';
 
-    const rowBg = theme.surfaceRow?.val || theme.background?.val;
-
     const renderLeft = () => (
       <TouchableOpacity
         onPress={() =>
@@ -127,38 +125,39 @@ function Notifications({route}: RootScreenProps<'Notifications'>) {
           overshootFriction={8}
           friction={2}>
           <TouchableOpacity>
-            <View
-              style={{
-                backgroundColor: rowBg,
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 11,
-                paddingHorizontal: 14,
-                paddingVertical: 11,
-              }}>
-              <Image
-                style={{width: 20, height: 14, borderRadius: 2}}
-                source={Flags[country] || Flags.UN}
-              />
-              <YStack flex={1} minWidth={0} gap={4}>
-                <XStack alignItems="center" gap={8}>
-                  <Pill tone={type.toLowerCase() === 'delete' ? 'danger' : 'neutral'}>{type}</Pill>
+            {/* No well: the operation and the profile it applies to are the
+                row's subject, so they lead. The sequence number is a
+                diagnostic and sits last, tertiary. */}
+            <View style={{paddingHorizontal: 4, paddingVertical: 14}}>
+              <XStack alignItems="center" gap={12}>
+                <Image
+                  style={{width: 26, height: 18, borderRadius: 3}}
+                  source={Flags[country] || Flags.UN}
+                />
+                <YStack flex={1} minWidth={0} gap={5}>
+                  <XStack alignItems="center" gap={8}>
+                    <Pill tone={type.toLowerCase() === 'delete' ? 'danger' : 'neutral'}>{type}</Pill>
+                    <Text
+                      color="$textDefault"
+                      numberOfLines={1}
+                      fontSize={fontSize.lg}
+                      fontWeight={'600' as any}
+                      flexShrink={1}>
+                      {metadata ? name : group(maskIccid(row.iccid, redactMode))}
+                    </Text>
+                  </XStack>
                   <Text
-                    color="$textDefault"
-                    numberOfLines={1}
-                    fontSize={fontSize.md}
-                    fontWeight={'600' as any}
-                    flexShrink={1}>
-                    {metadata ? name : group(maskIccid(row.iccid, redactMode))}
+                    color="$color9"
+                    fontFamily={fontFamily.mono as any}
+                    fontSize={fontSize.sm}
+                    numberOfLines={1}>
+                    {group(maskIccid(row.iccid, redactMode))}
                   </Text>
-                </XStack>
-                <Text color="$color9" fontFamily={fontFamily.mono as any} fontSize={fontSize.xs}>
-                  {group(maskIccid(row.iccid, redactMode))}
+                </YStack>
+                <Text color="$color9" fontFamily={fontFamily.mono as any} fontSize={fontSize.sm}>
+                  #{row.seqNumber}
                 </Text>
-              </YStack>
-              <Text color="$color9" fontFamily={fontFamily.mono as any} fontSize={fontSize.xs}>
-                #{row.seqNumber}
-              </Text>
+              </XStack>
             </View>
           </TouchableOpacity>
         </Swipeable>
@@ -215,14 +214,15 @@ function Notifications({route}: RootScreenProps<'Notifications'>) {
                 {t('main:notifications_pending', {count: group.items.length})}
               </Text>
             </XStack>
-            <YStack
-              backgroundColor="$borderColor"
-              borderWidth={1}
-              borderColor="$borderColor"
-              borderRadius={radius.lg}
-              overflow="hidden"
-              gap={1}>
-              {group.items.map(item => renderRow(item))}
+            <YStack>
+              {group.items.map((item, index) => (
+                <YStack
+                  key={item.seqNumber}
+                  borderBottomWidth={index === group.items.length - 1 ? 0 : 1}
+                  borderBottomColor="$borderColor">
+                  {renderRow(item)}
+                </YStack>
+              ))}
             </YStack>
           </YStack>
         ))}

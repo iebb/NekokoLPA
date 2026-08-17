@@ -1,5 +1,4 @@
 import {useTheme, View as TView} from 'tamagui';
-import {radius} from '@/shared/theme/tokens';
 import {useSelector} from 'react-redux';
 import {Profile} from '@/lpa/types/profile';
 import {RefreshControl} from 'react-native-gesture-handler';
@@ -62,28 +61,25 @@ export default function ProfileSelector({deviceId}: {deviceId: string}) {
     }
   }, [adapter]);
 
-  // Rows sit flush inside one hairline-separated group, so the separator is
-  // the 1px of container showing between them rather than a margin. The last
-  // row must not add one, or the group gains a stray rule above its bottom
-  // corner.
+  // No well around the list: profiles are the screen's subject, and boxing
+  // them made them read as one inset panel competing with the chip card above.
+  // Rows sit on the page with a hairline between them and nothing after the
+  // last one.
   const renderItem = useCallback(
     ({item, index}: {item: Profile & {selected: boolean}; index: number}) => (
-      <TView style={{marginBottom: index === profiles.length - 1 ? 0 : 1}}>
+      <TView
+        style={{
+          borderBottomWidth: index === profiles.length - 1 ? 0 : 1,
+          borderBottomColor: theme.borderColor?.val,
+        }}>
         <ProfileRow deviceId={deviceId} profile={item} />
       </TView>
     ),
-    [deviceId, profiles.length],
+    [deviceId, profiles.length, theme.borderColor?.val],
   );
 
   return (
     <FlatList
-      style={{
-        backgroundColor: theme.borderColor?.val,
-        borderWidth: 1,
-        borderColor: theme.borderColor?.val,
-        borderRadius: radius.lg,
-        overflow: 'hidden',
-      }}
       data={profiles}
       keyExtractor={item => item.iccid || String(item)}
       renderItem={renderItem}

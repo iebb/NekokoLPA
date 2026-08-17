@@ -29,24 +29,31 @@ export const fontFamily = {
   mono: Platform.select({ios: 'Menlo', android: 'monospace', default: 'monospace'}),
 } as const;
 
-/** Type scale. */
+/**
+ * Type scale.
+ *
+ * Sized for a phone held at arm's length, not for the prototype. The mock is
+ * drawn in a desktop browser where 13px body copy is comfortable; transcribing
+ * those numbers straight across produced a UI that reads small on device. Each
+ * step is roughly two points up from the mock's equivalent.
+ */
 export const fontSize = {
-  /** 11 — uppercase mono micro-labels ("EID", "APPEARANCE"), dense metadata. */
-  xs: 11,
-  /** 12 — captions, row values, tag chips. */
-  sm: 12,
-  /** 13 — secondary body: subtitles, helper text, section copy. */
-  md: 13,
-  /** 14 — row labels and buttons. The workhorse. */
-  lg: 14,
-  /** 15 — list-item titles, primary buttons. */
-  xl: 15,
-  /** 17 — sheet titles and the app name. */
-  xxl: 17,
-  /** 25 — screen titles. */
-  display: 25,
-  /** 42 — the download percentage, and nothing else. */
-  hero: 42,
+  /** 12 — uppercase mono micro-labels ("EID", "APPEARANCE"), dense metadata. */
+  xs: 12,
+  /** 14 — captions, row values, tag chips. */
+  sm: 14,
+  /** 15 — secondary body: subtitles, helper text, section copy. */
+  md: 15,
+  /** 17 — row labels and buttons. The workhorse. */
+  lg: 17,
+  /** 18 — list-item titles, primary buttons. */
+  xl: 18,
+  /** 21 — sheet titles and the app name. */
+  xxl: 21,
+  /** 30 — screen titles. */
+  display: 30,
+  /** 46 — the download percentage, and nothing else. */
+  hero: 46,
 } as const;
 
 /**
@@ -89,12 +96,12 @@ export const tracking = {
  * one of these.
  */
 export const iconSize = {
-  /** 20 — inline affordances: chevrons, header controls, tab glyphs. */
-  sm: 20,
-  /** 24 — row leading icons and sheet actions. */
-  md: 24,
-  /** 28 — list items that are the row's subject, e.g. a reader. */
-  lg: 28,
+  /** 22 — inline affordances: chevrons, header controls, tab glyphs. */
+  sm: 22,
+  /** 26 — row leading icons and sheet actions. */
+  md: 26,
+  /** 32 — list items that are the row's subject, e.g. a reader. */
+  lg: 32,
 } as const;
 
 export type FontSize = (typeof fontSize)[keyof typeof fontSize];

@@ -237,7 +237,7 @@ const ProfileRowComponent = ({profile, deviceId}: {profile: ProfileExt; deviceId
       {/* One row of the profile group. The rounded card, drop shadow and
           per-profile hue stripe are gone: rank now comes from the group's
           hairlines and from the accent, which marks the active profile only. */}
-      <YStack backgroundColor="$surfaceRow" paddingHorizontal={14} paddingVertical={12}>
+      <YStack paddingHorizontal={4} paddingVertical={14}>
         <XStack width="100%" alignItems="center" gap={11}>
           <YStack
             width={32}
