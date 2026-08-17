@@ -198,5 +198,8 @@
   "profile_state_disabled": "Disabled",
   "profile_ui_disable": "Disable",
   "profile_ui_rename": "Rename",
-  "euicc_available": "available"
+  "euicc_available": "available",
+  "profile_class": "Class",
+  "profile_state": "State",
+  "profile_chip": "Chip"
 }

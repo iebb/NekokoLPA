@@ -10,6 +10,18 @@ export interface ProfileMetadataMap {
   profileNickname?: string;
   serviceProviderName: string;
   profileOwnerMccMnc: string;
+  /**
+   * `operational` or `provisioning`, per SGP.22 tag 95.
+   *
+   * The LPA has always parsed these — see ProfileMetadata in lpa/core/models —
+   * but this type declared a narrower shape, so screens could not read fields
+   * the card had already reported.
+   */
+  profileClass?: string;
+  isdpAid?: string;
+  icon?: string;
+  iconType?: string;
+  profilePolicyRules?: string[];
 }
 
 /** Alias kept for readability at call sites that deal with a single profile. */

@@ -415,6 +415,34 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
                 )}
               </>
             )}
+
+            {/* The card's own view of the profile: who issued it, what kind it
+                is, and which chip it lives on. Absent before, which left the
+                screen describing the operator but not the profile. */}
+            {!!metadata.profileClass && (
+              <MetadataRow
+                label={t('main:profile_class')}
+                value={metadata.profileClass}
+                theme={theme}
+                onCopy={handleCopy}
+              />
+            )}
+            <MetadataRow
+              label={t('main:profile_state')}
+              value={
+                isEnabled
+                  ? t('main:profile_state_enabled')
+                  : t('main:profile_state_disabled')
+              }
+              theme={theme}
+              onCopy={handleCopy}
+            />
+            <MetadataRow
+              label={t('main:profile_chip')}
+              value={adapter?.device?.displayName ?? ''}
+              theme={theme}
+              onCopy={handleCopy}
+            />
           </YStack>
         </YStack>
 
