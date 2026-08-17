@@ -1,0 +1,57 @@
+{
+  "projectId": "bdd97bad-3479-4cff-a4d5-b18e26facff1",
+  "shape": "package",
+  "pkg": "nekokolpa",
+  "globalName": "NekokoLPA",
+  "srcDir": "src",
+  "tsconfig": ".design-sync/tsconfig.sync.json",
+  "extraEntries": [
+    "./.design-sync/stubs/env-shim.ts",
+    "./.design-sync/preview-provider.tsx"
+  ],
+  "provider": {
+    "component": "DSProvider"
+  },
+  "overrides": {
+    "BlockingLoader": {
+      "cardMode": "column",
+      "viewport": "560x280"
+    },
+    "DatePicker": {
+      "cardMode": "column"
+    },
+    "Screen": {
+      "cardMode": "column"
+    },
+    "PageContainer": {
+      "cardMode": "column"
+    },
+    "MetadataView": {
+      "cardMode": "column"
+    }
+  },
+  "dtsPropsFor": {
+    "AppSheet": "open: boolean; onOpenChange: (open: boolean) => void; title?: string; children: React.ReactNode; snapPointsMode?: 'fit' | 'percent' | 'mixed'; snapPoints?: number[]; paddingTop?: number; titleProps?: Record<string, unknown>;",
+    "BlockingLoader": "visible?: boolean; title?: string; subtitle?: string; /** Backwards-compatible alias for `subtitle`. */ message?: string; state?: 'loading' | 'success' | 'error' | 'info' | 'warning'; /** Accepts either a 0-1 fraction or a 0-100 percentage. */ progress?: number;",
+    "DatePicker": "value: Date; onChange: (date: Date) => void; /** BCP-47 tag; defaults to the device locale. */ locale?: string;",
+    "Loader": "/** Optional caption rendered under the spinner. */ text?: string; /** Renders at a smaller size, for use inline within a list or card. */ compact?: boolean;",
+    "MetadataView": "metadata?: { iccid: string; profileState: number; profileName: string; profileNickname?: string; serviceProviderName: string; profileOwnerMccMnc: string };",
+    "PageContainer": "children?: React.ReactNode; /** Additional props for the ScrollView. */ scrollViewProps?: Record<string, unknown>; /** Whether to enable keyboard avoiding (default: true). */ keyboardAvoiding?: boolean; /** Extra padding at bottom for content (default: 40). */ bottomPadding?: number; /** Horizontal padding (default: 10). */ horizontalPadding?: number; /** Top padding (default: 0). */ topPadding?: number;",
+    "PurchaseLinks": "topMargin?: number;",
+    "SafeScreen": "children?: React.ReactNode;",
+    "Screen": "children?: React.ReactNode; title?: string; subtitle?: string; horizontalPadding?: number; keyboardAvoiding?: boolean; scrollViewProps?: Record<string, unknown>; fixedHeader?: React.ReactNode;",
+    "Title": "children: string; subtitle?: string;"
+  },
+  "componentSrcMap": {
+    "AppSheet": "src/shared/ui/AppSheet.tsx",
+    "BlockingLoader": "src/shared/ui/BlockingLoader.tsx",
+    "DatePicker": "src/shared/ui/DatePicker.tsx",
+    "Loader": "src/shared/ui/Loader.tsx",
+    "MetadataView": "src/shared/ui/MetadataView.tsx",
+    "PageContainer": "src/shared/ui/PageContainer.tsx",
+    "PurchaseLinks": "src/shared/ui/PurchaseLinks.tsx",
+    "SafeScreen": "src/shared/ui/SafeScreen.tsx",
+    "Screen": "src/shared/ui/Screen.tsx",
+    "Title": "src/shared/ui/Title.tsx"
+  }
+}

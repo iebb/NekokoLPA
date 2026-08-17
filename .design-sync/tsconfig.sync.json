@@ -1,0 +1,46 @@
+{
+  "compilerOptions": {
+    "baseUrl": "..",
+    "paths": {
+      "@/assets/flags": [
+        "src/assets/flags.ts"
+      ],
+      "@/store": [
+        "src/store/index.ts"
+      ],
+      "@/lpa/core": [
+        "src/lpa/core/index.ts"
+      ],
+      "@/*": [
+        "src/*"
+      ],
+      "react-native": [
+        ".design-sync/stubs/react-native.ts"
+      ],
+      "react-native-safe-area-context": [
+        ".design-sync/stubs/safe-area-context.tsx"
+      ],
+      "@react-native-clipboard/clipboard": [
+        ".design-sync/stubs/clipboard.ts"
+      ],
+      "react-native-material-you-colors": [
+        ".design-sync/stubs/material-you.ts"
+      ],
+      "react-native-nitro-modules": [
+        ".design-sync/stubs/nitro.ts"
+      ],
+      "react-native-mmkv": [
+        ".design-sync/stubs/mmkv.ts"
+      ],
+      "react-native-svg": [
+        ".design-sync/stubs/svg.ts"
+      ],
+      "react-native-gesture-handler": [
+        ".design-sync/stubs/gesture-handler.tsx"
+      ],
+      "react-native-reanimated": [
+        ".design-sync/stubs/reanimated.tsx"
+      ]
+    }
+  }
+}
