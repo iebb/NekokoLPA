@@ -7,7 +7,7 @@ import MaterialYou from 'react-native-material-you-colors';
 
 import {preferences} from '@/shared/storage';
 import AppSheet from '@/shared/ui/AppSheet';
-import {fontSize, radius} from '@/shared/theme/tokens';
+import {fontSize, iconSize, radius} from '@/shared/theme/tokens';
 import {
   DEFAULT_THEME_COLOR,
   isPresetColor,
@@ -70,7 +70,7 @@ function Swatch({
           justifyContent="center"
           borderWidth={selected ? 3 : 1}
           borderColor={selected ? theme.textDefault?.val : theme.outlineNeutral?.val}>
-          {selected ? <Check size={20} color="#ffffff" /> : null}
+          {selected ? <Check size={iconSize.md} color="#ffffff" /> : null}
         </YStack>
       </TouchableOpacity>
       <TText color="$color6" fontSize={fontSize.xs} numberOfLines={1}>

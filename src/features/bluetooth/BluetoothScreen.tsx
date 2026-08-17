@@ -13,7 +13,7 @@ import {isSupportedBleName, setupDevices} from '@/lpa/deviceManager';
 import {useDispatch} from 'react-redux';
 import {makeLoading} from '@/shared/utils/loading';
 import {useLoading} from '@/app/providers/LoadingProvider';
-import {fontFamily, fontSize, radius} from '@/shared/theme/tokens';
+import {fontFamily, fontSize, iconSize, radius} from '@/shared/theme/tokens';
 import SectionLabel from '@/shared/ui/SectionLabel';
 import RowGroup, {Row} from '@/shared/ui/RowGroup';
 
@@ -81,7 +81,7 @@ function BluetoothScan({navigation}: RootScreenProps<'BluetoothScan'>) {
                   return (
                     <Row key={device.id}>
                       <XStack gap={12} alignItems="center">
-                        <IconComponent size={22} color={theme.color6?.val as string} />
+                        <IconComponent size={iconSize.lg} color={theme.color6?.val as string} />
                         <YStack flex={1} minWidth={0} gap={3}>
                           <TText
                             color="$textDefault"

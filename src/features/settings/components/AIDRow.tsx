@@ -18,7 +18,7 @@ import {
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import {Trash2, ChevronRight} from '@tamagui/lucide-icons';
 import type {SettingRow} from '@/features/settings/types';
-import {fontSize, radius} from '@/shared/theme/tokens';
+import {fontSize, iconSize, radius} from '@/shared/theme/tokens';
 
 const AIDRow = React.memo(function AIDRow({row}: {row: SettingRow}) {
   const {t} = useTranslation(['main']);
@@ -73,7 +73,7 @@ const AIDRow = React.memo(function AIDRow({row}: {row: SettingRow}) {
         <TText color="$color6" fontSize={fontSize.md}>
           {t('main:settings_aid_count', {count: aidCount})}
         </TText>
-        <ChevronRight size={16} color={theme.color9?.val} />
+        <ChevronRight size={iconSize.sm} color={theme.color9?.val} />
       </XStack>
 
       {open && (
@@ -155,7 +155,7 @@ const AIDRow = React.memo(function AIDRow({row}: {row: SettingRow}) {
                           backgroundColor="transparent"
                           padding={8}
                           circular>
-                          <Trash2 size={18} color={theme.backgroundDangerHeavy?.val} />
+                          <Trash2 size={iconSize.md} color={theme.backgroundDangerHeavy?.val} />
                         </Button>
                       </XStack>
                     </TouchableOpacity>

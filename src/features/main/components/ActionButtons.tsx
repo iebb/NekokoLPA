@@ -1,3 +1,4 @@
+import {iconSize} from '@/shared/theme/tokens';
 import React, {useCallback, useState} from 'react';
 import {TouchableOpacity} from 'react-native';
 import {Eye, EyeOff, RefreshCcw, Settings} from '@tamagui/lucide-icons';
@@ -53,7 +54,10 @@ export default function ActionButtons({
       accessibilityLabel={label}
       onPress={onPress}
       style={{paddingHorizontal: 8, paddingVertical: 10}}>
-      <Icon size={16} color={(active ? theme.primaryColor?.val : theme.color9?.val) as string} />
+      <Icon
+        size={iconSize.md}
+        color={(active ? theme.primaryColor?.val : theme.color9?.val) as string}
+      />
     </TouchableOpacity>
   );
 

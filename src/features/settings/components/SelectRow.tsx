@@ -6,7 +6,7 @@ import AppSheet from '@/shared/ui/AppSheet';
 import {preferences} from '@/shared/storage';
 import {ChevronRight} from '@tamagui/lucide-icons';
 import type {SettingRow} from '@/features/settings/types';
-import {fontSize, radius} from '@/shared/theme/tokens';
+import {fontSize, iconSize, radius} from '@/shared/theme/tokens';
 
 const SelectRow = React.memo(function SelectRow({row}: {row: SettingRow}) {
   const {t} = useTranslation(['main']);
@@ -38,7 +38,7 @@ const SelectRow = React.memo(function SelectRow({row}: {row: SettingRow}) {
         <TText color="$color6" fontSize={fontSize.md} numberOfLines={1} flexShrink={1}>
           {currentLabel}
         </TText>
-        <ChevronRight size={16} color={theme.color9?.val} />
+        <ChevronRight size={iconSize.sm} color={theme.color9?.val} />
       </XStack>
 
       {open && (

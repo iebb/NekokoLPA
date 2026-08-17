@@ -16,7 +16,7 @@ import {useToast} from '@/app/providers/ToastProvider';
 import {useLoading} from '@/app/providers/LoadingProvider';
 import {selectDeviceState} from '@/store';
 import {OMAPIBridge} from '@/lpa/bridge/nativeModules';
-import {fontFamily, fontSize, radius} from '@/shared/theme/tokens';
+import {fontFamily, fontSize, iconSize, radius} from '@/shared/theme/tokens';
 import SectionLabel from '@/shared/ui/SectionLabel';
 import {preferences} from '@/shared/storage';
 import {group, isRedactMode, maskEid} from '@/shared/utils/redact';
@@ -144,12 +144,12 @@ const ActionSheetOptions = React.memo(
                     borderRadius={radius.sm}
                     opacity={0.1}
                   />
-                  <opt.icon size={18} color={theme.primaryColor?.val} />
+                  <opt.icon size={iconSize.md} color={theme.primaryColor?.val} />
                 </YStack>
                 <TText color="$textDefault" fontSize={fontSize.md} flex={1}>
                   {opt.label}
                 </TText>
-                <ChevronRight size={18} color="$color6" />
+                <ChevronRight size={iconSize.sm} color="$color6" />
               </XStack>
             </TouchableOpacity>
           ))}

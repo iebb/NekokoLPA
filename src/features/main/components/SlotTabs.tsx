@@ -3,7 +3,7 @@ import {ScrollView, TouchableOpacity} from 'react-native';
 import {Text as TText, useTheme, XStack, YStack} from 'tamagui';
 import {Bluetooth} from '@tamagui/lucide-icons';
 
-import {fontSize} from '@/shared/theme/tokens';
+import {fontSize, iconSize} from '@/shared/theme/tokens';
 
 export interface SlotTab {
   key: string;
@@ -99,7 +99,7 @@ export default function SlotTabs({
             borderLeftColor: theme.borderColor?.val,
           }}>
           <Bluetooth
-            size={16}
+            size={iconSize.sm}
             color={(bluetoothActive ? theme.primaryColor?.val : theme.color9?.val) as string}
           />
         </TouchableOpacity>

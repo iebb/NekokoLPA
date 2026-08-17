@@ -15,7 +15,7 @@ import {connectDevice} from '@/features/bluetooth/connection';
 import {isSupportedBleName, setupDevices} from '@/lpa/deviceManager';
 import {makeLoading} from '@/shared/utils/loading';
 import {useLoading} from '@/app/providers/LoadingProvider';
-import {fontFamily, fontSize, radius} from '@/shared/theme/tokens';
+import {fontFamily, fontSize, iconSize, radius} from '@/shared/theme/tokens';
 
 function iconFor(name: string) {
   return name.startsWith('ESTKme')
@@ -114,7 +114,7 @@ export default function BluetoothSheet({
                 return (
                   <Row key={device.id}>
                     <XStack gap={12} alignItems="center">
-                      <Icon size={22} color={theme.color6?.val as string} />
+                      <Icon size={iconSize.lg} color={theme.color6?.val as string} />
                       <YStack flex={1} minWidth={0} gap={3}>
                         <TText
                           color="$textDefault"

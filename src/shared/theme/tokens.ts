@@ -80,5 +80,22 @@ export const tracking = {
   title: -0.4,
 } as const;
 
+/**
+ * Icon sizes.
+ *
+ * Sized for touch legibility rather than to match the mock's pixel values: the
+ * prototype was drawn at desktop scale, where a 16px chevron reads fine, and
+ * on a phone at arm's length it does not. Every glyph in a row or control uses
+ * one of these.
+ */
+export const iconSize = {
+  /** 20 — inline affordances: chevrons, header controls, tab glyphs. */
+  sm: 20,
+  /** 24 — row leading icons and sheet actions. */
+  md: 24,
+  /** 28 — list items that are the row's subject, e.g. a reader. */
+  lg: 28,
+} as const;
+
 export type FontSize = (typeof fontSize)[keyof typeof fontSize];
 export type Radius = (typeof radius)[keyof typeof radius];
