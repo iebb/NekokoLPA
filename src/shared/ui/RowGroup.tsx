@@ -5,24 +5,27 @@ import {radius} from '@/shared/theme/tokens';
 /**
  * A group of rows separated by hairlines.
  *
- * The separator is not a border on each row: the container is painted in the
- * line colour and the rows in the surface colour with a 1px gap, so the line
- * shows through. That is how the design gets exact 1px dividers that stop at
- * the group's rounded corners, without a trailing rule under the last row.
+ * The group is a single surface-coloured block with a hairline *between* its
+ * rows — not a tinted container with gaps showing through, which read as an
+ * inset well around the content rather than as the content itself.
  *
- * Children are expected to set their own `backgroundColor="$surfaceRow"`; use
- * {@link Row} unless a child needs a different fill.
+ * The separator is applied here rather than by each row so the last row never
+ * carries one: a rule hanging above a rounded bottom corner is the giveaway of
+ * a list assembled row by row.
  */
 export default function RowGroup({children}: {children: React.ReactNode}) {
+  const items = React.Children.toArray(children).filter(Boolean);
+
   return (
-    <YStack
-      backgroundColor="$borderColor"
-      borderWidth={1}
-      borderColor="$borderColor"
-      borderRadius={radius.lg}
-      overflow="hidden"
-      gap={1}>
-      {children}
+    <YStack backgroundColor="$surfaceRow" borderRadius={radius.lg} overflow="hidden">
+      {items.map((child, index) => (
+        <YStack
+          key={index}
+          borderBottomWidth={index === items.length - 1 ? 0 : 1}
+          borderBottomColor="$borderColor">
+          {child}
+        </YStack>
+      ))}
     </YStack>
   );
 }
@@ -30,7 +33,7 @@ export default function RowGroup({children}: {children: React.ReactNode}) {
 /** One row inside a {@link RowGroup}. */
 export function Row({
   children,
-  paddingVertical = 13,
+  paddingVertical = 14,
   paddingHorizontal = 14,
 }: {
   children: React.ReactNode;
@@ -38,10 +41,7 @@ export function Row({
   paddingHorizontal?: number;
 }) {
   return (
-    <YStack
-      backgroundColor="$surfaceRow"
-      paddingVertical={paddingVertical}
-      paddingHorizontal={paddingHorizontal}>
+    <YStack paddingVertical={paddingVertical} paddingHorizontal={paddingHorizontal}>
       {children}
     </YStack>
   );

@@ -7,6 +7,7 @@ import {preferences} from '@/shared/storage';
 import {ChevronRight} from '@tamagui/lucide-icons';
 import type {SettingRow} from '@/features/settings/types';
 import {fontSize, iconSize, radius} from '@/shared/theme/tokens';
+import SegmentedControl from '@/shared/ui/SegmentedControl';
 
 const SelectRow = React.memo(function SelectRow({row}: {row: SettingRow}) {
   const {t} = useTranslation(['main']);
@@ -25,6 +26,39 @@ const SelectRow = React.memo(function SelectRow({row}: {row: SettingRow}) {
     ? t(`main:settings_item_${row.key}_${v}`)
     : v;
 
+
+  const commit = (next: string) => {
+    setV(next);
+    preferences.set(row.key, next);
+    row.onChange?.(next);
+  };
+
+  const segmentLabels = options.map(opt => t(`main:settings_item_${row.key}_${opt}`));
+
+  // Show the options inline only when they actually fit. Gating on option
+  // count alone truncated three-way settings whose labels are phrases
+  // ("All SIM card slots", "OMAPI-enabled"), which is worse than a sheet: a
+  // clipped label cannot be read at all. The width budget is per segment, so
+  // it holds regardless of how the three divide the row.
+  const fitsInline =
+    options.length > 0 &&
+    options.length <= 3 &&
+    segmentLabels.every(label => label.length <= 12);
+
+  if (fitsInline) {
+    return (
+      <YStack gap={10}>
+        <TText color="$textDefault" fontSize={fontSize.lg}>
+          {t(`main:settings_title_${row.key}`)}
+        </TText>
+        <SegmentedControl
+          value={v}
+          onChange={commit}
+          segments={options.map((opt, i) => ({value: opt, label: segmentLabels[i]}))}
+        />
+      </YStack>
+    );
+  }
 
   return (
     <TouchableOpacity activeOpacity={0.6} onPress={() => setOpen(true)}>

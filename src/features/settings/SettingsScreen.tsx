@@ -3,7 +3,7 @@ import {Platform} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import Screen from '@/shared/ui/Screen';
 import type {RootScreenProps} from '@/app/navigation/types';
-import {YStack} from 'tamagui';
+import {Text as TText, XStack, YStack} from 'tamagui';
 import {
   Languages,
   Moon,
@@ -26,6 +26,8 @@ import type {SettingRow} from '@/features/settings/types';
 import {DEFAULT_THEME_COLOR} from '@/shared/theme/presetColors';
 import SectionLabel from '@/shared/ui/SectionLabel';
 import RowGroup, {Row} from '@/shared/ui/RowGroup';
+import {AppVersion} from '@/shared/config/app';
+import {fontFamily, fontSize} from '@/shared/theme/tokens';
 
 /** Which rows belong to which section, in display order. */
 const SECTIONS = [
@@ -176,6 +178,27 @@ export default function Settings(_props: RootScreenProps<'Settings'>) {
             renderItem={renderItem}
           />
         ))}
+
+        <YStack gap={8} marginBottom={18}>
+          <YStack paddingLeft={4}>
+            <SectionLabel>{t('main:settings_group_about')}</SectionLabel>
+          </YStack>
+          <RowGroup>
+            <Row>
+              <XStack alignItems="center" justifyContent="space-between" gap={12}>
+                <TText color="$textDefault" fontSize={fontSize.lg}>
+                  {t('main:settings_version')}
+                </TText>
+                <TText
+                  color="$color6"
+                  fontFamily={fontFamily.mono as any}
+                  fontSize={fontSize.md}>
+                  {AppVersion}
+                </TText>
+              </XStack>
+            </Row>
+          </RowGroup>
+        </YStack>
       </YStack>
     </Screen>
   );
