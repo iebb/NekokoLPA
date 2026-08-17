@@ -16,7 +16,6 @@
   "remote_device": "رمز PIN للجهاز البعيد",
   "remote_device_pin": "النقطة البعيدة\n{{remote}}\nتتطلب رمز PIN للاتصال.",
   "bluetooth_scan": "بلوتوث",
-
   "euiccInfo_euiccinfo": "معلومات EUICC",
   "euiccInfo_subtitle": "تفاصيل الجهاز وeUICC",
   "euiccInfo_sasAcreditationNumber": "اعتماد SAS",
@@ -32,15 +31,12 @@
   "euiccInfo_euiccCiPKIdListForVerification": "التحقق من CI لـ EUICC",
   "euiccInfo_defaultDpAddress": "عنوان SM-DP+ الافتراضي",
   "euiccInfo_rootDsAddress": "عنوان SM-DS الرئيسي",
-
   "go_back": "العودة",
   "main_screen": "الشاشة الرئيسية",
-
   "backup": "نسخة احتياطية",
   "backup_description": "يمكن استخدامها لتصدير أحجام الملفات الشخصية التي تم تنزيلها والإعدادات والبيانات الأخرى المخزنة محلياً، للحفاظ عليها عبر إعادة التثبيت أو تغيير الجهاز.",
   "backup_export": "تصدير البيانات",
   "backup_import": "استيراد البيانات",
-
   "settings_settings": "الإعدادات",
   "settings_subtitle": "تخصيص تفضيلات التطبيق",
   "settings_title_showSlots": "قواعد عرض فتحات SIM",
@@ -79,9 +75,8 @@
   "settings_item_useRemoteDevice_off": "إيقاف",
   "settings_title_remoteDevice": "عنوان القارئ البعيد",
   "settings_text_remoteDevice": "اتصل بقارئ بعيد باستخدام HTTPS",
-  "settings_title_themeColor": "لون السمة (يتطلب إعادة التشغيل)",
+  "settings_title_themeColor": "لون السمة",
   "settings_text_themeColor": "",
-
   "profile_profile_detail": "تفاصيل الملف التعريفي",
   "profile_collection_stats": "المجموعة",
   "profile_name": "الاسم",
@@ -130,7 +125,6 @@
   "profile_ui_back": "رجوع",
   "profile_ui_cancel": "إلغاء",
   "profile_ui_download": "تنزيل",
-
   "notifications_notifications": "الإشعارات",
   "notifications_send": "إرسال إشعار",
   "notifications_send_success": "تم إرسال الإشعار بنجاح",
@@ -140,12 +134,10 @@
   "notifications_delete_alert": "هل أنت متأكد من حذف هذا الإشعار؟ لا يمكن استعادته",
   "notifications_delete_ok": "موافق",
   "notifications_delete_cancel": "إلغاء",
-
   "progress_download.step1.es10b_get_euicc_challenge_and_info": "(1/4) جارٍ فحص البطاقة",
   "progress_download.step2.es9p_initiate_authentication": "(2/4) الاتصال بالخادم",
   "progress_download.step3.es10b_authenticate_server": "(3/4) التحقق من استجابة الخادم",
   "progress_download.step4.es9p_authenticate_client": "(4/4) طلب بيانات التعريف",
-
   "progress_download.step5.es10b_prepare_download": "(1/5) تأكيد التنزيل",
   "progress_download.step6.es9p_get_bound_profile_package": "(2/5) طلب الملف من الخادم",
   "progress_download.step7.es10b_load_bound_profile_package": "(3/5) معالجة الحزمة",

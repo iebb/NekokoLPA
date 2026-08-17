@@ -17,7 +17,6 @@ import {useLoading} from '@/app/providers/LoadingProvider';
 
 import {isSimplifiedMode} from '@/shared/config/features';
 import {fontSize, radius} from '@/shared/theme/tokens';
-import Pill from '@/shared/ui/Pill';
 import Toggle from '@/shared/ui/Toggle';
 import {group, isRedactMode, maskIccid, RedactMode} from '@/shared/utils/redact';
 
@@ -255,7 +254,19 @@ const ProfileRowComponent = ({profile, deviceId}: {profile: ProfileExt; deviceId
 
           <Pressable style={{flex: 1}} onPress={handleProfilePress}>
             <YStack gap={3}>
+              {/* A dot, not a pill. The uppercase mono badge grew with the
+                  type scale into a block that outweighed the profile name it
+                  was annotating; a dot states the same thing quietly, and the
+                  switch on the right already carries the detail. */}
               <XStack alignItems="center" gap={8}>
+                {profile.selected && (
+                  <YStack
+                    width={8}
+                    height={8}
+                    borderRadius={radius.pill}
+                    backgroundColor="$primaryColor"
+                  />
+                )}
                 <Text
                   color="$textDefault"
                   fontSize={fontSize.xl}
@@ -264,7 +275,6 @@ const ProfileRowComponent = ({profile, deviceId}: {profile: ProfileExt; deviceId
                   flexShrink={1}>
                   {displayName}
                 </Text>
-                {profile.selected && <Pill tone="accent">{t('main:profile_active')}</Pill>}
               </XStack>
               <ProfileSubtitle
                 metadata={profile}

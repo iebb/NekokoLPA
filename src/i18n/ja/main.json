@@ -16,7 +16,6 @@
   "remote_device": "リモートデバイスの PIN",
   "remote_device_pin": "リモートエンドポイント\n{{remote}}\n接続には PIN が必要です。",
   "bluetooth_scan": "Bluetooth",
-
   "euiccInfo_euiccinfo": "EUICC 情報",
   "euiccInfo_subtitle": "デバイスとeUICCの詳細",
   "euiccInfo_sasAcreditationNumber": "SAS 認定",
@@ -32,16 +31,12 @@
   "euiccInfo_euiccCiPKIdListForVerification": "EUICC 検証 CI",
   "euiccInfo_defaultDpAddress": "デフォルト SM-DP+ アドレス",
   "euiccInfo_rootDsAddress": "ルート SM-DS アドレス",
-
   "go_back": "戻る",
   "main_screen": "メイン画面",
-
   "backup": "バックアップ",
   "backup_description": "ダウンロードしたプロファイルサイズ、設定、その他のローカルに保存されたデータをエクスポートできます。再インストールやデバイス変更後もデータを保持できます。",
   "backup_export": "データのエクスポート",
   "backup_import": "データのインポート",
-
-
   "settings_settings": "設定",
   "settings_subtitle": "アプリの設定をカスタマイズ",
   "settings_title_showSlots": "SIM スロット表示ルール",
@@ -83,9 +78,8 @@
   "settings_item_disableProtection_off": "OFF",
   "settings_title_remoteDevice": "リモートリーダーの URL",
   "settings_text_remoteDevice": "HTTPS でリモートリーダーに接続する",
-  "settings_title_themeColor": "テーマの色 (再起動後に適用されます)",
+  "settings_title_themeColor": "テーマの色",
   "settings_text_themeColor": "",
-
   "profile_profile_detail": "プロファイルの詳細",
   "profile_collection_stats": "コレクション",
   "profile_name": "名前",
@@ -134,30 +128,24 @@
   "profile_ui_back": "戻る",
   "profile_ui_cancel": "キャンセル",
   "profile_ui_download": "ダウンロード",
-
   "notifications_notifications": "通知",
   "notifications_send": "通知を送信",
   "notifications_send_success": "通知が正常に送信されました",
   "notifications_send_failed": "通知の送信に失敗しました",
   "notifications_send_failed_alert": "この通知を送信できませんでした。",
   "notifications_delete": "通知を削除",
-  "notifications_delete_alert": "この通知を削除してもよろしいですか？ 復元はできません。",  "notifications_delete_ok": "OK",
+  "notifications_delete_alert": "この通知を削除してもよろしいですか？ 復元はできません。",
+  "notifications_delete_ok": "OK",
   "notifications_delete_cancel": "キャンセル",
-
-
   "progress_download.step1.es10b_get_euicc_challenge_and_info": "(1/4) カードを確認中です",
   "progress_download.step2.es9p_initiate_authentication": "(2/4) サーバーと通信中です",
   "progress_download.step3.es10b_authenticate_server": "(3/4) サーバーのレスポンスを確認中です",
   "progress_download.step4.es9p_authenticate_client": "(4/4) メタデータを要求中です",
-
   "progress_download.step5.es10b_prepare_download": "(1/5) ダウンロードを確認中です",
   "progress_download.step6.es9p_get_bound_profile_package": "(2/5) サーバーからプロファイルを要求中です",
   "progress_download.step7.es10b_load_bound_profile_package": "(3/5) プロファイルパッケージを処理中です",
   "progress_download.step7.es10b_load_bound_profile_package_tx_1": "(3/5) 処理中のプロファイルパッケージ: {{total}}/6",
   "progress_download.step8.load_bpp": "(4/5) プロファイルを書き込み中: {{progress}}/{{total}}B",
   "progress_download.step9.finalize": "(5/5) ダウンロードが完了しました",
-
-
-
   "_": ""
 }

@@ -189,5 +189,8 @@
   "settings_aid_count": "{{count}} configured",
   "back": "Back",
   "settings_group_about": "About",
-  "settings_version": "Version"
+  "settings_version": "Version",
+  "settings_report_bug": "Report a bug",
+  "settings_source": "Source code",
+  "settings_buy_device": "Buy a supported device"
 }

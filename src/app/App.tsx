@@ -65,7 +65,12 @@ function App() {
   return (
     <Provider store={store}>
       <ThemeProvider>
-        <TamaguiProvider config={config}>
+        {/* Keyed on the accent: Tamagui derives its themes from the config
+            once, so handing it a new object is not enough to change a live
+            tree. Remounting on the accent is what actually applies a new
+            colour without relaunching, and it only happens when the user
+            picks one. */}
+        <TamaguiProvider key={themeColor} config={config}>
           <ColorSchemeRoot />
         </TamaguiProvider>
       </ThemeProvider>

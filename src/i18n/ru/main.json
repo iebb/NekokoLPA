@@ -16,7 +16,6 @@
   "remote_device": "PIN для удалённого устройства",
   "remote_device_pin": "Удалённая точка\n{{remote}}\nтребует PIN для подключения.",
   "bluetooth_scan": "Bluetooth",
-
   "euiccInfo_euiccinfo": "Информация eUICC",
   "euiccInfo_subtitle": "Сведения об устройстве и eUICC",
   "euiccInfo_sasAcreditationNumber": "Аккредитация SAS",
@@ -32,15 +31,12 @@
   "euiccInfo_euiccCiPKIdListForVerification": "Проверка CI eUICC",
   "euiccInfo_defaultDpAddress": "Адрес SM-DP+ по умолчанию",
   "euiccInfo_rootDsAddress": "Основной адрес SM-DS",
-
   "go_back": "Назад",
   "main_screen": "Главный экран",
-
   "backup": "Резервная копия",
   "backup_description": "Можно использовать для экспорта размеров загруженных профилей, конфигураций и других локально сохраненных данных для сохранения при переустановке или смене устройства.",
   "backup_export": "Экспорт Данных",
   "backup_import": "Импорт Данных",
-
   "settings_settings": "Настройки",
   "settings_subtitle": "Настроить параметры приложения",
   "settings_title_showSlots": "Правила отображения SIM-слотов",
@@ -79,9 +75,8 @@
   "settings_item_useRemoteDevice_off": "Выкл",
   "settings_title_remoteDevice": "URL удалённого ридера",
   "settings_text_remoteDevice": "Подключение к удалённому ридеру через HTTPS",
-  "settings_title_themeColor": "Цвет темы (требуется перезапуск)",
+  "settings_title_themeColor": "Цвет темы",
   "settings_text_themeColor": "",
-
   "profile_profile_detail": "Детали профиля",
   "profile_collection_stats": "Коллекция",
   "profile_name": "Имя",
@@ -130,7 +125,6 @@
   "profile_ui_back": "Назад",
   "profile_ui_cancel": "Отмена",
   "profile_ui_download": "Загрузить",
-
   "notifications_notifications": "Уведомления",
   "notifications_send": "Отправить уведомление",
   "notifications_send_success": "Уведомление отправлено",
@@ -140,18 +134,15 @@
   "notifications_delete_alert": "Удалить уведомление? Это действие необратимо.",
   "notifications_delete_ok": "ОК",
   "notifications_delete_cancel": "Отмена",
-
   "progress_download.step1.es10b_get_euicc_challenge_and_info": "(1/4) Проверка карты",
   "progress_download.step2.es9p_initiate_authentication": "(2/4) Связь с сервером",
   "progress_download.step3.es10b_authenticate_server": "(3/4) Проверка ответа сервера",
   "progress_download.step4.es9p_authenticate_client": "(4/4) Запрос метаданных",
-
   "progress_download.step5.es10b_prepare_download": "(1/5) Подтверждение загрузки",
   "progress_download.step6.es9p_get_bound_profile_package": "(2/5) Запрос профиля с сервера",
   "progress_download.step7.es10b_load_bound_profile_package": "(3/5) Обработка пакета профиля",
   "progress_download.step7.es10b_load_bound_profile_package_tx_1": "(3/5) Обработка пакета профиля {{total}}/6",
   "progress_download.step8.load_bpp": "(4/5) Запись профиля {{progress}}/{{total}}Б",
   "progress_download.step9.finalize": "(5/5) Завершение загрузки",
-
   "_": ""
 }
