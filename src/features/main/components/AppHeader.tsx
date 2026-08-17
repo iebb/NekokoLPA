@@ -8,9 +8,8 @@ import {fontFamily, fontSize, tracking} from '@/shared/theme/tokens';
 /**
  * The app-name lockup in the home header.
  *
- * The mark is kept, at 34px rather than the old 42: large enough to read as
- * the app's identity, small enough not to outweigh the card the screen is
- * actually about.
+ * The mark is 44px — the platform's minimum comfortable touch target, and
+ * large enough that the artwork reads as a mark rather than a favicon.
  * The version sits under it in mono, tertiary — it is a diagnostic detail, and
  * the only time it should draw the eye is when an update is available.
  */
@@ -61,7 +60,7 @@ export default function AppHeader(_props: {navigation?: unknown}) {
   return (
     <TouchableOpacity onPress={handlePress} style={{flexShrink: 1}}>
       <XStack alignItems="center" gap={10}>
-        <Image source={AppLogo} style={{width: 34, height: 34, borderRadius: 8}} />
+        <Image source={AppLogo} style={{width: 44, height: 44, borderRadius: 10}} />
         <YStack gap={3} flexShrink={1}>
           <TText
             color="$textDefault"
