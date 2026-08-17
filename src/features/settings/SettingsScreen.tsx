@@ -3,7 +3,7 @@ import {Platform} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import Screen from '@/shared/ui/Screen';
 import type {RootScreenProps} from '@/app/navigation/types';
-import {Card, H5, Separator, YStack} from 'tamagui';
+import {YStack} from 'tamagui';
 import {
   Languages,
   Moon,
@@ -24,7 +24,8 @@ import SelectRow from '@/features/settings/components/SelectRow';
 import AIDRow from '@/features/settings/components/AIDRow';
 import type {SettingRow} from '@/features/settings/types';
 import {DEFAULT_THEME_COLOR} from '@/shared/theme/presetColors';
-import {fontSize, radius} from '@/shared/theme/tokens';
+import SectionLabel from '@/shared/ui/SectionLabel';
+import RowGroup, {Row} from '@/shared/ui/RowGroup';
 
 /** Which rows belong to which section, in display order. */
 const SECTIONS = [
@@ -55,32 +56,20 @@ const SettingsSection = ({
   renderItem: (props: {item: SettingRow}) => React.ReactNode;
 }) => {
   if (items.length === 0) return null;
+  // A mono micro-label over a hairline-separated group: the separators come
+  // from RowGroup's 1px gaps, so there is no rule under the final row.
   return (
-    <YStack gap={12} marginBottom={20}>
-      <H5
-        paddingHorizontal={12}
-        color="$color8"
-        fontSize={fontSize.sm}
-        textTransform="uppercase"
-        letterSpacing={1}>
-        {title}
-      </H5>
-      <Card
-        backgroundColor="$surfaceSpecial"
-        borderRadius={radius.lg}
-        overflow="hidden"
-        elevation={2}>
-        <YStack>
-          {items.map((item, index) => (
-            <React.Fragment key={item.key}>
-              {index > 0 && (
-                <Separator borderColor="$borderColor" opacity={0.5} marginHorizontal={16} />
-              )}
-              <YStack padding={16}>{renderItem({item})}</YStack>
-            </React.Fragment>
-          ))}
-        </YStack>
-      </Card>
+    <YStack gap={8} marginBottom={18}>
+      <YStack paddingLeft={4}>
+        <SectionLabel>{title}</SectionLabel>
+      </YStack>
+      <RowGroup>
+        {items.map(item => (
+          <Row key={item.key} paddingVertical={14}>
+            {renderItem({item})}
+          </Row>
+        ))}
+      </RowGroup>
     </YStack>
   );
 };

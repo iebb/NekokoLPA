@@ -4,7 +4,7 @@ import {useTranslation} from 'react-i18next';
 import Screen from '@/shared/ui/Screen';
 import type {RootScreenProps} from '@/app/navigation/types';
 import Loader from '@/shared/ui/Loader';
-import {Text as TText, View as TView, XStack, YStack, useTheme} from 'tamagui';
+import {Text as TText, XStack, YStack, useTheme} from 'tamagui';
 import {Bed, HardDrive, Package, Usb} from '@tamagui/lucide-icons';
 import {getBleManager, requestBluetoothPermission} from '@/shared/utils/bluetooth';
 import {Device} from 'react-native-ble-plx';
@@ -13,7 +13,9 @@ import {isSupportedBleName, setupDevices} from '@/lpa/deviceManager';
 import {useDispatch} from 'react-redux';
 import {makeLoading} from '@/shared/utils/loading';
 import {useLoading} from '@/app/providers/LoadingProvider';
-import {fontSize} from '@/shared/theme/tokens';
+import {fontFamily, fontSize, radius} from '@/shared/theme/tokens';
+import SectionLabel from '@/shared/ui/SectionLabel';
+import RowGroup, {Row} from '@/shared/ui/RowGroup';
 
 function BluetoothScan({navigation}: RootScreenProps<'BluetoothScan'>) {
   const {t} = useTranslation(['main']);
@@ -61,50 +63,71 @@ function BluetoothScan({navigation}: RootScreenProps<'BluetoothScan'>) {
     <Screen title={t('main:bluetooth_scan')}>
       <YStack gap={10} flex={1}>
         <YStack gap={10}>
-          {devices.map(device => {
-            return (
-              <TouchableOpacity
-                key={device.id}
-                style={{paddingVertical: 10}}
-                onPress={async () => {
-                  makeLoading(setLoading, async () => {
-                    setScanning(false);
-                    getBleManager().stopDeviceScan();
-                    await connectDevice(device);
-                    await setupDevices(dispatch, 'ble:' + device.id);
-                    navigation.goBack();
-                  });
-                }}>
-                <XStack gap={10} alignItems="center">
-                  {(() => {
-                    const name = device.name ?? '';
-                    const IconComponent = name.startsWith('ESTKme')
-                      ? Bed
-                      : name.startsWith('eSIM_Writer')
-                      ? Package
-                      : name.startsWith('BeeSIM')
-                      ? Usb
-                      : HardDrive;
-                    return <IconComponent size={40} color={theme.primaryColor?.val as string} />;
-                  })()}
-                  <YStack flex={1}>
-                    <TText
-                      color="$textDefault"
-                      fontSize={fontSize.md}
-                      fontWeight={'500' as any}
-                      style={{marginTop: -2}}>
-                      {device.name}
-                    </TText>
-                    <TView>
-                      <TText color="$color6" fontSize={fontSize.sm} fontWeight={'500' as any}>
-                        {device.id}
-                      </TText>
-                    </TView>
-                  </YStack>
-                </XStack>
-              </TouchableOpacity>
-            );
-          })}
+          {devices.length > 0 && (
+            <YStack gap={8}>
+              <YStack paddingLeft={4}>
+                <SectionLabel>{t('main:bluetooth_available')}</SectionLabel>
+              </YStack>
+              <RowGroup>
+                {devices.map(device => {
+                  const name = device.name ?? '';
+                  const IconComponent = name.startsWith('ESTKme')
+                    ? Bed
+                    : name.startsWith('eSIM_Writer')
+                    ? Package
+                    : name.startsWith('BeeSIM')
+                    ? Usb
+                    : HardDrive;
+                  return (
+                    <Row key={device.id}>
+                      <XStack gap={12} alignItems="center">
+                        <IconComponent size={22} color={theme.color6?.val as string} />
+                        <YStack flex={1} minWidth={0} gap={3}>
+                          <TText
+                            color="$textDefault"
+                            fontSize={fontSize.lg}
+                            fontWeight={'600' as any}
+                            numberOfLines={1}>
+                            {device.name}
+                          </TText>
+                          <TText
+                            color="$color9"
+                            fontFamily={fontFamily.mono as any}
+                            fontSize={fontSize.xs}
+                            numberOfLines={1}>
+                            {device.id}
+                          </TText>
+                        </YStack>
+                        <TouchableOpacity
+                          onPress={async () => {
+                            makeLoading(setLoading, async () => {
+                              setScanning(false);
+                              getBleManager().stopDeviceScan();
+                              await connectDevice(device);
+                              await setupDevices(dispatch, 'ble:' + device.id);
+                              navigation.goBack();
+                            });
+                          }}
+                          style={{
+                            backgroundColor: theme.primaryColor?.val,
+                            borderRadius: radius.md,
+                            paddingHorizontal: 16,
+                            paddingVertical: 10,
+                          }}>
+                          <TText
+                            color={theme.onFilled?.val}
+                            fontSize={fontSize.md}
+                            fontWeight={'600' as any}>
+                            {t('main:bluetooth_connect')}
+                          </TText>
+                        </TouchableOpacity>
+                      </XStack>
+                    </Row>
+                  );
+                })}
+              </RowGroup>
+            </YStack>
+          )}
           {scanning && <Loader compact text={t('main:bluetooth_scan')} />}
         </YStack>
       </YStack>

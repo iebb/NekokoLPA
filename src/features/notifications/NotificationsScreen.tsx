@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Alert, Image, PixelRatio, TouchableOpacity, View} from 'react-native';
+import {Alert, Image, TouchableOpacity, View} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import Screen from '@/shared/ui/Screen';
 import type {RootScreenProps} from '@/app/navigation/types';
@@ -16,7 +16,8 @@ import {useToast} from '@/app/providers/ToastProvider';
 import {useLoading} from '@/app/providers/LoadingProvider';
 import {makeLoading} from '@/shared/utils/loading';
 import {Button as TButton} from 'tamagui';
-import {fontSize, radius} from '@/shared/theme/tokens';
+import {fontFamily, fontSize, radius} from '@/shared/theme/tokens';
+import Pill from '@/shared/ui/Pill';
 
 /** GSMA profile-management operation bit flags, as reported by the card. */
 const OPERATION_LABELS: Record<number, string> = {
@@ -55,41 +56,6 @@ function Notifications({route}: RootScreenProps<'Notifications'>) {
     const type = OPERATION_LABELS[row.profileManagementOperation] ?? 'download';
 
     const rowBg = theme.surfaceRow?.val || theme.background?.val;
-    const borderCol = theme.borderColor?.val;
-    const badgeBg =
-      type === 'delete'
-        ? theme.backgroundDangerHeavy?.val
-        : type === 'disable'
-        ? theme.color6?.val
-        : type === 'enable'
-        ? theme.primaryColor?.val
-        : theme.color?.val;
-    const renderRight = () => (
-      <TouchableOpacity
-        onPress={async () => {
-          const result = await adapter.sendNotification(row.seqNumber);
-          if (result.result !== 0) {
-            Alert.alert(
-              t('main:notifications_send_failed'),
-              t('main:notifications_send_failed_alert'),
-            );
-            showToast(t('main:notifications_send_failed'), 'error');
-          } else {
-            showToast(t('main:notifications_send_success'), 'success');
-          }
-        }}
-        activeOpacity={0.8}
-        style={{
-          width: 60,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: theme.backgroundSuccessHeavy?.val || theme.primaryColor?.val,
-          borderTopRightRadius: 12,
-          borderBottomRightRadius: 12,
-        }}>
-        <Send size={18} color={theme.background?.val} />
-      </TouchableOpacity>
-    );
 
     const renderLeft = () => (
       <TouchableOpacity
@@ -119,10 +85,33 @@ function Notifications({route}: RootScreenProps<'Notifications'>) {
           justifyContent: 'center',
           alignItems: 'center',
           backgroundColor: theme.backgroundDangerHeavy?.val,
-          borderTopLeftRadius: 12,
-          borderBottomLeftRadius: 12,
         }}>
         <Trash2 size={18} color={theme.background?.val} />
+      </TouchableOpacity>
+    );
+
+    const renderRight = () => (
+      <TouchableOpacity
+        onPress={async () => {
+          const result = await adapter.sendNotification(row.seqNumber);
+          if (result.result !== 0) {
+            Alert.alert(
+              t('main:notifications_send_failed'),
+              t('main:notifications_send_failed_alert'),
+            );
+            showToast(t('main:notifications_send_failed'), 'error');
+          } else {
+            showToast(t('main:notifications_send_success'), 'success');
+          }
+        }}
+        activeOpacity={0.8}
+        style={{
+          width: 60,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: theme.backgroundSuccessHeavy?.val || theme.primaryColor?.val,
+        }}>
+        <Send size={18} color={theme.onFilled?.val} />
       </TouchableOpacity>
     );
 
@@ -134,52 +123,38 @@ function Notifications({route}: RootScreenProps<'Notifications'>) {
           overshootFriction={8}
           friction={2}>
           <TouchableOpacity>
-            {/* Card surface inside to keep rounded corners */}
             <View
               style={{
-                borderRadius: radius.md,
                 backgroundColor: rowBg,
-                borderWidth: 1,
-                borderColor: borderCol,
                 flexDirection: 'row',
-                paddingHorizontal: 16,
-                paddingVertical: 12,
-                position: 'relative',
+                alignItems: 'center',
+                gap: 11,
+                paddingHorizontal: 14,
+                paddingVertical: 11,
               }}>
-              {/* Flag top-left */}
-
-              {/* Main content */}
-              <YStack style={{flexGrow: 1}}>
-                <XStack gap={5}>
-                  <Image
-                    style={{
-                      width: 20 * PixelRatio.getFontScale(),
-                      height: 20 * PixelRatio.getFontScale(),
-                    }}
-                    source={Flags[country] || Flags.UN}
-                  />
-                  <Text color="$textDefault" numberOfLines={1} fontSize={fontSize.md} flex={1}>
-                    {metadata ? ` ${name}` : ` ${row.iccid}`}
-                  </Text>
-                  <Text color={badgeBg} fontSize={fontSize.sm}>
-                    {type.toUpperCase()}
+              <Image
+                style={{width: 20, height: 14, borderRadius: 2}}
+                source={Flags[country] || Flags.UN}
+              />
+              <YStack flex={1} minWidth={0} gap={4}>
+                <XStack alignItems="center" gap={8}>
+                  <Pill tone={type.toLowerCase() === 'delete' ? 'danger' : 'neutral'}>{type}</Pill>
+                  <Text
+                    color="$textDefault"
+                    numberOfLines={1}
+                    fontSize={fontSize.md}
+                    fontWeight={'600' as any}
+                    flexShrink={1}>
+                    {metadata ? name : row.iccid}
                   </Text>
                 </XStack>
-
-                <XStack gap={5}>
-                  <YStack flex={1}>
-                    <Text color="$color6" fontSize={fontSize.sm}>
-                      {row.notificationAddress}
-                    </Text>
-                    <Text color="$color6" fontSize={fontSize.sm}>
-                      ICCID: {row.iccid}
-                    </Text>
-                  </YStack>
-                  <Text color="$textDefault" fontSize={fontSize.sm}>
-                    #{row.seqNumber}
-                  </Text>
-                </XStack>
+                <Text color="$color9" fontFamily={fontFamily.mono as any} fontSize={fontSize.xs}>
+                  {row.iccid}
+                </Text>
               </YStack>
+              <Text color="$color9" fontFamily={fontFamily.mono as any} fontSize={fontSize.xs}>
+                #{row.seqNumber}
+              </Text>
             </View>
           </TouchableOpacity>
         </Swipeable>
@@ -197,6 +172,25 @@ function Notifications({route}: RootScreenProps<'Notifications'>) {
   const sorted = Array.isArray(notifications)
     ? [...notifications].sort((a, b) => b.seqNumber - a.seqNumber)
     : [];
+
+  /**
+   * Queued notifications grouped by the SM-DP+ they are addressed to.
+   *
+   * Grouping by host is what makes the queue actionable: every entry under one
+   * heading goes to the same server, so a run of failures reads as "that
+   * server is unreachable" rather than as unrelated errors. Insertion order is
+   * preserved, so groups stay in descending seqNumber like the flat list did.
+   */
+  const groups: {host: string; items: typeof sorted}[] = [];
+  for (const row of sorted) {
+    const host = row.notificationAddress || t('main:notifications_unknown_host');
+    const existing = groups.find(g => g.host === host);
+    if (existing) {
+      existing.items.push(row);
+    } else {
+      groups.push({host, items: [row]});
+    }
+  }
   return (
     <Screen
       title={t('main:notifications_notifications')}
@@ -215,7 +209,34 @@ function Notifications({route}: RootScreenProps<'Notifications'>) {
           </TButton>
         </XStack>
       }>
-      <YStack gap={4}>{sorted.map(item => renderRow(item))}</YStack>
+      <YStack gap={16}>
+        {groups.map(group => (
+          <YStack key={group.host} gap={8}>
+            <XStack alignItems="baseline" justifyContent="space-between" gap={10} paddingHorizontal={4}>
+              <Text
+                color="$color9"
+                fontFamily={fontFamily.mono as any}
+                fontSize={fontSize.xs}
+                numberOfLines={1}
+                flexShrink={1}>
+                {group.host}
+              </Text>
+              <Text color="$color9" fontSize={fontSize.sm} flexShrink={0}>
+                {t('main:notifications_pending', {count: group.items.length})}
+              </Text>
+            </XStack>
+            <YStack
+              backgroundColor="$borderColor"
+              borderWidth={1}
+              borderColor="$borderColor"
+              borderRadius={radius.lg}
+              overflow="hidden"
+              gap={1}>
+              {group.items.map(item => renderRow(item))}
+            </YStack>
+          </YStack>
+        ))}
+      </YStack>
     </Screen>
   );
 }

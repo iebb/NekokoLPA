@@ -9,6 +9,7 @@ import {useSelector} from 'react-redux';
 import {selectDeviceState} from '@/store';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {formatSize} from '@/shared/utils/size';
+import {fontFamily, fontSize, radius} from '@/shared/theme/tokens';
 
 export type EuiccInfoDataType = {
   key: string;
@@ -30,18 +31,19 @@ function EuiccInfo({route}: RootScreenProps<'EuiccInfo'>) {
           ToastAndroid.show('Value Copied', ToastAndroid.SHORT);
           Clipboard.setString(row.raw ?? row.rendered);
         }}>
-        <View
-          style={{
-            paddingVertical: 10,
-            borderBottomWidth: 0.5,
-            borderBottomColor: theme.borderColor?.val,
-          }}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Text color="$textDefault" numberOfLines={1} style={{flex: 1}}>
+        {/* Rows sit inside one hairline group, so the divider comes from the
+            1px gap rather than a per-row border. */}
+        <View style={{backgroundColor: theme.surfaceRow?.val, paddingVertical: 11, paddingHorizontal: 14}}>
+          <View style={{flexDirection: 'row', alignItems: 'baseline', gap: 14}}>
+            <Text color="$color6" fontSize={fontSize.sm} numberOfLines={2} style={{flex: 1}}>
               {t('main:euiccInfo_' + row.key)}
             </Text>
             {row.element ?? (
-              <Text color="$color6" style={{textAlign: 'right'}}>
+              <Text
+                color="$textDefault"
+                fontFamily={fontFamily.mono as any}
+                fontSize={fontSize.sm}
+                style={{flex: 1, textAlign: 'right'}}>
                 {row.rendered ?? '[empty]'}
               </Text>
             )}
@@ -57,6 +59,14 @@ function EuiccInfo({route}: RootScreenProps<'EuiccInfo'>) {
       keyboardAvoiding={false}
       scrollViewProps={{nestedScrollEnabled: true}}>
       <FlatList
+        style={{
+          backgroundColor: theme.borderColor?.val,
+          borderWidth: 1,
+          borderColor: theme.borderColor?.val,
+          borderRadius: radius.lg,
+          overflow: 'hidden',
+        }}
+        ItemSeparatorComponent={() => <View style={{height: 1}} />}
         data={[
           {key: 'eid', rendered: `${eid}`},
           {key: 'sasAcreditationNumber', rendered: euiccInfo2?.sasAcreditationNumber},

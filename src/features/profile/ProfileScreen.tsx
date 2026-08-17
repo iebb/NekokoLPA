@@ -19,6 +19,7 @@ import {selectDeviceState} from '@/store';
 import {getUTF8Length} from '@/shared/utils/encoding';
 import {useLoading} from '@/app/providers/LoadingProvider';
 import {fontSize, radius} from '@/shared/theme/tokens';
+import SectionLabel from '@/shared/ui/SectionLabel';
 
 // Metadata Row Component
 function MetadataRow({
@@ -297,10 +298,10 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
 
         {/* Tags Section */}
         <YStack gap={10}>
-          <TText color="$textDefault" fontSize={fontSize.lg} fontWeight="700">
-            Tags
-          </TText>
-          <YStack backgroundColor="$surfaceSpecial" borderRadius={radius.md} padding={12}>
+          <YStack paddingLeft={4}>
+            <SectionLabel>{t('main:profile_tags')}</SectionLabel>
+          </YStack>
+          <YStack backgroundColor="$surfaceRow" borderWidth={1} borderColor="$borderColor" borderRadius={radius.lg} padding={12}>
             <XStack gap={8} flexWrap="wrap">
               {tags.map((tag, i) => {
                 return (
@@ -373,10 +374,10 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
 
         {/* Metadata Section */}
         <YStack gap={8}>
-          <TText color="$textDefault" fontSize={fontSize.lg} fontWeight="700">
-            Profile Information
-          </TText>
-          <YStack backgroundColor="$surfaceSpecial" borderRadius={radius.md} padding={20} gap={10}>
+          <YStack paddingLeft={4}>
+            <SectionLabel>{t('main:profile_information')}</SectionLabel>
+          </YStack>
+          <YStack backgroundColor="$surfaceRow" borderWidth={1} borderColor="$borderColor" borderRadius={radius.lg} padding={16} gap={10}>
             {metadata && (
               <>
                 {metadata.iccid && (

@@ -170,5 +170,10 @@
   "one_profile": "1 profile",
   "n_profiles": "{{count}} profiles",
   "no_chip_detected": "No chip detected",
-  "profile_active": "Active"
+  "profile_active": "Active",
+  "notifications_unknown_host": "Unknown server",
+  "notifications_pending": "{{count}} pending",
+  "profile_information": "Profile information",
+  "bluetooth_available": "Available",
+  "bluetooth_connect": "Connect"
 }
