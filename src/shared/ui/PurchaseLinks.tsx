@@ -1,44 +1,55 @@
 import React from 'react';
 import {Linking} from 'react-native';
 import {useTranslation} from 'react-i18next';
-import {Text as TText} from 'tamagui';
+import {Text as TText, XStack} from 'tamagui';
 
-import {AppBuyLink, AppBuyLinkEsimData} from '@/shared/config/app';
+import {AppBuyLink, AppBuyLinkEsimData, DisplayGithubLink, GithubLink} from '@/shared/config/app';
 import {fontSize} from '@/shared/theme/tokens';
 
 /**
- * "Buy a device" / "Buy eSIM data" call-to-action links.
+ * Footer links: buy a device, buy eSIM data, and the source repository.
  *
- * Shown wherever the user has no usable eUICC to act on. The eSIM-data link is
- * only present in some build variants, hence the guard.
+ * These sat behind the side menu, which is gone, and as large underlined
+ * accent text, which made a secondary link the loudest thing under an empty
+ * list. They are footnotes to the profile list now — grey, lower-case, laid
+ * out in a row — so they are findable without competing with the profiles.
+ *
+ * The eSIM-data link and the GitHub link are per-variant, hence the guards.
  */
-export default function PurchaseLinks({topMargin = 40}: {topMargin?: number}) {
+export default function PurchaseLinks({topMargin = 24}: {topMargin?: number}) {
   const {t} = useTranslation(['main']);
   // Copied to a local so TypeScript can narrow it inside the onPress closure.
   const esimDataLink = AppBuyLinkEsimData;
 
+  const link = (label: string, onPress: () => void) => (
+    <TText
+      key={label}
+      color="$color9"
+      fontSize={fontSize.sm}
+      textDecorationLine="underline"
+      onPress={onPress}>
+      {label.toLowerCase()}
+    </TText>
+  );
+
+  const links = [
+    link(t('main:purchase_note'), () => Linking.openURL(AppBuyLink)),
+    ...(esimDataLink ? [link(t('main:buy_esim_data'), () => Linking.openURL(esimDataLink))] : []),
+    ...(DisplayGithubLink && GithubLink
+      ? [link(t('main:github'), () => Linking.openURL(GithubLink))]
+      : []),
+  ];
+
   return (
-    <>
-      <TText
-        color="$primaryColor"
-        textDecorationLine="underline"
-        fontSize={fontSize.xxl}
-        textAlign="center"
-        marginTop={topMargin}
-        onPress={() => Linking.openURL(AppBuyLink)}>
-        {t('main:purchase_note')}
-      </TText>
-      {esimDataLink ? (
-        <TText
-          color="$primaryColor"
-          textDecorationLine="underline"
-          fontSize={fontSize.xxl}
-          textAlign="center"
-          marginTop={20}
-          onPress={() => Linking.openURL(esimDataLink)}>
-          {t('main:buy_esim_data')}
-        </TText>
-      ) : null}
-    </>
+    <XStack
+      flexWrap="wrap"
+      justifyContent="center"
+      alignItems="center"
+      columnGap={14}
+      rowGap={6}
+      marginTop={topMargin}
+      paddingBottom={20}>
+      {links}
+    </XStack>
   );
 }

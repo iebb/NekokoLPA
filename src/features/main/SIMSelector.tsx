@@ -120,6 +120,8 @@ export default function SIMSelector() {
             <YStack flex={1} minHeight={0} key={selected} paddingHorizontal={16} paddingTop={14} gap={12}>
               <ProfileCardHeader deviceId={selected} />
               <ProfileSelector deviceId={selected} />
+              {/* Footnotes to the list, not a call to action above it. */}
+              <PurchaseLinks />
             </YStack>
           ) : (
             <ScrollView bounces alwaysBounceVertical overScrollMode="always">

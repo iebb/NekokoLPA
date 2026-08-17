@@ -1,4 +1,5 @@
 import {useTheme, View as TView} from 'tamagui';
+import {radius} from '@/shared/theme/tokens';
 import {useSelector} from 'react-redux';
 import {Profile} from '@/lpa/types/profile';
 import {RefreshControl} from 'react-native-gesture-handler';
@@ -80,6 +81,12 @@ export default function ProfileSelector({deviceId}: {deviceId: string}) {
 
   return (
     <FlatList
+      style={{
+        backgroundColor: theme.surfaceRow?.val,
+        borderRadius: radius.lg,
+        overflow: 'hidden',
+        flexGrow: 0,
+      }}
       data={profiles}
       keyExtractor={item => item.iccid || String(item)}
       renderItem={renderItem}

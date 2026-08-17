@@ -1,5 +1,4 @@
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
-import {createDrawerNavigator} from '@react-navigation/drawer';
 import {
   NavigationContainer,
   NavigationContainerRef,
@@ -17,7 +16,6 @@ import Profile from '@/features/profile/ProfileScreen';
 import Settings from '@/features/settings/SettingsScreen';
 import Index from '@/features/stats/StatsScreen';
 import Notifications from '@/features/notifications/NotificationsScreen';
-import LeftSidebarDrawer from '@/app/navigation/DrawerContent';
 import {useTheme} from 'tamagui';
 import {ToastProvider} from '@/app/providers/ToastProvider';
 import {LoadingProvider} from '@/app/providers/LoadingProvider';
@@ -31,7 +29,6 @@ import {LoadingProvider} from '@/app/providers/LoadingProvider';
  * off there. iOS, Android and tvOS keep native screens.
  */
 const Stack = createStackNavigator<RootStackParamList>();
-const Drawer = createDrawerNavigator();
 
 function StackNavigator() {
   const theme = useTheme();
@@ -100,20 +97,7 @@ function ApplicationNavigator() {
       <NavigationContainer theme={navTheme} ref={navigationRef}>
         <ToastProvider>
           <LoadingProvider>
-            <Drawer.Navigator
-              drawerContent={props => <LeftSidebarDrawer {...props} />}
-              screenOptions={{
-                headerShown: false,
-                swipeEnabled: false,
-                drawerStyle: {
-                  maxWidth: '67%',
-                  width: 250,
-                  backgroundColor: tamaguiTheme.background?.val,
-                  borderTopRightRadius: 0,
-                },
-              }}>
-              <Drawer.Screen name="Stack" component={StackNavigator} />
-            </Drawer.Navigator>
+            <StackNavigator />
           </LoadingProvider>
         </ToastProvider>
       </NavigationContainer>

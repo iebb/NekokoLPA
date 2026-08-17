@@ -38,8 +38,6 @@ export default function AppHeader({navigation}: {navigation: any}) {
       } catch (e) {
         // Handle error silently
       }
-    } else {
-      navigation.openDrawer?.();
     }
   }, [isLatest, release, navigation]);
 

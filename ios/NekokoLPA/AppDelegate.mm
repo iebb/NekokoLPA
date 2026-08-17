@@ -30,6 +30,27 @@
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
 
+#if TARGET_OS_MACCATALYST
+/**
+ * Let the Catalyst window get narrow.
+ *
+ * Catalyst defaults a scene's minimum width to iPad-ish proportions, so the
+ * window could not be resized down to anything phone-shaped even though the
+ * layout handles it. 320pt is the narrowest phone the UI targets; the maximum
+ * is left unrestricted.
+ */
+- (void)applicationDidBecomeActive:(UIApplication *)application
+{
+  for (UIScene *scene in application.connectedScenes) {
+    if ([scene isKindOfClass:[UIWindowScene class]]) {
+      UISceneSizeRestrictions *restrictions = ((UIWindowScene *)scene).sizeRestrictions;
+      restrictions.minimumSize = CGSizeMake(320, 480);
+      restrictions.maximumSize = CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX);
+    }
+  }
+}
+#endif
+
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
   return [self bundleURL];
