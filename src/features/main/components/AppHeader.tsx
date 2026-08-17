@@ -1,16 +1,16 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {Linking, Platform, TouchableOpacity} from 'react-native';
+import {Image, Linking, Platform, TouchableOpacity} from 'react-native';
 import {Text as TText, useTheme, XStack, YStack} from 'tamagui';
 
-import {AppCheckForUpdates, AppTitle, AppVersion} from '@/shared/config/app';
+import {AppCheckForUpdates, AppLogo, AppTitle, AppVersion} from '@/shared/config/app';
 import {fontFamily, fontSize, tracking} from '@/shared/theme/tokens';
 
 /**
  * The app-name lockup in the home header.
  *
- * No logo mark: the design gives the header a single line of identity and
- * spends the rest of the strip on controls, so a 42px icon next to a 17px
- * title was the loudest thing on a screen that is meant to be about the card.
+ * The mark is kept, at 34px rather than the old 42: large enough to read as
+ * the app's identity, small enough not to outweigh the card the screen is
+ * actually about.
  * The version sits under it in mono, tertiary — it is a diagnostic detail, and
  * the only time it should draw the eye is when an update is available.
  */
@@ -62,29 +62,32 @@ export default function AppHeader({navigation}: {navigation: any}) {
 
   return (
     <TouchableOpacity onPress={handlePress} style={{flexShrink: 1}}>
-      <YStack gap={3}>
-        <TText
-          color="$textDefault"
-          fontSize={fontSize.xxl}
-          fontWeight={'600' as any}
-          letterSpacing={tracking.title}
-          numberOfLines={1}>
-          {AppTitle}
-        </TText>
-        <XStack alignItems="center" gap={6}>
+      <XStack alignItems="center" gap={10}>
+        <Image source={AppLogo} style={{width: 34, height: 34, borderRadius: 8}} />
+        <YStack gap={3} flexShrink={1}>
           <TText
-            color={isLatest ? '$color9' : theme.backgroundDangerHeavy?.val}
-            fontFamily={fontFamily.mono as any}
-            fontSize={fontSize.xs}>
-            v{AppVersion}
+            color="$textDefault"
+            fontSize={fontSize.xxl}
+            fontWeight={'600' as any}
+            letterSpacing={tracking.title}
+            numberOfLines={1}>
+            {AppTitle}
           </TText>
-          {!isLatest && (
-            <TText color={theme.backgroundDangerHeavy?.val} fontSize={fontSize.xs}>
-              {release.tag_name} available
+          <XStack alignItems="center" gap={6}>
+            <TText
+              color={isLatest ? '$color9' : theme.backgroundDangerHeavy?.val}
+              fontFamily={fontFamily.mono as any}
+              fontSize={fontSize.xs}>
+              v{AppVersion}
             </TText>
-          )}
-        </XStack>
-      </YStack>
+            {!isLatest && (
+              <TText color={theme.backgroundDangerHeavy?.val} fontSize={fontSize.xs}>
+                {release.tag_name} available
+              </TText>
+            )}
+          </XStack>
+        </YStack>
+      </XStack>
     </TouchableOpacity>
   );
 }
