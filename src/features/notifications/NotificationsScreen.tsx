@@ -15,7 +15,6 @@ import {Send, Trash2} from '@tamagui/lucide-icons';
 import {useToast} from '@/app/providers/ToastProvider';
 import {useLoading} from '@/app/providers/LoadingProvider';
 import {makeLoading} from '@/shared/utils/loading';
-import {Button as TButton} from 'tamagui';
 import {fontFamily, fontSize, radius} from '@/shared/theme/tokens';
 import Pill from '@/shared/ui/Pill';
 import {preferences} from '@/shared/storage';
@@ -199,21 +198,7 @@ function Notifications({route}: RootScreenProps<'Notifications'>) {
   return (
     <Screen
       title={t('main:notifications_notifications')}
-      subtitle={t('main:notifications_subtitle')}
-      fixedHeader={
-        <XStack justifyContent="flex-end" paddingHorizontal={20} paddingBottom={16} flexShrink={0}>
-          <TButton
-            onPress={handleProcessAllNotifications}
-            backgroundColor="$btnBackground"
-            borderRadius={radius.sm}
-            paddingHorizontal={16}
-            paddingVertical={10}>
-            <Text color={theme.background?.val} fontSize={fontSize.md} fontWeight="600">
-              {t('main:notifications_handle_all')}
-            </Text>
-          </TButton>
-        </XStack>
-      }>
+      subtitle={t('main:notifications_subtitle')}>
       <YStack gap={16}>
         {groups.map(group => (
           <YStack key={group.host} gap={8}>
@@ -241,6 +226,22 @@ function Notifications({route}: RootScreenProps<'Notifications'>) {
             </YStack>
           </YStack>
         ))}
+
+        {sorted.length > 0 && (
+          <TouchableOpacity
+            onPress={handleProcessAllNotifications}
+            style={{
+              backgroundColor: theme.primaryColor?.val,
+              borderRadius: radius.md,
+              paddingVertical: 13,
+              alignItems: 'center',
+              marginTop: 4,
+            }}>
+            <Text color={theme.onFilled?.val} fontSize={fontSize.lg} fontWeight={'600' as any}>
+              {t('main:notifications_send_all', {count: sorted.length})}
+            </Text>
+          </TouchableOpacity>
+        )}
       </YStack>
     </Screen>
   );

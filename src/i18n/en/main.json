@@ -184,5 +184,7 @@
   "bluetooth_readers": "Bluetooth readers",
   "bluetooth_sheet_hint": "A connected reader appears as its own chip tab.",
   "bluetooth_scanning": "Scanning…",
-  "bluetooth_none_found": "No readers found yet."
+  "bluetooth_none_found": "No readers found yet.",
+  "notifications_send_all": "Send all {{count}}",
+  "settings_aid_count": "{{count}} configured"
 }

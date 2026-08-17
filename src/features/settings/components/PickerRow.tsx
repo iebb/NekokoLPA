@@ -142,39 +142,17 @@ const PickerRow = React.memo(function PickerRow({row}: {row: SettingRow}) {
   }
   const rows = chunk(swatches, COLUMNS);
 
-  const Icon = row.icon;
 
   return (
     <View style={{width: '100%'}}>
       <TouchableOpacity activeOpacity={0.6} onPress={() => setOpen(true)}>
-        <XStack alignItems="center" gap={16}>
-          <YStack
-            padding={8}
-            borderRadius={radius.sm}
-            position="relative"
-            alignItems="center"
-            justifyContent="center">
-            <YStack
-              position="absolute"
-              top={0}
-              left={0}
-              right={0}
-              bottom={0}
-              backgroundColor="$primaryColor"
-              borderRadius={radius.sm}
-              opacity={0.15}
-            />
-            <Icon size={20} color={theme.primaryColor?.val} />
-          </YStack>
-
-          <YStack flex={1}>
-            <TText color="$textDefault" fontSize={fontSize.lg} fontWeight="500">
-              {t(`main:settings_title_${row.key}`)}
-            </TText>
-            <TText color="$color6" fontSize={fontSize.sm}>
-              {label}
-            </TText>
-          </YStack>
+        <XStack alignItems="center" gap={12}>
+          <TText flex={1} color="$textDefault" fontSize={fontSize.lg}>
+            {t(`main:settings_title_${row.key}`)}
+          </TText>
+          <TText color="$color6" fontSize={fontSize.md}>
+            {label}
+          </TText>
 
           <View
             style={{

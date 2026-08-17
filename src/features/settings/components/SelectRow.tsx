@@ -25,40 +25,20 @@ const SelectRow = React.memo(function SelectRow({row}: {row: SettingRow}) {
     ? t(`main:settings_item_${row.key}_${v}`)
     : v;
 
-  const Icon = row.icon;
 
   return (
     <TouchableOpacity activeOpacity={0.6} onPress={() => setOpen(true)}>
-      <XStack alignItems="center" gap={16}>
-        <YStack
-          padding={8}
-          borderRadius={radius.sm}
-          position="relative"
-          alignItems="center"
-          justifyContent="center">
-          <YStack
-            position="absolute"
-            top={0}
-            left={0}
-            right={0}
-            bottom={0}
-            backgroundColor="$primaryColor"
-            borderRadius={radius.sm}
-            opacity={0.15}
-          />
-          <Icon size={20} color={theme.primaryColor?.val} />
-        </YStack>
-
-        <YStack flex={1}>
-          <TText color="$textDefault" fontSize={fontSize.lg} fontWeight="500">
-            {t(`main:settings_title_${row.key}`)}
-          </TText>
-          <TText color="$color6" fontSize={fontSize.sm}>
-            {currentLabel}
-          </TText>
-        </YStack>
-
-        <ChevronRight size={18} color="$color6" />
+      {/* Label left, current value right. No tinted icon tile: a column of
+          accent squares made every row shout equally, and the accent belongs
+          to state, not to decoration. */}
+      <XStack alignItems="center" gap={12}>
+        <TText flex={1} color="$textDefault" fontSize={fontSize.lg}>
+          {t(`main:settings_title_${row.key}`)}
+        </TText>
+        <TText color="$color6" fontSize={fontSize.md} numberOfLines={1} flexShrink={1}>
+          {currentLabel}
+        </TText>
+        <ChevronRight size={16} color={theme.color9?.val} />
       </XStack>
 
       {open && (

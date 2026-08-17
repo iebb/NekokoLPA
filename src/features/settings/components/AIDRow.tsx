@@ -63,40 +63,17 @@ const AIDRow = React.memo(function AIDRow({row}: {row: SettingRow}) {
   const inputValid =
     /^[0-9A-F]+$/.test(input.trim().toUpperCase()) && !aids.includes(input.trim().toUpperCase());
 
-  const Icon = row.icon;
 
   return (
     <TouchableOpacity activeOpacity={0.6} onPress={() => setOpen(true)}>
-      <XStack alignItems="center" gap={16}>
-        <YStack
-          padding={8}
-          borderRadius={radius.sm}
-          position="relative"
-          alignItems="center"
-          justifyContent="center">
-          <YStack
-            position="absolute"
-            top={0}
-            left={0}
-            right={0}
-            bottom={0}
-            backgroundColor="$primaryColor"
-            borderRadius={radius.sm}
-            opacity={0.15}
-          />
-          <Icon size={20} color={theme.primaryColor?.val} />
-        </YStack>
-
-        <YStack flex={1}>
-          <TText color="$textDefault" fontSize={fontSize.lg} fontWeight="500">
-            {t(`main:settings_title_${row.key}`)}
-          </TText>
-          <TText color="$color6" fontSize={fontSize.sm}>
-            {aidCount} AID{aidCount !== 1 ? 's' : ''} configured
-          </TText>
-        </YStack>
-
-        <ChevronRight size={18} color="$color6" />
+      <XStack alignItems="center" gap={12}>
+        <TText flex={1} color="$textDefault" fontSize={fontSize.lg}>
+          {t(`main:settings_title_${row.key}`)}
+        </TText>
+        <TText color="$color6" fontSize={fontSize.md}>
+          {t('main:settings_aid_count', {count: aidCount})}
+        </TText>
+        <ChevronRight size={16} color={theme.color9?.val} />
       </XStack>
 
       {open && (
