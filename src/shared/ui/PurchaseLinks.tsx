@@ -13,6 +13,8 @@ import {fontSize} from '@/shared/theme/tokens';
  * accent text, which made a secondary link the loudest thing under an empty
  * list. They are footnotes to the profile list now — grey, lower-case, laid
  * out in a row — so they are findable without competing with the profiles.
+ * They stay secondary through colour and case, not through size: set small
+ * enough to be unreadable they stop being links anyone can use.
  *
  * The eSIM-data link and the GitHub link are per-variant, hence the guards.
  */
@@ -25,7 +27,7 @@ export default function PurchaseLinks({topMargin = 24}: {topMargin?: number}) {
     <TText
       key={label}
       color="$color9"
-      fontSize={fontSize.sm}
+      fontSize={fontSize.lg}
       textDecorationLine="underline"
       onPress={onPress}>
       {label.toLowerCase()}
@@ -45,7 +47,7 @@ export default function PurchaseLinks({topMargin = 24}: {topMargin?: number}) {
       flexWrap="wrap"
       justifyContent="center"
       alignItems="center"
-      columnGap={14}
+      columnGap={18}
       rowGap={6}
       marginTop={topMargin}
       paddingBottom={20}>
