@@ -2,9 +2,9 @@ import React, {useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Button as TButton, Text as TText, Input, XStack, YStack, useTheme, Card} from 'tamagui';
 import {X, Download} from '@tamagui/lucide-icons';
-import BlockingLoader from '@/shared/ui/BlockingLoader';
 import RemoteErrorView from '@/features/download/RemoteErrorView';
 import MetadataView from '@/shared/ui/MetadataView';
+import DownloadProgress from '@/features/download/DownloadProgress';
 import Screen from '@/shared/ui/Screen';
 import {makeLoading} from '@/shared/utils/loading';
 import {Adapters} from '@/lpa/adapters/registry';
@@ -38,12 +38,13 @@ export function ScannerAuthentication({
       keyboardAvoiding={false}
       scrollViewProps={{nestedScrollEnabled: true}}>
       {loading && (
-        <BlockingLoader
-          message={
-            (progress?.progress > 0
-              ? t('main:progress_' + progress.message, progress)
-              : t('main:profile_loading_download_profile')) as string
+        <DownloadProgress
+          target={adapter?.device?.displayName ?? ''}
+          profileName={
+            authenticateResult?.profile?.serviceProviderName ??
+            authenticateResult?.profile?.profileName
           }
+          progress={progress}
         />
       )}
       {authenticateResult?.success ? (

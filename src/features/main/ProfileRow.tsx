@@ -19,6 +19,7 @@ import {isSimplifiedMode} from '@/shared/config/features';
 import {fontSize, radius} from '@/shared/theme/tokens';
 import Pill from '@/shared/ui/Pill';
 import Toggle from '@/shared/ui/Toggle';
+import {group, isRedactMode, maskIccid, RedactMode} from '@/shared/utils/redact';
 
 interface ProfileExt extends Profile {
   selected: boolean;
@@ -42,7 +43,17 @@ const ProfileTags = React.memo(({tags, stealthMode}: {tags: any[]; stealthMode: 
 ));
 
 const ProfileSubtitle = React.memo(
-  ({metadata, mccMnc, displaySubtitle}: {metadata: any; mccMnc: any; displaySubtitle: string}) => {
+  ({
+    metadata,
+    mccMnc,
+    displaySubtitle,
+    stealthMode,
+  }: {
+    metadata: any;
+    mccMnc: any;
+    displaySubtitle: string;
+    stealthMode: RedactMode;
+  }) => {
     const subtitleText = useMemo(() => {
       switch (displaySubtitle) {
         case 'provider':
@@ -54,11 +65,11 @@ const ProfileSubtitle = React.memo(
         case 'country':
           return `[${mccMnc.ISO}] ${mccMnc.Country}`;
         case 'iccid':
-          return `ICCID: ${metadata.iccid}`;
+          return `ICCID: ${group(maskIccid(metadata.iccid, stealthMode))}`;
         default:
           return `${metadata?.serviceProviderName} / ${metadata?.profileName}`;
       }
-    }, [metadata, mccMnc, displaySubtitle]);
+    }, [metadata, mccMnc, displaySubtitle, stealthMode]);
 
     // Theme-aware; no direct Appearance usage needed
 
@@ -77,7 +88,10 @@ const ProfileRowComponent = ({profile, deviceId}: {profile: ProfileExt; deviceId
   const navigation = useNavigation<any>();
   const theme = useTheme();
 
-  const stealthMode = useMemo(() => preferences.getString('redactMode') ?? 'none', []);
+  const stealthMode = useMemo<RedactMode>(() => {
+    const stored = preferences.getString('redactMode');
+    return isRedactMode(stored) ? stored : 'none';
+  }, []);
   const isSimplified = isSimplifiedMode();
 
   const displaySubtitle = useMemo(
@@ -256,6 +270,7 @@ const ProfileRowComponent = ({profile, deviceId}: {profile: ProfileExt; deviceId
                 metadata={profile}
                 mccMnc={mccMnc}
                 displaySubtitle={displaySubtitle}
+                stealthMode={stealthMode}
               />
               <ProfileTags tags={tags} stealthMode={stealthMode} />
             </YStack>

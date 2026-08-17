@@ -175,5 +175,10 @@
   "notifications_pending": "{{count}} pending",
   "profile_information": "Profile information",
   "bluetooth_available": "Available",
-  "bluetooth_connect": "Connect"
+  "bluetooth_connect": "Connect",
+  "download_phase_authenticating": "Authenticating with SM-DP+",
+  "download_phase_downloading": "Downloading profile",
+  "download_phase_installing": "Installing on eUICC",
+  "download_installing_on": "Installing on {{target}}",
+  "download_cancel": "Cancel"
 }

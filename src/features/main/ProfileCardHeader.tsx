@@ -18,6 +18,8 @@ import {selectDeviceState} from '@/store';
 import {OMAPIBridge} from '@/lpa/bridge/nativeModules';
 import {fontFamily, fontSize, radius} from '@/shared/theme/tokens';
 import SectionLabel from '@/shared/ui/SectionLabel';
+import {preferences} from '@/shared/storage';
+import {group, isRedactMode, maskEid} from '@/shared/utils/redact';
 
 // Extracted components
 const ActionSheetOptions = React.memo(
@@ -165,7 +167,10 @@ export default function ProfileCardHeader({deviceId}: {deviceId: string}) {
 
   const DeviceState = useSelector(selectDeviceState(deviceId)) ?? {};
 
-  const stealthMode = useMemo(() => 'none', []);
+  const stealthMode = useMemo(() => {
+    const stored = preferences.getString('redactMode');
+    return isRedactMode(stored) ? stored : 'none';
+  }, []);
   const adapter = Adapters[deviceId];
   const {showToast} = useToast();
   const {setLoading} = useLoading();
@@ -179,13 +184,10 @@ export default function ProfileCardHeader({deviceId}: {deviceId: string}) {
    * it applies to the redacted form too — masked digits keep their positions
    * rather than collapsing to an ellipsis.
    */
-  const groupedEid = useMemo(() => {
-    const source =
-      stealthMode === 'hard'
-        ? '•'.repeat(String(DeviceState?.eid ?? '').length)
-        : String(DeviceState?.eid ?? '');
-    return source.replace(/(.{4})/g, '$1 ').trim();
-  }, [DeviceState?.eid, stealthMode]);
+  const groupedEid = useMemo(
+    () => group(maskEid(DeviceState?.eid, stealthMode)),
+    [DeviceState?.eid, stealthMode],
+  );
 
   const supplementText = useMemo(
     () => toFriendlyName(eid, DeviceState.euiccInfo2),

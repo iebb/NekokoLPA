@@ -18,6 +18,8 @@ import {makeLoading} from '@/shared/utils/loading';
 import {Button as TButton} from 'tamagui';
 import {fontFamily, fontSize, radius} from '@/shared/theme/tokens';
 import Pill from '@/shared/ui/Pill';
+import {preferences} from '@/shared/storage';
+import {group, isRedactMode, maskIccid} from '@/shared/utils/redact';
 
 /** GSMA profile-management operation bit flags, as reported by the card. */
 const OPERATION_LABELS: Record<number, string> = {
@@ -45,6 +47,9 @@ function Notifications({route}: RootScreenProps<'Notifications'>) {
       .catch(error => console.error('[LPA] Failed to load notifications', error))
       .finally(() => setLoading(false));
   }, [adapter, setLoading]);
+
+  const stored = preferences.getString('redactMode');
+  const redactMode = isRedactMode(stored) ? stored : 'none';
 
   const renderRow = (row: Notification) => {
     const metadata = profiles.find(p => p.iccid === row.iccid);
@@ -145,11 +150,11 @@ function Notifications({route}: RootScreenProps<'Notifications'>) {
                     fontSize={fontSize.md}
                     fontWeight={'600' as any}
                     flexShrink={1}>
-                    {metadata ? name : row.iccid}
+                    {metadata ? name : group(maskIccid(row.iccid, redactMode))}
                   </Text>
                 </XStack>
                 <Text color="$color9" fontFamily={fontFamily.mono as any} fontSize={fontSize.xs}>
-                  {row.iccid}
+                  {group(maskIccid(row.iccid, redactMode))}
                 </Text>
               </YStack>
               <Text color="$color9" fontFamily={fontFamily.mono as any} fontSize={fontSize.xs}>

@@ -10,6 +10,8 @@ import {selectDeviceState} from '@/store';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {formatSize} from '@/shared/utils/size';
 import {fontFamily, fontSize, radius} from '@/shared/theme/tokens';
+import {preferences} from '@/shared/storage';
+import {group, isRedactMode, maskEid} from '@/shared/utils/redact';
 
 export type EuiccInfoDataType = {
   key: string;
@@ -24,6 +26,8 @@ function EuiccInfo({route}: RootScreenProps<'EuiccInfo'>) {
   const {t} = useTranslation(['main']);
   const theme = useTheme();
   const {eid, euiccAddress, euiccInfo2} = DeviceState;
+  const storedRedact = preferences.getString('redactMode');
+  const redactMode = isRedactMode(storedRedact) ? storedRedact : 'none';
   const renderRow = (row: EuiccInfoDataType, t: any) => {
     return (
       <TouchableOpacity
@@ -68,7 +72,7 @@ function EuiccInfo({route}: RootScreenProps<'EuiccInfo'>) {
         }}
         ItemSeparatorComponent={() => <View style={{height: 1}} />}
         data={[
-          {key: 'eid', rendered: `${eid}`},
+          {key: 'eid', rendered: group(maskEid(eid, redactMode)), raw: eid},
           {key: 'sasAcreditationNumber', rendered: euiccInfo2?.sasAcreditationNumber},
           {key: 'svn', rendered: euiccInfo2?.svn},
           {
