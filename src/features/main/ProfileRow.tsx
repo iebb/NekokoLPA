@@ -18,7 +18,8 @@ import {useLoading} from '@/app/providers/LoadingProvider';
 import {isSimplifiedMode} from '@/shared/config/features';
 import {fontSize, radius} from '@/shared/theme/tokens';
 import Toggle from '@/shared/ui/Toggle';
-import {group, isRedactMode, maskIccid, RedactMode} from '@/shared/utils/redact';
+import {group, isRedactMode, maskIccid, maskText, RedactMode} from '@/shared/utils/redact';
+import {usePreference} from '@/shared/hooks/usePreference';
 
 interface ProfileExt extends Profile {
   selected: boolean;
@@ -87,17 +88,12 @@ const ProfileRowComponent = ({profile, deviceId}: {profile: ProfileExt; deviceId
   const navigation = useNavigation<any>();
   const theme = useTheme();
 
-  const stealthMode = useMemo<RedactMode>(() => {
-    const stored = preferences.getString('redactMode');
-    return isRedactMode(stored) ? stored : 'none';
-  }, []);
+  const storedRedact = usePreference('redactMode', 'none');
+  const stealthMode: RedactMode = isRedactMode(storedRedact) ? storedRedact : 'none';
   const isSimplified = isSimplifiedMode();
 
-  const displaySubtitle = useMemo(
-    () =>
-      isSimplified ? 'provider' : preferences.getString('displaySubtitle') ?? 'profileProvider',
-    [isSimplified],
-  );
+  const storedSubtitle = usePreference('displaySubtitle', 'provider');
+  const displaySubtitle = isSimplified ? 'provider' : storedSubtitle;
 
   const {tags, name, country, mccMnc} = useMemo(() => parseMetadata(profile, t), [profile, t]);
 
@@ -180,13 +176,13 @@ const ProfileRowComponent = ({profile, deviceId}: {profile: ProfileExt; deviceId
     });
   }, [profile.selected, adapter, profile.iccid, setLoading, isSimplified]);
 
-  const displayName = useMemo(
-    () =>
+  const displayName = useMemo(() => {
+    const name_ =
       stealthMode === 'none' || stealthMode === 'medium'
         ? replacedName
-        : profile?.serviceProviderName,
-    [stealthMode, replacedName, profile?.serviceProviderName],
-  );
+        : profile?.serviceProviderName;
+    return maskText(name_, stealthMode);
+  }, [stealthMode, replacedName, profile?.serviceProviderName]);
 
   const renderRightActions = useCallback(() => {
     if (profile.selected) return null;

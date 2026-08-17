@@ -60,11 +60,11 @@
   "settings_item_useCamera_always": "Всегда включать камеру при сканировании",
   "settings_item_useCamera_ondemand": "Включать вручную",
   "settings_item_useCamera_never": "Отключить камеру",
-  "settings_title_redactMode": "Редактирование",
+  "settings_title_redactMode": "Маскирование",
   "settings_item_redactMode_none": "Нет",
-  "settings_item_redactMode_medium": "Только номера телефонов",
-  "settings_item_redactMode_hard": "Имя профиля",
-  "settings_title_displaySubtitle": "Показывать подзаголовок",
+  "settings_item_redactMode_medium": "Номера телефонов",
+  "settings_item_redactMode_hard": "Идентификаторы",
+  "settings_title_displaySubtitle": "Строка под названием",
   "settings_item_displaySubtitle_provider": "Провайдер",
   "settings_item_displaySubtitle_operator": "Оператор",
   "settings_item_displaySubtitle_code": "Код оператора",
@@ -144,5 +144,6 @@
   "progress_download.step7.es10b_load_bound_profile_package_tx_1": "(3/5) Обработка пакета профиля {{total}}/6",
   "progress_download.step8.load_bpp": "(4/5) Запись профиля {{progress}}/{{total}}Б",
   "progress_download.step9.finalize": "(5/5) Завершение загрузки",
-  "_": ""
+  "_": "",
+  "settings_item_redactMode_block": "Всё"
 }

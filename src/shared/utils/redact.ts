@@ -15,13 +15,22 @@
  * Kept free of React imports so it can be unit tested.
  */
 
-export type RedactMode = 'none' | 'medium' | 'hard';
+export type RedactMode = 'none' | 'medium' | 'hard' | 'block';
 
 /** Bullet used for masked digits. Same width as a digit in the mono face. */
 const DOT = '•';
 
+/**
+ * Full redaction: every character becomes a solid block.
+ *
+ * Distinct from `hard` on purpose — `hard` still leaves the issuer prefix, so
+ * a screenshot narrows the card to an issuer. `block` leaves nothing readable
+ * and looks redacted, which is what you want before a photograph.
+ */
+const BLOCK = '█';
+
 export function isRedactMode(value: string | undefined): value is RedactMode {
-  return value === 'none' || value === 'medium' || value === 'hard';
+  return value === 'none' || value === 'medium' || value === 'hard' || value === 'block';
 }
 
 /**
@@ -33,6 +42,9 @@ export function isRedactMode(value: string | undefined): value is RedactMode {
  */
 export function maskIccid(iccid: string | undefined, mode: RedactMode): string {
   const value = String(iccid ?? '');
+  if (mode === 'block') {
+    return BLOCK.repeat(value.length);
+  }
   if (mode === 'none' || value.length < 10) {
     return value;
   }
@@ -51,6 +63,9 @@ export function maskIccid(iccid: string | undefined, mode: RedactMode): string {
  */
 export function maskEid(eid: string | undefined, mode: RedactMode): string {
   const value = String(eid ?? '');
+  if (mode === 'block') {
+    return BLOCK.repeat(value.length);
+  }
   if (mode === 'none' || value.length < 20) {
     return value;
   }
@@ -58,6 +73,12 @@ export function maskEid(eid: string | undefined, mode: RedactMode): string {
     return DOT.repeat(value.length);
   }
   return value.slice(0, 8) + DOT.repeat(value.length - 16) + value.slice(-8);
+}
+
+/** Masks free text — a profile or provider name — leaving nothing readable. */
+export function maskText(text: string | undefined, mode: RedactMode): string {
+  const value = String(text ?? '');
+  return mode === 'block' ? BLOCK.repeat(value.length) : value;
 }
 
 /** Groups a long identifier into fours so it can be read off a card. */

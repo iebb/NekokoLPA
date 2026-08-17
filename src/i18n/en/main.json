@@ -72,9 +72,9 @@
   "settings_item_useCamera_never": "Disable camera",
   "settings_title_redactMode": "Redactions",
   "settings_item_redactMode_none": "None",
-  "settings_item_redactMode_medium": "Phone Numbers only",
-  "settings_item_redactMode_hard": "Profile Name",
-  "settings_title_displaySubtitle": "Subtitle Display",
+  "settings_item_redactMode_medium": "Phone numbers",
+  "settings_item_redactMode_hard": "Identifiers",
+  "settings_title_displaySubtitle": "Line under the name",
   "settings_item_displaySubtitle_provider": "Provider",
   "settings_item_displaySubtitle_operator": "Operator",
   "settings_item_displaySubtitle_code": "Operator Code",
@@ -192,5 +192,6 @@
   "settings_version": "Version",
   "settings_report_bug": "Report a bug",
   "settings_source": "Source code",
-  "settings_buy_device": "Buy a supported device"
+  "settings_buy_device": "Buy a supported device",
+  "settings_item_redactMode_block": "Everything"
 }

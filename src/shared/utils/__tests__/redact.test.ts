@@ -1,5 +1,5 @@
 /// <reference types="jest" />
-import {group, isRedactMode, maskEid, maskIccid} from '../redact';
+import {group, isRedactMode, maskEid, maskIccid, maskText} from '../redact';
 
 const ICCID = '8944538523410512345';
 const EID = '89044045216727494800000000169891';
@@ -47,11 +47,31 @@ describe('maskEid', () => {
   });
 });
 
+describe('block mode', () => {
+  it('replaces every character, leaving nothing readable', () => {
+    expect(maskIccid(ICCID, 'block')).toBe('█'.repeat(ICCID.length));
+    expect(maskEid(EID, 'block')).toBe('█'.repeat(EID.length));
+    expect(maskText('AI Mobile', 'block')).toBe('█'.repeat(9));
+  });
+
+  it('masks short values that the other modes leave alone', () => {
+    // `hard` returns '123' untouched — too short to be an ICCID. `block` is
+    // the level that promises nothing readable, so it masks regardless.
+    expect(maskIccid('123', 'block')).toBe('███');
+  });
+
+  it('leaves text alone below block', () => {
+    expect(maskText('AI Mobile', 'hard')).toBe('AI Mobile');
+    expect(maskText(undefined, 'block')).toBe('');
+  });
+});
+
 describe('isRedactMode', () => {
   it('accepts the three modes and nothing else', () => {
     expect(isRedactMode('none')).toBe(true);
     expect(isRedactMode('medium')).toBe(true);
     expect(isRedactMode('hard')).toBe(true);
+    expect(isRedactMode('block')).toBe(true);
     expect(isRedactMode('off')).toBe(false);
     expect(isRedactMode(undefined)).toBe(false);
   });

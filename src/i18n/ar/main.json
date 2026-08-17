@@ -62,9 +62,9 @@
   "settings_item_useCamera_never": "تعطيل الكاميرا",
   "settings_title_redactMode": "إخفاء البيانات",
   "settings_item_redactMode_none": "لا شيء",
-  "settings_item_redactMode_medium": "أرقام الهاتف فقط",
-  "settings_item_redactMode_hard": "اسم الملف التعريفي",
-  "settings_title_displaySubtitle": "عرض العنوان الفرعي",
+  "settings_item_redactMode_medium": "أرقام الهواتف",
+  "settings_item_redactMode_hard": "المعرّفات",
+  "settings_title_displaySubtitle": "السطر أسفل الاسم",
   "settings_item_displaySubtitle_provider": "المزود",
   "settings_item_displaySubtitle_operator": "المشغل",
   "settings_item_displaySubtitle_code": "رمز المشغل",
@@ -143,5 +143,6 @@
   "progress_download.step7.es10b_load_bound_profile_package": "(3/5) معالجة الحزمة",
   "progress_download.step7.es10b_load_bound_profile_package_tx_1": "(3/5) معالجة الحزمة {{total}}/6",
   "progress_download.step8.load_bpp": "(4/5) كتابة الملف {{progress}}/{{total}}B",
-  "progress_download.step9.finalize": "(5/5) إنهاء التنزيل"
+  "progress_download.step9.finalize": "(5/5) إنهاء التنزيل",
+  "settings_item_redactMode_block": "كل شيء"
 }

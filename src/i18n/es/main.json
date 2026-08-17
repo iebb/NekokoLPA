@@ -60,11 +60,11 @@
   "settings_item_useCamera_always": "Siempre activar cámara al escanear",
   "settings_item_useCamera_ondemand": "Activar cámara manualmente",
   "settings_item_useCamera_never": "Desactivar cámara",
-  "settings_title_redactMode": "Redacciones",
+  "settings_title_redactMode": "Ocultar datos",
   "settings_item_redactMode_none": "Ninguna",
-  "settings_item_redactMode_medium": "Solo números telefónicos",
-  "settings_item_redactMode_hard": "Nombre del perfil",
-  "settings_title_displaySubtitle": "Mostrar subtítulo",
+  "settings_item_redactMode_medium": "Números de teléfono",
+  "settings_item_redactMode_hard": "Identificadores",
+  "settings_title_displaySubtitle": "Línea bajo el nombre",
   "settings_item_displaySubtitle_provider": "Proveedor",
   "settings_item_displaySubtitle_operator": "Operador",
   "settings_item_displaySubtitle_code": "Código del operador",
@@ -144,5 +144,6 @@
   "progress_download.step7.es10b_load_bound_profile_package_tx_1": "(3/5) Procesando paquete de perfil {{total}}/6",
   "progress_download.step8.load_bpp": "(4/5) Escribiendo perfil {{progress}}/{{total}}B",
   "progress_download.step9.finalize": "(5/5) Finalizando descarga",
-  "_": ""
+  "_": "",
+  "settings_item_redactMode_block": "Todo"
 }

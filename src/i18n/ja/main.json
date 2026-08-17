@@ -60,11 +60,11 @@
   "settings_item_useCamera_always": "起動時に常にカメラを ON にする",
   "settings_item_useCamera_ondemand": "手動でカメラを ON にする",
   "settings_item_useCamera_never": "カメラを無効化する",
-  "settings_title_redactMode": "編集",
+  "settings_title_redactMode": "情報の伏せ字",
   "settings_item_redactMode_none": "なし",
-  "settings_item_redactMode_medium": "電話番号のみ",
-  "settings_item_redactMode_hard": "プロファイル名",
-  "settings_title_displaySubtitle": "字幕を表示",
+  "settings_item_redactMode_medium": "電話番号",
+  "settings_item_redactMode_hard": "識別子",
+  "settings_title_displaySubtitle": "名前の下の表示",
   "settings_item_displaySubtitle_provider": "プロバイダー",
   "settings_item_displaySubtitle_operator": "オペレーター",
   "settings_item_displaySubtitle_code": "オペレーターコード",
@@ -147,5 +147,6 @@
   "progress_download.step7.es10b_load_bound_profile_package_tx_1": "(3/5) 処理中のプロファイルパッケージ: {{total}}/6",
   "progress_download.step8.load_bpp": "(4/5) プロファイルを書き込み中: {{progress}}/{{total}}B",
   "progress_download.step9.finalize": "(5/5) ダウンロードが完了しました",
-  "_": ""
+  "_": "",
+  "settings_item_redactMode_block": "すべて"
 }

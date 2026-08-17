@@ -18,8 +18,8 @@ import {selectDeviceState} from '@/store';
 import {OMAPIBridge} from '@/lpa/bridge/nativeModules';
 import {fontFamily, fontSize, iconSize, radius} from '@/shared/theme/tokens';
 import SectionLabel from '@/shared/ui/SectionLabel';
-import {preferences} from '@/shared/storage';
 import {group, isRedactMode, maskEid} from '@/shared/utils/redact';
+import {usePreference} from '@/shared/hooks/usePreference';
 
 // Extracted components
 const ActionSheetOptions = React.memo(
@@ -167,10 +167,8 @@ export default function ProfileCardHeader({deviceId}: {deviceId: string}) {
 
   const DeviceState = useSelector(selectDeviceState(deviceId)) ?? {};
 
-  const stealthMode = useMemo(() => {
-    const stored = preferences.getString('redactMode');
-    return isRedactMode(stored) ? stored : 'none';
-  }, []);
+  const storedRedact = usePreference('redactMode', 'none');
+  const stealthMode = isRedactMode(storedRedact) ? storedRedact : 'none';
   const adapter = Adapters[deviceId];
   const {showToast} = useToast();
   const {setLoading} = useLoading();

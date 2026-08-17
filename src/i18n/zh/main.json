@@ -60,9 +60,9 @@
   "settings_item_useCamera_never": "禁用相机",
   "settings_title_redactMode": "隐私模式",
   "settings_item_redactMode_none": "无",
-  "settings_item_redactMode_medium": "隐藏配置中的手机号",
-  "settings_item_redactMode_hard": "隐藏配置名称与标签",
-  "settings_title_displaySubtitle": "副标题显示",
+  "settings_item_redactMode_medium": "电话号码",
+  "settings_item_redactMode_hard": "标识符",
+  "settings_title_displaySubtitle": "名称下方显示",
   "settings_item_displaySubtitle_provider": "供应商",
   "settings_item_displaySubtitle_operator": "运营商",
   "settings_item_displaySubtitle_code": "运营商代码",
@@ -141,5 +141,6 @@
   "progress_download.step7.es10b_load_bound_profile_package": "(3/5) 准备写入配置包",
   "progress_download.step7.es10b_load_bound_profile_package_tx_1": "(3/5) 准备写入配置包 {{total}}/6",
   "progress_download.step8.load_bpp": "(4/5) 写入配置包 {{progress}}/{{total}}",
-  "progress_download.step9.finalize": "(5/5) 下载完成"
+  "progress_download.step9.finalize": "(5/5) 下载完成",
+  "settings_item_redactMode_block": "全部"
 }

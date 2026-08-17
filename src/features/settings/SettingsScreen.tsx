@@ -133,7 +133,7 @@ export default function Settings(_props: RootScreenProps<'Settings'>) {
     {
       key: 'redactMode',
       icon: EyeOff,
-      options: ['none', 'medium', 'hard'],
+      options: ['none', 'medium', 'hard', 'block'],
       defaultValue: 'none',
       type: 'select',
     },
