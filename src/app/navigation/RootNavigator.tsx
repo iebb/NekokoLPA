@@ -20,7 +20,6 @@ import Notifications from '@/features/notifications/NotificationsScreen';
 import LeftSidebarDrawer from '@/app/navigation/DrawerContent';
 import {useTheme} from 'tamagui';
 import {ToastProvider} from '@/app/providers/ToastProvider';
-import BluetoothScan from '@/features/bluetooth/BluetoothScreen';
 import {LoadingProvider} from '@/app/providers/LoadingProvider';
 
 /**
@@ -69,11 +68,6 @@ function StackNavigator() {
       <Stack.Screen
         name="Settings"
         component={Settings}
-        options={TransitionPresets.SlideFromRightIOS}
-      />
-      <Stack.Screen
-        name="BluetoothScan"
-        component={BluetoothScan}
         options={TransitionPresets.SlideFromRightIOS}
       />
     </Stack.Navigator>

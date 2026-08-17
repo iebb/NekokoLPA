@@ -89,7 +89,7 @@
   "settings_title_aid": "AID Management",
   "settings_title_remoteDevice": "Remote Reader URL",
   "settings_text_remoteDevice": "Connect to a remote reader with HTTPS",
-  "settings_title_themeColor": "Theme Color (restart to take effect)",
+  "settings_title_themeColor": "Theme Color",
   "settings_text_themeColor": "",
   "profile_profile_detail": "Profile Detail",
   "profile_collection_stats": "Collection",
@@ -186,5 +186,6 @@
   "bluetooth_scanning": "Scanning…",
   "bluetooth_none_found": "No readers found yet.",
   "notifications_send_all": "Send all {{count}}",
-  "settings_aid_count": "{{count}} configured"
+  "settings_aid_count": "{{count}} configured",
+  "back": "Back"
 }

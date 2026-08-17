@@ -9,7 +9,7 @@ import {TamaguiProvider} from '@tamagui/core';
 import {KeyboardAvoidingView, LogBox, Platform} from 'react-native';
 import {PortalProvider} from '@tamagui/portal';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import React from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {useTheme, Theme} from 'tamagui';
 import {createTamaguiConfigWithColor} from '../../tamagui.config';
 import {preferences} from '@/shared/storage';
@@ -44,9 +44,24 @@ const getThemeColor = () => {
   return themeColor;
 };
 
-const config = createTamaguiConfigWithColor(getThemeColor());
-
 function App() {
+  // The config is state, not a module constant. Built once at import time it
+  // could never change without relaunching the app, which is why the setting
+  // was labelled "restart to take effect". Rebuilding it when `themeColor`
+  // changes makes the accent apply as soon as it is picked.
+  const [themeColor, setThemeColor] = useState(getThemeColor);
+
+  useEffect(() => {
+    const listener = preferences.addOnValueChangedListener(key => {
+      if (key === 'themeColor') {
+        setThemeColor(getThemeColor());
+      }
+    });
+    return () => listener.remove();
+  }, []);
+
+  const config = useMemo(() => createTamaguiConfigWithColor(themeColor), [themeColor]);
+
   return (
     <Provider store={store}>
       <ThemeProvider>

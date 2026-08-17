@@ -50,7 +50,7 @@ export default function SlotTabs({
         style={{
           flex: scrolls ? undefined : 1,
           maxWidth: scrolls ? 150 : undefined,
-          paddingVertical: 15,
+          paddingVertical: 18,
           paddingHorizontal: scrolls ? 14 : 10,
           marginBottom: -1,
           borderBottomWidth: 2,
@@ -60,7 +60,7 @@ export default function SlotTabs({
           numberOfLines={1}
           textAlign="center"
           color={active ? '$primaryColor' : '$color9'}
-          fontSize={fontSize.sm}
+          fontSize={fontSize.lg}
           fontWeight={(active ? '600' : '500') as any}>
           {t.label}
         </TText>
@@ -72,7 +72,7 @@ export default function SlotTabs({
     <XStack borderBottomWidth={1} borderBottomColor="$borderColor" alignItems="stretch">
       <YStack flex={1} minWidth={0}>
         {tabs.length === 0 ? (
-          <XStack alignItems="center" paddingHorizontal={16} paddingVertical={15}>
+          <XStack alignItems="center" paddingHorizontal={16} paddingVertical={18}>
             <TText color="$color9" fontSize={fontSize.sm}>
               {emptyLabel}
             </TText>
@@ -92,14 +92,14 @@ export default function SlotTabs({
           accessibilityLabel="Bluetooth readers"
           onPress={onBluetooth}
           style={{
-            width: 50,
+            width: 58,
             alignItems: 'center',
             justifyContent: 'center',
             borderLeftWidth: 1,
             borderLeftColor: theme.borderColor?.val,
           }}>
           <Bluetooth
-            size={iconSize.sm}
+            size={iconSize.md}
             color={(bluetoothActive ? theme.primaryColor?.val : theme.color9?.val) as string}
           />
         </TouchableOpacity>

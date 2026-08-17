@@ -5,7 +5,6 @@ export type RootStackParamList = {
   Main: {};
   Stats: {};
   Settings: {};
-  BluetoothScan: {};
   Notifications: {
     deviceId: string;
   };
