@@ -1,16 +1,14 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Alert, Image, Platform, ToastAndroid, TouchableOpacity} from 'react-native';
 import {useTranslation} from 'react-i18next';
-import i18n from 'i18next';
 import Screen from '@/shared/ui/Screen';
 import type {RootScreenProps} from '@/app/navigation/types';
 import {Button as TButton, Input, Text as TText, useTheme, XStack, YStack} from 'tamagui';
 import AppSheet from '@/shared/ui/AppSheet';
-import DatePicker from '@/shared/ui/DatePicker';
 import {useSelector} from 'react-redux';
 import {Copy, X} from '@tamagui/lucide-icons';
 import Clipboard from '@react-native-clipboard/clipboard';
-import {dateToDate6, parseMetadata, Tag} from '@/shared/utils/parser';
+import {parseMetadata, Tag} from '@/shared/utils/parser';
 import {resolveMccMnc, T_PLMN} from '@/data/mccMncResolver';
 import {Flags} from '@/assets/flags';
 import {makeLoading} from '@/shared/utils/loading';
@@ -74,11 +72,8 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
   const [country, setCountry] = useState('');
   const [resolvedMccMnc, setResolvedMccMnc] = useState<T_PLMN | undefined>();
 
-  const [tagModal, setTagModal] = useState<boolean>(false);
   const [renameModal, setRenameModal] = useState<boolean>(false);
-  const [newTagType, setNewTagType] = useState('date');
   const [tagValue, setTagValue] = useState('');
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   const DeviceState = useSelector(selectDeviceState(deviceId));
   const metadata = DeviceState?.profiles?.find(m => m.iccid === iccid);
@@ -116,6 +111,27 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
     });
   };
 
+  /**
+   * Appends a tag from the inline field.
+   *
+   * Tags were composed in a sheet with a date/text toggle and a calendar. The
+   * date type encoded `d:YYMMDD`, which rendered as an opaque chip nobody
+   * could edit, and the sheet was three interactions to add one word. A tag is
+   * a word: typing it and pressing return is the whole interaction.
+   *
+   * Whitespace is stripped because the encoding is space-separated — a tag
+   * containing a space would silently split into two.
+   */
+  const commitTag = useCallback(() => {
+    const cleaned = tagValue.replace(/\s+/g, '');
+    if (!cleaned) {
+      setTagValue('');
+      return;
+    }
+    updateNickname(`${nickname}${tagChars} t:${cleaned}`);
+    setTagValue('');
+  }, [tagValue, nickname, tagChars, updateNickname]);
+
   const handleCopy = (value: string) => {
     if (Platform.OS === 'android' && value) {
       Clipboard.setString(value);
@@ -131,102 +147,6 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
     <Screen
       keyboardAvoiding={false}
       scrollViewProps={{nestedScrollEnabled: true}}>
-      <AppSheet open={tagModal} onOpenChange={setTagModal} title={t('main:profile_add_tag')}>
-        <YStack gap={16}>
-          {/* Toggle group */}
-          <XStack alignItems="center" gap={12}>
-            <TText color="$textDefault" fontSize={fontSize.lg}>
-              {t('main:profile_add_tag_type')}:
-            </TText>
-            <XStack gap={8}>
-              <TButton
-                onPress={() => {
-                  setNewTagType('date');
-                  setTagValue(`d:${dateToDate6(selectedDate)}`);
-                }}
-                backgroundColor={newTagType === 'date' ? theme.primaryColor?.val : 'transparent'}
-                borderWidth={1}
-                borderColor={
-                  newTagType === 'date' ? theme.primaryColor?.val : theme.outlineNeutral?.val
-                }
-                paddingHorizontal={12}
-                paddingVertical={8}
-                borderRadius={radius.sm}>
-                <TText
-                  color={newTagType === 'date' ? theme.background?.val : theme.textDefault?.val}
-                  fontSize={fontSize.md}>
-                  {t('main:profile_tags_date')}
-                </TText>
-              </TButton>
-              <TButton
-                onPress={() => {
-                  setNewTagType('text');
-                  setTagValue('');
-                }}
-                backgroundColor={newTagType === 'text' ? theme.primaryColor?.val : 'transparent'}
-                borderWidth={1}
-                borderColor={
-                  newTagType === 'text' ? theme.primaryColor?.val : theme.outlineNeutral?.val
-                }
-                paddingHorizontal={12}
-                paddingVertical={8}
-                borderRadius={radius.sm}>
-                <TText
-                  color={newTagType === 'text' ? theme.background?.val : theme.textDefault?.val}
-                  fontSize={fontSize.md}>
-                  {t('main:profile_tags_text')}
-                </TText>
-              </TButton>
-            </XStack>
-          </XStack>
-
-          {/* Input area */}
-          <YStack gap={12}>
-            {newTagType === 'date' ? (
-              <DatePicker
-                value={selectedDate}
-                onChange={date => {
-                  setSelectedDate(date);
-                  setTagValue(`d:${dateToDate6(date)}`);
-                }}
-                locale={i18n.language}
-              />
-            ) : newTagType === 'text' ? (
-              <Input
-                placeholder={t('main:profile_tags_text_placeholder')}
-                onChangeText={c => {
-                  const cleaned = c.replace(/\s+/g, '');
-                  setTagValue(`t:${cleaned}`);
-                }}
-                paddingHorizontal={12}
-                paddingVertical={10}
-                borderRadius={radius.sm}
-                borderWidth={1}
-                borderColor={theme.outlineNeutral?.val || theme.borderColor?.val}
-                backgroundColor="transparent"
-                color={theme.textDefault?.val}
-                placeholderTextColor={theme.color6?.val}
-                fontSize={fontSize.lg}
-              />
-            ) : null}
-          </YStack>
-          <XStack justifyContent="flex-end" marginTop={8}>
-            <TButton
-              onPress={() => {
-                if (tagValue.length) {
-                  updateNickname(nickname + tagChars + ' ' + tagValue);
-                  setTagValue('');
-                }
-                setTagModal(false);
-              }}
-              backgroundColor="$btnBackground">
-              <TText color={theme.background?.val} fontSize={fontSize.lg}>
-                Save
-              </TText>
-            </TButton>
-          </XStack>
-        </YStack>
-      </AppSheet>
       {/* Rename Profile Sheet */}
       <AppSheet
         open={renameModal}
@@ -400,18 +320,26 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
                 );
               })}
             </XStack>
-            <XStack justifyContent="flex-end" marginTop={8}>
-              <TButton
-                onPress={() => setTagModal(true)}
-                backgroundColor="$btnBackground"
-                borderRadius={radius.sm}
-                height={32}
-                paddingHorizontal={10}>
-                <TText color={theme.background?.val} fontSize={fontSize.md}>
-                  Add tag
-                </TText>
-              </TButton>
-            </XStack>
+            <Input
+              value={tagValue}
+              onChangeText={setTagValue}
+              onSubmitEditing={commitTag}
+              onBlur={commitTag}
+              returnKeyType="done"
+              placeholder={t('main:profile_add_tag')}
+              autoCapitalize="none"
+              marginTop={8}
+              paddingHorizontal={12}
+              paddingVertical={9}
+              borderRadius={radius.sm}
+              borderWidth={1}
+              borderStyle="dashed"
+              borderColor={theme.outlineNeutral?.val || theme.borderColor?.val}
+              backgroundColor="transparent"
+              color={theme.textDefault?.val}
+              placeholderTextColor={theme.color9?.val}
+              fontSize={fontSize.md}
+            />
           </YStack>
         </YStack>
 
