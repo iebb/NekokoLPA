@@ -14,7 +14,7 @@ import {fontFamily, fontSize, tracking} from '@/shared/theme/tokens';
  * The version sits under it in mono, tertiary — it is a diagnostic detail, and
  * the only time it should draw the eye is when an update is available.
  */
-export default function AppHeader({navigation}: {navigation: any}) {
+export default function AppHeader(_props: {navigation?: unknown}) {
   const theme = useTheme();
   const [release, setRelease] = useState({tag_name: `v${AppVersion}`});
 
@@ -39,7 +39,7 @@ export default function AppHeader({navigation}: {navigation: any}) {
         // Handle error silently
       }
     }
-  }, [isLatest, release, navigation]);
+  }, [isLatest, release]);
 
   useEffect(() => {
     if (AppCheckForUpdates && Platform.OS === 'android') {

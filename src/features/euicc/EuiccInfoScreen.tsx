@@ -8,7 +8,7 @@ import {View, TouchableOpacity, ToastAndroid} from 'react-native';
 import {useSelector} from 'react-redux';
 import {selectDeviceState} from '@/store';
 import Clipboard from '@react-native-clipboard/clipboard';
-import {formatSize} from '@/shared/utils/size';
+import {useFormatSize} from '@/shared/hooks/useFormatSize';
 import {fontFamily, fontSize, radius} from '@/shared/theme/tokens';
 import {preferences} from '@/shared/storage';
 import {group, isRedactMode, maskEid} from '@/shared/utils/redact';
@@ -25,6 +25,7 @@ function EuiccInfo({route}: RootScreenProps<'EuiccInfo'>) {
   const DeviceState = useSelector(selectDeviceState(deviceId!));
   const {t} = useTranslation(['main']);
   const theme = useTheme();
+  const formatSize = useFormatSize();
   const {eid, euiccAddress, euiccInfo2} = DeviceState;
   const storedRedact = preferences.getString('redactMode');
   const redactMode = isRedactMode(storedRedact) ? storedRedact : 'none';

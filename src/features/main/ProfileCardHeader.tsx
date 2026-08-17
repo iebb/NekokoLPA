@@ -9,7 +9,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 
 import AppSheet from '@/shared/ui/AppSheet';
 import {Adapters} from '@/lpa/adapters/registry';
-import {formatSize} from '@/shared/utils/size';
+import {useFormatSize} from '@/shared/hooks/useFormatSize';
 import {toFriendlyName} from '@/shared/utils/friendlyName';
 import {makeLoading} from '@/shared/utils/loading';
 import {useToast} from '@/app/providers/ToastProvider';
@@ -162,6 +162,7 @@ const ActionSheetOptions = React.memo(
 export default function ProfileCardHeader({deviceId}: {deviceId: string}) {
   const {t} = useTranslation(['main']);
   const theme = useTheme();
+  const formatSize = useFormatSize();
   const navigation = useNavigation<any>();
   const [euiccMenu, setEuiccMenu] = useState(false);
 

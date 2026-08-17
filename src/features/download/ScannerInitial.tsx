@@ -32,7 +32,7 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import {Adapters} from '@/lpa/adapters/registry';
 import {useSelector} from 'react-redux';
 import {selectDeviceState} from '@/store';
-import {formatSize} from '@/shared/utils/size';
+import {useFormatSize} from '@/shared/hooks/useFormatSize';
 import {useLoading} from '@/app/providers/LoadingProvider';
 import {useToast} from '@/app/providers/ToastProvider';
 import {toCIName} from '@/shared/utils/friendlyName';
@@ -41,6 +41,7 @@ import {fontSize, radius} from '@/shared/theme/tokens';
 
 export function ScannerInitial({appLink, deviceId, finishAuthenticate}: any) {
   const theme = useTheme();
+  const formatSize = useFormatSize();
   const DeviceState = useSelector(selectDeviceState(deviceId));
 
   const {showToast} = useToast();

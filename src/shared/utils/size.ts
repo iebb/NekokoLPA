@@ -3,8 +3,18 @@ import {isSimplifiedMode} from '@/shared/config/features';
 
 const numberFormat = Intl.NumberFormat();
 
-export const formatSize = (bytes: number = 0): string => {
-  const sizeUnit = isSimplifiedMode() ? 'adaptive_si' : preferences.getString('unit') ?? 'b';
+/**
+ * Formats a byte count in the user's chosen unit.
+ *
+ * `unitOverride` lets a caller pass the unit it is already subscribed to (see
+ * useFormatSize) rather than having this read storage behind React's back —
+ * which is what made the setting look inert: the value was always current, but
+ * nothing re-rendered when it changed.
+ */
+export const formatSize = (bytes: number = 0, unitOverride?: string): string => {
+  const sizeUnit = isSimplifiedMode()
+    ? 'adaptive_si'
+    : unitOverride ?? preferences.getString('unit') ?? 'b';
   switch (sizeUnit) {
     case 'b':
       return `${numberFormat.format(bytes)} B`;

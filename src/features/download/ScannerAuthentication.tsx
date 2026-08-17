@@ -11,7 +11,7 @@ import {makeLoading} from '@/shared/utils/loading';
 import {Adapters} from '@/lpa/adapters/registry';
 import {useSelector} from 'react-redux';
 import {selectDeviceState} from '@/store';
-import {formatSize} from '@/shared/utils/size';
+import {useFormatSize} from '@/shared/hooks/useFormatSize';
 import {fontFamily, fontSize, radius} from '@/shared/theme/tokens';
 import SectionLabel from '@/shared/ui/SectionLabel';
 
@@ -24,6 +24,7 @@ export function ScannerAuthentication({
 }: any) {
   const theme = useTheme();
   const {t} = useTranslation(['main']);
+  const formatSize = useFormatSize();
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState({} as any);
   const [confirmationCode, setConfirmationCode] = useState(initialConfirmationCode);
