@@ -17,8 +17,9 @@ interface Anchor {
   height: number;
 }
 
-const MENU_MAX_HEIGHT = 320;
+const MENU_MAX_HEIGHT = 380;
 const EDGE_MARGIN = 12;
+const MENU_WIDTH = 260;
 
 /**
  * A menu anchored to its trigger, in the platform idiom.
@@ -29,9 +30,13 @@ const EDGE_MARGIN = 12;
  * the row keeps the setting it belongs to on screen and lets a choice be made
  * without leaving the page.
  *
- * The trigger is measured against the window on open, and the menu flips above
- * the anchor when there is not enough room below, so a row near the bottom of
- * a long settings list does not open a menu off-screen.
+ * The menu is anchored to the trigger's trailing edge, not its leading one: a
+ * settings row spans the full width, so aligning to its left put the menu at
+ * the far side of the screen from the control that opened it. Platform menus
+ * hang from the control you tapped, which here is the value and chevron.
+ *
+ * It flips above the anchor when there is not enough room below, so a row near
+ * the bottom of a long list does not open off-screen.
  */
 export default function Dropdown({
   options,
@@ -74,26 +79,34 @@ export default function Dropdown({
       <Modal visible={anchor !== null} transparent animationType="fade">
         {/* The backdrop is the dismiss target, so a tap anywhere outside
             closes the menu the way a platform menu does. */}
-        <Pressable style={{flex: 1}} onPress={() => setAnchor(null)}>
+        <Pressable
+          style={{flex: 1, backgroundColor: 'rgba(0,0,0,0.18)'}}
+          onPress={() => setAnchor(null)}>
           {anchor && (
             <YStack
               position="absolute"
-              left={Math.max(EDGE_MARGIN, Math.min(anchor.x, window.width - 260 - EDGE_MARGIN))}
+              left={Math.max(
+                EDGE_MARGIN,
+                Math.min(
+                  anchor.x + anchor.width - MENU_WIDTH,
+                  window.width - MENU_WIDTH - EDGE_MARGIN,
+                ),
+              )}
               top={flipAbove ? undefined : anchor.y + anchor.height + 4}
               bottom={flipAbove ? window.height - anchor.y + 4 : undefined}
-              width={Math.max(220, Math.min(anchor.width, 320))}
+              width={MENU_WIDTH}
               maxHeight={maxHeight}
-              backgroundColor="$surfaceRow"
-              borderRadius={radius.md}
+              backgroundColor="$surfaceSpecial"
+              borderRadius={radius.lg}
               borderWidth={1}
               borderColor="$borderColor"
               overflow="hidden"
               style={{
                 shadowColor: '#000',
-                shadowOpacity: 0.25,
-                shadowRadius: 20,
-                shadowOffset: {width: 0, height: 8},
-                elevation: 8,
+                shadowOpacity: 0.34,
+                shadowRadius: 28,
+                shadowOffset: {width: 0, height: 12},
+                elevation: 16,
               }}>
               <ScrollView bounces={false}>
                 {options.map((option, index) => {
@@ -109,8 +122,8 @@ export default function Dropdown({
                       <XStack
                         alignItems="center"
                         gap={10}
-                        paddingHorizontal={14}
-                        paddingVertical={13}
+                        paddingHorizontal={16}
+                        paddingVertical={12}
                         borderTopWidth={index === 0 ? 0 : 1}
                         borderTopColor="$borderColor">
                         <TText flex={1} color="$textDefault" fontSize={fontSize.lg}>
