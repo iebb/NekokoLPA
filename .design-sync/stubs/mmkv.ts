@@ -11,6 +11,7 @@ type Store = {
   contains(k: string): boolean;
   getAllKeys(): string[];
   clearAll(): void;
+  addOnValueChangedListener(cb: (key: string) => void): {remove(): void};
 };
 
 export function createMMKV(_opts?: {id?: string}): Store {
@@ -24,6 +25,7 @@ export function createMMKV(_opts?: {id?: string}): Store {
     contains: k => mem.has(k),
     getAllKeys: () => [...mem.keys()],
     clearAll: () => mem.clear(),
+    addOnValueChangedListener: () => ({remove: () => {}}),
   };
 }
 

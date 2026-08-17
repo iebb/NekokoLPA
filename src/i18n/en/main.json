@@ -193,5 +193,10 @@
   "settings_report_bug": "Report a bug",
   "settings_source": "Source code",
   "settings_buy_device": "Buy a supported device",
-  "settings_item_redactMode_block": "Everything"
+  "settings_item_redactMode_block": "Everything",
+  "profile_state_enabled": "Enabled · in use",
+  "profile_state_disabled": "Disabled",
+  "profile_ui_disable": "Disable",
+  "profile_ui_rename": "Rename",
+  "euicc_available": "available"
 }

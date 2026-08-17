@@ -231,25 +231,34 @@ export default function ProfileCardHeader({deviceId}: {deviceId: string}) {
             </TText>
           </XStack>
 
-          <TText
-            color="$color6"
-            fontFamily={fontFamily.mono as any}
-            fontSize={fontSize.xs}
-            lineHeight={16}>
-            {groupedEid}
-          </TText>
-
-          <XStack alignItems="baseline" gap={6} flexWrap="wrap">
+          {/* EID and free space share a row. The EID yields first — it is the
+              longest string on the card and the one that can be truncated
+              without losing the point, since it is grouped for checking
+              against the chip, not for reading aloud. */}
+          <XStack alignItems="baseline" gap={12}>
             <TText
-              color="$textDefault"
+              flex={1}
+              minWidth={0}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              color="$color6"
               fontFamily={fontFamily.mono as any}
-              fontSize={fontSize.lg}
-              fontWeight={'600' as any}>
-              {formatSize(exactFreeBytes)}
+              fontSize={fontSize.xs}
+              lineHeight={16}>
+              {groupedEid}
             </TText>
-            <TText color="$color9" fontSize={fontSize.sm}>
-              available
-            </TText>
+            <XStack flexShrink={0} alignItems="baseline" gap={5}>
+              <TText
+                color="$textDefault"
+                fontFamily={fontFamily.mono as any}
+                fontSize={fontSize.md}
+                fontWeight={'600' as any}>
+                {formatSize(exactFreeBytes)}
+              </TText>
+              <TText color="$color9" fontSize={fontSize.sm}>
+                {t('main:euicc_available')}
+              </TText>
+            </XStack>
           </XStack>
         </YStack>
 

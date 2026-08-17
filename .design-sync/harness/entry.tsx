@@ -26,6 +26,7 @@ import {DEFAULT_THEME_COLOR} from '../../src/shared/theme/presetColors';
 
 import MainScreen from '../../src/features/main/MainScreen';
 import SettingsScreen from '../../src/features/settings/SettingsScreen';
+import ProfileScreen from '../../src/features/profile/ProfileScreen';
 import {ScannerAuthentication} from '../../src/features/download/ScannerAuthentication';
 
 const DEVICE_ID = 'ccid:reader';
@@ -95,6 +96,22 @@ const route: any = {params: {deviceId: DEVICE_ID}, key: 'k', name: 'Main'};
 const SCREENS: Record<string, React.ReactNode> = {
   main: <MainScreen navigation={nav} route={route} />,
   settings: <SettingsScreen navigation={nav} route={route} />,
+  profile: (
+    <ProfileScreen
+      navigation={nav}
+      route={
+        {
+          params: {
+            deviceId: DEVICE_ID,
+            iccid: '8944538523410512345',
+            metadata: {iccid: '8944538523410512345'},
+          },
+          key: 'p',
+          name: 'Profile',
+        } as any
+      }
+    />
+  ),
   confirm: (
     <ScannerAuthentication
       deviceId={DEVICE_ID}

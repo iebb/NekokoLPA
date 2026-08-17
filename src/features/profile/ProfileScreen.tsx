@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Alert, Image, Platform, ToastAndroid, TouchableOpacity} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import i18n from 'i18next';
@@ -8,7 +8,7 @@ import {Button as TButton, Input, Text as TText, useTheme, XStack, YStack} from 
 import AppSheet from '@/shared/ui/AppSheet';
 import DatePicker from '@/shared/ui/DatePicker';
 import {useSelector} from 'react-redux';
-import {Copy, Pencil, X} from '@tamagui/lucide-icons';
+import {Copy, X} from '@tamagui/lucide-icons';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {dateToDate6, parseMetadata, Tag} from '@/shared/utils/parser';
 import {resolveMccMnc, T_PLMN} from '@/data/mccMncResolver';
@@ -18,7 +18,7 @@ import {Adapters} from '@/lpa/adapters/registry';
 import {selectDeviceState} from '@/store';
 import {getUTF8Length} from '@/shared/utils/encoding';
 import {useLoading} from '@/app/providers/LoadingProvider';
-import {fontSize, radius} from '@/shared/theme/tokens';
+import {fontSize, radius, tracking} from '@/shared/theme/tokens';
 import SectionLabel from '@/shared/ui/SectionLabel';
 
 // Metadata Row Component
@@ -83,6 +83,19 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
   const DeviceState = useSelector(selectDeviceState(deviceId));
   const metadata = DeviceState?.profiles?.find(m => m.iccid === iccid);
 
+  /** profileState 1 is the enabled profile; only one can be enabled at a time. */
+  const isEnabled = metadata?.profileState === 1;
+
+  const handleToggleEnabled = useCallback(() => {
+    makeLoading(setLoading, async () => {
+      if (isEnabled) {
+        await adapter.disableProfileByIccId(iccid);
+      } else {
+        await adapter.enableProfileByIccId(iccid);
+      }
+    });
+  }, [isEnabled, adapter, iccid, setLoading]);
+
   useEffect(() => {
     if (metadata) {
       const {tags, name, country} = parseMetadata(metadata, t, false);
@@ -116,7 +129,6 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
 
   return (
     <Screen
-      title={t('main:profile_profile_detail')}
       keyboardAvoiding={false}
       scrollViewProps={{nestedScrollEnabled: true}}>
       <AppSheet open={tagModal} onOpenChange={setTagModal} title={t('main:profile_add_tag')}>
@@ -254,11 +266,14 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
         </YStack>
       </AppSheet>
       <YStack gap={20} flex={1}>
-        {/* Header Section */}
-        <YStack gap={8}>
-          <XStack gap={8} alignItems="center" justifyContent="space-between">
-            <XStack gap={8} alignItems="center" flex={1}>
-              <Image style={{width: 24, height: 24}} source={Flags[country] || Flags.UN} />
+        {/* The profile's identity, then its state, then the two actions that
+            change it. The name is the screen's title — a generic "Profile
+            detail" heading above it said nothing and pushed the actual subject
+            down the page. */}
+        <YStack gap={14}>
+          <YStack gap={8}>
+            <XStack gap={10} alignItems="center">
+              <Image style={{width: 30, height: 20, borderRadius: 3}} source={Flags[country] || Flags.UN} />
               <TouchableOpacity
                 style={{flex: 1}}
                 onPress={() => {
@@ -269,31 +284,62 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
                 }}>
                 <TText
                   color="$textDefault"
-                  fontSize={fontSize.xxl}
-                  fontWeight="600"
+                  fontSize={fontSize.display}
+                  fontWeight={'700' as any}
+                  letterSpacing={tracking.title}
                   numberOfLines={1}
                   adjustsFontSizeToFit>
                   {nickname}
                 </TText>
               </TouchableOpacity>
             </XStack>
-            <TButton
-              onPress={() => setRenameModal(true)}
-              backgroundColor={theme.surfaceSpecial?.val}
-              borderWidth={1}
-              borderColor={theme.outlineNeutral?.val || theme.borderColor?.val}
-              height={36}
-              minWidth={36}
-              padding={0}
-              borderRadius={radius.sm}>
-              <Pencil size={14} color={theme.color6?.val} />
-            </TButton>
+
+            <XStack alignItems="center" gap={8}>
+              <YStack
+                width={8}
+                height={8}
+                borderRadius={radius.pill}
+                backgroundColor={isEnabled ? '$backgroundSuccessHeavy' : '$color9'}
+              />
+              <TText color="$color6" fontSize={fontSize.md}>
+                {isEnabled ? t('main:profile_state_enabled') : t('main:profile_state_disabled')}
+              </TText>
+            </XStack>
+          </YStack>
+
+          <XStack gap={10}>
+            <TouchableOpacity
+              style={{
+                flex: 1,
+                backgroundColor: isEnabled ? theme.surfaceSpecial?.val : theme.primaryColor?.val,
+                borderRadius: radius.md,
+                paddingVertical: 13,
+                alignItems: 'center',
+              }}
+              onPress={handleToggleEnabled}>
+              <TText
+                color={isEnabled ? '$textDefault' : theme.onFilled?.val}
+                fontSize={fontSize.lg}
+                fontWeight={'600' as any}>
+                {isEnabled ? t('main:profile_ui_disable') : t('main:profile_ui_enable')}
+              </TText>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                flex: 1,
+                borderWidth: 1,
+                borderColor: theme.borderColor?.val,
+                backgroundColor: theme.surfaceRow?.val,
+                borderRadius: radius.md,
+                paddingVertical: 13,
+                alignItems: 'center',
+              }}
+              onPress={() => setRenameModal(true)}>
+              <TText color="$textDefault" fontSize={fontSize.lg} fontWeight={'500' as any}>
+                {t('main:profile_ui_rename')}
+              </TText>
+            </TouchableOpacity>
           </XStack>
-          {metadata?.serviceProviderName && (
-            <TText color="$color6" fontSize={fontSize.md} numberOfLines={1} adjustsFontSizeToFit>
-              {metadata.serviceProviderName}
-            </TText>
-          )}
         </YStack>
 
         {/* Tags Section */}
