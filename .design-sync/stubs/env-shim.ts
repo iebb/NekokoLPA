@@ -34,4 +34,11 @@ if (typeof document !== 'undefined' && !document.getElementById('react-native-st
   (document.body ?? document.documentElement).appendChild(style);
 }
 
+// React Native modules assume a `global` binding; the browser calls it
+// `globalThis`. Without this alias any module touching `global` throws before
+// the screen mounts.
+if (typeof (globalThis as any).global === 'undefined') {
+  (globalThis as any).global = globalThis;
+}
+
 export const __dsEnvShim = true;

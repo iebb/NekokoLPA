@@ -4,13 +4,11 @@ import {Alert, Platform, ScrollView, ToastAndroid} from 'react-native';
 import {Adapters} from '@/lpa/adapters/registry';
 import {Text as TText, YStack, View as TView} from 'tamagui';
 import SlotTabs from '@/features/main/components/SlotTabs';
+import BluetoothSheet from '@/features/bluetooth/BluetoothSheet';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {preferences} from '@/shared/storage';
 import PurchaseLinks from '@/shared/ui/PurchaseLinks';
 
-import {useNavigation} from '@react-navigation/native';
-import type {StackNavigationProp} from '@react-navigation/stack';
-import type {RootStackParamList} from '@/app/navigation/types';
 
 import {useAppDispatch, useAppSelector, selectDeviceList} from '@/store';
 import {setTargetDevice} from '@/store/slices';
@@ -20,10 +18,7 @@ import {OMAPIBridge} from '@/lpa/bridge/nativeModules';
 import {fontSize} from '@/shared/theme/tokens';
 
 export default function SIMSelector() {
-  // Typed rather than `any`: an untyped navigator is how a wrong route name
-  // (`Bluetooth` for `BluetoothScan`) shipped as a button that silently did
-  // nothing.
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const [bluetoothOpen, setBluetoothOpen] = React.useState(false);
   const {
     deviceList: allDevices,
     targetDevice,
@@ -103,6 +98,7 @@ export default function SIMSelector() {
 
   return (
     <TView flex={1} minHeight={0} key={deviceList.length}>
+      <BluetoothSheet open={bluetoothOpen} onOpenChange={setBluetoothOpen} />
       <SlotTabs
         tabs={deviceList.map(name => ({
           key: name,
@@ -112,7 +108,7 @@ export default function SIMSelector() {
         }))}
         selected={currentTab ?? ''}
         onSelect={setCurrentTab}
-        onBluetooth={() => navigation.navigate('BluetoothScan', {})}
+        onBluetooth={() => setBluetoothOpen(true)}
         bluetoothActive={deviceList.some(name => Adapters[name].device.type === 'ble')}
         emptyLabel={t('main:no_chip_detected')}
       />

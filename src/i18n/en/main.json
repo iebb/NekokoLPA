@@ -180,5 +180,9 @@
   "download_phase_downloading": "Downloading profile",
   "download_phase_installing": "Installing on eUICC",
   "download_installing_on": "Installing on {{target}}",
-  "download_cancel": "Cancel"
+  "download_cancel": "Cancel",
+  "bluetooth_readers": "Bluetooth readers",
+  "bluetooth_sheet_hint": "A connected reader appears as its own chip tab.",
+  "bluetooth_scanning": "Scanning…",
+  "bluetooth_none_found": "No readers found yet."
 }

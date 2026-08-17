@@ -26,6 +26,7 @@ import {DEFAULT_THEME_COLOR} from '../../src/shared/theme/presetColors';
 
 import MainScreen from '../../src/features/main/MainScreen';
 import SettingsScreen from '../../src/features/settings/SettingsScreen';
+import {ScannerAuthentication} from '../../src/features/download/ScannerAuthentication';
 
 const DEVICE_ID = 'ccid:reader';
 
@@ -94,6 +95,25 @@ const route: any = {params: {deviceId: DEVICE_ID}, key: 'k', name: 'Main'};
 const SCREENS: Record<string, React.ReactNode> = {
   main: <MainScreen navigation={nav} route={route} />,
   settings: <SettingsScreen navigation={nav} route={route} />,
+  confirm: (
+    <ScannerAuthentication
+      deviceId={DEVICE_ID}
+      goBack={() => {}}
+      confirmDownload={() => {}}
+      initialConfirmationCode=""
+      authenticateResult={{
+        success: true,
+        isCcRequired: false,
+        _internal: {},
+        profile: {
+          iccid: '8944476500017422531',
+          profileName: 'BetterRoaming',
+          serviceProviderName: 'Speedtest Travel',
+          profileOwnerMccMnc: '20408',
+        },
+      }}
+    />
+  ),
 };
 
 /** One device-sized frame, so proportions match the prototype's 420x840. */

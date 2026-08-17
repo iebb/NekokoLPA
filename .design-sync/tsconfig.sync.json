@@ -40,6 +40,9 @@
       ],
       "react-native-reanimated": [
         ".design-sync/stubs/reanimated.tsx"
+      ],
+      "react-native-ble-plx": [
+        ".design-sync/stubs/ble-plx.ts"
       ]
     }
   }
