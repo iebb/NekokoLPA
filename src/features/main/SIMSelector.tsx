@@ -157,20 +157,21 @@ export default function SIMSelector() {
                     </YStack>
                   </>
                 )}
-                {Platform.OS === 'android' && (
-                  <>
-                    <TText
-                      color="$textDefault"
-                      textDecorationLine="underline"
-                      fontSize={fontSize.xxl}
-                      textAlign="center"
-                      marginTop={40}
-                      onPress={() => {
-                        OMAPIBridge.openSTK(adapter.device.deviceName);
-                      }}>
-                      {t('main:open_stk_menu')}
-                    </TText>
-                  </>
+                {/* The STK menu is an OMAPI slot's own applet browser, opened
+                    by the Android telephony stack. A reader reached over
+                    Bluetooth or CCID has no such menu to open. */}
+                {Platform.OS === 'android' && selected.startsWith('omapi') && (
+                  <TText
+                    color="$textDefault"
+                    textDecorationLine="underline"
+                    fontSize={fontSize.xxl}
+                    textAlign="center"
+                    marginTop={40}
+                    onPress={() => {
+                      OMAPIBridge.openSTK(adapter.device.deviceName);
+                    }}>
+                    {t('main:open_stk_menu')}
+                  </TText>
                 )}
                 <PurchaseLinks />
               </YStack>
