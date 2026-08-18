@@ -85,7 +85,14 @@ export default function ProfileSelector({deviceId}: {deviceId: string}) {
         backgroundColor: theme.surfaceRow?.val,
         borderRadius: radius.lg,
         overflow: 'hidden',
+        // Sized to its content up to the space available, then scrolled.
+        // Growing would leave an empty panel below a couple of profiles, but
+        // without the shrink a long list lays itself out past the bottom of
+        // the window and is simply cut off there — no scrolling, and the rows
+        // underneath unreachable. That is most visible on a desktop window
+        // short enough to matter and a card with two dozen profiles on it.
         flexGrow: 0,
+        flexShrink: 1,
       }}
       data={profiles}
       keyExtractor={item => item.iccid || String(item)}
