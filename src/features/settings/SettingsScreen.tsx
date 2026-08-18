@@ -26,7 +26,13 @@ import type {SettingRow} from '@/features/settings/types';
 import {DEFAULT_THEME_COLOR} from '@/shared/theme/presetColors';
 import SectionLabel from '@/shared/ui/SectionLabel';
 import RowGroup, {Row} from '@/shared/ui/RowGroup';
-import {AppBuyLink, AppVersion, DisplayGithubLink, GithubLink} from '@/shared/config/app';
+import {
+  AppBuyLink,
+  AppVersion,
+  DisplayGithubLink,
+  GithubLink,
+  NekokoLPA2Link,
+} from '@/shared/config/app';
 import {fontFamily, fontSize, iconSize} from '@/shared/theme/tokens';
 import {ExternalLink} from '@tamagui/lucide-icons';
 
@@ -92,6 +98,7 @@ const ABOUT_LINKS = [
       ]
     : []),
   {key: 'main:settings_buy_device', onPress: () => Linking.openURL(AppBuyLink)},
+  {key: 'main:nekokolpa2', onPress: () => Linking.openURL(NekokoLPA2Link)},
 ];
 
 export default function Settings(_props: RootScreenProps<'Settings'>) {

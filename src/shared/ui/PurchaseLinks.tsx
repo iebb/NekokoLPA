@@ -3,7 +3,13 @@ import {Linking} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {Text as TText, XStack} from 'tamagui';
 
-import {AppBuyLink, AppBuyLinkEsimData, DisplayGithubLink, GithubLink} from '@/shared/config/app';
+import {
+  AppBuyLink,
+  AppBuyLinkEsimData,
+  DisplayGithubLink,
+  GithubLink,
+  NekokoLPA2Link,
+} from '@/shared/config/app';
 import {fontSize} from '@/shared/theme/tokens';
 
 /**
@@ -40,6 +46,7 @@ export default function PurchaseLinks({topMargin = 24}: {topMargin?: number}) {
     ...(DisplayGithubLink && GithubLink
       ? [link(t('main:github'), () => Linking.openURL(GithubLink))]
       : []),
+    link(t('main:nekokolpa2'), () => Linking.openURL(NekokoLPA2Link)),
   ];
 
   return (

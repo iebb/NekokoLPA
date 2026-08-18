@@ -32,4 +32,12 @@ export const AppBuyLink = config.buyLink;
 export const AppBuyLinkEsimData = config.buyLinkEsimData;
 export const AppCheckForUpdates = config.checkForUpdates;
 export const GithubLink = config.githubLink;
+
+/**
+ * NekokoLPA 2, the successor app.
+ *
+ * Not a per-variant config value: it is the same product for every flavour,
+ * and the README already points readers at it.
+ */
+export const NekokoLPA2Link = 'https://n.lpa.ee/';
 export const DisplayGithubLink = config.displayGithubLink;
