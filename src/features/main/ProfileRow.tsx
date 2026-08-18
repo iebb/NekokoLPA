@@ -260,25 +260,17 @@ const ProfileRowComponent = ({profile, deviceId}: {profile: ProfileExt; deviceId
 
           <Pressable style={{flex: 1}} onPress={handleProfilePress}>
             <YStack gap={1}>
-              {/* A dot, not a pill. The uppercase mono badge grew with the
-                  type scale into a block that outweighed the profile name it
-                  was annotating; a dot states the same thing quietly, and the
-                  switch on the right already carries the detail. */}
+              {/* Nothing marks the active profile here. It was a badge, then
+                  a dot, and the switch on the right has said it the whole
+                  time — a second marker for the same state only competes with
+                  the name it sits in front of. */}
               <XStack alignItems="center" gap={8}>
                 {/* The flag belongs beside the name it qualifies; the tile is
-                    for the operator's own mark when the card supplies one. */}
+                    for the operator's mark. */}
                 <Image
                   style={{width: 22, height: 15, borderRadius: 2}}
                   source={Flags[country] || Flags.UN}
                 />
-                {profile.selected && (
-                  <YStack
-                    width={8}
-                    height={8}
-                    borderRadius={radius.pill}
-                    backgroundColor="$primaryColor"
-                  />
-                )}
                 <Text
                   color="$textDefault"
                   fontSize={fontSize.xl}
