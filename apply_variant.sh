@@ -72,11 +72,13 @@ echo "Updating iOS config: Team $IOS_TEAM_ID, ID $IOS_APP_ID"
 # Sources
 PLIST_SRC="variants/$VARIANT/ios/Info.plist"
 ICON_SRC="variants/$VARIANT/ios/AppIcon.appiconset"
+ICONCOMPOSER_SRC="variants/$VARIANT/ios/AppIcon.icon"
 SPLASH_SRC="variants/$VARIANT/ios/SplashIcon.imageset"
 
 # Fallbacks
 if [ ! -f "$PLIST_SRC" ]; then PLIST_SRC="variants/store/ios/Info.plist"; fi
 if [ ! -d "$ICON_SRC" ]; then ICON_SRC="variants/store/ios/AppIcon.appiconset"; fi
+if [ ! -d "$ICONCOMPOSER_SRC" ]; then ICONCOMPOSER_SRC="variants/store/ios/AppIcon.icon"; fi
 if [ ! -d "$SPLASH_SRC" ]; then SPLASH_SRC="variants/store/ios/SplashIcon.imageset"; fi
 
 # Apply Plist
@@ -90,6 +92,14 @@ fi
 if [ -d "$ICON_SRC" ]; then
     rm -rf "ios/NekokoLPA/Images.xcassets/AppIcon.appiconset"
     cp -R "$ICON_SRC" "ios/NekokoLPA/Images.xcassets/AppIcon.appiconset"
+fi
+
+# Icon Composer icon (Xcode 26). It sits beside the project rather than in the
+# asset catalogue, and is what modern iOS/macOS actually renders; the
+# .appiconset stays for older toolchains.
+if [ -d "$ICONCOMPOSER_SRC" ]; then
+    rm -rf "ios/AppIcon.icon"
+    cp -R "$ICONCOMPOSER_SRC" "ios/AppIcon.icon"
 fi
 
 # Apply Splash
