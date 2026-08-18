@@ -15,8 +15,6 @@ import {getBleManager, requestBluetoothPermission} from '@/shared/utils/bluetoot
 import {connectDevice, disconnectDevice, reconnectDevice} from '@/features/bluetooth/connection';
 import {isSupportedBleName, setupDevices} from '@/lpa/deviceManager';
 import {Adapters, ConnectedBluetoothDevices} from '@/lpa/adapters/registry';
-import {makeLoading} from '@/shared/utils/loading';
-import {useLoading} from '@/app/providers/LoadingProvider';
 import {fontFamily, fontSize, iconSize, radius} from '@/shared/theme/tokens';
 
 function iconFor(name: string) {
@@ -50,9 +48,13 @@ export default function BluetoothSheet({
   const {t} = useTranslation(['main']);
   const theme = useTheme();
   const dispatch = useDispatch();
-  const {setLoading} = useLoading();
   const [devices, setDevices] = useState<Device[]>([]);
   const [scanning, setScanning] = useState(false);
+  // Which reader is mid-operation. Connecting one runs a whole card handshake
+  // and can take the better part of a minute on a slow reader, so the row that
+  // was tapped has to say so — and no other row may be tapped meanwhile,
+  // because the radio can only do one of these at a time.
+  const [busyId, setBusyId] = useState<string | null>(null);
 
   const addDevice = useCallback((scanned: Device) => {
     setDevices(prev => (prev.some(d => d.id === scanned.id) ? prev : [...prev, scanned]));
@@ -87,33 +89,51 @@ export default function BluetoothSheet({
 
   const handleDisconnect = useCallback(
     (bleId: string) => {
-      makeLoading(setLoading, async () => {
-        await disconnectDevice(bleId, dispatch);
-      });
+      setBusyId(bleId);
+      void disconnectDevice(bleId, dispatch).finally(() => setBusyId(null));
     },
-    [dispatch, setLoading],
+    [dispatch],
   );
 
   const handleReconnect = useCallback(
     (bleId: string) => {
-      makeLoading(setLoading, async () => {
-        await reconnectDevice(bleId, dispatch);
-      });
+      setBusyId(bleId);
+      void reconnectDevice(bleId, dispatch).finally(() => setBusyId(null));
     },
-    [dispatch, setLoading],
+    [dispatch],
   );
 
+  /**
+   * Brings a reader up, and closes the sheet only if that worked.
+   *
+   * Connecting used to raise the app-wide loading overlay, which covered the
+   * sheet with a box that said Loading for as long as the card handshake took,
+   * and then dismissed the sheet whatever the outcome — a reader that failed
+   * to come up looked exactly like one that succeeded, and the reason for the
+   * failure was only visible afterwards, on the chip tab it left behind.
+   *
+   * Now the row reports its own progress, and a failure leaves the sheet open
+   * with the reader listed as connected-but-offline, carrying the reason and a
+   * button to try again.
+   */
   const handleConnect = useCallback(
     (device: Device) => {
-      makeLoading(setLoading, async () => {
-        setScanning(false);
-        getBleManager().stopDeviceScan();
-        await connectDevice(device);
-        await setupDevices(dispatch, 'ble:' + device.id);
-        onOpenChange(false);
-      });
+      setBusyId(device.id);
+      void (async () => {
+        try {
+          setScanning(false);
+          getBleManager().stopDeviceScan();
+          await connectDevice(device);
+          await setupDevices(dispatch, 'ble:' + device.id);
+          if (Adapters['ble:' + device.id]?.device.available === true) {
+            onOpenChange(false);
+          }
+        } finally {
+          setBusyId(null);
+        }
+      })();
     },
-    [dispatch, onOpenChange, setLoading],
+    [dispatch, onOpenChange],
   );
 
   return (
@@ -147,20 +167,36 @@ export default function BluetoothSheet({
                             flexShrink={1}>
                             {device.name}
                           </TText>
-                          {!live && <Pill tone="danger">{t('main:bluetooth_offline')}</Pill>}
+                          {/* A reader mid-handshake is not offline yet: the
+                              row already says what it is doing. */}
+                          {!live && busyId !== device.id && (
+                            <Pill tone="danger">{t('main:bluetooth_offline')}</Pill>
+                          )}
                         </XStack>
-                        <TText
-                          color="$color9"
-                          fontFamily={fontFamily.mono as any}
-                          fontSize={fontSize.xs}
-                          numberOfLines={1}>
-                          {device.id}
-                        </TText>
+                        {/* Why it is offline, in the place the id would take.
+                            The adapter already knows — it is the same line the
+                            chip tab shows — and it is the one thing worth
+                            reading on a row that failed. */}
+                        {!live && busyId !== device.id && adapter?.device.description ? (
+                          <TText color="$red10" fontSize={fontSize.xs} numberOfLines={2}>
+                            {adapter.device.description}
+                          </TText>
+                        ) : (
+                          <TText
+                            color="$color9"
+                            fontFamily={fontFamily.mono as any}
+                            fontSize={fontSize.xs}
+                            numberOfLines={1}>
+                            {device.id}
+                          </TText>
+                        )}
                       </YStack>
                       {!live && (
                         <TouchableOpacity
                           onPress={() => handleReconnect(device.id)}
+                          disabled={busyId !== null}
                           style={{
+                            opacity: busyId !== null && busyId !== device.id ? 0.4 : 1,
                             backgroundColor: theme.primaryColor?.val,
                             borderRadius: radius.md,
                             paddingHorizontal: 14,
@@ -170,13 +206,17 @@ export default function BluetoothSheet({
                             color={theme.onFilled?.val}
                             fontSize={fontSize.md}
                             fontWeight={'600' as any}>
-                            {t('main:bluetooth_reconnect')}
+                            {busyId === device.id
+                              ? t('main:bluetooth_connecting')
+                              : t('main:bluetooth_reconnect')}
                           </TText>
                         </TouchableOpacity>
                       )}
                       <TouchableOpacity
                         onPress={() => handleDisconnect(device.id)}
+                        disabled={busyId !== null}
                         style={{
+                          opacity: busyId !== null ? 0.4 : 1,
                           borderWidth: 1,
                           borderColor: theme.borderColor?.val,
                           borderRadius: radius.md,
@@ -227,7 +267,9 @@ export default function BluetoothSheet({
                         </YStack>
                         <TouchableOpacity
                           onPress={() => handleConnect(device)}
+                          disabled={busyId !== null}
                           style={{
+                            opacity: busyId !== null && busyId !== device.id ? 0.4 : 1,
                             backgroundColor: theme.primaryColor?.val,
                             borderRadius: radius.md,
                             paddingHorizontal: 16,
@@ -237,7 +279,9 @@ export default function BluetoothSheet({
                             color={theme.onFilled?.val}
                             fontSize={fontSize.md}
                             fontWeight={'600' as any}>
-                            {t('main:bluetooth_connect')}
+                            {busyId === device.id
+                              ? t('main:bluetooth_connecting')
+                              : t('main:bluetooth_connect')}
                           </TText>
                         </TouchableOpacity>
                       </XStack>
