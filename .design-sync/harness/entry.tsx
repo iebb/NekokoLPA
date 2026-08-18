@@ -28,6 +28,7 @@ import MainScreen from '../../src/features/main/MainScreen';
 import SettingsScreen from '../../src/features/settings/SettingsScreen';
 import ProfileScreen from '../../src/features/profile/ProfileScreen';
 import {ScannerAuthentication} from '../../src/features/download/ScannerAuthentication';
+import {ScannerResult} from '../../src/features/download/ScannerResult';
 
 const DEVICE_ID = 'ccid:reader';
 
@@ -110,6 +111,22 @@ const SCREENS: Record<string, React.ReactNode> = {
           name: 'Profile',
         } as any
       }
+    />
+  ),
+  success: (
+    <ScannerResult
+      deviceId={DEVICE_ID}
+      goBack={() => {}}
+      downloadResult={{success: true}}
+      authenticateResult={{
+        success: true,
+        profile: {
+          iccid: '8944476500017448973',
+          profileName: 'BetterRoaming',
+          serviceProviderName: 'Jazeera',
+          profileOwnerMccMnc: '20408',
+        },
+      }}
     />
   ),
   confirm: (

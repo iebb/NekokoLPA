@@ -202,5 +202,6 @@
   "profile_class": "Class",
   "profile_state": "State",
   "profile_chip": "Chip",
-  "nekokolpa2": "NekokoLPA 2"
+  "nekokolpa2": "NekokoLPA 2",
+  "profile_download_success_body": "The profile is installed on this eUICC. Enable it to start using it."
 }
