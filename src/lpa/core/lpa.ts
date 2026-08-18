@@ -22,6 +22,7 @@ import {
   ByteBuffer,
 } from './bytes';
 import { build, decode, findHex } from './bertlv';
+import { CLA_PROPRIETARY, channelCla } from './channel';
 import {
   ApduError,
   RemoteError,
@@ -128,7 +129,7 @@ export class Lpa {
    * ------------------------------------------------------------------ */
 
   private get cla(): number {
-    return 0x80 | (this.channel & 0x0f);
+    return channelCla(this.channel, CLA_PROPRIETARY);
   }
 
   private async transmit(apdu: Uint8Array): Promise<Uint8Array> {

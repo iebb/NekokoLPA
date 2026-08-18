@@ -4,6 +4,8 @@ import {
   APDU_OPEN_CHANNEL,
   APDU_TERMINAL_CAPABILITIES,
   NO_AID_FOUND,
+  openedChannel,
+  releaseChannel,
   selectSupportedAid,
 } from '@/lpa/adapters/apdu';
 import {Device} from '@/lpa/adapters/Adapter';
@@ -71,24 +73,28 @@ export class SimLinkDevice implements Device {
 
       await this.transmit(APDU_TERMINAL_CAPABILITIES);
       const channelResp = await this.transmit(APDU_OPEN_CHANNEL);
-      const channelPrefix = channelResp.substring(0, 2);
-      this.channel = channelPrefix[1];
-
-      if (channelResp[0] === '6' && channelResp[1] !== '1') {
+      const channel = openedChannel(channelResp);
+      if (channel === null) {
         this.description = 'Failed to open channel';
         this.available = false;
         return false;
       }
-      if (parseInt(channelPrefix, 10) > MAX_OPEN_CHANNELS) {
-        this.description = `Too many opened channels, ${channelPrefix}`;
+      this.channel = channel.toString(16);
+
+      // This firmware wraps the APDU itself and only tracks the four basic
+      // channels, so a higher one is reported rather than addressed.
+      if (channel > MAX_OPEN_CHANNELS) {
+        await releaseChannel(apdu => this.transmit(apdu), channel);
+        this.description = `Too many opened channels, ${channel}`;
         this.available = false;
         return false;
       }
 
-      if (await selectSupportedAid(apdu => this.transmit(apdu), channelPrefix)) {
+      if (await selectSupportedAid(apdu => this.transmit(apdu), channel)) {
         this.available = true;
         return true;
       }
+      await releaseChannel(apdu => this.transmit(apdu), channel);
       this.description = NO_AID_FOUND;
       return false;
     } catch (error: any) {

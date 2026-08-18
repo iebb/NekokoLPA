@@ -3,6 +3,8 @@ import {
   APDU_OPEN_CHANNEL,
   APDU_TERMINAL_CAPABILITIES,
   NO_AID_FOUND,
+  openedChannel,
+  releaseChannel,
   selectSupportedAid,
 } from '@/lpa/adapters/apdu';
 
@@ -84,13 +86,19 @@ export class EstkMeRed implements Device {
 
       await this.transmit(APDU_TERMINAL_CAPABILITIES);
       const channelResp = await this.transmit(APDU_OPEN_CHANNEL);
-      const channelPrefix = channelResp.substring(0, 2);
-      this.channel = channelPrefix.substring(1);
+      const channel = openedChannel(channelResp);
+      if (channel === null) {
+        console.error('[ESTKme-RED] unusable MANAGE CHANNEL response', channelResp);
+        this.description = `Failed to open channel (${channelResp})`;
+        return false;
+      }
+      this.channel = channel.toString(16);
 
-      if (await selectSupportedAid(apdu => this.transmit(apdu), channelPrefix)) {
+      if (await selectSupportedAid(apdu => this.transmit(apdu), channel)) {
         this.available = true;
         return true;
       }
+      await releaseChannel(apdu => this.transmit(apdu), channel);
       this.description = NO_AID_FOUND;
       return false;
     } catch (error: any) {

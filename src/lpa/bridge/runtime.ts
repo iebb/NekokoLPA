@@ -1,7 +1,7 @@
 import {Adapter, LpaArg} from '@/lpa/adapters/Adapter';
 import {Adapters} from '@/lpa/adapters/registry';
 import {CustomHttp} from '@/lpa/bridge/nativeModules';
-import {LpaDispatcher} from '@/lpa/core';
+import {CLA_PROPRIETARY, LpaDispatcher, channelClaHex} from '@/lpa/core';
 
 /** Status word returned to the card when an APDU transmit fails locally. */
 const SW_TRANSMIT_FAILED = '6000';
@@ -38,8 +38,9 @@ export async function setupDevice(adapter: Adapter): Promise<LpaExecutor> {
       transmit: async (apdu: string) => {
         try {
           // Rewrite the class byte to target this device's logical channel.
+          const channel = parseInt(adapter.device.channel ?? '1', 16);
           return await adapter.device.transmit(
-            `8${adapter.device.channel ?? '1'}${apdu.substring(2)}`,
+            channelClaHex(channel, CLA_PROPRIETARY) + apdu.substring(2),
           );
         } catch (error) {
           console.error(`[${adapter.device.deviceName}] APDU transmit failed`, error);
