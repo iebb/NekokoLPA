@@ -14,6 +14,7 @@ import {
   ShieldCheck,
   Fingerprint,
   Palette,
+  Image as ImageIcon,
 } from '@tamagui/lucide-icons';
 import {isSimplifiedMode} from '@/shared/config/features';
 import {preferences} from '@/shared/storage';
@@ -41,7 +42,7 @@ const SECTIONS = [
   {titleKey: 'main:settings_group_general', keys: ['language', 'theme', 'showSlots']},
   {
     titleKey: 'main:settings_group_display',
-    keys: ['redactMode', 'unit', 'displaySubtitle', 'themeColor'],
+    keys: ['redactMode', 'unit', 'displaySubtitle', 'operatorIcons', 'themeColor'],
   },
   {titleKey: 'main:settings_group_advanced', keys: ['disableProtection', 'aid']},
 ] as const;
@@ -165,6 +166,13 @@ export default function Settings(_props: RootScreenProps<'Settings'>) {
       defaultValue: 'on',
       type: 'select',
       androidOnly: true,
+    },
+    {
+      key: 'operatorIcons',
+      icon: ImageIcon,
+      options: ['on', 'off'],
+      defaultValue: 'on',
+      type: 'select',
     },
     {key: 'aid', icon: Fingerprint, type: 'aid'},
     {key: 'themeColor', icon: Palette, defaultValue: DEFAULT_THEME_COLOR, type: 'color'},

@@ -21,6 +21,7 @@ import Toggle from '@/shared/ui/Toggle';
 import {group, isRedactMode, maskIccid, maskText, RedactMode} from '@/shared/utils/redact';
 import {usePreference} from '@/shared/hooks/usePreference';
 import {profileIconUri} from '@/shared/utils/profileIcon';
+import {useOperatorIcon} from '@/shared/hooks/useOperatorIcon';
 
 interface ProfileExt extends Profile {
   selected: boolean;
@@ -98,10 +99,15 @@ const ProfileRowComponent = ({profile, deviceId}: {profile: ProfileExt; deviceId
 
   const {tags, name, country, mccMnc} = useMemo(() => parseMetadata(profile, t), [profile, t]);
 
-  const iconUri = useMemo(
+  // The card's own icon wins where there is one, but most cards ship none —
+  // then the operator's PLMN is all there is to go on, and the catalog turns
+  // that into a logo.
+  const operatorIconUri = useOperatorIcon((profile as any).profileOwnerMccMnc);
+  const cardIconUri = useMemo(
     () => profileIconUri((profile as any).icon, (profile as any).iconType),
     [profile],
   );
+  const iconUri = cardIconUri ?? operatorIconUri;
 
   const replacedName = useMemo(() => {
     if (!name) return '';
@@ -124,7 +130,6 @@ const ProfileRowComponent = ({profile, deviceId}: {profile: ProfileExt; deviceId
     }
     return result;
   }, [name, country, stealthMode]);
-
 
   const handleProfilePress = useCallback(() => {
     navigation.navigate('Profile', {iccid: profile.iccid, metadata: profile, deviceId});
@@ -293,11 +298,7 @@ const ProfileRowComponent = ({profile, deviceId}: {profile: ProfileExt; deviceId
             </YStack>
           </Pressable>
 
-          <Toggle
-            value={profile.selected}
-            disabled={isLoading}
-            onPress={handleSwitchChange}
-          />
+          <Toggle value={profile.selected} disabled={isLoading} onPress={handleSwitchChange} />
         </XStack>
       </YStack>
     </Swipeable>
