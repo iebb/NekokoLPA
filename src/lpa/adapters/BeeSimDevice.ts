@@ -3,10 +3,12 @@ import {
   APDU_OPEN_CHANNEL,
   APDU_TERMINAL_CAPABILITIES,
   NO_AID_FOUND,
+  openedChannel,
+  releaseChannel,
   selectSupportedAid,
 } from '@/lpa/adapters/apdu';
 
-import {BleError, Characteristic, Device as BLEDevice} from 'react-native-ble-plx';
+import {BleError, Characteristic, Device as BLEDevice, Subscription} from 'react-native-ble-plx';
 import {Device} from '@/lpa/adapters/Adapter';
 import {base64ToBytes, bytesToBase64} from '@/shared/utils/base64';
 import {bytesToHex, hexToBytes} from '@/lpa/core';
@@ -35,6 +37,17 @@ import {BeeSimCommandPacer} from '@/lpa/adapters/beeSimPacer';
  *
  * The reader powers the card on connect, so there is no claim/power-on
  * handshake; the one control frame sent is the TX power level below.
+ *
+ * Notifications are monitored once for the whole connection and completed
+ * responses are queued, rather than subscribing per command. The reader is not
+ * strictly request/response — its control commands answer with a status record
+ * that can arrive after the command has already been answered — and a
+ * per-command subscription hands that straggler to the *next* command as its
+ * reply, shifting every later exchange by one. The visible symptom is the
+ * MANAGE CHANNEL reply arriving where the channel number should be, so every
+ * SELECT goes out on a bogus class byte and the reader comes up with "no
+ * supported AID found" on a card that has one. Clearing the queue at the start
+ * of each command is what discards such a straggler.
  */
 
 /**
@@ -53,6 +66,31 @@ const SERVICE_UUID = '0000ae30-0000-1000-8000-00805f9b34fb';
 /** How long to wait for the card to answer before giving up. */
 const REPLY_TIMEOUT_MS = 60000;
 
+/**
+ * How long to wait for the TX power level to be acknowledged.
+ *
+ * Raising the power is an optimisation, not a precondition, so it gets a short
+ * budget of its own: a firmware revision that stays silent here must not hold
+ * the reader in "connecting" for the full reply timeout.
+ */
+const POWER_TIMEOUT_MS = 5000;
+
+/**
+ * Settling time after notifications are enabled.
+ *
+ * Enabling them writes the client configuration descriptor, which the stack
+ * acknowledges asynchronously — on CoreBluetooth noticeably later than the
+ * call returns. A command written before that lands is answered into a
+ * subscription that is not yet receiving.
+ */
+const NOTIFY_SETTLE_MS = 200;
+
+/** A response the reader has finished sending but nothing is waiting for yet. */
+type PendingReply = {
+  resolve: (value: Uint8Array) => void;
+  reject: (error: Error) => void;
+};
+
 export class BeeSimDevice implements Device {
   type = 'ble';
   displayName = '';
@@ -69,6 +107,11 @@ export class BeeSimDevice implements Device {
   private notifyUuid = '';
   private writeNeedsResponse = false;
   private readonly pacer = new BeeSimCommandPacer();
+
+  private monitor: Subscription | null = null;
+  private readonly assembler = new FrameAssembler();
+  private readonly replies: Uint8Array[] = [];
+  private pending: PendingReply | null = null;
 
   constructor(device: BLEDevice) {
     this.deviceName = device.name!;
@@ -93,18 +136,31 @@ export class BeeSimDevice implements Device {
         this.device = await this.device.discoverAllServicesAndCharacteristics();
       }
       await this.resolveCharacteristics();
+      await this.startMonitoring();
       this.pacer.reset();
-      await this.transmitRaw(CMD_SET_POWER);
+
+      try {
+        await this.transmitRaw(CMD_SET_POWER, POWER_TIMEOUT_MS);
+      } catch (error) {
+        console.warn('[BeeSIM] TX power init was not acknowledged', error);
+      }
 
       await this.transmit(APDU_TERMINAL_CAPABILITIES);
       const channelResp = await this.transmit(APDU_OPEN_CHANNEL);
-      const channelPrefix = channelResp.substring(0, 2);
-      this.channel = channelPrefix.substring(1);
 
-      if (await selectSupportedAid(apdu => this.transmit(apdu), channelPrefix)) {
+      const channel = openedChannel(channelResp);
+      if (channel === null) {
+        console.error('[BeeSIM] unusable MANAGE CHANNEL response', channelResp);
+        this.description = `Failed to open channel (${channelResp})`;
+        return false;
+      }
+      this.channel = channel.toString(16);
+
+      if (await selectSupportedAid(apdu => this.transmit(apdu), channel)) {
         this.available = true;
         return true;
       }
+      await releaseChannel(apdu => this.transmit(apdu), channel);
       this.description = NO_AID_FOUND;
       return false;
     } catch (error: any) {
@@ -118,6 +174,7 @@ export class BeeSimDevice implements Device {
     try {
       await this.transmit(APDU_CLOSE_CHANNEL);
     } catch (error) {}
+    this.stopMonitoring();
     await this.device.cancelConnection();
     this.pacer.reset();
     this.available = false;
@@ -191,77 +248,114 @@ export class BeeSimDevice implements Device {
     throw new Error('No usable BeeSIM characteristics found');
   }
 
+  /** Subscribes to the notify characteristic for the life of the connection. */
+  private async startMonitoring(): Promise<void> {
+    this.stopMonitoring();
+    this.monitor = this.device.monitorCharacteristicForService(
+      this.serviceUuid,
+      this.notifyUuid,
+      (error, characteristic) => this.onNotification(error, characteristic),
+    );
+    await new Promise(resolve => setTimeout(resolve, NOTIFY_SETTLE_MS));
+  }
+
+  private stopMonitoring(): void {
+    this.monitor?.remove();
+    this.monitor = null;
+    this.assembler.reset();
+    this.replies.length = 0;
+    const waiting = this.pending;
+    this.pending = null;
+    waiting?.reject(new Error('BeeSIM link closed'));
+  }
+
+  /** Accumulates one inbound frame, queueing the payload once it completes. */
+  private onNotification(error: BleError | null, characteristic: Characteristic | null): void {
+    if (error) {
+      const waiting = this.pending;
+      this.pending = null;
+      waiting?.reject(error);
+      return;
+    }
+    if (!characteristic?.value) {
+      return;
+    }
+
+    const payload = this.assembler.push(base64ToBytes(characteristic.value));
+    if (!payload) {
+      return;
+    }
+
+    const waiting = this.pending;
+    if (waiting) {
+      this.pending = null;
+      waiting.resolve(payload);
+    } else {
+      this.replies.push(payload);
+    }
+  }
+
   /**
-   * Writes one APDU as `[total, index]`-framed chunks and reassembles the
-   * response frames, which carry the same header.
+   * Writes one APDU as `[total, index]`-framed chunks and resolves with the
+   * reassembled response.
    */
-  transmitRaw(apdu: Uint8Array): Promise<Uint8Array> {
+  async transmitRaw(apdu: Uint8Array, timeoutMs = REPLY_TIMEOUT_MS): Promise<Uint8Array> {
+    // Whatever is queued predates this command: it is a status frame the reader
+    // volunteered, or the tail of a command that timed out. Answering with one
+    // shifts this exchange and every later one by a response.
+    this.replies.length = 0;
+    this.assembler.reset();
+
+    const frames = buildFrames(apdu);
+    for (let index = 0; index < frames.length; index++) {
+      const payload = bytesToBase64(frames[index]);
+      // Firmware that only advertises write-with-response rejects the
+      // without-response call outright, so honour what the characteristic
+      // actually supports.
+      if (this.writeNeedsResponse) {
+        await this.device.writeCharacteristicWithResponseForService(
+          this.serviceUuid,
+          this.writeUuid,
+          payload,
+        );
+        // Acknowledged writes arrive back to back faster than this firmware
+        // reassembles them; NekokoLPA 2 spaces them the same way.
+        if (frames.length > 1 && index < frames.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 10));
+        }
+      } else {
+        await this.device.writeCharacteristicWithoutResponseForService(
+          this.serviceUuid,
+          this.writeUuid,
+          payload,
+        );
+      }
+    }
+
+    return await this.awaitReply(timeoutMs);
+  }
+
+  /** Resolves with the next complete response, queued or still in flight. */
+  private awaitReply(timeoutMs: number): Promise<Uint8Array> {
+    const queued = this.replies.shift();
+    if (queued) {
+      return Promise.resolve(queued);
+    }
     return new Promise<Uint8Array>((resolve, reject) => {
-      const assembler = new FrameAssembler();
-      let settled = false;
-
-      const finish = (fn: () => void) => {
-        if (settled) {
-          return;
-        }
-        settled = true;
-        clearTimeout(timer);
-        subscription.remove();
-        fn();
-      };
-
-      const timer = setTimeout(
-        () => finish(() => reject(new Error('BeeSIM reader did not answer'))),
-        REPLY_TIMEOUT_MS,
-      );
-
-      const subscription = this.device.monitorCharacteristicForService(
-        this.serviceUuid,
-        this.notifyUuid,
-        (error: BleError | null, characteristic: Characteristic | null) => {
-          if (settled) {
-            return;
-          }
-          if (error) {
-            finish(() => reject(error));
-            return;
-          }
-          if (!characteristic?.value) {
-            return;
-          }
-
-          const payload = assembler.push(base64ToBytes(characteristic.value));
-          if (payload) {
-            finish(() => resolve(payload));
-          }
+      const timer = setTimeout(() => {
+        this.pending = null;
+        reject(new Error('BeeSIM reader did not answer'));
+      }, timeoutMs);
+      this.pending = {
+        resolve: value => {
+          clearTimeout(timer);
+          resolve(value);
         },
-      );
-
-      void (async () => {
-        try {
-          for (const frame of buildFrames(apdu)) {
-            // Firmware that only advertises write-with-response rejects the
-            // without-response call outright, so honour what the
-            // characteristic actually supports.
-            const payload = bytesToBase64(frame);
-            if (this.writeNeedsResponse) {
-              await this.device.writeCharacteristicWithResponseForService(
-                this.serviceUuid,
-                this.writeUuid,
-                payload,
-              );
-            } else {
-              await this.device.writeCharacteristicWithoutResponseForService(
-                this.serviceUuid,
-                this.writeUuid,
-                payload,
-              );
-            }
-          }
-        } catch (error) {
-          finish(() => reject(error));
-        }
-      })();
+        reject: error => {
+          clearTimeout(timer);
+          reject(error);
+        },
+      };
     });
   }
 
@@ -271,6 +365,13 @@ export class BeeSimDevice implements Device {
     if (await this.pacer.beforeCommand()) {
       console.warn('[BeeSIM] burst limit reached — waiting out the cooldown');
     }
-    return bytesToHex(await this.transmitRaw(hexToBytes(apdu)));
+    const response = bytesToHex(await this.transmitRaw(hexToBytes(apdu)));
+    if (__DEV__) {
+      // The exchange itself is the only way to tell a reader fault from a card
+      // one, and it is not reconstructable after the fact. Debug builds only.
+      // eslint-disable-next-line no-console
+      console.log(`[BeeSIM] ${apdu} -> ${response}`);
+    }
+    return response;
   }
 }

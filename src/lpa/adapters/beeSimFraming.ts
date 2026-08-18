@@ -43,17 +43,38 @@ export function buildFrames(payload: Uint8Array): Uint8Array[] {
 /**
  * Reassembles inbound frames.
  *
- * The reader does not restate the payload length, so the assembler simply
- * accumulates until the terminal frame (`index === total`) arrives.
+ * One assembler serves a whole connection, so it has to recover from a partial
+ * transfer rather than assume every push belongs to the same response: a frame
+ * numbered 1 starts a fresh payload and discards whatever the previous one
+ * left behind. The reader restates neither the payload length nor an abort, so
+ * the terminal frame (`index === total`) is the only completion signal.
  */
 export class FrameAssembler {
   private readonly received: number[] = [];
 
   /** Adds one frame; returns the payload once the transfer is complete. */
   push(frame: Uint8Array): Uint8Array | null {
+    if (frame.length < 2) {
+      return null;
+    }
+    const total = frame[0];
+    const index = frame[1];
+    if (index === 1) {
+      this.received.length = 0;
+    }
     for (let i = 2; i < frame.length; i++) {
       this.received.push(frame[i]);
     }
-    return frame[0] === frame[1] ? new Uint8Array(this.received) : null;
+    if (index !== total) {
+      return null;
+    }
+    const payload = new Uint8Array(this.received);
+    this.received.length = 0;
+    return payload;
+  }
+
+  /** Drops a partial transfer, so the next frame starts a clean payload. */
+  reset(): void {
+    this.received.length = 0;
   }
 }

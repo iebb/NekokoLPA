@@ -43,6 +43,29 @@ describe('BeeSIM BLE framing', () => {
     expect(assembler.push(frames[2])).toEqual(bytes(40));
   });
 
+  it('starts a clean payload after one completes', () => {
+    // one assembler serves the whole connection, so back-to-back responses
+    // must not run into each other
+    const assembler = new FrameAssembler();
+    expect(assembler.push(Uint8Array.of(1, 1, 0x90, 0x00))).toEqual(Uint8Array.of(0x90, 0x00));
+    expect(assembler.push(Uint8Array.of(1, 1, 0x6a, 0x82))).toEqual(Uint8Array.of(0x6a, 0x82));
+  });
+
+  it('discards a partial transfer when a new one starts', () => {
+    // a command that timed out can leave frames behind; the next response
+    // restarts at index 1 and owns the buffer from there
+    const assembler = new FrameAssembler();
+    expect(assembler.push(Uint8Array.of(3, 1, 0xde, 0xad))).toBeNull();
+    expect(assembler.push(Uint8Array.of(1, 1, 0x90, 0x00))).toEqual(Uint8Array.of(0x90, 0x00));
+  });
+
+  it('drops a partial transfer on reset', () => {
+    const assembler = new FrameAssembler();
+    expect(assembler.push(Uint8Array.of(2, 1, 0xde, 0xad))).toBeNull();
+    assembler.reset();
+    expect(assembler.push(Uint8Array.of(2, 2, 0x90, 0x00))).toEqual(Uint8Array.of(0x90, 0x00));
+  });
+
   it('reassembles a response whose frames the reader sized itself', () => {
     // the reader is free to use any chunk size; only the header matters
     const assembler = new FrameAssembler();
