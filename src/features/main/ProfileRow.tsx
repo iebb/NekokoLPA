@@ -20,6 +20,7 @@ import {fontSize, radius} from '@/shared/theme/tokens';
 import Toggle from '@/shared/ui/Toggle';
 import {group, isRedactMode, maskIccid, maskText, RedactMode} from '@/shared/utils/redact';
 import {usePreference} from '@/shared/hooks/usePreference';
+import {profileIconUri} from '@/shared/utils/profileIcon';
 
 interface ProfileExt extends Profile {
   selected: boolean;
@@ -96,6 +97,11 @@ const ProfileRowComponent = ({profile, deviceId}: {profile: ProfileExt; deviceId
   const displaySubtitle = isSimplified ? 'provider' : storedSubtitle;
 
   const {tags, name, country, mccMnc} = useMemo(() => parseMetadata(profile, t), [profile, t]);
+
+  const iconUri = useMemo(
+    () => profileIconUri((profile as any).icon, (profile as any).iconType),
+    [profile],
+  );
 
   const replacedName = useMemo(() => {
     if (!name) return '';
@@ -234,19 +240,18 @@ const ProfileRowComponent = ({profile, deviceId}: {profile: ProfileExt; deviceId
           hairlines and from the accent, which marks the active profile only. */}
       <YStack backgroundColor="$surfaceRow" paddingHorizontal={14} paddingVertical={14}>
         <XStack width="100%" alignItems="center" gap={11}>
-          <YStack
-            width={32}
-            height={32}
-            borderRadius={radius.sm}
-            backgroundColor="$surfaceSpecial"
-            alignItems="center"
-            justifyContent="center"
-            overflow="hidden">
-            <Image
-              style={{width: 21, height: 14, borderRadius: 2}}
-              source={Flags[country] || Flags.UN}
-            />
-          </YStack>
+          {iconUri && (
+            <YStack
+              width={34}
+              height={34}
+              borderRadius={radius.sm}
+              backgroundColor="$surfaceSpecial"
+              alignItems="center"
+              justifyContent="center"
+              overflow="hidden">
+              <Image style={{width: 34, height: 34}} source={{uri: iconUri}} resizeMode="contain" />
+            </YStack>
+          )}
 
           <Pressable style={{flex: 1}} onPress={handleProfilePress}>
             <YStack gap={3}>
@@ -255,6 +260,12 @@ const ProfileRowComponent = ({profile, deviceId}: {profile: ProfileExt; deviceId
                   was annotating; a dot states the same thing quietly, and the
                   switch on the right already carries the detail. */}
               <XStack alignItems="center" gap={8}>
+                {/* The flag belongs beside the name it qualifies; the tile is
+                    for the operator's own mark when the card supplies one. */}
+                <Image
+                  style={{width: 22, height: 15, borderRadius: 2}}
+                  source={Flags[country] || Flags.UN}
+                />
                 {profile.selected && (
                   <YStack
                     width={8}

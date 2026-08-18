@@ -162,6 +162,30 @@ describe('BER-TLV', () => {
 
 /* ------------------------------------------------------------------ models */
 
+describe('GetProfilesInfo request', () => {
+  it('asks for the fields the parser reads, rather than sending an empty request', async () => {
+    // An empty BF2D lets the card volunteer whatever it likes, which on most
+    // eUICCs omits B7, 93/94 and 95 — the regression this covers.
+    const card = new FakeCard(() => tlv('BF2D', tlv('A0', '')));
+    await makeLpa(card).getProfiles();
+    const sent = card.commands[0];
+    expect(sent.startsWith('BF2D')).toBe(true);
+    expect(sent).toContain('5C');
+    for (const tag of ['5A', '4F', '9F70', '90', '91', '92', '93', '94', '95', 'B6', 'B7']) {
+      expect(sent).toContain(tag);
+    }
+  });
+
+  it('omits the icon tags when icons are not wanted', async () => {
+    const card = new FakeCard(() => tlv('BF2D', tlv('A0', '')));
+    await makeLpa(card).getProfiles(false);
+    const list = card.commands[0].slice(8);
+    expect(list).not.toContain('93');
+    expect(list).not.toContain('94');
+    expect(list).toContain('B7');
+  });
+});
+
 describe('models', () => {
   it('parses a profile list', () => {
     const profile =

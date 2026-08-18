@@ -80,6 +80,19 @@ export interface DownloadSession {
   profile: ProfileMetadata;
 }
 
+/**
+ * Profile fields to request, as SGP.22 tag bytes. `9F70` is two bytes; the
+ * rest are one. Order follows the specification's own listing.
+ */
+const PROFILE_TAGS = new Uint8Array([
+  0x5a, 0x4f, 0x9f, 0x70, 0x90, 0x91, 0x92, 0x95, 0xb6, 0xb7,
+]);
+
+/** The same, plus the icon type (93) and icon (94). */
+const PROFILE_TAGS_WITH_ICONS = new Uint8Array([
+  0x5a, 0x4f, 0x9f, 0x70, 0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0xb6, 0xb7,
+]);
+
 export class Lpa {
   private readonly transmitFn: Transmit;
   private readonly httpFn: Http;
@@ -211,9 +224,22 @@ export class Lpa {
     return parseConfiguredAddresses(await this.sendCommand(new Uint8Array([0xbf, 0x3c, 0x00])));
   }
 
-  /** ES10c.GetProfilesInfo */
-  async getProfiles(): Promise<ProfileMetadata[]> {
-    return parseProfileInfoList(await this.sendCommand(new Uint8Array([0xbf, 0x2d, 0x00])));
+  /**
+   * ES10c.GetProfilesInfo
+   *
+   * The request carries an explicit `5C` tag list. Sent empty (`BF2D 00`) the
+   * card returns only the fields it chooses to volunteer, which on most eUICCs
+   * omits the operator MCC/MNC (B7), the icon (93/94) and the profile class
+   * (95) — so those arrived undefined no matter what the parser supported.
+   *
+   * `withIcons` is separable because the icons are the bulk of the response:
+   * a list of profiles each carrying a logo is many times the size of one
+   * without, over a link that is sometimes a BLE reader.
+   */
+  async getProfiles(withIcons = true): Promise<ProfileMetadata[]> {
+    const tags = withIcons ? PROFILE_TAGS_WITH_ICONS : PROFILE_TAGS;
+    const request = build([0xbf, 0x2d], build(0x5c, tags));
+    return parseProfileInfoList(await this.sendCommand(request));
   }
 
   private iccidTlv(iccid: string): Uint8Array {
