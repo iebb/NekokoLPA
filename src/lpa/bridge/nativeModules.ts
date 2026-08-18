@@ -1,5 +1,6 @@
 import {NativeModules} from 'react-native';
 import NativeNekokoLPA from '@/lpa/bridge/specs/NativeNekokoLPA';
+import {devLog} from '@/shared/utils/devLog';
 
 const NekokoLPA = NativeNekokoLPA || NativeModules.NekokoLPA;
 
@@ -14,7 +15,7 @@ if (!NekokoLPA) {
     NativeModules.CustomHttp
   );
   if (hasLegacyModules) {
-    console.info('NekokoLPA TurboModule not registered; using the legacy bridge modules');
+    devLog('NekokoLPA TurboModule not registered; using the legacy bridge modules');
   } else {
     console.warn('No NekokoLPA native modules found: card access will not work');
   }

@@ -14,6 +14,7 @@ import {base64ToBytes, bytesToBase64} from '@/shared/utils/base64';
 import {bytesToHex, hexToBytes} from '@/lpa/core';
 import {FrameAssembler, buildFrames} from '@/lpa/adapters/beeSimFraming';
 import {BeeSimCommandPacer} from '@/lpa/adapters/beeSimPacer';
+import {devLog} from '@/shared/utils/devLog';
 
 /**
  * BeeSIM BLE reader.
@@ -363,15 +364,13 @@ export class BeeSimDevice implements Device {
     // Pace before every command, not just inside a download: the profile list
     // alone issues enough APDUs to exhaust a burst.
     if (await this.pacer.beforeCommand()) {
-      console.warn('[BeeSIM] burst limit reached — waiting out the cooldown');
+      // Expected on any long exchange, and handled: not a warning.
+      devLog('[BeeSIM] burst limit reached — waiting out the cooldown');
     }
     const response = bytesToHex(await this.transmitRaw(hexToBytes(apdu)));
-    if (__DEV__) {
-      // The exchange itself is the only way to tell a reader fault from a card
-      // one, and it is not reconstructable after the fact. Debug builds only.
-      // eslint-disable-next-line no-console
-      console.log(`[BeeSIM] ${apdu} -> ${response}`);
-    }
+    // The exchange itself is the only way to tell a reader fault from a card
+    // one, and it is not reconstructable after the fact.
+    devLog(`[BeeSIM] ${apdu} -> ${response}`);
     return response;
   }
 }

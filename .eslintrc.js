@@ -83,4 +83,13 @@ module.exports = {
     'prefer-const': 'warn',
     'no-empty': ['warn', {allowEmptyCatch: true}],
   },
+  overrides: [
+    {
+      // Build and check scripts are command-line tools: their output IS the
+      // console, so the rule that keeps stray logging out of the app does not
+      // apply to them.
+      files: ['scripts/**/*.js', '*.js'],
+      rules: {'no-console': 'off'},
+    },
+  ],
 };

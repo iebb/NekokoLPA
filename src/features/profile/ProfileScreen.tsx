@@ -105,11 +105,14 @@ function Profile({route, navigation}: RootScreenProps<'Profile'>) {
 
   const tagChars = tags.length ? ' ' + tags.map(t => t.rawValue).join(' ') : '';
 
-  const updateNickname = (n: string) => {
-    makeLoading(setLoading, async () => {
-      await adapter.setNicknameByIccId(iccid, n);
-    });
-  };
+  const updateNickname = useCallback(
+    (n: string) => {
+      makeLoading(setLoading, async () => {
+        await adapter.setNicknameByIccId(iccid, n);
+      });
+    },
+    [adapter, iccid, setLoading],
+  );
 
   /**
    * Appends a tag from the inline field.
