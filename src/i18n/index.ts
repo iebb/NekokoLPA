@@ -7,6 +7,7 @@ import * as ja from './ja';
 import * as es from './es';
 import * as ar from './ar';
 import * as ru from './ru';
+import * as ko from './ko';
 import overridesData from './overrides.json';
 import {I18nManager} from 'react-native';
 import {preferences} from '@/shared/storage';
@@ -26,6 +27,7 @@ const resources: any = {
   es: {...es},
   ar: {...ar},
   ru: {...ru},
+  ko: {...ko},
 };
 
 const overrides = overridesData as any;

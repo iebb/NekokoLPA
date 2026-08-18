@@ -1,8 +1,9 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Alert, Platform, ScrollView, ToastAndroid} from 'react-native';
+import {Platform, ScrollView, ToastAndroid, TouchableOpacity} from 'react-native';
 import {Adapters} from '@/lpa/adapters/registry';
-import {Text as TText, YStack, View as TView} from 'tamagui';
+import {Text as TText, useTheme, XStack, YStack, View as TView} from 'tamagui';
+import {Bluetooth} from '@tamagui/lucide-icons';
 import SlotTabs from '@/features/main/components/SlotTabs';
 import BluetoothSheet from '@/features/bluetooth/BluetoothSheet';
 import Clipboard from '@react-native-clipboard/clipboard';
@@ -15,14 +16,14 @@ import {setTargetDevice} from '@/store/slices';
 import ProfileCardHeader from '@/features/main/ProfileCardHeader';
 import ProfileSelector from '@/features/main/ProfileSelector';
 import {OMAPIBridge} from '@/lpa/bridge/nativeModules';
-import {fontSize} from '@/shared/theme/tokens';
+import {fontSize, iconSize, radius} from '@/shared/theme/tokens';
 
 export default function SIMSelector() {
   const [bluetoothOpen, setBluetoothOpen] = React.useState(false);
+  const theme = useTheme();
   const {
     deviceList: allDevices,
     targetDevice,
-    discoveryComplete,
   } = useAppSelector(selectDeviceList);
   const dispatch = useAppDispatch();
   const {t} = useTranslation(['main']);
@@ -62,35 +63,37 @@ export default function SIMSelector() {
     }
   }, [targetDevice, deviceList, dispatch]);
 
-  // Tell Apple users a reader is required, but only once discovery has actually
-  // run and come back empty. Keying this on deviceList alone fired the alert on
-  // the initial render every launch, before discovery had a chance — so it
-  // appeared even with a reader attached and listed behind it.
-  const noDeviceAlertShown = useRef(false);
-  useEffect(() => {
-    if (Platform.OS !== 'ios' || !discoveryComplete || allDevices.length > 0) {
-      return;
-    }
-    if (noDeviceAlertShown.current) {
-      return;
-    }
-    noDeviceAlertShown.current = true;
-    Alert.alert(
-      'No Compatible Devices',
-      Platform.isMacCatalyst
-        ? 'A compatible external CCID reader is required.'
-        : 'A compatible external CCID reader is required for iOS.',
-      [{text: 'OK'}],
-    );
-  }, [discoveryComplete, allDevices.length]);
-
   if (deviceList.length === 0)
     return (
       <ScrollView bounces alwaysBounceVertical overScrollMode="always">
-        <YStack flex={1} paddingTop={20} gap={10}>
-          <TText color="$textDefault" fontSize={fontSize.xl} textAlign="center">
-            {t('main:no_device')}
-          </TText>
+        {/* The Bluetooth entry point normally lives in the slot tabs, which
+            this branch never renders — so with no reader attached there was no
+            way to reach a reader at all. It belongs here most of all. */}
+        <BluetoothSheet open={bluetoothOpen} onOpenChange={setBluetoothOpen} />
+        <YStack flex={1} paddingTop={28} paddingHorizontal={16} gap={16} alignItems="center">
+          <YStack gap={6} alignItems="center">
+            <TText color="$textDefault" fontSize={fontSize.xl} textAlign="center">
+              {t('main:no_device')}
+            </TText>
+            <TText color="$color6" fontSize={fontSize.md} textAlign="center">
+              {t('main:no_device_hint')}
+            </TText>
+          </YStack>
+          <TouchableOpacity
+            onPress={() => setBluetoothOpen(true)}
+            style={{
+              backgroundColor: theme.primaryColor?.val,
+              borderRadius: radius.md,
+              paddingVertical: 13,
+              paddingHorizontal: 22,
+            }}>
+            <XStack alignItems="center" gap={9}>
+              <Bluetooth size={iconSize.sm} color={theme.onFilled?.val as string} />
+              <TText color={theme.onFilled?.val} fontSize={fontSize.lg} fontWeight={'600' as any}>
+                {t('main:bluetooth_scan')}
+              </TText>
+            </XStack>
+          </TouchableOpacity>
           <PurchaseLinks />
         </YStack>
       </ScrollView>

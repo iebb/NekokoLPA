@@ -6,6 +6,7 @@ import {
   selectSupportedAid,
 } from '@/lpa/adapters/apdu';
 
+import {Platform} from 'react-native';
 import {BleError, Characteristic, Device as BLEDevice} from 'react-native-ble-plx';
 import {Device} from '@/lpa/adapters/Adapter';
 import {base64ToBytes, bytesToBase64} from '@/shared/utils/base64';
@@ -35,6 +36,17 @@ const NOTIFY_UUID = '544b';
 const WRITE_UUID = '6d65';
 
 const MTU_HEADROOM = 10;
+
+/**
+ * Smallest chunk we will ever write.
+ *
+ * `device.mtu` is only meaningful once an MTU has been negotiated, which
+ * `requestMTU` does on Android. Apple platforms negotiate it themselves and
+ * ble-plx may report 0 until they do — and `mtu - MTU_HEADROOM` then goes
+ * non-positive, so the write loop stops advancing and the peripheral drops the
+ * link. 20 bytes is the ATT payload every BLE device supports.
+ */
+const MIN_CHUNK = 20;
 const REQUESTED_MTU = 233;
 const REPLY_TIMEOUT_MS = 30000;
 
@@ -68,7 +80,10 @@ export class EstkMeRed2 implements Device {
   async connect(): Promise<boolean> {
     try {
       if (!(await this.device.isConnected())) {
-        this.device = await this.device.connect({requestMTU: REQUESTED_MTU});
+        // requestMTU is Android-only; Apple platforms negotiate their own.
+        this.device = await this.device.connect(
+          Platform.OS === 'android' ? {requestMTU: REQUESTED_MTU} : undefined,
+        );
         this.device = await this.device.discoverAllServicesAndCharacteristics();
         await this.negotiate();
         await this.powerOn();
@@ -177,7 +192,7 @@ export class EstkMeRed2 implements Device {
 
       void (async () => {
         try {
-          const mtu = this.device.mtu - MTU_HEADROOM;
+          const mtu = Math.max(MIN_CHUNK, (this.device.mtu ?? 0) - MTU_HEADROOM);
           for (let i = 0; i < request.length; i += mtu) {
             await this.device.writeCharacteristicWithoutResponseForService(
               SERVICE_UUID,

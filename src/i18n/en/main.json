@@ -203,5 +203,7 @@
   "profile_state": "State",
   "profile_chip": "Chip",
   "nekokolpa2": "NekokoLPA 2",
-  "profile_download_success_body": "The profile is installed on this eUICC. Enable it to start using it."
+  "profile_download_success_body": "The profile is installed on this eUICC. Enable it to start using it.",
+  "no_device_hint": "A CCID or Bluetooth reader is required.",
+  "settings_item_language_ko": "한국어"
 }

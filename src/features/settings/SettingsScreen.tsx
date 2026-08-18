@@ -112,7 +112,7 @@ export default function Settings(_props: RootScreenProps<'Settings'>) {
     {
       key: 'language',
       icon: Languages,
-      options: ['en', 'ja', 'zh', 'es', 'ru', 'ar'],
+      options: ['en', 'ja', 'ko', 'zh', 'es', 'ru', 'ar'],
       defaultValue: 'en',
       type: 'select',
       onChange: (value: string) => {
