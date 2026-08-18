@@ -1,5 +1,11 @@
 import {getAIDList} from '@/shared/utils/aid';
-import {channelClaHex, closeChannelApdu, openedChannel} from '@/lpa/core/channel';
+import {devLog} from '@/shared/utils/devLog';
+import {
+  MAX_LOGICAL_CHANNEL,
+  channelClaHex,
+  closeChannelApdu,
+  openedChannel,
+} from '@/lpa/core/channel';
 
 /**
  * Shared APDU sequences and helpers used by every {@link Device}
@@ -82,24 +88,31 @@ async function trySelect(
 }
 
 /**
- * Closes every channel below `channel`.
+ * Closes every addressable channel except `keep`.
  *
  * Only called to recover a card that has the ISD-R held open on a channel
  * nobody is using any more — the residue of sessions that ended without
  * closing theirs, which survives until the card is power-cycled. Closing a
  * channel that was never open is answered with an error and ignored.
  *
+ * The stale channel is not necessarily below ours. A reader carries its card
+ * from machine to machine, so the session that walked away may well have held
+ * a *higher* channel than the one this card has just granted — that is the
+ * normal case when the card handed the low ones back but not the applet.
+ *
  * A channel another process is genuinely using would be closed too. That is
  * the trade being made deliberately: on a reader dedicated to eSIM management
- * the only plausible owner is an earlier run of this app, and the alternative
- * is a card that cannot be read at all until it is unplugged.
+ * the only plausible owner is an earlier session of this app, and the
+ * alternative is a card that cannot be read at all until it is unplugged.
  */
 async function releaseStaleChannels(
   transmit: (apdu: string) => Promise<string>,
-  channel: number,
+  keep: number,
 ): Promise<void> {
-  for (let stale = 1; stale < channel; stale++) {
-    await releaseChannel(transmit, stale);
+  for (let stale = 1; stale <= MAX_LOGICAL_CHANNEL; stale++) {
+    if (stale !== keep) {
+      await releaseChannel(transmit, stale);
+    }
   }
 }
 
@@ -125,11 +138,11 @@ export async function selectSupportedAid(
   const prefix = channelClaHex(channel);
 
   const attempt = await trySelect(transmit, prefix);
-  if (attempt.aid || !attempt.appletHeldElsewhere || channel <= 1) {
+  if (attempt.aid || !attempt.appletHeldElsewhere) {
     return attempt.aid;
   }
 
-  console.warn(`[LPA] ISD-R is held on another channel; closing 1-${channel - 1}`);
+  devLog('[LPA] ISD-R is held on another channel; closing the others');
   await releaseStaleChannels(transmit, channel);
   return (await trySelect(transmit, prefix)).aid;
 }
