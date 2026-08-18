@@ -1,11 +1,17 @@
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import {Modal, TouchableOpacity} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {Text as TText, useTheme, XStack, YStack} from 'tamagui';
 
 import {fontFamily, fontSize, radius, tracking} from '@/shared/theme/tokens';
 import SectionLabel from '@/shared/ui/SectionLabel';
-import {percentFor, phaseForMessage, phasesFor} from '@/features/download/downloadPhases';
+import {
+  percentForStep,
+  phaseForMessage,
+  phasesFor,
+  reportsBytes,
+} from '@/features/download/downloadPhases';
+import {useFormatSize} from '@/shared/hooks/useFormatSize';
 
 /**
  * Full-screen download progress.
@@ -32,9 +38,31 @@ export default function DownloadProgress({
   const {t} = useTranslation(['main']);
   const theme = useTheme();
 
+  const formatSize = useFormatSize();
+
+  // The highest percentage reported so far. The byte-reporting step
+  // interpolates towards 90% and the step after it starts lower, so without a
+  // floor the bar jumps backwards the moment the package finishes loading.
+  const floor = useRef(0);
   const active = phaseForMessage(progress?.message);
   const phases = phasesFor(active);
-  const percent = percentFor(active, progress?.progress, progress?.total);
+  const percent = percentForStep(
+    progress?.message,
+    progress?.progress,
+    progress?.total,
+    floor.current,
+  );
+  floor.current = percent;
+
+  // A fresh install starts from zero, not from where the last one ended.
+  useEffect(() => {
+    return () => {
+      floor.current = 0;
+    };
+  }, []);
+
+  const showBytes =
+    reportsBytes(progress?.message) && !!progress?.total && progress.total > 0;
 
   const dotColor = (state: string) =>
     state === 'done'
@@ -76,9 +104,18 @@ export default function DownloadProgress({
             fontWeight={'600' as any}>
             {percent}%
           </TText>
-          <YStack height={4} borderRadius={radius.pill} backgroundColor="$surfaceSpecial" overflow="hidden">
+          <YStack
+            height={4}
+            borderRadius={radius.pill}
+            backgroundColor="$surfaceSpecial"
+            overflow="hidden">
             <YStack height="100%" width={`${percent}%`} backgroundColor="$primaryColor" />
           </YStack>
+          {showBytes && (
+            <TText color="$color9" fontFamily={fontFamily.mono as any} fontSize={fontSize.md}>
+              {formatSize(progress?.progress ?? 0)} / {formatSize(progress?.total ?? 0)}
+            </TText>
+          )}
         </YStack>
 
         <YStack gap={11}>

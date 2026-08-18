@@ -1,13 +1,15 @@
 /**
- * Maps the LPA's fine-grained progress messages onto the three phases the
- * download screen shows.
+ * Turns the LPA's SGP.22 step messages into a progress percentage.
  *
- * The LPA reports a dozen SGP.22 steps (`download.step6.es9p_get_bound_profile_
- * package` and friends). That granularity is right for a log and wrong for a
- * progress screen — nobody waiting on a download needs to distinguish
- * `es10b_authenticate_server` from `es9p_authenticate_client`. They collapse
- * into the three things that actually happen: talk to the server, fetch the
- * package, write it to the card.
+ * The LPA reports a dozen steps, which is right for a log and wrong for a
+ * progress screen. They collapse into three phases for display, but the
+ * percentage is computed from the steps themselves, because the work is not
+ * evenly distributed: authenticating is a handful of round trips, while
+ * writing the bound profile package is the long part and the only step that
+ * reports bytes.
+ *
+ * Weights follow that shape — everything before the download is the first
+ * tenth, and loading the package owns the rest up to 90%.
  *
  * Kept free of React imports so it can be unit tested.
  */
@@ -28,6 +30,39 @@ export const PHASE_KEYS = [
 ] as const;
 
 /**
+ * Where each step starts, as a percentage.
+ *
+ * A step holds its own start until the next one arrives; a step that reports
+ * bytes interpolates towards the following step's start. The keys are the
+ * suffix after `download.stepN.`, which is what the LPA emits.
+ */
+const STEP_START: Record<string, number> = {
+  es10b_get_euicc_challenge_and_info: 0,
+  es9p_initiate_authentication: 2,
+  es10b_authenticate_server: 4,
+  es9p_authenticate_client: 6,
+  es11_authenticate_client: 6,
+  es10b_prepare_download: 10,
+  es9p_get_bound_profile_package: 12,
+  es10b_load_bound_profile_package: 15,
+  load_bpp: 15,
+  finalize: 90,
+  finished: 100,
+};
+
+/** Steps whose byte counts should drive the bar between here and the next. */
+const STEP_END: Record<string, number> = {
+  es10b_load_bound_profile_package: 90,
+  load_bpp: 90,
+};
+
+/** The `stepN.name` part of a raw progress message. */
+function stepNameOf(message: string | undefined): {index: number; name: string} | null {
+  const match = /^download\.step(\d+)\.(.+?)(?:_tx_\d+)?$/.exec(message ?? '');
+  return match ? {index: Number(match[1]), name: match[2]} : null;
+}
+
+/**
  * Which phase a raw progress message belongs to.
  *
  * Steps 1-4 are the authenticate exchange, 5-6 fetch the bound profile
@@ -36,18 +71,14 @@ export const PHASE_KEYS = [
  * upstream degrades to "no movement" instead of jumping the UI backwards.
  */
 export function phaseForMessage(message: string | undefined, fallback = 0): number {
-  if (!message) {
-    return fallback;
-  }
-  const step = /^download\.step(\d+)\./.exec(message);
+  const step = stepNameOf(message);
   if (!step) {
     return fallback;
   }
-  const n = Number(step[1]);
-  if (n <= 4) {
+  if (step.index <= 4) {
     return 0;
   }
-  if (n <= 6) {
+  if (step.index <= 6) {
     return 1;
   }
   return 2;
@@ -62,19 +93,41 @@ export function phasesFor(active: number): Phase[] {
 }
 
 /**
- * Overall completion, 0-100.
+ * Completion for a raw progress payload, 0-100.
  *
- * Each phase owns a third of the bar. Within the install phase the LPA reports
- * bytes written, so that third fills smoothly; the earlier phases have no
- * sub-progress and sit at their phase boundary. Returning the boundary rather
- * than interpolating avoids a bar that races ahead and then stalls.
+ * `floor` is the highest value reported so far. Progress must never go
+ * backwards: the byte-reporting step interpolates towards 90%, and the step
+ * that follows it starts lower than where the interpolation ended, so without
+ * a floor the bar visibly jumps back when the package finishes loading.
  */
-export function percentFor(active: number, progress?: number, total?: number): number {
-  const base = (active / PHASE_KEYS.length) * 100;
-  const span = 100 / PHASE_KEYS.length;
-  if (total && total > 0 && progress !== undefined && progress >= 0) {
-    const within = Math.min(1, progress / total);
-    return Math.round(base + within * span);
+export function percentForStep(
+  message: string | undefined,
+  progress?: number,
+  total?: number,
+  floor = 0,
+): number {
+  const step = stepNameOf(message);
+  if (!step) {
+    return floor;
   }
-  return Math.round(base);
+
+  const start = STEP_START[step.name];
+  if (start === undefined) {
+    return floor;
+  }
+
+  let value = start;
+  const end = STEP_END[step.name];
+  if (end !== undefined && total && total > 0 && progress !== undefined && progress >= 0) {
+    const within = Math.min(1, Math.max(0, progress / total));
+    value = start + (end - start) * within;
+  }
+
+  return Math.max(floor, Math.min(100, Math.round(value)));
+}
+
+/** True when the step reports byte counts worth showing under the bar. */
+export function reportsBytes(message: string | undefined): boolean {
+  const step = stepNameOf(message);
+  return !!step && STEP_END[step.name] !== undefined;
 }
