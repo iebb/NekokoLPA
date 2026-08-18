@@ -33,9 +33,19 @@ import {BeeSimCommandPacer} from '@/lpa/adapters/beeSimPacer';
  *                      [3,2] + 18 bytes
  *                      [3,3] +  4 bytes
  *
- * Unlike the ESTKme-RED there are no claim/power control frames: the reader
- * powers the card on connect.
+ * The reader powers the card on connect, so there is no claim/power-on
+ * handshake; the one control frame sent is the TX power level below.
  */
+
+/**
+ * Raise the reader's transmit power to level 4.
+ *
+ * BeeSIM's own install flow does this before it starts, and a profile
+ * download is a long transfer over a link that is otherwise weak enough to
+ * drop mid-session. It is applied once per connection rather than per
+ * download, so every entry point benefits.
+ */
+const CMD_SET_POWER = Uint8Array.of(0xa0, 0x3e, 0x04, 0x00, 0x00);
 
 /** Advertised GATT service. */
 const SERVICE_UUID = '0000ae30-0000-1000-8000-00805f9b34fb';
@@ -84,6 +94,7 @@ export class BeeSimDevice implements Device {
       }
       await this.resolveCharacteristics();
       this.pacer.reset();
+      await this.transmitRaw(CMD_SET_POWER);
 
       await this.transmit(APDU_TERMINAL_CAPABILITIES);
       const channelResp = await this.transmit(APDU_OPEN_CHANNEL);

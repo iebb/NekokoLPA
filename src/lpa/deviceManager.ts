@@ -6,6 +6,7 @@ import {Adapters, ConnectedBluetoothDevices} from '@/lpa/adapters/registry';
 import {CcidDevice} from '@/lpa/adapters/CcidDevice';
 import {OmapiDevice} from '@/lpa/adapters/OmapiDevice';
 import {EstkMeRed} from '@/lpa/adapters/EstkMeRedDevice';
+import {EstkMeRed2} from '@/lpa/adapters/EstkMeRed2Device';
 import {BeeSimDevice} from '@/lpa/adapters/BeeSimDevice';
 import {SimLinkDevice} from '@/lpa/adapters/SimLinkDevice';
 import {CCIDPlugin, OMAPIBridge} from '@/lpa/bridge/nativeModules';
@@ -22,22 +23,29 @@ interface OmapiSlot {
 }
 
 /**
- * Bluetooth device-name prefixes we know how to drive.
+ * Bluetooth readers we know how to drive, matched on advertised name.
  *
- * This is the single source of truth for which readers are supported over BLE:
- * the scan screen filters advertisements through {@link isSupportedBleName}
- * rather than keeping its own copy of the list, so adding an adapter here is
- * enough to make it discoverable.
+ * This is the single source of truth for BLE support: the scan sheet filters
+ * advertisements through {@link isSupportedBleName} rather than keeping its
+ * own copy, so adding an adapter here is enough to make it discoverable.
+ *
+ * Matching is a predicate rather than a prefix because the two ESTKme-RED
+ * generations are distinguished by a space: "ESTKme RED" is the second, which
+ * speaks CCID, while "ESTKme-RED" is the first, with its own framing. Sending
+ * one's frames to the other gets no usable answer, so the distinction has to
+ * be made before a connection is opened. Order matters — the more specific
+ * test comes first.
  */
-const BLE_ADAPTERS: {prefix: string; create: (device: any) => Device}[] = [
-  {prefix: 'ESTKme-RED', create: d => new EstkMeRed(d)},
-  {prefix: 'eSIM_Writer', create: d => new SimLinkDevice(d)},
-  {prefix: 'BeeSIM', create: d => new BeeSimDevice(d)},
+const BLE_ADAPTERS: {matches: (name: string) => boolean; create: (device: any) => Device}[] = [
+  {matches: n => /estkme\s+red/i.test(n), create: d => new EstkMeRed2(d)},
+  {matches: n => /estkme[-_]?red/i.test(n), create: d => new EstkMeRed(d)},
+  {matches: n => /^esim_writer/i.test(n), create: d => new SimLinkDevice(d)},
+  {matches: n => /^beesim/i.test(n), create: d => new BeeSimDevice(d)},
 ];
 
 /** True when a scanned BLE advertisement names a reader we have an adapter for. */
 export function isSupportedBleName(name: string | null | undefined): boolean {
-  return !!name && BLE_ADAPTERS.some(a => name.startsWith(a.prefix));
+  return !!name && BLE_ADAPTERS.some(a => a.matches(name));
 }
 
 async function discoverOmapiDevices(): Promise<Device[]> {
@@ -76,7 +84,7 @@ function discoverBluetoothDevices(): Device[] {
     if (!name) {
       continue;
     }
-    const match = BLE_ADAPTERS.find(a => name.startsWith(a.prefix));
+    const match = BLE_ADAPTERS.find(a => a.matches(name));
     if (match) {
       devices.push(match.create(bleDevice));
     }
