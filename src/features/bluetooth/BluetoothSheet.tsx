@@ -9,10 +9,12 @@ import {useDispatch} from 'react-redux';
 import AppSheet from '@/shared/ui/AppSheet';
 import SectionLabel from '@/shared/ui/SectionLabel';
 import RowGroup, {Row} from '@/shared/ui/RowGroup';
+import Pill from '@/shared/ui/Pill';
 import Loader from '@/shared/ui/Loader';
 import {getBleManager, requestBluetoothPermission} from '@/shared/utils/bluetooth';
-import {connectDevice} from '@/features/bluetooth/connection';
+import {connectDevice, disconnectDevice, reconnectDevice} from '@/features/bluetooth/connection';
 import {isSupportedBleName, setupDevices} from '@/lpa/deviceManager';
+import {Adapters, ConnectedBluetoothDevices} from '@/lpa/adapters/registry';
 import {makeLoading} from '@/shared/utils/loading';
 import {useLoading} from '@/app/providers/LoadingProvider';
 import {fontFamily, fontSize, iconSize, radius} from '@/shared/theme/tokens';
@@ -83,6 +85,24 @@ export default function BluetoothSheet({
     };
   }, [open, addDevice]);
 
+  const handleDisconnect = useCallback(
+    (bleId: string) => {
+      makeLoading(setLoading, async () => {
+        await disconnectDevice(bleId, dispatch);
+      });
+    },
+    [dispatch, setLoading],
+  );
+
+  const handleReconnect = useCallback(
+    (bleId: string) => {
+      makeLoading(setLoading, async () => {
+        await reconnectDevice(bleId, dispatch);
+      });
+    },
+    [dispatch, setLoading],
+  );
+
   const handleConnect = useCallback(
     (device: Device) => {
       makeLoading(setLoading, async () => {
@@ -103,26 +123,32 @@ export default function BluetoothSheet({
           {t('main:bluetooth_sheet_hint')}
         </TText>
 
-        {devices.length > 0 && (
+        {ConnectedBluetoothDevices.length > 0 && (
           <YStack gap={8}>
             <YStack paddingLeft={4}>
-              <SectionLabel>{t('main:bluetooth_available')}</SectionLabel>
+              <SectionLabel>{t('main:bluetooth_connected')}</SectionLabel>
             </YStack>
             <RowGroup>
-              {devices.map(device => {
+              {ConnectedBluetoothDevices.map(device => {
                 const Icon = iconFor(device.name ?? '');
+                const adapter = Adapters['ble:' + device.id];
+                const live = adapter?.device.available === true;
                 return (
                   <Row key={device.id}>
                     <XStack gap={12} alignItems="center">
                       <Icon size={iconSize.lg} color={theme.color6?.val as string} />
                       <YStack flex={1} minWidth={0} gap={3}>
-                        <TText
-                          color="$textDefault"
-                          fontSize={fontSize.lg}
-                          fontWeight={'600' as any}
-                          numberOfLines={1}>
-                          {device.name}
-                        </TText>
+                        <XStack alignItems="center" gap={8}>
+                          <TText
+                            color="$textDefault"
+                            fontSize={fontSize.lg}
+                            fontWeight={'600' as any}
+                            numberOfLines={1}
+                            flexShrink={1}>
+                            {device.name}
+                          </TText>
+                          {!live && <Pill tone="danger">{t('main:bluetooth_offline')}</Pill>}
+                        </XStack>
                         <TText
                           color="$color9"
                           fontFamily={fontFamily.mono as any}
@@ -131,25 +157,93 @@ export default function BluetoothSheet({
                           {device.id}
                         </TText>
                       </YStack>
+                      {!live && (
+                        <TouchableOpacity
+                          onPress={() => handleReconnect(device.id)}
+                          style={{
+                            backgroundColor: theme.primaryColor?.val,
+                            borderRadius: radius.md,
+                            paddingHorizontal: 14,
+                            paddingVertical: 10,
+                          }}>
+                          <TText
+                            color={theme.onFilled?.val}
+                            fontSize={fontSize.md}
+                            fontWeight={'600' as any}>
+                            {t('main:bluetooth_reconnect')}
+                          </TText>
+                        </TouchableOpacity>
+                      )}
                       <TouchableOpacity
-                        onPress={() => handleConnect(device)}
+                        onPress={() => handleDisconnect(device.id)}
                         style={{
-                          backgroundColor: theme.primaryColor?.val,
+                          borderWidth: 1,
+                          borderColor: theme.borderColor?.val,
                           borderRadius: radius.md,
-                          paddingHorizontal: 16,
+                          paddingHorizontal: 14,
                           paddingVertical: 10,
                         }}>
-                        <TText
-                          color={theme.onFilled?.val}
-                          fontSize={fontSize.md}
-                          fontWeight={'600' as any}>
-                          {t('main:bluetooth_connect')}
+                        <TText color="$color6" fontSize={fontSize.md}>
+                          {t('main:bluetooth_disconnect')}
                         </TText>
                       </TouchableOpacity>
                     </XStack>
                   </Row>
                 );
               })}
+            </RowGroup>
+          </YStack>
+        )}
+
+        {devices.length > 0 && (
+          <YStack gap={8}>
+            <YStack paddingLeft={4}>
+              <SectionLabel>{t('main:bluetooth_available')}</SectionLabel>
+            </YStack>
+            <RowGroup>
+              {devices
+                .filter(d => !ConnectedBluetoothDevices.some(c => c.id === d.id))
+                .map(device => {
+                  const Icon = iconFor(device.name ?? '');
+                  return (
+                    <Row key={device.id}>
+                      <XStack gap={12} alignItems="center">
+                        <Icon size={iconSize.lg} color={theme.color6?.val as string} />
+                        <YStack flex={1} minWidth={0} gap={3}>
+                          <TText
+                            color="$textDefault"
+                            fontSize={fontSize.lg}
+                            fontWeight={'600' as any}
+                            numberOfLines={1}>
+                            {device.name}
+                          </TText>
+                          <TText
+                            color="$color9"
+                            fontFamily={fontFamily.mono as any}
+                            fontSize={fontSize.xs}
+                            numberOfLines={1}>
+                            {device.id}
+                          </TText>
+                        </YStack>
+                        <TouchableOpacity
+                          onPress={() => handleConnect(device)}
+                          style={{
+                            backgroundColor: theme.primaryColor?.val,
+                            borderRadius: radius.md,
+                            paddingHorizontal: 16,
+                            paddingVertical: 10,
+                          }}>
+                          <TText
+                            color={theme.onFilled?.val}
+                            fontSize={fontSize.md}
+                            fontWeight={'600' as any}>
+                            {t('main:bluetooth_connect')}
+                          </TText>
+                        </TouchableOpacity>
+                      </XStack>
+                    </Row>
+                  );
+                })}
             </RowGroup>
           </YStack>
         )}
