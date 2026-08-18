@@ -238,23 +238,23 @@ const ProfileRowComponent = ({profile, deviceId}: {profile: ProfileExt; deviceId
       {/* One row of the profile group. The rounded card, drop shadow and
           per-profile hue stripe are gone: rank now comes from the group's
           hairlines and from the accent, which marks the active profile only. */}
-      <YStack backgroundColor="$surfaceRow" paddingHorizontal={14} paddingVertical={14}>
-        <XStack width="100%" alignItems="center" gap={11}>
+      <YStack backgroundColor="$surfaceRow" paddingHorizontal={14} paddingVertical={9}>
+        <XStack width="100%" alignItems="center" gap={10}>
           {iconUri && (
             <YStack
-              width={34}
-              height={34}
+              width={30}
+              height={30}
               borderRadius={radius.sm}
               backgroundColor="$surfaceSpecial"
               alignItems="center"
               justifyContent="center"
               overflow="hidden">
-              <Image style={{width: 34, height: 34}} source={{uri: iconUri}} resizeMode="contain" />
+              <Image style={{width: 30, height: 30}} source={{uri: iconUri}} resizeMode="contain" />
             </YStack>
           )}
 
           <Pressable style={{flex: 1}} onPress={handleProfilePress}>
-            <YStack gap={3}>
+            <YStack gap={1}>
               {/* A dot, not a pill. The uppercase mono badge grew with the
                   type scale into a block that outweighed the profile name it
                   was annotating; a dot states the same thing quietly, and the

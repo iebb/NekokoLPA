@@ -3,9 +3,9 @@ import {TouchableOpacity, View} from 'react-native';
 import {useTheme} from 'tamagui';
 import {radius} from '@/shared/theme/tokens';
 
-const TRACK_W = 52;
-const TRACK_H = 31;
-const THUMB = 25;
+const TRACK_W = 46;
+const TRACK_H = 27;
+const THUMB = 22;
 
 /**
  * The platform-style switch used for profile enable/disable and settings.
