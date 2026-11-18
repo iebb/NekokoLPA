@@ -5,6 +5,7 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -87,13 +88,60 @@ jobs:
           asset_content_type: application/vnd.android.package-archive
 
       - name: Upload Multisign to Telegram
-        if: github.event_name == 'push' && steps.release_check.outputs.needed == 'true'
-        uses: xz-dev/TelegramFileUploader@v1.1.1
-        with:
-          to-who: 'NekokoLPA'
-          message: 'NekokoLPA Multisign v${{ env.VERSION }} (Github: https://github.com/iebb/NekokoLPA/releases/tag/v${{ env.VERSION }})'
-          files: ./output/ee.nekoko.nlpa-${{ env.VERSION }}-multisign.apk
+        if: (github.event_name == 'push' && steps.release_check.outputs.needed == 'true') || github.event_name == 'workflow_dispatch'
         env:
           API_ID: ${{ secrets.API_ID }}
           API_HASH: ${{ secrets.API_HASH }}
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          TELEGRAM_GROUP_ID: '2474721979'
+          TELEGRAM_GROUP_URL: 'https://t.me/NekokoLPA'
+          TELEGRAM_MESSAGE: 'NekokoLPA Multisign v${{ env.VERSION }} (Github: https://github.com/iebb/NekokoLPA/releases/tag/v${{ env.VERSION }})'
+          TELEGRAM_FILE: ./output/ee.nekoko.nlpa-${{ env.VERSION }}-multisign.apk
+        run: |
+          python3 -m pip install --quiet telethon cryptg
+          python3 - <<'PY'
+          import asyncio
+          import os
+          from telethon import TelegramClient
+          from telethon.tl.functions.contacts import ResolveUsernameRequest
+          from telethon.tl.types import PeerChannel
+
+          api_id = int(os.environ["API_ID"])
+          api_hash = os.environ["API_HASH"]
+          bot_token = os.environ["BOT_TOKEN"]
+          group_id = int(os.environ["TELEGRAM_GROUP_ID"])
+          group_url = os.environ["TELEGRAM_GROUP_URL"]
+          file_path = os.environ["TELEGRAM_FILE"]
+          message = os.environ["TELEGRAM_MESSAGE"]
+
+          async def main():
+              client = TelegramClient("bot", api_id, api_hash)
+              await client.start(bot_token=bot_token)
+              async with client:
+                  try:
+                      entity = await client.get_input_entity(PeerChannel(group_id))
+                  except Exception:
+                      resolved = await client(ResolveUsernameRequest("NekokoLPA"))
+                      entity = resolved.chats[0]
+
+                  last_pct = -10
+                  def callback(current, total):
+                      nonlocal last_pct
+                      pct = int(current * 100 / total) if total else 0
+                      if pct >= last_pct + 10 or current == total:
+                          print(f"Uploaded: {pct}% ({current}/{total})", flush=True)
+                          last_pct = pct
+
+                  print(f"Uploading {file_path}...", flush=True)
+                  ufile = await client.upload_file(file_path, progress_callback=callback)
+                  print(f"Sending message to PeerChannel({group_id}) ({group_url})...", flush=True)
+                  await client.send_file(
+                      entity=entity,
+                      file=ufile,
+                      caption=message,
+                      force_document=True,
+                  )
+                  print("Sent message", flush=True)
+
+          asyncio.run(main())
+          PY
